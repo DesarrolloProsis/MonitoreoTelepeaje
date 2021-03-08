@@ -26,7 +26,9 @@
                 name="psw"
               />
             </div>
+              <router-link to="/inicio" tag="div">
             <button type="submit" class="btn">Iniciar Sesión</button>
+              </router-link>
           </form>
         </div>
       </div>
@@ -37,8 +39,8 @@
 </template>
 
 <script>
-import Footer from "./Footer-login.vue";
-import Header from "./Header-login.vue";
+import Footer from "../components/Footer-login.vue";
+import Header from "../components/Header-login.vue";
 export default {
   name: "HelloWorld",
   components: {
