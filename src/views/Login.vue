@@ -32,7 +32,7 @@
           </form>
         </div>
       </div>
-      <div id="login-bg" class="flex-1 hidden md:block">Img</div>
+      <div id="login-bg" class="flex-1 hidden md:block"></div>
     </div>
     <Footer></Footer>
   </div>
@@ -119,7 +119,9 @@ export default {
   opacity: 0.9;
   border-radius: 25px;
 }
-
+.btn:focus{
+outline: 0;
+}
 .btn:hover {
   opacity: 1;
 }
