@@ -2,6 +2,7 @@ import { createRouter, createWebHistory } from "vue-router"
 import Login from '@/views/Login.vue'
 import Menu from '@/views/Menu.vue'
 import MonitoreoListas from '@/views/Modules/MonitoreoListas.vue'
+import MonitoreoCarriles from '@/views/Modules/MonitoreoCarriles.vue'
 const routes = [
     {
         path: '/',
@@ -17,6 +18,11 @@ const routes = [
         path: '/inicio/monitoreo-servicios',
         name:'MonitoreoServicios',
         component:MonitoreoListas
+    },
+    {
+        path: '/inicio/monitoreo-carriles',
+        name:'MonitoreoCarriles',
+        component:MonitoreoCarriles
     }
 
 ]
