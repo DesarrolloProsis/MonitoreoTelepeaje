@@ -5,8 +5,8 @@
       Envió de transacciones a Operador de Telepeaje
     </h1>
     <div class="flex flex-wrap bg-blue">
-      <div class="flex-none filter-style">
-        <input type="text" value="IMDM0000" />
+      <div class="flex-none filter-style-2">
+        <input class="inp-icon" type="text" />
       </div>
       <div class="flex-none filter-style">
         Tramo:
@@ -57,6 +57,24 @@ export default {
 };
 </script>
 <style scoped>
+.filter-style-2 {
+  color: white;
+  font-size: 16px;
+  margin-left: 10px;
+}
+.filter-style-2 input {
+  margin-left: 20px;
+  color: black;
+  border-bottom: 1px solid black;
+  padding: 0px 5px;
+  color: white;
+}
+.inp-icon {
+  background: url("~@/assets/search.png") no-repeat 100%;
+
+  background-size: 16px;
+}
+
 .pb-100 {
   padding-bottom: 100px;
 }
