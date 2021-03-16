@@ -7,6 +7,7 @@ import BitacoraAlarmas from "@/views/Modules/BitacoraAlarmas.vue"
 import MonitoreoCruces from '@/views/Modules/MonitoreoCruces.vue'
 import EnvioTransacciones from '@/views/Modules/EnvioTransacciones.vue'
 import BusquedaCruces from '@/views/Modules/BusquedaCruces.vue'
+import BitacoraAccesos from '@/views/Modules/BitacoraAccesos.vue'
 const routes = [
     {
         path: '/',
@@ -48,6 +49,12 @@ const routes = [
         name:'BusquedaCruces',
         component:BusquedaCruces
     },
+    {
+        path: '/inicio/bitacora-accesos',
+        name:'BitacoraAccesos',
+        component:BitacoraAccesos
+    },
+
 
 
 ]

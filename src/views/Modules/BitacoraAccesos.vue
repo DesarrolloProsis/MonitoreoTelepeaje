@@ -1,19 +1,10 @@
 <template>
   <Navbar></Navbar>
   <div class="container mx-auto px-0 pb-100">
-    <h1 class="title-center pb-4">
-      Envió de transacciones a Operador de Telepeaje
-    </h1>
+    <h1 class="title-center pb-4">Bitácora de Accesos</h1>
     <div class="flex flex-wrap bg-blue">
-      <div class="flex-none filter-style-2">
-        <input class="inp-icon" type="text" />
-      </div>
       <div class="flex-none filter-style">
-        Tramo:
-        <input type="text" />
-      </div>
-      <div class="flex-none filter-style">
-        Plaza:
+        Usuario:
         <input type="text" />
       </div>
       <div class="flex-none filter-style">
@@ -27,53 +18,68 @@
         <button class="btn-carriles ml-right">Descargar Excel</button>
       </div>
     </div>
-    <TablaTransacciones :dataTransacciones="transacciones"></TablaTransacciones>
+    <div class="container mx-auto px-0 md:px-60">
+      <TablaAccesos :dataAccesos="accesos"></TablaAccesos>
+    </div>
   </div>
   <Footer></Footer>
 </template>
 <script>
-import TablaTransacciones from "../../components/Tabla-transacciones.vue";
+import TablaAccesos from "../../components/Tabla-accesos.vue";
 import Navbar from "../../components/Navbar.vue";
 import Footer from "../../components/Footer-login";
 export default {
-  name: "EnvioTransacciones",
-  components: { TablaTransacciones, Navbar, Footer },
+  name: "BitacoraAccesos",
+  components: { TablaAccesos, Navbar, Footer },
   data() {
     return {
-      transacciones: [
+      accesos: [
         {
-          plaza: "Aeropuerto",
-          num_tag: "A01",
-          fecha_envio: "2021/01/01 14:00:00",
-          carril: "IMD1000000",
-          tipo_vehiculo:"Auto",
-          tarifa:"$65"
+          usuario: "RMendoza",
+          fecha_inicio: "2021/01/01 14:00:00",
+          fecha_fin: "2020/01/01 15:00:30",
         },
-       
+        {
+          usuario: "AMitra",
+          fecha_inicio: "2021/01/01 14:00:00",
+          fecha_fin: "2020/01/01 15:00:30",
+        },
+        {
+          usuario: "AMitra",
+          fecha_inicio: "2021/01/01 14:00:00",
+          fecha_fin: "2020/01/01 15:00:30",
+        },
+        {
+          usuario: "AMitra",
+          fecha_inicio: "2021/01/01 14:00:00",
+          fecha_fin: "2020/01/01 15:00:30",
+        },
+         {
+          usuario: "AMitra",
+          fecha_inicio: "2021/01/01 14:00:00",
+          fecha_fin: "2020/01/01 15:00:30",
+        },
+        {
+          usuario: "AMitra",
+          fecha_inicio: "2021/01/01 14:00:00",
+          fecha_fin: "2020/01/01 15:00:30",
+        },
+         {
+          usuario: "AMitra",
+          fecha_inicio: "2021/01/01 14:00:00",
+          fecha_fin: "2020/01/01 15:00:30",
+        },
+        {
+          usuario: "AMitra",
+          fecha_inicio: "2021/01/01 14:00:00",
+          fecha_fin: "2020/01/01 15:00:30",
+        },
       ],
     };
   },
 };
 </script>
 <style scoped>
-.filter-style-2 {
-  color: white;
-  font-size: 16px;
-  margin-left: 10px;
-}
-.filter-style-2 input {
-  margin-left: 20px;
-  color: black;
-  border-bottom: 1px solid black;
-  padding: 0px 5px;
-  color: white;
-}
-.inp-icon {
-  background: url("~@/assets/search.png") no-repeat 100%;
-
-  background-size: 16px;
-}
-
 .pb-100 {
   padding-bottom: 100px;
 }

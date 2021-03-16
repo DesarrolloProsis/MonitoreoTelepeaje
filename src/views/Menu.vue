@@ -54,7 +54,7 @@ export default {
         {
           titulo: "Bitácora de Accesos",
           imagen: "Menu/bitacora-accesos.png",
-          ruta: "",
+          ruta: "/inicio/bitacora-accesos",
         },
         {
           titulo: "Estatus de TAGs",
