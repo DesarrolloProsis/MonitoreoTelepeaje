@@ -1,6 +1,6 @@
 <template>
   <Navbar></Navbar>
-  <div class="container mx-auto px-4 resp-cont">
+  <div class="container mx-auto px-0 resp-cont">
     <h1 class="title">Monitoreo de Servicios de Con Proveedor de Telepeaje</h1>
     <button
       :style="{ 'background-color': isActive1 ? '#fcb32a' : 'gray' }"

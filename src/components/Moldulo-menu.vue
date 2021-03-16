@@ -23,7 +23,17 @@ export default {
 .imagen-modulo {
     display: block;
   margin: auto;
-  width: 230px;
+  width: 260px;
+ 
   background-color: #d3d3d3;
+}
+@media (min-width: 1720px){
+  .imagen-modulo {
+    display: block;
+  margin: auto;
+  width: 290px;
+ 
+  background-color: #d3d3d3;
+}
 }
 </style>

@@ -1,5 +1,5 @@
 <template>
-  <div class="container mx-auto px-4 pt-4">
+  <div class="container mx-auto px-0 pt-4 py-8">
     <div class="flex flex-wrap bg-blue">
       <div class="flex-none filter-style">
         Tramo:
@@ -13,7 +13,9 @@
         <button class="btn-buscar">Buscar</button>
       </div>
       <div class="flex-1">
-        <button class="btn-carriles ml-right">Bitácora de Alarmas</button>
+        <router-link to="/inicio/monitoreo-carriles/bitacora-alarmas" tag="div">
+          <button class="btn-carriles ml-right">Bitácora de Alarmas</button>
+        </router-link>
       </div>
     </div>
     <div class="flex ta-center overflow-x-auto pt-6">
@@ -28,9 +30,7 @@
         <div class="flex-1 bg-carriles-gray mh-other">Lecturas Inválidas</div>
         <div class="flex-1 bg-carriles-gray mh-other">Último Cruce</div>
       </div>
-      <Carril :carrilesdata="carriles" ></Carril>
-      
-      
+      <Carril :carrilesdata="carriles"></Carril>
     </div>
   </div>
 </template>
@@ -41,7 +41,6 @@ export default {
   name: "TablaCarriles",
   components: {
     Carril,
-   
   },
   data() {
     return {
@@ -63,7 +62,6 @@ export default {
       ],
     };
   },
-  
 };
 </script>
 <style scoped>
@@ -121,11 +119,15 @@ export default {
   background-color: #017296;
   color: white;
   height: 100%;
-  padding: 0px 5px;
+  padding: 0px 10px;
   border-radius: 5px;
+  border: 1px solid black;
 }
 .btn-buscar:focus {
- outline: 0;
+  outline: 0;
+}
+.btn-carriles:focus {
+  outline: 0;
 }
 @media (max-width: 769px) {
   .filter-style {

@@ -1,27 +1,26 @@
 <template>
   <Navbar></Navbar>
- 
-    <div class="flex flex-wrap items-center full-height">
-      <ModulosComp
-        v-for="(modulo, index) in modulos"
-        :key="index"
-        :titulo="modulo.titulo"
-        :imagen="modulo.imagen"
-        :ruta="modulo.ruta"
-      ></ModulosComp>
-    </div>
- <Footer></Footer>
+  <div class="flex flex-wrap items-center full-height">
+    <ModulosComp
+      v-for="(modulo, index) in modulos"
+      :key="index"
+      :titulo="modulo.titulo"
+      :imagen="modulo.imagen"
+      :ruta="modulo.ruta"
+    ></ModulosComp>
+  </div>
+  <Footer></Footer>
 </template>
 
 <script>
 import Navbar from "../components/Navbar";
 import ModulosComp from "../components/Moldulo-menu";
-import Footer from '../components/Footer-login';
+import Footer from "../components/Footer-login";
 export default {
   components: {
     Navbar,
     ModulosComp,
-    Footer
+    Footer,
   },
   data() {
     return {
@@ -40,17 +39,17 @@ export default {
         {
           titulo: "Monitoreo de Cruces",
           imagen: "Menu/monitoreo-cruces.png",
-          ruta: "",
+          ruta: "/inicio/monitoreo-cruces",
         },
         {
           titulo: "Envío de Transacciones",
           imagen: "Menu/envio-transacciones.png",
-          ruta: "",
+          ruta: "/inicio/envio-transacciones",
         },
         {
           titulo: "Búsqueda de Cruces",
           imagen: "Menu/busqueda-cruces.png",
-          ruta: "",
+          ruta: "/inicio/busqueda-cruces",
         },
         {
           titulo: "Bitácora de Accesos",
@@ -73,9 +72,15 @@ export default {
 };
 </script>
 <style scoped>
-.full-height{
-    height: calc(100vh - 88px);
-   min-height: 600px;
-   margin-bottom: 40px;
+.full-height {
+  height: calc(100vh - 88px);
+  min-height: 700px;
+  margin-bottom: 40px;
+}
+@media (max-width: 765px) {
+  .full-height {
+    height: 100%;
+    margin-bottom: 80px;
+  }
 }
 </style>
