@@ -59,12 +59,12 @@ export default {
         {
           titulo: "Estatus de TAGs",
           imagen: "Menu/estatus-tags.png",
-          ruta: "",
+          ruta: "/inicio/estatus-tags",
         },
         {
           titulo: "Configuración",
           imagen: "Menu/configuracion.png",
-          ruta: "",
+          ruta: "/configuracion",
         },
       ],
     };

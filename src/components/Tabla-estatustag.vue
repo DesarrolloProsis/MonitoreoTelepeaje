@@ -1,34 +1,34 @@
 <template>
-  <div class="responsive-table">
+ <div class="responsive-table">
     <table class="tftable">
       <tr>
-        <th>Usuario</th>
-        <th>Fecha Inicio</th>
-        <th>Fecha Fin</th>
+        <th>Estatus</th>
+        <th>Saldo</th>
+        <th>Tipo Tag</th>
+        <th>Última Actualización</th>
       </tr>
-      <tr v-for="(accesos, index) in dataAccesos" :key="index">
-        <td>{{accesos.usuario}}</td>
-        <td>{{accesos.fecha_inicio}}</td>
-        <td>{{accesos.fecha_fin}}</td>
+      <tr v-for="(tags, index) in datatag" :key="index">
+        <td>{{tags.estatus}}</td>
+        <td>{{tags.saldo}}</td>
+        <td>{{tags.tipo_tag}}</td>
+        <td>{{tags.ult_act}}</td>
       </tr>
     </table>
   </div>
 </template>
 
-
 <script>
 export default {
-  name: "TablaAccesos",
-  props: ["dataAccesos"],
+  name: "TablaEstatusTag",
+  props:["datatag"],
 };
 </script>
 <style scoped>
-
 .responsive-table {
-    padding-top: 20px;
+  padding-top: 20px;
   overflow-x: auto;
   overflow-y: auto;
-  max-height: 600px;
+  max-height: 500px;
   
 }
 .tftable {
@@ -38,18 +38,17 @@ export default {
 }
 .tftable th {
   font-size: 14px;
-  background-color: #2ED0E1;
+  background-color:#89E9D9 ;
   border-width: 5px;
   padding: 8px;
   border-style: solid;
   border-color: white;
   text-align: left;
-
+  color: black;
   font-weight: 400;
   text-align: center;
-  border-radius: 15px;
   margin: 3px;
-  color: white;
+ 
 }
 
 .tftable td {
@@ -66,5 +65,4 @@ export default {
   
   text-align: center;
 }
-
 </style>

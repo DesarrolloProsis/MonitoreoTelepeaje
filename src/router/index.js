@@ -8,6 +8,9 @@ import MonitoreoCruces from '@/views/Modules/MonitoreoCruces.vue'
 import EnvioTransacciones from '@/views/Modules/EnvioTransacciones.vue'
 import BusquedaCruces from '@/views/Modules/BusquedaCruces.vue'
 import BitacoraAccesos from '@/views/Modules/BitacoraAccesos.vue'
+import EstatusTags from '@/views/Modules/EstatusTags.vue'
+import Configuracion from '@/views/Modules/Configuracion.vue'
+
 const routes = [
     {
         path: '/',
@@ -54,7 +57,16 @@ const routes = [
         name:'BitacoraAccesos',
         component:BitacoraAccesos
     },
-
+    {
+        path: '/inicio/estatus-tags',
+        name:'EstatusTags',
+        component:EstatusTags
+    },
+    {
+        path: '/configuracion',
+        name:'Configuracion',
+        component:Configuracion
+    },
 
 
 ]
