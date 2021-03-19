@@ -30,12 +30,12 @@ export default {
         {
           img_src: "Configuracion/creacion-perfiles.png",
           nombre: "Creación de Perfiles",
-          ruta: "",
+          ruta: "/configuracion/perfil-usuario",
         },
         {
           img_src: "Configuracion/lista-perfiles.png",
           nombre: "Lista de Perfiles",
-          ruta: "",
+          ruta: "/configuracion/lista-perfiles",
         },
          {
           img_src: "Configuracion/registro-usuarios.png",
@@ -45,8 +45,9 @@ export default {
          {
           img_src: "Configuracion/lista-usuarios.png",
           nombre: "Lista de Usuarios",
-          ruta: "",
+          ruta: "/configuracion/lista-usuarios",
         },
+        
       ],
     };
   },

@@ -131,7 +131,7 @@ export default {
 }
 @media (max-width: 769px) {
   .filter-style {
-    width: 100%;
+    
     padding-top: 5px;
     padding-bottom: 15px;
   }

@@ -10,6 +10,9 @@ import BusquedaCruces from '@/views/Modules/BusquedaCruces.vue'
 import BitacoraAccesos from '@/views/Modules/BitacoraAccesos.vue'
 import EstatusTags from '@/views/Modules/EstatusTags.vue'
 import Configuracion from '@/views/Modules/Configuracion.vue'
+import PerfilUsuario from '@/views/Modules/PerfilUsuario.vue'
+import ListaPerfiles from '@/views/Modules/ListaPerfiles.vue'
+import ListaUsuarios from '@/views/Modules/ListaUsuarios.vue'
 
 const routes = [
     {
@@ -67,7 +70,22 @@ const routes = [
         name:'Configuracion',
         component:Configuracion
     },
-
+    {
+        path: '/configuracion/perfil-usuario',
+        name:'PerfilUsuario',
+        component:PerfilUsuario
+    },
+    {
+        path: '/configuracion/lista-perfiles',
+        name:'ListaPerfilUsuario',
+        component:ListaPerfiles
+    },
+    {
+        path: '/configuracion/lista-usuarios',
+        name:'ListaUsuarios',
+        component:ListaUsuarios
+    },
+  
 
 ]
 
