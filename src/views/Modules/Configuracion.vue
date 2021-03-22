@@ -40,7 +40,7 @@ export default {
          {
           img_src: "Configuracion/registro-usuarios.png",
           nombre: "Registro de Usuarios",
-          ruta: "",
+          ruta: "/configuracion/registro-usuarios",
         },
          {
           img_src: "Configuracion/lista-usuarios.png",

@@ -13,6 +13,7 @@ import Configuracion from '@/views/Modules/Configuracion.vue'
 import PerfilUsuario from '@/views/Modules/PerfilUsuario.vue'
 import ListaPerfiles from '@/views/Modules/ListaPerfiles.vue'
 import ListaUsuarios from '@/views/Modules/ListaUsuarios.vue'
+import RegistroUsuarios from '@/views/Modules/RegistroUsuarios.vue'
 
 const routes = [
     {
@@ -84,6 +85,11 @@ const routes = [
         path: '/configuracion/lista-usuarios',
         name:'ListaUsuarios',
         component:ListaUsuarios
+    },
+    {
+        path: '/configuracion/registro-usuarios',
+        name:'RegistroUsuarios',
+        component:RegistroUsuarios
     },
   
 
