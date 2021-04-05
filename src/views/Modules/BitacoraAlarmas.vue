@@ -5,14 +5,26 @@
     <div class="flex flex-wrap bg-blue">
       <div class="flex-none filter-style">
         Tramo:
-        <input type="text" />
+        <select class="flex-none filter-style color-black" name="select">
+          <option value="100" selected>opcion1</option>
+          <option value="200">opcion2</option>
+          <option value="300">opcion3</option>
+        </select>
       </div>
       <div class="flex-none filter-style">
         Plaza:
-        <input type="text" />
+        <select class="flex-none filter-style color-black" name="select">
+          <option value="100" selected>opcion1</option>
+          <option value="200">opcion2</option>
+          <option value="300">opcion3</option>
+        </select>
       </div>
       <div class="flex-none filter-style">
-        Fecha:
+        Inicio:
+        <input type="date" />
+      </div>
+      <div class="flex-none filter-style">
+        Fin:
         <input type="date" />
       </div>
       <div class="flex-none filter-style">
@@ -36,66 +48,56 @@ export default {
   data() {
     return {
       alarmas: [
-          {
-              plaza:"La Venta",
-              alarma:"Corte de energía",
-              fecha:"2021/01/01 14:00:00",
-              carril:"A01",
-              estatus:"Resuelto"
-
-          },
-           {
-              plaza:"La Venta",
-              alarma:"Corte de energía",
-              fecha:"2021/01/01 14:00:00",
-              carril:"A01",
-              estatus:"Resuelto"
-
-          },
-           {
-              plaza:"La Venta",
-              alarma:"Corte de energía",
-              fecha:"2021/01/01 14:00:00",
-              carril:"A01",
-              estatus:"Resuelto"
-
-          }
-          ,
-           {
-              plaza:"La Venta",
-              alarma:"Corte de energía",
-              fecha:"2021/01/01 14:00:00",
-              carril:"A01",
-              estatus:"Resuelto"
-
-          }
-          ,
-           {
-              plaza:"La Venta",
-              alarma:"Corte de energía",
-              fecha:"2021/01/01 14:00:00",
-              carril:"A01",
-              estatus:"Resuelto"
-
-          }
-          ,
-           {
-              plaza:"La Venta",
-              alarma:"Corte de energía",
-              fecha:"2021/01/01 14:00:00",
-              carril:"A01",
-              estatus:"Resuelto"
-
-          }
-         
+        {
+          plaza: "La Venta",
+          alarma: "Corte de energía",
+          fecha: "2021/01/01 14:00:00",
+          carril: "A01",
+          estatus: "Resuelto",
+        },
+        {
+          plaza: "La Venta",
+          alarma: "Corte de energía",
+          fecha: "2021/01/01 14:00:00",
+          carril: "A01",
+          estatus: "Resuelto",
+        },
+        {
+          plaza: "La Venta",
+          alarma: "Corte de energía",
+          fecha: "2021/01/01 14:00:00",
+          carril: "A01",
+          estatus: "Resuelto",
+        },
+        {
+          plaza: "La Venta",
+          alarma: "Corte de energía",
+          fecha: "2021/01/01 14:00:00",
+          carril: "A01",
+          estatus: "Resuelto",
+        },
+        {
+          plaza: "La Venta",
+          alarma: "Corte de energía",
+          fecha: "2021/01/01 14:00:00",
+          carril: "A01",
+          estatus: "Resuelto",
+        },
+        {
+          plaza: "La Venta",
+          alarma: "Corte de energía",
+          fecha: "2021/01/01 14:00:00",
+          carril: "A01",
+          estatus: "Resuelto",
+        },
       ],
     };
   },
 };
 </script>
 <style scoped>
-.pb-100{
-    padding-bottom: 100px;
+.pb-100 {
+  padding-bottom: 100px;
 }
 .title-center {
   text-align: center;
@@ -144,9 +146,15 @@ export default {
 .btn-carriles:focus {
   outline: 0;
 }
+.color-black {
+  color: black !important;
+}
+.color-black:focus {
+  outline: 0;
+}
+
 @media (max-width: 769px) {
   .filter-style {
-    
     padding-top: 5px;
     padding-bottom: 15px;
   }

@@ -1,17 +1,19 @@
 <template>
- <div class="responsive-table">
+  <div class="responsive-table">
     <table class="tftable">
       <tr>
+        <th>Tag</th>
         <th>Estatus</th>
         <th>Saldo</th>
         <th>Tipo Tag</th>
         <th>Última Actualización</th>
       </tr>
       <tr v-for="(tags, index) in datatag" :key="index">
-        <td>{{tags.estatus}}</td>
-        <td>{{tags.saldo}}</td>
-        <td>{{tags.tipo_tag}}</td>
-        <td>{{tags.ult_act}}</td>
+        <td>{{ tags.tag }}</td>
+        <td>{{ tags.estatus }}</td>
+        <td>{{ tags.saldo }}</td>
+        <td>{{ tags.tipo_tag }}</td>
+        <td>{{ tags.ult_act }}</td>
       </tr>
     </table>
   </div>
@@ -20,7 +22,7 @@
 <script>
 export default {
   name: "TablaEstatusTag",
-  props:["datatag"],
+  props: ["datatag"],
 };
 </script>
 <style scoped>
@@ -29,7 +31,6 @@ export default {
   overflow-x: auto;
   overflow-y: auto;
   max-height: 500px;
-  
 }
 .tftable {
   font-size: 12px;
@@ -38,7 +39,7 @@ export default {
 }
 .tftable th {
   font-size: 14px;
-  background-color:#89E9D9 ;
+  background-color: #89e9d9;
   border-width: 5px;
   padding: 8px;
   border-style: solid;
@@ -48,7 +49,6 @@ export default {
   font-weight: 400;
   text-align: center;
   margin: 3px;
- 
 }
 
 .tftable td {
@@ -62,7 +62,7 @@ export default {
   border-bottom-color: #a1a1a1;
   border-left-color: white;
   border-right-color: white;
-  
+
   text-align: center;
 }
 </style>

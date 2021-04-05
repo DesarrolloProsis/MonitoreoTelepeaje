@@ -1,7 +1,7 @@
 <template>
   <div class="flex justify-between bg-nav">
     <div class="flex-none">
-      <h1>Logotipo</h1>
+      <img class="logo" src="~@/assets/prosissinfondo.png"><img>
     </div>
     <div class="flex-none">
       <router-link to="/" tag="div">
@@ -22,5 +22,8 @@
 }
 .btn-salir:focus {
   outline: none;
+}
+.logo{
+ width:100px;
 }
 </style>

@@ -17,27 +17,28 @@
           </div>
           <div class="flex flex-wrap pt-2">
             <div class="flex-1">Contraseña</div>
-            <div class="flex-1"><input class="input-w-100" type="password" /></div>
+            <div class="flex-1">
+              <input class="input-w-100" type="password" />
+            </div>
           </div>
           <div class="flex flex-wrap pt-2">
             <div class="flex-1">Rol</div>
-            <div class="flex-1"><input class="input-w-100" type="text" /></div>
+            <div class="flex-1">
+              <select class="input-w-100" name="rol">
+                <option value="value1">Administrador</option>
+                <option value="value2" selected>Sistemas</option>
+              </select>
+            </div>
           </div>
-             <div class="flex flex-wrap pt-4">
-            <div class="flex-1"><button class="button btn-aceptar">Aceptar</button></div>
-            <div class="flex-1"><button class="button btn-cancelar">Cancelar</button></div>
+          <div class="flex flex-wrap pt-4">
+            <div class="flex-1">
+              <button class="button btn-aceptar">Aceptar</button>
+            </div>
+            <div class="flex-1">
+              <button class="button btn-cancelar">Cancelar</button>
+            </div>
           </div>
         </form>
-
-        <!--<form class="bg-form p-5 mb-8 md:p-14">
-          <p><label>Perfil</label></p>
-          <input class="input-w-100" type="text" />
-          <p><label>Modulo</label></p>
-          <input class="input-w-100"  type="text" />
-          <p><label>Plaza</label></p>
-          <input class="input-w-100"  type="text" />
-          <button class="btn-crear">Crear</button>
-        </form>-->
       </div>
     </div>
   </div>
@@ -52,23 +53,22 @@ export default {
 };
 </script>
 <style scoped>
-.button{
-    text-align: center;
-    width: 100%;
-   
-    padding: 5px;
-    border-radius: 15px;
-    
+.button {
+  text-align: center;
+  width: 100%;
+
+  padding: 5px;
+  border-radius: 15px;
 }
-.btn-aceptar{
+.btn-aceptar {
   border-right: 4px solid #c7c7c7;
-  background-color:#73FF6E ;
-  color: #0F640C;
+  background-color: #73ff6e;
+  color: #0f640c;
 }
-.btn-cancelar{
+.btn-cancelar {
   border-left: 4px solid #c7c7c7;
-    background-color:#FF4545 ;
-  color: #9B0000;
+  background-color: #ff4545;
+  color: #9b0000;
 }
 .input-w-100 {
   width: 100%;

@@ -10,11 +10,19 @@
       </div>
       <div class="flex-none filter-style">
         Tramo:
-        <input type="text" />
+        <select class="flex-none filter-style color-black" name="select">
+          <option value="100" selected>opcion1</option>
+          <option value="200">opcion2</option>
+          <option value="300">opcion3</option>
+        </select>
       </div>
       <div class="flex-none filter-style">
         Plaza:
-        <input type="text" />
+        <select class="flex-none filter-style color-black" name="select">
+          <option value="100" selected>opcion1</option>
+          <option value="200">opcion2</option>
+          <option value="300">opcion3</option>
+        </select>
       </div>
       <div class="flex-none filter-style">
         Fecha:
@@ -46,10 +54,9 @@ export default {
           num_tag: "A01",
           fecha_envio: "2021/01/01 14:00:00",
           carril: "IMD1000000",
-          tipo_vehiculo:"Auto",
-          tarifa:"$65"
+          tipo_vehiculo: "Auto",
+          tarifa: "$65",
         },
-       
       ],
     };
   },

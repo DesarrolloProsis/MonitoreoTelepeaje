@@ -1,8 +1,8 @@
 <template>
   <Navbar></Navbar>
   <h1 class="title">Configuración</h1>
-  <div class="container mx-auto px-auto pb-20 pt-0 md:px-48 md:pt-10 ">
-    <div class="flex flex-wrap ">
+  <div class="container mx-auto px-auto pb-20 pt-0 md:px-48 md:pt-10">
+    <div class="flex flex-wrap">
       <ModuloConfiguracion
         v-for="(modulo, index) in modulos"
         :key="index"
@@ -22,7 +22,7 @@ export default {
   components: {
     Navbar,
     Footer,
-    ModuloConfiguracion
+    ModuloConfiguracion,
   },
   data() {
     return {
@@ -34,20 +34,19 @@ export default {
         },
         {
           img_src: "Configuracion/lista-perfiles.png",
-          nombre: "Lista de Perfiles",
-          ruta: "/configuracion/lista-perfiles",
+          nombre: "Administración de Perfiles",
+          ruta: "/configuracion/administracion-perfiles",
         },
-         {
+        {
           img_src: "Configuracion/registro-usuarios.png",
           nombre: "Registro de Usuarios",
           ruta: "/configuracion/registro-usuarios",
         },
-         {
+        {
           img_src: "Configuracion/lista-usuarios.png",
           nombre: "Lista de Usuarios",
           ruta: "/configuracion/lista-usuarios",
         },
-        
       ],
     };
   },

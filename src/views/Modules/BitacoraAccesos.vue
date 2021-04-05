@@ -5,7 +5,11 @@
     <div class="flex flex-wrap bg-blue">
       <div class="flex-none filter-style">
         Usuario:
-        <input type="text" />
+        <select class="flex-none filter-style color-black" name="select">
+          <option value="100" selected>opcion1</option>
+          <option value="200">opcion2</option>
+          <option value="300">opcion3</option>
+        </select>
       </div>
       <div class="flex-none filter-style">
         Fecha:
@@ -54,7 +58,7 @@ export default {
           fecha_inicio: "2021/01/01 14:00:00",
           fecha_fin: "2020/01/01 15:00:30",
         },
-         {
+        {
           usuario: "AMitra",
           fecha_inicio: "2021/01/01 14:00:00",
           fecha_fin: "2020/01/01 15:00:30",
@@ -64,7 +68,7 @@ export default {
           fecha_inicio: "2021/01/01 14:00:00",
           fecha_fin: "2020/01/01 15:00:30",
         },
-         {
+        {
           usuario: "AMitra",
           fecha_inicio: "2021/01/01 14:00:00",
           fecha_fin: "2020/01/01 15:00:30",

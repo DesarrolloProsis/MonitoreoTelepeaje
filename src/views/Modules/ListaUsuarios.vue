@@ -9,7 +9,10 @@
       </div>
       <div class="flex-none filter-style">
         Estatus:
-        <input type="text" />
+        <select class="flex-none filter-style color-black" name="select">
+          <option value="100" selected>Inactivo</option>
+          <option value="200">Activo</option>
+        </select>
       </div>
       <div class="flex-none filter-style">
         <button class="btn-buscar">Buscar</button>
@@ -39,19 +42,19 @@ export default {
           nombre: "Rodrigo",
           apellido: "Mendoza",
           rol: "Sistemas",
-          estatus:"Activo"
+          estatus: "Activo",
         },
         {
           nombre: "Rodrigo",
           apellido: "Mendoza",
           rol: "Sistemas",
-          estatus:"Inactivo"
+          estatus: "Inactivo",
         },
         {
           nombre: "Rodrigo",
           apellido: "Mendoza",
           rol: "Sistemas",
-          estatus:"Activo"
+          estatus: "Activo",
         },
       ],
     };
@@ -104,6 +107,12 @@ export default {
   border-radius: 5px;
 }
 .btn-buscar:focus {
+  outline: 0;
+}
+.color-black {
+  color: black !important;
+}
+.color-black:focus {
   outline: 0;
 }
 @media (max-width: 750px) {

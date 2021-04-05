@@ -3,12 +3,21 @@
     <div class="flex flex-wrap bg-blue">
       <div class="flex-none filter-style">
         Tramo:
-        <input type="text" />
+        <select class="flex-none filter-style color-black" name="select">
+          <option value="100" selected>opcion1</option>
+          <option value="200">opcion2</option>
+          <option value="300">opcion3</option>
+        </select>
       </div>
       <div class="flex-none filter-style">
         Plaza:
-        <input type="text" />
+        <select class="flex-none filter-style color-black" name="select">
+          <option value="100" selected>opcion1</option>
+          <option value="200">opcion2</option>
+          <option value="300">opcion3</option>
+        </select>
       </div>
+
       <div class="flex-none filter-style">
         <button class="btn-buscar">Buscar</button>
       </div>
@@ -65,6 +74,12 @@ export default {
 };
 </script>
 <style scoped>
+.color-black {
+  color: black !important;
+}
+.color-black:focus {
+  outline: 0;
+}
 .ta-center {
   text-align: center;
 }
@@ -131,7 +146,6 @@ export default {
 }
 @media (max-width: 769px) {
   .filter-style {
-    
     padding-top: 5px;
     padding-bottom: 15px;
   }

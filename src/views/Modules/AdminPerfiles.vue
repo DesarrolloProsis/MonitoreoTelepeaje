@@ -1,6 +1,6 @@
 <template>
   <Navbar></Navbar>
-  <h1 class="title">Lista de Perfiles Registrados</h1>
+  <h1 class="title">Administración de Perfiles</h1>
   <div class="container mx-auto px-0 pb-24 pt-4">
     <div class="flex flex-wrap bg-blue">
       <div class="flex-none filter-style">
@@ -41,11 +41,11 @@ export default {
         },
         {
           perfil: "Sistemas",
-           estatus: "Inactivo",
+          estatus: "Inactivo",
         },
         {
           perfil: "Administrador",
-           estatus: "Activo",
+          estatus: "Activo",
         },
       ],
     };
