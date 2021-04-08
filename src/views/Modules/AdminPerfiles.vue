@@ -38,14 +38,32 @@ export default {
         {
           perfil: "Administrador",
           estatus: "Activo",
+          modulos: [
+            {
+              nombre: "Bitacora Alarmas",
+              seleccionado: true
+            },
+            {
+              nombre: "Busqueda de Cruces",
+              seleccionado: false
+            },
+            
+          ],
         },
         {
           perfil: "Sistemas",
           estatus: "Inactivo",
-        },
-        {
-          perfil: "Administrador",
-          estatus: "Activo",
+           modulos: [
+            {
+              nombre: "Bitacora Alarmas",
+              seleccionado: true
+            },
+            {
+              nombre: "Busqueda de Cruces",
+              seleccionado: true
+            },
+            
+          ],
         },
       ],
     };

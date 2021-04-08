@@ -9,49 +9,137 @@
       </tr>
       <tr v-for="(perfiles, index) in dataPerfiles" :key="index">
         <td>{{ perfiles.perfil }}</td>
-        <td><button class="button btn-actualizar">Actualizar</button></td>
-        <td><button class="button btn-seleccionar">Seleccionar</button></td>
+        <td><button class="button btn-actualizar" @click="showModulos(perfiles)">Actualizar</button></td>
+        <td>
+          <button class="button btn-seleccionar" >
+            Seleccionar
+          </button>
+        </td>
         <td v-if="perfiles.estatus == 'Activo'">
           <button class="button btn-activo">Activo</button>
         </td>
-          <td v-else-if="perfiles.estatus == 'Inactivo'">
+        <td v-else-if="perfiles.estatus == 'Inactivo'">
           <button class="button btn-inactivo">Inactivo</button>
         </td>
       </tr>
     </table>
   </div>
+  
+  <br>
+ 
+  <!--Modal Actualizar-->
+  <div v-if="isModulosActive == true">
+    <div class="fixed z-10 inset-0 overflow-y-auto">
+      <div
+        class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0"
+      >
+        <div class="fixed inset-0 transition-opacity" aria-hidden="true">
+          <div class="absolute inset-0 bg-gray-500 opacity-10"></div>
+        </div>
+        <span
+          class="hidden sm:inline-block sm:align-middle sm:h-screen"
+          aria-hidden="true"
+          >&#8203;</span
+        >
+        <div
+          class="inline-block align-bottom bg-white text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="modal-headline"
+        >
+          <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+            <div class="sm:flex sm:items-start">
+              <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
+                <h3
+                  class="text-lg leading-6 font-medium text-gray-900"
+                  id="modal-headline"
+                >
+                  Carril: {{ perfilSelected.perfil }}
+                </h3>
+                <div class="mt-2">
+                  <p class="text-lg text-gray-500">
+                    Data: {{ perfilSelected }}
+                  </p>
+                  <p v-for="(modulos, index) in perfilSelected.modulos" :key="index" >
+                    {{modulos.nombre}} status: {{modulos.seleccionado}}
+                    <button @click="cambiarModulos(index, modulos.seleccionado)">cambiar</button>
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
+            <button
+              type="button"
+              class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-blue-600 text-base font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 sm:ml-3 sm:w-auto sm:text-sm"
+              @click="hideModulos()"
+            >
+              Guardar
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!--Fin Modal Actualizar-->
 </template>
 
 <script>
 export default {
   name: "TablaListaPerfiles",
+
   props: ["dataPerfiles"],
+  data() {
+    return {
+      // todos los perfiles
+      perfilesData : this.dataPerfiles,
+      isModulosActive: false,
+      //perfil individual
+      perfilSelected: {},
+    };
+  },
+  methods: {
+    showModulos: function (perfil) {
+      this.isModulosActive = true;
+      this.perfilSelected = perfil;
+    },
+    hideModulos: function () {
+      this.isModulosActive = false;
+       //AGREGAR CONSULTA API PARA ENVIAR DATOS ACTUALIZADOS YA SEA ENVIANDO TODOS LOS DATOS O SOLO PERFILSELECTED
+    },
+    cambiarModulos: function (index, estatus) {
+      this.perfilSelected.modulos[index].seleccionado = !estatus;
+      //console.log(this.perfilSelected.modulos[index].seleccionado)
+
+     
+    }
+  },
 };
 </script>
 <style scoped>
-.button{
-    padding: 5px 10px;
-    border-radius: 10px;
-    min-width: 100px;
+.button {
+  padding: 5px 10px;
+  border-radius: 10px;
+  min-width: 100px;
 }
-.button:focus{
-    outline: 0;
+.button:focus {
+  outline: 0;
 }
-.btn-actualizar{
-    background-color: #F7AC55;
-    color: #6E0400;
+.btn-actualizar {
+  background-color: #f7ac55;
+  color: #6e0400;
 }
-.btn-seleccionar{
-    background-color: #4DFFEA;
-    color:#025C51;
+.btn-seleccionar {
+  background-color: #4dffea;
+  color: #025c51;
 }
-.btn-activo{
-    background-color: #614DFF;
-    color:#000071;
+.btn-activo {
+  background-color: #614dff;
+  color: #000071;
 }
-.btn-inactivo{
-    background-color: #FF3131;
-    color:#6F0404;
+.btn-inactivo {
+  background-color: #ff3131;
+  color: #6f0404;
 }
 .responsive-table {
   padding-top: 20px;
@@ -66,7 +154,7 @@ export default {
 }
 .tftable th {
   font-size: 14px;
-  background-color: #2ED0E1;
+  background-color: #2ed0e1;
   border-width: 5px;
   padding: 8px;
   border-style: solid;
