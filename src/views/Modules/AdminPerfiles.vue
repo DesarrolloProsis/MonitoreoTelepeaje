@@ -9,7 +9,10 @@
       </div>
       <div class="flex-none filter-style">
         Estatus:
-        <input type="text" />
+        <select class="flex-none filter-style color-black" name="select">
+          <option value="100" selected>Inactivo</option>
+          <option value="200">Activo</option>
+        </select>
       </div>
       <div class="flex-none filter-style">
         <button class="btn-buscar">Buscar</button>
@@ -37,32 +40,54 @@ export default {
       perfiles: [
         {
           perfil: "Administrador",
-          estatus: "Activo",
+          estatus: true,
           modulos: [
             {
               nombre: "Bitacora Alarmas",
-              seleccionado: true
+              seleccionado: true,
             },
             {
               nombre: "Busqueda de Cruces",
-              seleccionado: false
+              seleccionado: false,
             },
-            
+            {
+              nombre: "Configuración",
+              seleccionado: false,
+            },
+          ],
+          plazas: [
+            {
+              nombre: "Mex-Ira",
+              seleccionado: true,
+            },
+            {
+              nombre: "Mex-Aca",
+              seleccionado: false,
+            }
           ],
         },
         {
           perfil: "Sistemas",
-          estatus: "Inactivo",
-           modulos: [
+          estatus: false,
+          modulos: [
             {
               nombre: "Bitacora Alarmas",
-              seleccionado: true
+              seleccionado: true,
             },
             {
               nombre: "Busqueda de Cruces",
-              seleccionado: true
+              seleccionado: true,
             },
-            
+          ],
+          plazas: [
+            {
+              nombre: "Mex-Ira",
+              seleccionado: true,
+            },
+            {
+              nombre: "Mex-Aca",
+              seleccionado: false,
+            }
           ],
         },
       ],
@@ -116,6 +141,12 @@ export default {
   border-radius: 5px;
 }
 .btn-buscar:focus {
+  outline: 0;
+}
+.color-black {
+  color: black !important;
+}
+.color-black:focus {
   outline: 0;
 }
 @media (max-width: 750px) {
