@@ -1,8 +1,10 @@
 <template>
-  <footer id="footer"><div id="left">Proyectos y sistemas informáticos S.A de C.V</div><div id="right">Version 1.0.0</div></footer>
+<footer id="footer">
+  <div id="left">Proyectos y sistemas informáticos S.A de C.V</div>
+  <div id="right">Version 1.0.0</div>
+</footer>
 </template>
 <script>
-
 export default {
   name: "Footer",
   props: {
@@ -20,15 +22,15 @@ export default {
   padding: 10px;
 }
 
-#left{
+#left {
   float: left;
   color: white;
   font-size: 15px;
 }
-#right{
+
+#right {
   float: right;
   color: white;
   font-size: 15px;
 }
-
 </style>
