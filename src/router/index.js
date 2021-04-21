@@ -15,81 +15,150 @@ import AdminPerfiles from "@/views/Modules/AdminPerfiles.vue";
 import ListaUsuarios from "@/views/Modules/ListaUsuarios.vue";
 import RegistroUsuarios from "@/views/Modules/RegistroUsuarios.vue";
 
-const routes = [
-  {
+function getCookie(cname) {
+  var name = cname + "=";
+  var decodedCookie = decodeURIComponent(document.cookie);
+  var ca = decodedCookie.split(';');
+  for (var i = 0; i < ca.length; i++) {
+    var c = ca[i];
+    while (c.charAt(0) == ' ') {
+      c = c.substring(1);
+    }
+    if (c.indexOf(name) == 0) {
+      return c.substring(name.length, c.length);
+    }
+  }
+  return "";
+}
+
+
+
+const routes = [{
     path: "/",
     name: "Login",
     component: Login,
+    meta: {
+      requiresCookie: false
+    },
+    beforeEnter: (to, from, next) => {
+      if (getCookie("TipoUser") != "") {
+        next("/inicio");
+      } else {
+        next();
+      }
+    }
   },
   {
     path: "/inicio",
     name: "Menu",
     component: Menu,
+    meta: {
+      requiresCookie: true
+    }
   },
   {
     path: "/inicio/monitoreo-servicios",
     name: "MonitoreoServicios",
     component: MonitoreoServicios,
+    meta: {
+      requiresCookie: true
+    }
   },
   {
     path: "/inicio/monitoreo-carriles",
     name: "MonitoreoCarriles",
     component: MonitoreoCarriles,
+    meta: {
+      requiresCookie: true
+    }
   },
   {
     path: "/inicio/monitoreo-carriles/bitacora-alarmas",
     name: "BitacoraAlarmas",
     component: BitacoraAlarmas,
+    meta: {
+      requiresCookie: true
+    }
   },
   {
     path: "/inicio/monitoreo-cruces",
     name: "MonitoreoCruces",
     component: MonitoreoCruces,
+    meta: {
+      requiresCookie: true
+    }
   },
   {
     path: "/inicio/envio-transacciones",
     name: "MonitoreoTransacciones",
     component: EnvioTransacciones,
+    meta: {
+      requiresCookie: true
+    }
   },
   {
     path: "/inicio/busqueda-cruces",
     name: "BusquedaCruces",
     component: BusquedaCruces,
+    meta: {
+      requiresCookie: true
+    }
   },
   {
     path: "/inicio/bitacora-accesos",
     name: "BitacoraAccesos",
     component: BitacoraAccesos,
+    meta: {
+      requiresCookie: true
+    }
   },
   {
     path: "/inicio/estatus-tags",
     name: "EstatusTags",
     component: EstatusTags,
+    meta: {
+      requiresCookie: true
+    }
   },
   {
     path: "/configuracion",
     name: "Configuracion",
     component: Configuracion,
+    meta: {
+      requiresCookie: true
+    }
   },
   {
     path: "/configuracion/perfil-usuario",
     name: "PerfilUsuario",
     component: PerfilUsuario,
+    meta: {
+      requiresCookie: true
+    }
   },
   {
     path: "/configuracion/administracion-perfiles",
     name: "AdministracionPerfilUsuario",
     component: AdminPerfiles,
+    meta: {
+      requiresCookie: true
+    }
   },
   {
     path: "/configuracion/lista-usuarios",
     name: "ListaUsuarios",
     component: ListaUsuarios,
+    meta: {
+      requiresCookie: true
+    }
   },
   {
     path: "/configuracion/registro-usuarios",
     name: "RegistroUsuarios",
     component: RegistroUsuarios,
+    meta: {
+      requiresCookie: true
+    }
   },
 ];
 
@@ -98,5 +167,16 @@ const router = createRouter({
   routes,
 });
 
-export default router;
+router.beforeEach((to, _from, next) => {
+  if (to.matched.some(record => record.meta.requiresCookie)) {
+    if (getCookie("TipoUser") != "") {
+      next();
+    } else {
+      next('/')
+    }
+  } else {
+    next();
+  }
+})
 
+export default router;

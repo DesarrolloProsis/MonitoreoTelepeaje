@@ -1,46 +1,37 @@
 <template>
-  <div class="login">
-    <Header></Header>
-    <div class="flex h-screen min-700">
-      <div id="login-form" class="flex flex-1 justify-center items-center h-screen min-700-imp">
-        <div class="container mx-auto">
-          <p id="login-title">Monitoreo de Pagos Electrónicos</p>
-          <img class="img-centered" src="~@/assets/Login/top-user-logo.png" />
-          <form class="bg-login-module" style="max-width: 500px; margin: auto">
-            <div class="input-container">
-              <img class="icon" src="~@/assets/Login/user.png" />
-              <input
-                class="input-field"
-                type="text"
-                placeholder="Username"
-                name="usrnm"
-              />
-            </div>
-            <div class="input-container">
-              <img class="icon" src="~@/assets/Login/pass.png" />
-              <!-- <i class="fa fa-key icon"></i>-->
-              <input
-                class="input-field"
-                type="password"
-                placeholder="Password"
-                name="psw"
-              />
-            </div>
-              <router-link to="/inicio" tag="div">
-            <button type="submit" class="btn">Iniciar Sesión</button>
-              </router-link>
-          </form>
-        </div>
+<div class="login">
+  <Header></Header>
+  <div class="flex h-screen min-700">
+    <div id="login-form" class="flex flex-1 justify-center items-center h-screen min-700-imp">
+      <div class="container mx-auto">
+        <p id="login-title">Monitoreo de Pagos Electrónicos</p>
+        <img class="img-centered" src="~@/assets/Login/top-user-logo.png" />
+        <form class="bg-login-module" style="max-width: 500px; margin: auto">
+          <div class="input-container">
+            <img class="icon" src="~@/assets/Login/user.png" />
+            <input class="input-field" type="text" placeholder="Username" name="usrnm" />
+          </div>
+          <div class="input-container">
+            <img class="icon" src="~@/assets/Login/pass.png" />
+            <!-- <i class="fa fa-key icon"></i>-->
+            <input class="input-field" type="password" placeholder="Password" name="psw" />
+          </div>
+          <router-link to="/inicio" tag="div">
+            <button type="submit" class="btn" @click="login()">Iniciar Sesión</button>
+          </router-link>
+        </form>
       </div>
-      <div id="login-bg" class="flex-1 hidden md:block"></div>
     </div>
-    <Footer></Footer>
+    <div id="login-bg" class="flex-1 hidden md:block"></div>
   </div>
+  <Footer></Footer>
+</div>
 </template>
 
 <script>
 import Footer from "../components/Footer-login.vue";
 import Header from "../components/Header-login.vue";
+//import axios from "axios";
 export default {
   name: "HelloWorld",
   components: {
@@ -50,36 +41,56 @@ export default {
   props: {
     msg: String,
   },
+  methods: {
+    login: function() {
+      console.log("HI");
+      /*axios.get("https://prosisdev.sytes.net:86/api/LogIn").then((result)=>{
+        console.log(result);
+      })*/
+      let d = new Date();
+      let dias = 365;
+      d.setTime(d.getTime() + dias * 24 * 60 * 60 * 1000);
+      let expires = "expires=" + d.toUTCString();
+      document.cookie =
+        "TipoUser=" + "Admin" + ";" + expires + "SameSite=None; Secure;";
+    }
+  }
 };
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-.min-700{
+.min-700 {
   min-height: 700px;
 }
-.min-700-imp{
+
+.min-700-imp {
   min-height: 700px !important;
 }
+
 #login-title {
   text-align: center;
   font-size: 28px;
 }
-@media (max-width:1024px){
+
+@media (max-width:1024px) {
   #login-title {
-  text-align: center;
-  font-size: 23px;
+    text-align: center;
+    font-size: 23px;
+  }
 }
-}
+
 #login-bg {
   /*background-color: blue;*/
   background-image: url("~@/assets/Login/bg-login.png");
   background-size: cover;
 }
+
 #login-form {
   background-color: #ddd8d8;
   min-height: 100vh;
 }
+
 .bg-login-module {
   background-color: #eafff5;
   padding: 100px 50px;
@@ -87,7 +98,8 @@ export default {
 }
 
 .input-container {
-  display: -ms-flexbox; /* IE10 */
+  display: -ms-flexbox;
+  /* IE10 */
   display: flex;
   width: 100%;
   margin-bottom: 15px;
@@ -119,9 +131,11 @@ export default {
   opacity: 0.9;
   border-radius: 25px;
 }
-.btn:focus{
-outline: 0;
+
+.btn:focus {
+  outline: 0;
 }
+
 .btn:hover {
   opacity: 1;
 }
@@ -132,12 +146,13 @@ outline: 0;
   width: 130px;
   transform: translateY(50px);
 }
-@media (max-width:1024px){
+
+@media (max-width:1024px) {
   .img-centered {
-  display: block;
-  margin: auto;
-  width: 110px;
-  transform: translateY(50px);
-}
+    display: block;
+    margin: auto;
+    width: 110px;
+    transform: translateY(50px);
+  }
 }
 </style>
