@@ -24,9 +24,4 @@ export default {
     width: 180px;
 }
 
-
-
-
-
-
 </style>

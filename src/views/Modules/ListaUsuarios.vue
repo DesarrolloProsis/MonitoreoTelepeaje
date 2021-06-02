@@ -29,6 +29,7 @@
 import TablaListaUsuarios from "../../components/Tabla-listausuarios";
 import Navbar from "../../components/Navbar.vue";
 import Footer from "../../components/Footer-login";
+import axios from "axios";
 export default {
   components: {
     TablaListaUsuarios,
@@ -37,7 +38,7 @@ export default {
   },
   data() {
     return {
-      perfiles: [
+      /*perfiles: [
         {
           nombre: "Rodrigo",
           apellido: "Mendoza",
@@ -56,9 +57,47 @@ export default {
           rol: "Sistemas",
           estatus: false,
         },
-      ],
+      ],*/
+      perfiles:[]
     };
   },
+  beforeMount() {
+    function getCookie(cname) {
+      var name = cname + "=";
+      var decodedCookie = decodeURIComponent(document.cookie);
+      var ca = decodedCookie.split(';');
+      for (var i = 0; i < ca.length; i++) {
+        var c = ca[i];
+        while (c.charAt(0) == ' ') {
+          c = c.substring(1);
+        }
+        if (c.indexOf(name) == 0) {
+          return c.substring(name.length, c.length);
+        }
+      }
+      return "";
+    }
+    // Get token config
+    if(getCookie("Token")){
+      let config = {
+        headers: {
+          'Authorization': 'Bearer ' + getCookie("Token")
+        }
+      }
+      axios.get("http://prosisdev.sytes.net:86/api/Usuario?Page=1&Rows=5", config)
+      .then((result)=>{
+        result.data.forEach(e =>{
+          let obj = {
+            nombre: e.Nombre,
+            apellido: e.ApellidoPaterno,
+            rol: e.Rol,
+            estatus: e.Estatus,
+          }
+          this.perfiles.push(obj)
+        })
+      })
+    }
+  }
 };
 </script>
 <style scoped>
@@ -134,4 +173,3 @@ export default {
   }
 }
 </style>
-

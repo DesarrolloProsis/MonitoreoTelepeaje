@@ -7,16 +7,19 @@
         <p id="login-title">Monitoreo de Pagos Electrónicos</p>
         <img class="img-centered" src="~@/assets/Login/top-user-logo.png" />
         <form class="bg-login-module" style="max-width: 500px; margin: auto">
+          <div class="error" v-if="mensaje != ''">
+              {{mensaje}}
+          </div>
           <div class="input-container">
             <img class="icon" src="~@/assets/Login/user.png" />
-            <input class="input-field" type="text" placeholder="Username" name="usrnm" />
+            <input id="username" class="input-field" type="text" placeholder="Username" />
           </div>
           <div class="input-container">
             <img class="icon" src="~@/assets/Login/pass.png" />
             <!-- <i class="fa fa-key icon"></i>-->
-            <input class="input-field" type="password" placeholder="Password" name="psw" />
+            <input id="password" class="input-field" type="password" placeholder="Password" />
           </div>
-          <router-link to="/inicio" tag="div">
+          <router-link to="/inicio">
             <button type="submit" class="btn" @click="login()">Iniciar Sesión</button>
           </router-link>
         </form>
@@ -31,7 +34,7 @@
 <script>
 import Footer from "../components/Footer-login.vue";
 import Header from "../components/Header-login.vue";
-//import axios from "axios";
+import axios from "axios";
 export default {
   name: "HelloWorld",
   components: {
@@ -41,25 +44,56 @@ export default {
   props: {
     msg: String,
   },
+  data(){
+    return{
+      user:"",
+      pass:"",
+      mensaje:""
+    }
+  },
   methods: {
     login: function() {
-      console.log("HI");
-      /*axios.get("https://prosisdev.sytes.net:86/api/LogIn").then((result)=>{
-        console.log(result);
-      })*/
-      let d = new Date();
-      let dias = 365;
-      d.setTime(d.getTime() + dias * 24 * 60 * 60 * 1000);
-      let expires = "expires=" + d.toUTCString();
-      document.cookie =
-        "TipoUser=" + "Admin" + ";" + expires + "SameSite=None; Secure;";
-    }
+      this.user = document.getElementById("username").value;
+      this.pass = document.getElementById("password").value;
+      this.mensaje = ""
+      const data = {
+        "Usuario": this.user,
+        "Password": this.pass
+      }
+      if(data["Usuario"] != "" &&  data["Password"] != ""){
+        axios.post("http://prosisdev.sytes.net:86/api/Login", data)
+        .then((result) => {
+          console.log(result.data);
+          // Set Cookie
+          let d = new Date();
+          let dias = 365;
+          d.setTime(d.getTime() + dias * 24 * 60 * 60 * 1000);
+          let expires = "expires=" + d.toUTCString();
+          document.cookie = "TipoUser=" + result.data['rol'] + ";" + expires + "SameSite=None; Secure;";
+          document.cookie = "Token=" + result.data['bearer'] + ";" + expires + "SameSite=None; Secure;";
+          this.mensaje =""
+          this.$router.push('inicio')
+        })
+        .catch(()=>{
+          this.mensaje="Error, Verifíca que tus datos sean correctos."
+        })
+      }else{
+        this.mensaje = "Escribe tu Usuario y Contraseña."
+        console.log("NO hay datos para iniciar sesion")
+      }
+    },
   }
 };
 </script>
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
+.error{
+  background-color: #f5b7b1;
+  padding: 5px;
+  border-radius: 5px;
+  margin-bottom: 10px;
+  color:  #c0392b ;
+}
 .min-700 {
   min-height: 700px;
 }

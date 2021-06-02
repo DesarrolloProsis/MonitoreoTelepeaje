@@ -1,4 +1,5 @@
 import { createRouter, createWebHistory } from "vue-router";
+import axios from "axios";
 import Login from "@/views/Login.vue";
 import Menu from "@/views/Menu.vue";
 import MonitoreoServicios from "@/views/Modules/MonitoreoServicios.vue";
@@ -41,9 +42,29 @@ const routes = [{
       requiresCookie: false
     },
     beforeEnter: (to, from, next) => {
-      if (getCookie("TipoUser") != "") {
-        next("/inicio");
+      if (getCookie("TipoUser") != "" && getCookie("Token")) {
+        let config = {
+          headers: {
+            'Authorization': 'Bearer ' + getCookie("Token")
+          }
+        }
+        axios.get("http://prosisdev.sytes.net:86/api/Test", config)
+          .then((result) => {
+            console.log("Validando Token...")
+            console.log(result)
+            next("/inicio")
+          })
+          .catch((error) => {
+            //TODO: Borrar las cookies para redirigir al login
+            document.cookie = "TipoUser=; expires=Thu, 01 Jan 1970 00:00:00 UTC;" + "SameSite=None; Secure;";
+            document.cookie = "Token=; expires=Thu, 01 Jan 1970 00:00:00 UTC;" + "SameSite=None; Secure;";
+            console.log("Error Validando Token...")
+            console.log(error)
+            next()
+          })
       } else {
+        document.cookie = "TipoUser=; expires=Thu, 01 Jan 1970 00:00:00 UTC;" + "SameSite=None; Secure;";
+        document.cookie = "Token=; expires=Thu, 01 Jan 1970 00:00:00 UTC;" + "SameSite=None; Secure;";
         next();
       }
     }
@@ -169,9 +190,29 @@ const router = createRouter({
 
 router.beforeEach((to, _from, next) => {
   if (to.matched.some(record => record.meta.requiresCookie)) {
-    if (getCookie("TipoUser") != "") {
-      next();
+    if (getCookie("TipoUser") != "" && getCookie("Token") != "") {
+      let config = {
+        headers: {
+          'Authorization': 'Bearer ' + getCookie("Token")
+        }
+      }
+      axios.get("http://prosisdev.sytes.net:86/api/Test", config)
+        .then((result) => {
+          console.log("Validando Token...")
+          console.log(result)
+          next();
+        })
+        .catch((error) => {
+          //TODO: Borrar las cookies para redirigir al login
+          document.cookie = "TipoUser=; expires=Thu, 01 Jan 1970 00:00:00 UTC;" + "SameSite=None; Secure;";
+          document.cookie = "Token=; expires=Thu, 01 Jan 1970 00:00:00 UTC;" + "SameSite=None; Secure;";
+          console.log("Error Validando Token...")
+          console.log(error)
+          next('/')
+        })
     } else {
+      document.cookie = "TipoUser=; expires=Thu, 01 Jan 1970 00:00:00 UTC;" + "SameSite=None; Secure;";
+      document.cookie = "Token=; expires=Thu, 01 Jan 1970 00:00:00 UTC;" + "SameSite=None; Secure;";
       next('/')
     }
   } else {
