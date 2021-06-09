@@ -103,7 +103,7 @@ export default {
           }
         }
         if(data["password"] != "" &&  data["nombre"] != "" && data["apellidoPa"] != "" && data["apellidoMa"] != "" && data["rol"] != ""){
-          axios.post("http://prosisdev.sytes.net:86/api/Usuario",data,config)
+          axios.post("http://prosisdev.sytes.net:84/api/Usuario",data,config)
           .then((result)=>{
               console.log(result)
               this.errorMessage = ""

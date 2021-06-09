@@ -48,7 +48,7 @@ const routes = [{
             'Authorization': 'Bearer ' + getCookie("Token")
           }
         }
-        axios.get("http://prosisdev.sytes.net:86/api/Test", config)
+        axios.get("http://prosisdev.sytes.net:84/api/Test", config)
           .then((result) => {
             console.log("Validando Token...")
             console.log(result)
@@ -196,7 +196,7 @@ router.beforeEach((to, _from, next) => {
           'Authorization': 'Bearer ' + getCookie("Token")
         }
       }
-      axios.get("http://prosisdev.sytes.net:86/api/Test", config)
+      axios.get("http://prosisdev.sytes.net:84/api/Test", config)
         .then((result) => {
           console.log("Validando Token...")
           console.log(result)

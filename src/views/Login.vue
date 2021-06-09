@@ -61,7 +61,7 @@ export default {
         "Password": this.pass
       }
       if(data["Usuario"] != "" &&  data["Password"] != ""){
-        axios.post("http://prosisdev.sytes.net:86/api/Login", data)
+        axios.post("http://prosisdev.sytes.net:84/api/Login", data)
         .then((result) => {
           console.log(result.data);
           // Set Cookie
