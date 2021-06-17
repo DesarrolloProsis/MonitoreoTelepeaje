@@ -4,7 +4,7 @@
   <h1 class="title-center pb-4">Búsqueda de Cruces en Plaza</h1>
   <div class="flex flex-wrap bg-blue">
     <div class="flex-none filter-style-2">
-      <input class="inp-icon" type="text" />
+      <input class="inp-icon" type="text" id="tag"/>
     </div>
     <div class="flex-none filter-style">
       Tramo:
@@ -16,19 +16,18 @@
     </div>
     <div class="flex-none filter-style">
       Plaza:
-      <select class="flex-none filter-style color-black" name="select">
-        <option value="100" selected>opcion1</option>
-        <option value="200">opcion2</option>
-        <option value="300">opcion3</option>
+      <select class="flex-none filter-style color-black" name="select" id="selectorPlaza">
+        <option value="1" selected>Todas</option>
+        <option v-for="(plaza, key) in plazas" :value="key + 1" :key="key">{{plaza.nombre}}</option>
       </select>
     </div>
     <div class="flex-none filter-style">
       Fecha:
-      <input type="date" />
+      <input type="date" id="fecha"/>
     </div>
 
     <div class="flex-none filter-style">
-      <button class="btn-buscar">Buscar</button>
+      <button class="btn-buscar" @click="buscar()">Buscar</button>
     </div>
     <div class="flex-1">
       <button class="btn-carriles ml-right">Descargar Excel</button>
@@ -40,6 +39,7 @@
   <button v-if="paginaActual > 1" class="button-pagination" @click="left()">Anterior</button>
   <button v-if="paginaActual < paginas" class="button-pagination" @click="right()">Siguiente</button>
   <p class="desc-paginacion">Página {{paginaActual}} de {{paginas}}</p>
+  <p>{{data}}</p>
 </div>
 <Footer></Footer>
 </template>
@@ -60,7 +60,18 @@ export default {
       cruces: [],
       paginas: 1,
       paginaActual: 1,
-      token: ""
+      token: "",
+      plazas:[],
+      data: {
+        "pagenumber": 1,
+        "rowsofpage": 5,
+        "tagfilter": null,
+        "carril": null,
+        "plaza": null,
+        "fechainicial": null,
+        "fechafinal": null,
+        "plazas": null
+      }
     };
   },
   mounted() {
@@ -86,54 +97,51 @@ export default {
           'Authorization': 'Bearer ' + getCookie("Token")
         }
       }
-      let data = {
-        "pagenumber": 1,
-        "rowsofpage": 5,
-        "tagfilter": null,
-        "carril": null,
-        "plaza": null,
-        "fechainicial": null,
-        "fechafinal": null
-      }
-      axios.post("http://prosisdev.sytes.net:84/api/Transacciones", data, config)
+
+      axios.get("http://prosisdev.sytes.net:84/api/Plazas", config)
         .then((res) => {
-          res.data.forEach(e => {
-            let obj = {
-              plaza: e.plaza,
-              num_tag: e.noTag,
-              fecha: e.fecha,
-              carril: e.carril,
-              tipo_vehiculo: e.tipoVehiculo,
-              tarifa: e.tarifa,
-            }
-            this.cruces.push(obj)
-          })
+          this.plazas = res.data;
+          this.data["plazas"] = res.data
+          console.log("State Data:")
+          console.log(this.data)
+          return axios.post("http://prosisdev.sytes.net:84/api/Transacciones", this.data, config)
+            .then((res) => {
+              res.data.forEach(e => {
+                let obj = {
+                  plaza: e.plaza,
+                  num_tag: e.noTag,
+                  fecha: e.fecha,
+                  carril: e.carril,
+                  tipo_vehiculo: e.tipoVehiculo,
+                  tarifa: e.tarifa,
+                }
+                this.cruces.push(obj)
+              })
+              return axios.post("http://prosisdev.sytes.net:84/api/Transacciones/" + this.data["rowsofpage"], this.data["plazas"], config)
+                .then((res) => {
+                  console.log(res.data)
+                  this.paginas = res.data
+                })
+            })
         })
-      // Obtener num de paginas
-      axios.get("http://prosisdev.sytes.net:84/api/Transacciones/5", config)
-        .then((res) => {
-          //console.log(res.data)
-          this.paginas = res.data
-        })
+
+
     }
   },
   methods: {
-    pedirDatos: function(pagina) {
+    pedirDatos: function(pagina, tag=null , plaza = null, fecha = null) {
       let config = {
         headers: {
           'Authorization': 'Bearer ' + this.token
         }
       }
-      let data = {
-        "pagenumber": pagina,
-        "rowsofpage": 5,
-        "tagfilter": null,
-        "carril": null,
-        "plaza": null,
-        "fechainicial": null,
-        "fechafinal": null
-      }
-      axios.post("http://prosisdev.sytes.net:84/api/Transacciones", data, config)
+
+      this.data["pagenumber"] = pagina
+      this.data["tagfilter"] = tag
+      this.data["plaza"] = plaza
+      this.data["fechainicial"]  = fecha
+
+      axios.post("http://prosisdev.sytes.net:84/api/Transacciones", this.data, config)
         .then(res => {
           this.cruces = []
           res.data.forEach(e => {
@@ -166,16 +174,28 @@ export default {
       } else {
         console.log("No se puede cambiar la pagina")
       }
-    
+
+    },
+    buscar: function() {
+        let plaza = document.getElementById("selectorPlaza").value;
+        let fecha = document.getElementById("fecha").value;
+        let tag = document.getElementById("tag").value;
+        //this.paginaActual = 1;
+        console.log("Plaza:" + plaza)
+        console.log("Fecha:" + fecha)
+        console.log("Tag:" + tag)
+
     }
+
   }
 };
 </script>
 <style scoped>
-.desc-paginacion{
+.desc-paginacion {
   padding-top: 5px;
   font-size: 12px;
 }
+
 .button-pagination {
   padding: 2px;
   border: 1px solid black;
