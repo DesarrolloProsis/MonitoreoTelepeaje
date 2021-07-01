@@ -53,6 +53,8 @@ export default {
   },
   methods: {
     login: function() {
+      document.cookie = "TipoUser=; expires=Thu, 01 Jan 1970 00:00:00 UTC;" + "SameSite=None; Secure;";
+      document.cookie = "Token=; expires=Thu, 01 Jan 1970 00:00:00 UTC;" + "SameSite=None; Secure;";
       this.user = document.getElementById("username").value;
       this.pass = document.getElementById("password").value;
       this.mensaje = ""
@@ -61,6 +63,7 @@ export default {
         "Password": this.pass
       }
       if(data["Usuario"] != "" &&  data["Password"] != ""){
+        console.log("Cargando...")
         axios.post("http://prosisdev.sytes.net:84/api/Login", data)
         .then((result) => {
           console.log(result.data);
@@ -75,7 +78,7 @@ export default {
           this.$router.push('inicio')
         })
         .catch(()=>{
-          this.mensaje="Error, Verifíca que tus datos sean correctos."
+          this.mensaje="Error, verifica tus datos o intentalo más tarde."
         })
       }else{
         this.mensaje = "Escribe tu Usuario y Contraseña."
