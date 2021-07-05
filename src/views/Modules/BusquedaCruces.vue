@@ -30,8 +30,7 @@
   <div class="loading" v-else>Cargando...</div>
   <button v-if="paginaActual > 1" class="button-pagination" @click="left()">Anterior</button>
   <button v-if="paginaActual < paginas" class="button-pagination" @click="right()">Siguiente</button>
-  <p class="desc-paginacion">Página {{paginaActual}} de {{paginas}}</p>
-  <p>{{data}}</p>
+  <p v-if ="isLoading == false" class="desc-paginacion">Página {{paginaActual}} de {{paginas}}</p>
 </div>
 <Footer></Footer>
 </template>
@@ -96,8 +95,6 @@ export default {
           this.isLoading = false;
           this.plazas = res.data;
           this.data["plazas"] = res.data
-          console.log("State Data:")
-          console.log(this.data)
           return axios.post("http://prosisdev.sytes.net:84/api/Transacciones", this.data, config)
             .then((res) => {
               console.log(res.data)
@@ -142,7 +139,6 @@ export default {
         .then((res) => {
           this.cruces = []
           this.paginas = res.data.numberOfPages
-          console.log(res.data)
           this.paginas = res.data.numberOfPages
           res.data.transacciones.forEach(e => {
             let obj = {
@@ -190,13 +186,7 @@ export default {
 
       this.paginaActual = 1;
       this.pedirDatos(this.paginaActual, tag, plaza_select, fecha)
-      console.log("Filtros de busqueda")
-      console.log(plaza_select)
-      console.log(fecha)
-      console.log(tag)
 
-      //TODO: Solucionar que a la funcion pedirDatos lleguen los null en caso de no estar lleno el campo
-      //TODO: solucionar obtener cantidad de páginas en caso de hacer una busqueda con filtro
     }
 
   }

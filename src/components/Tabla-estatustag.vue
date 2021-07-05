@@ -3,6 +3,7 @@
     <table class="tftable">
       <tr>
         <th>Tag</th>
+        <th>Plaza</th>
         <th>Estatus</th>
         <th>Saldo</th>
         <th>Tipo Tag</th>
@@ -10,6 +11,7 @@
       </tr>
       <tr v-for="(tags, index) in datatag" :key="index">
         <td>{{ tags.tag }}</td>
+        <td>{{tags.plaza}}</td>
         <td>{{ tags.estatus }}</td>
         <td>{{ tags.saldo }}</td>
         <td>{{ tags.tipo_tag }}</td>
