@@ -1,7 +1,9 @@
 <template>
   <div class="flex justify-between bg-nav">
     <div class="flex-none">
+      <router-link to="/inicio" tag="div">
       <img class="logo" src="~@/assets/prosissinfondo.png"><img>
+      </router-link>
     </div>
     <div class="flex-none">
       <router-link to="/" tag="div">
