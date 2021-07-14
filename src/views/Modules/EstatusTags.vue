@@ -88,7 +88,8 @@ export default {
         plaza_select = [this.plazas[plaza - 1]]
       }
       if(tag != ""){
-        axios.post(`http://prosisdev.sytes.net:84/api/Tags/${tag}`, plaza_select, config)
+        console.log("Buscando...")
+        axios.post(`http://prosisdev.sytes.net:84/api/Tags/${tag}`, plaza_select, config)      
           .then((res) =>{
             this.tags = []
             res.data.forEach(e =>{
