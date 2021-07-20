@@ -6,15 +6,13 @@
         <th id="left-border">Plaza</th>
         <th>Última Actualización Proveedor</th>
         <th>Última Actualización Carriles</th>
-        <th >Último Cruce en Plaza</th>
-        <th id="right-border">Último Cruce Enviado</th>
+        <th id="right-border">Último Lstabint</th>
       </tr>
       <tr v-for="(lista, index) in dataListas" :key="index">
         <td>{{lista.plaza}}</td>
-        <td>{{lista.actualizacionProveedor}}</td>
-        <td>{{lista.ultactCarriles}}</td>
-        <td>{{lista.ultcrucePlaza}}</td>
-        <td>{{lista.ultcruceEnviado}} </td>
+        <td :class="`${lista.actualizacionProveedor == null ? 'sinconexion' : ''}`">{{lista.actualizacionProveedor == null ? "Sin conexión":lista.actualizacionProveedor}}</td>
+         <td :class="`${lista.ultactCarriles == null ? 'sinconexion' : ''}`">{{lista.ultactCarriles == null ? "Sin conexión":lista.ultactCarriles}}</td>
+          <td :class="`${lista.ultimoLstabint == null ? 'sinconexion' : ''}`">{{lista.ultimoLstabint == null ? "Sin conexión":lista.ultimoLstabint}}</td>
       </tr>
     </table>
   </div>
@@ -75,5 +73,9 @@ export default {
 }
 .tftable tr:hover {
   background-color: #ffffff;
+}
+.sinconexion{
+  
+  background-color:#F1948A !important;
 }
 </style>

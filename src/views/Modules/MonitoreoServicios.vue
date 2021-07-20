@@ -75,8 +75,8 @@ export default {
               plaza: e.plaza,
               actualizacionProveedor: e.ultimaActualizacionCarriles,
               ultactCarriles: e.ultimaActualizacionProveedor,
-              ultcrucePlaza: e.ultimoLstabint,
-              ultcruceEnviado: "2021/01/29 15:59:00",
+              ultimoLstabint: e.ultimoLstabint,
+            
             }
             this.listas.push(obj)
           })
@@ -112,8 +112,7 @@ export default {
             plaza: e.plaza,
             actualizacionProveedor: e.ultimaActualizacionCarriles,
             ultactCarriles: e.ultimaActualizacionProveedor,
-            ultcrucePlaza: e.ultimoLstabint,
-            ultcruceEnviado: "2021/01/29 15:59:00",
+            ultimoLstabint: e.ultimoLstabint,
           }
           this.listas.push(obj)
         })

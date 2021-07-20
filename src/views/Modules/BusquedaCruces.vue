@@ -1,38 +1,72 @@
 <template>
-<Navbar></Navbar>
-<div class="container mx-auto px-0 pb-100">
-  <h1 class="title-center pb-4">Búsqueda de Cruces en Plaza</h1>
-  <div class="flex flex-wrap bg-blue">
-    <div class="flex-none filter-style-2">
-      <input class="inp-icon" type="text" id="tag" />
-    </div>
-    <div class="flex-none filter-style">
-      Plaza:
-      <select class="flex-none filter-style color-black" name="select" id="selectorPlaza">
-        <option value="0" selected>Todas</option>
-        <option v-for="(plaza, key) in plazas" :value="key + 1" :key="key">{{plaza.nombre}}</option>
-      </select>
-    </div>
-    <div class="flex-none filter-style">
-      Fecha:
-      <input type="date" id="fecha" />
+  <Navbar></Navbar>
+  <div class="container mx-auto px-0 pb-100">
+    <h1 class="title-center pb-4">Búsqueda de Cruces en Plaza</h1>
+    <div class="flex flex-wrap bg-blue">
+      <div class="flex-none filter-style-2">
+        <input class="inp-icon" type="text" id="tag" />
+      </div>
+      <div class="flex-none filter-style">
+        Plaza:
+        <select
+          class="flex-none filter-style color-black"
+          name="select"
+          id="selectorPlaza"
+        >
+          <option value="0" selected>Todas</option>
+          <option v-for="(plaza, key) in plazas" :value="key + 1" :key="key">
+            {{ plaza.nombre }}
+          </option>
+        </select>
+      </div>
+      <div class="flex-none filter-style">
+        Fecha:
+        <input type="date" id="fecha" />
+      </div>
+
+      <div class="flex-none filter-style">
+        <button class="btn-buscar" @click="buscar()">Buscar</button>
+      </div>
+      <div class="flex-1">
+        <button
+          class="btn-carriles ml-right"
+          @click="descargarArchivo('excel')"
+        >
+          Descargar Excel
+        </button>
+      </div>
+      <div class="flex">
+        <button class="btn-carriles ml-right" @click="descargarArchivo('csv')">
+          Descargar CSV
+        </button>
+      </div>
+      <div class="flex">
+        <button class="btn-carriles ml-right" @click="descargarArchivo('txt')">
+          Descargar Txt
+        </button>
+      </div>
     </div>
 
-    <div class="flex-none filter-style">
-      <button class="btn-buscar" @click="buscar()">Buscar</button>
-    </div>
-    <div class="flex-1">
-      <button class="btn-carriles ml-right">Descargar Excel</button>
-    </div>
+    <TablaBusquedaCruces
+      v-if="isLoading == false"
+      :dataCruces="cruces"
+    ></TablaBusquedaCruces>
+    <div class="loading" v-else>Cargando...</div>
+    <button v-if="paginaActual > 1" class="button-pagination" @click="left()">
+      Anterior
+    </button>
+    <button
+      v-if="paginaActual < paginas"
+      class="button-pagination"
+      @click="right()"
+    >
+      Siguiente
+    </button>
+    <p v-if="isLoading == false" class="desc-paginacion">
+      Página {{ paginaActual }} de {{ paginas }}
+    </p>
   </div>
-
-  <TablaBusquedaCruces v-if ="isLoading == false" :dataCruces="cruces"></TablaBusquedaCruces>
-  <div class="loading" v-else>Cargando...</div>
-  <button v-if="paginaActual > 1" class="button-pagination" @click="left()">Anterior</button>
-  <button v-if="paginaActual < paginas" class="button-pagination" @click="right()">Siguiente</button>
-  <p v-if ="isLoading == false" class="desc-paginacion">Página {{paginaActual}} de {{paginas}}</p>
-</div>
-<Footer></Footer>
+  <Footer></Footer>
 </template>
 <script>
 import TablaBusquedaCruces from "../../components/Tabla-busquedacruces.vue";
@@ -44,7 +78,7 @@ export default {
   components: {
     TablaBusquedaCruces,
     Navbar,
-    Footer
+    Footer,
   },
   data() {
     return {
@@ -55,25 +89,25 @@ export default {
       token: "",
       plazas: [],
       data: {
-        "pagenumber": 1,
-        "rowsofpage": 7,
-        "tagfilter": null,
-        "carril": null,
-        "plaza": null,
-        "fechainicial": null,
-        "fechafinal": null,
-        "plazas": null
-      }
+        pagenumber: 1,
+        rowsofpage: 7,
+        tagfilter: null,
+        carril: null,
+        plaza: null,
+        fechainicial: null,
+        fechafinal: null,
+        plazas: null,
+      },
     };
   },
   mounted() {
     function getCookie(cname) {
       var name = cname + "=";
       var decodedCookie = decodeURIComponent(document.cookie);
-      var ca = decodedCookie.split(';');
+      var ca = decodedCookie.split(";");
       for (var i = 0; i < ca.length; i++) {
         var c = ca[i];
-        while (c.charAt(0) == ' ') {
+        while (c.charAt(0) == " ") {
           c = c.substring(1);
         }
         if (c.indexOf(name) == 0) {
@@ -83,23 +117,29 @@ export default {
       return "";
     }
     if (getCookie("TipoUser") != "" && getCookie("Token")) {
-      this.token = getCookie("Token")
+      this.token = getCookie("Token");
       let config = {
         headers: {
-          'Authorization': 'Bearer ' + getCookie("Token")
-        }
-      }
+          Authorization: "Bearer " + getCookie("Token"),
+        },
+      };
 
-      axios.get("http://prosisdev.sytes.net:84/api/Plazas", config)
+      axios
+        .get("http://prosisdev.sytes.net:84/api/Plazas", config)
         .then((res) => {
           this.isLoading = false;
           this.plazas = res.data;
-          this.data["plazas"] = res.data
-          return axios.post("http://prosisdev.sytes.net:84/api/Transacciones", this.data, config)
+          this.data["plazas"] = res.data;
+          return axios
+            .post(
+              "http://prosisdev.sytes.net:84/api/Transacciones",
+              this.data,
+              config
+            )
             .then((res) => {
-              console.log(res.data)
-              this.paginas = res.data.numberOfPages
-              res.data.transacciones.forEach(e => {
+              console.log(res.data);
+              this.paginas = res.data.numberOfPages;
+              res.data.transacciones.forEach((e) => {
                 let obj = {
                   plaza: e.plaza,
                   num_tag: e.noTag,
@@ -107,40 +147,42 @@ export default {
                   carril: e.carril,
                   tipo_vehiculo: e.tipoVehiculo,
                   tarifa: e.tarifa,
-                }
-                this.cruces.push(obj)
-              })
-
-            })
-        })
-
-
+                };
+                this.cruces.push(obj);
+              });
+            });
+        });
     }
   },
   methods: {
-    pedirDatos: function(pagina, tag, plazas, fecha) {
+    pedirDatos: function (pagina, tag, plazas, fecha) {
       let config = {
         headers: {
-          'Authorization': 'Bearer ' + this.token
-        }
-      }
+          Authorization: "Bearer " + this.token,
+        },
+      };
       if (tag === "") {
         tag = null;
       }
       if (fecha === "") {
         fecha = null;
       }
-      this.data["pagenumber"] = pagina
-      this.data["tagfilter"] = tag
-      this.data["plazas"] = plazas
-      this.data["fechainicial"] = fecha
+      this.data["pagenumber"] = pagina;
+      this.data["tagfilter"] = tag;
+      this.data["plazas"] = plazas;
+      this.data["fechainicial"] = fecha;
 
-      axios.post("http://prosisdev.sytes.net:84/api/Transacciones", this.data, config)
+      axios
+        .post(
+          "http://prosisdev.sytes.net:84/api/Transacciones",
+          this.data,
+          config
+        )
         .then((res) => {
-          this.cruces = []
-          this.paginas = res.data.numberOfPages
-          this.paginas = res.data.numberOfPages
-          res.data.transacciones.forEach(e => {
+          this.cruces = [];
+          this.paginas = res.data.numberOfPages;
+          this.paginas = res.data.numberOfPages;
+          res.data.transacciones.forEach((e) => {
             let obj = {
               plaza: e.plaza,
               num_tag: e.noTag,
@@ -148,68 +190,88 @@ export default {
               carril: e.carril,
               tipo_vehiculo: e.tipoVehiculo,
               tarifa: e.tarifa,
-            }
-            this.cruces.push(obj)
-          })
-
-        })
-
+            };
+            this.cruces.push(obj);
+          });
+        });
     },
-    left: function() {
+    left: function () {
       if (this.paginaActual <= this.paginas) {
         this.paginaActual = this.paginaActual - 1;
-        this.pedirDatos(this.paginaActual, this.data.tagfilter, this.data.plazas, this.data.fechainicial)
+        this.pedirDatos(
+          this.paginaActual,
+          this.data.tagfilter,
+          this.data.plazas,
+          this.data.fechainicial
+        );
       } else {
-        console.log("No se puede regresar la pagina")
+        console.log("No se puede regresar la pagina");
       }
-
     },
-    right: function() {
+    right: function () {
       if (this.paginaActual < this.paginas) {
         this.paginaActual = this.paginaActual + 1;
-        this.pedirDatos(this.paginaActual, this.data.tagfilter, this.data.plazas, this.data.fechainicial)
+        this.pedirDatos(
+          this.paginaActual,
+          this.data.tagfilter,
+          this.data.plazas,
+          this.data.fechainicial
+        );
       } else {
-        console.log("No se puede cambiar la pagina")
+        console.log("No se puede cambiar la pagina");
       }
-
     },
-    buscar: function() {
-
+    buscar: function () {
       let plaza = document.getElementById("selectorPlaza").value;
-      if(plaza == 0){
-        var plaza_select = this.plazas
-      }else{
-        plaza_select = [this.plazas[plaza - 1]]
+      if (plaza == 0) {
+        var plaza_select = this.plazas;
+      } else {
+        plaza_select = [this.plazas[plaza - 1]];
       }
       let fecha = document.getElementById("fecha").value;
       let tag = document.getElementById("tag").value;
 
       this.paginaActual = 1;
-      this.pedirDatos(this.paginaActual, tag, plaza_select, fecha)
-
-    }
-
-  }
+      this.pedirDatos(this.paginaActual, tag, plaza_select, fecha);
+    },
+    descargarArchivo: function (tipo) {
+      if (tipo == "excel") {
+        /*let config = {
+          headers: {
+            Authorization: "Bearer " + this.token,
+          },
+        };*/
+        //axios.get("http://prosisdev.sytes.net:84/api/Transacciones/Download/Excel",this.data, config)
+        console.log(this.data);
+      } else if (tipo == "csv") {
+        console.log(tipo);
+      } else if (tipo == "txt") {
+        console.log(tipo);
+      }
+    },
+  },
 };
 </script>
 <style global>
 @keyframes example {
-  from {opacity:0}
-  to {opacity:1;}
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 </style>
 <style scoped>
-
-.loading{
+.loading {
   text-align: center;
-  padding:20px;
+  padding: 20px;
   font-size: 17px;
   font-weight: bold;
   animation-name: example;
   animation-duration: 1s;
-  animation-iteration-count:infinite;
+  animation-iteration-count: infinite;
 }
-
 
 .desc-paginacion {
   padding-top: 5px;
@@ -222,7 +284,6 @@ export default {
   margin-right: 5px;
   font-size: 12px;
   margin-top: 20px;
-
 }
 
 .filter-style-2 {
