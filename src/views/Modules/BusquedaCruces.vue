@@ -236,13 +236,35 @@ export default {
     },
     descargarArchivo: function (tipo) {
       if (tipo == "excel") {
-        /*let config = {
-          headers: {
-            Authorization: "Bearer " + this.token,
-          },
-        };*/
-        //axios.get("http://prosisdev.sytes.net:84/api/Transacciones/Download/Excel",this.data, config)
-        console.log(this.data);
+        var myHeaders = new Headers();
+        myHeaders.append("Authorization", "Bearer "+ this.token);
+        myHeaders.append("Content-Type", "application/json");
+
+        var raw = JSON.stringify(this.data);
+
+        var requestOptions = {
+          method: "POST",
+          headers: myHeaders,
+          body: raw,
+          redirect: "follow",
+        };
+
+        fetch(
+          "http://prosisdev.sytes.net:84/api/Transacciones/Download/Csv",
+          requestOptions
+        )
+          .then((response) => response.text())
+          .then((result) => {
+            console.log(result);
+            let today = new Date().toISOString().slice(0, 10)
+            const url = window.URL.createObjectURL(new Blob([result]));
+            const link = document.createElement("a");
+            link.href = url;
+            link.setAttribute("download", today + ".csv");
+            document.body.appendChild(link);
+            link.click();
+          })
+          .catch((error) => console.log("error", error));
       } else if (tipo == "csv") {
         console.log(tipo);
       } else if (tipo == "txt") {
