@@ -72,6 +72,7 @@
 import TablaBusquedaCruces from "../../components/Tabla-busquedacruces.vue";
 import Navbar from "../../components/Navbar.vue";
 import Footer from "../../components/Footer-login";
+//import * as download from "downloadjs";
 import axios from "axios";
 export default {
   name: "BusquedaCruces",
@@ -234,21 +235,21 @@ export default {
       this.paginaActual = 1;
       this.pedirDatos(this.paginaActual, tag, plaza_select, fecha);
     },
-    descargarArchivo: function (tipo) {
-      if (tipo == "excel") {
-        var myHeaders = new Headers();
-        myHeaders.append("Authorization", "Bearer "+ this.token);
-        myHeaders.append("Content-Type", "application/json");
+    downloadApi: function (tipo) {
+      var myHeaders = new Headers();
+      myHeaders.append("Authorization", "Bearer " + this.token);
+      myHeaders.append("Content-Type", "application/json");
 
-        var raw = JSON.stringify(this.data);
+      var raw = JSON.stringify(this.data);
 
-        var requestOptions = {
-          method: "POST",
-          headers: myHeaders,
-          body: raw,
-          redirect: "follow",
-        };
+      var requestOptions = {
+        method: "POST",
+        headers: myHeaders,
 
+        body: raw,
+        //redirect: "follow",
+      };
+      if (tipo == "csv") {
         fetch(
           "http://prosisdev.sytes.net:84/api/Transacciones/Download/Csv",
           requestOptions
@@ -256,7 +257,7 @@ export default {
           .then((response) => response.text())
           .then((result) => {
             console.log(result);
-            let today = new Date().toISOString().slice(0, 10)
+            let today = new Date().toISOString().slice(0, 10);
             const url = window.URL.createObjectURL(new Blob([result]));
             const link = document.createElement("a");
             link.href = url;
@@ -265,11 +266,46 @@ export default {
             link.click();
           })
           .catch((error) => console.log("error", error));
-      } else if (tipo == "csv") {
-        console.log(tipo);
+      } else if (tipo == "excel") {
+        fetch(
+          "http://prosisdev.sytes.net:84/api/Transacciones/Download/Excel/",
+          requestOptions
+        )
+          .then((response) => response.blob())
+          .then((blob) => {
+            const url = window.URL.createObjectURL(new Blob([blob]));
+            const link = document.createElement("a");
+            let today = new Date().toISOString().slice(0, 10);
+            link.href = url;
+            link.setAttribute("download", `${today}.xls`);
+            document.body.appendChild(link);
+            link.click();
+
+            link.parentNode.removeChild(link);
+          })
+
+          .catch((error) => console.log("error", error));
       } else if (tipo == "txt") {
-        console.log(tipo);
+        fetch(
+          "http://prosisdev.sytes.net:84/api/Transacciones/Download/Txt",
+          requestOptions
+        )
+          .then((response) => response.text())
+          .then((result) => {
+            console.log(result);
+            let today = new Date().toISOString().slice(0, 10);
+            const url = window.URL.createObjectURL(new Blob([result]));
+            const link = document.createElement("a");
+            link.href = url;
+            link.setAttribute("download", today + ".txt");
+            document.body.appendChild(link);
+            link.click();
+          })
+          .catch((error) => console.log("error", error));
       }
+    },
+    descargarArchivo: function (tipo) {
+      this.downloadApi(tipo);
     },
   },
 };

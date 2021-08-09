@@ -26,11 +26,8 @@
         <td v-else-if="usuario.estatus == false">
           <button class="button btn-inactivo" @click="changeStatus(usuario)">Inactivo</button>
         </td>
-        <!-- <h1>{{perfiles[index]}}</h1>-->
       </tr>
     </table>
-    {{ seleccionado }}
-    {{ genPass }}
   </div>
   <!--MODAL DE ACTUALIZAR CONTRASEÑA -->
   <div v-if="showModal == true">

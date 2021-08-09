@@ -22,7 +22,13 @@
       </div>
     </div>
     <TablaListaUsuarios :dataUsuarios="perfiles"></TablaListaUsuarios>
+    <button class="button-pagination" v-if="paginaAct > 1" @click="anterior()">Anterior</button>
+    <button class="button-pagination" v-if="paginaAct < maxPages" @click="siguiente()">Siguiente</button>
+    <p  class="desc-paginacion">
+      Página {{ paginaAct }} de {{ maxPages }}
+    </p>
   </div>
+
   <Footer></Footer>
 </template>
 <script>
@@ -38,37 +44,20 @@ export default {
   },
   data() {
     return {
-      /*perfiles: [
-        {
-          nombre: "Rodrigo",
-          apellido: "Mendoza",
-          rol: "Sistemas",
-          estatus: true,
-        },
-        {
-          nombre: "Alex",
-          apellido: "Mendoza",
-          rol: "Sistemas",
-          estatus: false,
-        },
-        {
-          nombre: "MIguel",
-          apellido: "Mendoza",
-          rol: "Sistemas",
-          estatus: false,
-        },
-      ],*/
-      perfiles:[]
+      perfiles: [],
+      token: "",
+      paginaAct: 1,
+      maxPages: 1,
     };
   },
   beforeMount() {
     function getCookie(cname) {
       var name = cname + "=";
       var decodedCookie = decodeURIComponent(document.cookie);
-      var ca = decodedCookie.split(';');
+      var ca = decodedCookie.split(";");
       for (var i = 0; i < ca.length; i++) {
         var c = ca[i];
-        while (c.charAt(0) == ' ') {
+        while (c.charAt(0) == " ") {
           c = c.substring(1);
         }
         if (c.indexOf(name) == 0) {
@@ -78,26 +67,88 @@ export default {
       return "";
     }
     // Get token config
-    if(getCookie("Token")){
+    if (getCookie("Token")) {
       let config = {
         headers: {
-          'Authorization': 'Bearer ' + getCookie("Token")
-        }
-      }
-      axios.get("http://prosisdev.sytes.net:86/api/Usuario?Page=1&Rows=5", config)
-      .then((result)=>{
-        result.data.forEach(e =>{
-          let obj = {
-            nombre: e.Nombre,
-            apellido: e.ApellidoPaterno,
-            rol: e.Rol,
-            estatus: e.Estatus,
-          }
-          this.perfiles.push(obj)
-        })
-      })
+          Authorization: "Bearer " + getCookie("Token"),
+        },
+      };
+      this.token = getCookie("Token");
+      axios
+        .get(
+          `http://prosisdev.sytes.net:84/api/Usuario?Page=${this.paginaAct}&Rows=5`,
+          config
+        )
+        .then((result) => {
+          console.log(result.data);
+          this.maxPages = result.data.totalPages;
+          result.data.page.forEach((e) => {
+            let obj = {
+              nombre: e.nombre,
+              apellido: e.apellidoPaterno,
+              rol: e.rol,
+              estatus: e.estatus,
+            };
+            this.perfiles.push(obj);
+          });
+        });
     }
-  }
+  },
+  methods: {
+    anterior: function () {
+      let config = {
+        headers: {
+          Authorization: "Bearer " + this.token,
+        },
+      };
+      this.paginaAct = this.paginaAct - 1;
+      axios
+        .get(
+          `http://prosisdev.sytes.net:84/api/Usuario?Page=${this.paginaAct}&Rows=5`,
+          config
+        )
+        .then((res) => {
+          this.perfiles = []
+          this.maxPages = res.data.totalPages;
+          res.data.page.forEach((e) => {
+            let obj = {
+              nombre: e.nombre,
+              apellido: e.apellidoPaterno,
+              rol: e.rol,
+              estatus: e.estatus,
+            };
+            this.perfiles.push(obj);
+          });
+        });
+    },
+    siguiente: function () {
+      
+      let config = {
+        headers: {
+          Authorization: "Bearer " + this.token,
+        },
+      };
+      this.paginaAct = this.paginaAct + 1;
+      axios
+        .get(
+          `http://prosisdev.sytes.net:84/api/Usuario?Page=${this.paginaAct}&Rows=5`,
+          config
+        )
+        .then((res) => {
+          this.perfiles = []
+          this.maxPages = res.data.totalPages;
+          res.data.page.forEach((e) => {
+            let obj = {
+              nombre: e.nombre,
+              apellido: e.apellidoPaterno,
+              rol: e.rol,
+              estatus: e.estatus,
+            };
+            this.perfiles.push(obj);
+          });
+        });
+    },
+  },
 };
 </script>
 <style scoped>
@@ -105,6 +156,13 @@ export default {
   text-align: center;
   font-size: 25px;
   padding-top: 20px;
+}
+.button-pagination {
+  padding: 2px;
+  border: 1px solid black;
+  margin-right: 5px;
+  font-size: 12px;
+  margin-top: 20px;
 }
 .bg-blue {
   background-color: #0195b0;
