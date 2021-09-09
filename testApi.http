@@ -3,14 +3,13 @@ Host: prosisdev.sytes.net:84
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1laWQiOiJBZG1BZG1pbiIsIm5iZiI6MTYyNzQ4MzA2OCwiZXhwIjoxNjI3NDk3NDY4LCJpYXQiOjE2Mjc0ODMwNjh9.0_qrdBmiBfaTFSmO1XjhckDlncoTE17S-Tg89i0CzLw
 Content-Type: application/json
 
-
 {
-        "pagenumber": 1,
-        "rowsofpage": 7,
-        "tagfilter": null,
-        "carril": null,
-        "plaza": null,
-        "fechainicial": null,
-        "fechafinal": null,
-        "plazas": null
-      }
+  "pagenumber": 1,
+  "rowsofpage": 7,
+  "tagfilter": null,
+  "carril": null,
+  "plaza": null,
+  "fechainicial": null,
+  "fechafinal": null,
+  "plazas": null
+}

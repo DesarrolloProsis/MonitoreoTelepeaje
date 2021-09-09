@@ -36,7 +36,7 @@ import Footer from "../components/Footer-login.vue";
 import Header from "../components/Header-login.vue";
 import axios from "axios";
 export default {
-  name: "HelloWorld",
+ 
   components: {
     Footer,
     Header

@@ -15,6 +15,7 @@ import PerfilUsuario from "@/views/Modules/PerfilUsuario.vue";
 import AdminPerfiles from "@/views/Modules/AdminPerfiles.vue";
 import ListaUsuarios from "@/views/Modules/ListaUsuarios.vue";
 import RegistroUsuarios from "@/views/Modules/RegistroUsuarios.vue";
+import jwt_decode from "jwt-decode";
 
 function getCookie(cname) {
   var name = cname + "=";
@@ -49,9 +50,7 @@ const routes = [{
           }
         }
         axios.get("http://prosisdev.sytes.net:84/api/Test", config)
-          .then((result) => {
-            console.log("Validando Token...")
-            console.log(result)
+          .then(() => {
             next("/inicio")
           })
           .catch((error) => {
@@ -74,7 +73,7 @@ const routes = [{
     name: "Menu",
     component: Menu,
     meta: {
-      requiresCookie: true
+      requiresCookie: true,
     }
   },
   {
@@ -82,7 +81,8 @@ const routes = [{
     name: "MonitoreoServicios",
     component: MonitoreoServicios,
     meta: {
-      requiresCookie: true
+      requiresCookie: true,
+      nombre:"Monitoreo Servicios"
     }
   },
   {
@@ -90,7 +90,8 @@ const routes = [{
     name: "MonitoreoCarriles",
     component: MonitoreoCarriles,
     meta: {
-      requiresCookie: true
+      requiresCookie: true,
+      nombre:"Monitoreo Carriles"
     }
   },
   {
@@ -98,7 +99,8 @@ const routes = [{
     name: "BitacoraAlarmas",
     component: BitacoraAlarmas,
     meta: {
-      requiresCookie: true
+      requiresCookie: true,
+      nombre:"Bitacora Alarmas"
     }
   },
   {
@@ -106,7 +108,8 @@ const routes = [{
     name: "MonitoreoCruces",
     component: MonitoreoCruces,
     meta: {
-      requiresCookie: true
+      requiresCookie: true,
+      nombre:"Monitoreo Cruces"
     }
   },
   {
@@ -114,7 +117,8 @@ const routes = [{
     name: "MonitoreoTransacciones",
     component: EnvioTransacciones,
     meta: {
-      requiresCookie: true
+      requiresCookie: true,
+      nombre:"Envio Transacciones"
     }
   },
   {
@@ -122,15 +126,17 @@ const routes = [{
     name: "BusquedaCruces",
     component: BusquedaCruces,
     meta: {
-      requiresCookie: true
+      requiresCookie: true,
+      nombre:"Busqueda Cruces"
     }
   },
   {
     path: "/inicio/bitacora-accesos",
-    name: "BitacoraAccesos",
+    name: "Bitacora Accesos",
     component: BitacoraAccesos,
     meta: {
-      requiresCookie: true
+      requiresCookie: true,
+      nombre:"Bitacora Accesos"
     }
   },
   {
@@ -138,7 +144,8 @@ const routes = [{
     name: "EstatusTags",
     component: EstatusTags,
     meta: {
-      requiresCookie: true
+      requiresCookie: true,
+      nombre:"Estatus Tag"
     }
   },
   {
@@ -146,7 +153,8 @@ const routes = [{
     name: "Configuracion",
     component: Configuracion,
     meta: {
-      requiresCookie: true
+      requiresCookie: true,
+      nombre:"Configuración"
     }
   },
   {
@@ -190,6 +198,7 @@ const router = createRouter({
 
 router.beforeEach((to, _from, next) => {
   if (to.matched.some(record => record.meta.requiresCookie)) {
+
     if (getCookie("TipoUser") != "" && getCookie("Token") != "") {
       let config = {
         headers: {
@@ -197,10 +206,21 @@ router.beforeEach((to, _from, next) => {
         }
       }
       axios.get("http://prosisdev.sytes.net:84/api/Test", config)
-        .then((result) => {
-          console.log("Validando Token...")
-          console.log(result)
-          next();
+        .then(() => {
+         
+          if(to.matched.some(m=>m.meta.nombre)){
+            let json_token = jwt_decode(getCookie("Token"))
+            if(json_token[to.meta.nombre]!== undefined && json_token[to.meta.nombre] !== false){
+              console.log("Esta vista esta en el token")
+              next()
+            }else{
+              console.log("Esta no esta en el token")
+              next('/')
+            }   
+          }else{
+            next();
+          }
+         
         })
         .catch((error) => {
           //TODO: Borrar las cookies para redirigir al login

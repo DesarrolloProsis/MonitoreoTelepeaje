@@ -7,6 +7,7 @@
       :titulo="modulo.titulo"
       :imagen="modulo.imagen"
       :ruta="modulo.ruta"
+      :nombre="modulo.nombre"
     ></ModulosComp>
   </div>
   <Footer></Footer>
@@ -29,42 +30,49 @@ export default {
           titulo: "Monitoreo de Servicios",
           imagen: "Menu/monitoreo-servicios.png",
           ruta: "/inicio/monitoreo-servicios",
+          nombre:"Monitoreo Servicios"
         },
         {
           titulo: "Monitoreo de Carriles",
           imagen: "Menu/monitoreo-carriles.png",
           ruta: "/inicio/monitoreo-carriles",
+          nombre:"Monitoreo Carriles"
         },
-
         {
           titulo: "Monitoreo de Cruces",
           imagen: "Menu/monitoreo-cruces.png",
           ruta: "/inicio/monitoreo-cruces",
+          nombre:"Monitoreo Cruces"
         },
         {
           titulo: "Envío de Transacciones",
           imagen: "Menu/envio-transacciones.png",
           ruta: "/inicio/envio-transacciones",
+          nombre:"Envio Transacciones"
         },
         {
           titulo: "Búsqueda de Cruces",
           imagen: "Menu/busqueda-cruces.png",
           ruta: "/inicio/busqueda-cruces",
+          nombre:"Busqueda Cruces"
         },
         {
           titulo: "Bitácora de Accesos",
           imagen: "Menu/bitacora-accesos.png",
           ruta: "/inicio/bitacora-accesos",
+          nombre:"BitacoraAccesos"
         },
         {
           titulo: "Estatus de TAGs",
           imagen: "Menu/estatus-tags.png",
           ruta: "/inicio/estatus-tags",
+          nombre:"Estatus Tag"
         },
         {
           titulo: "Configuración",
           imagen: "Menu/configuracion.png",
           ruta: "/configuracion",
+          nombre:"Configuración"
         },
       ],
     };
@@ -84,3 +92,6 @@ export default {
   }
 }
 </style>
+
+/// mandar eltipo de rol y que me retorne los modulos
+//para el router un endpoint donde le envio un dato y me retorna si puedo entrar o no a la ruta
