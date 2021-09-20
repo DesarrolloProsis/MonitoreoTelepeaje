@@ -16,7 +16,8 @@
     >
       Mex-Aca
     </button>
-    <Tabla :dataListas="listas"></Tabla>
+    <Tabla v-if="isLoading == false" :dataListas="listas"></Tabla>
+    <div class="loading" v-else>Cargando Datos...</div>
   </div>
   <Footer></Footer>
 </template>
@@ -38,6 +39,7 @@ export default {
       isActive1: true,
       isActive2: false,
       token:"",
+      isLoading:true
 
     };
   },
@@ -68,6 +70,7 @@ export default {
       axios.get("http://prosisdev.sytes.net:84/api/Monitoreo", config)
       .then(response =>{
         this.res = response.data
+        this.isLoading = false
         if(this.res.length != 0){
           let listaIra = this.res["historicosIrapuato"]
           listaIra.forEach(e =>{
@@ -159,5 +162,14 @@ export default {
   font-size: 20px;
   padding-bottom: 20px;
 }
+}
+.loading {
+  text-align: center;
+  padding: 20px;
+  font-size: 17px;
+  font-weight: bold;
+  animation-name: example;
+  animation-duration: 1s;
+  animation-iteration-count: infinite;
 }
 </style>

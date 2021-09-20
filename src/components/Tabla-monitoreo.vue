@@ -1,5 +1,6 @@
 <template>
-  <div class="responsive-table">
+<div style="padding-bottom:80px">
+ <div class="responsive-table">
     <table class="tftable">
       <tr>
         
@@ -16,6 +17,8 @@
       </tr>
     </table>
   </div>
+</div>
+ 
 </template>
 
 
@@ -36,7 +39,7 @@ export default {
   overflow-x: auto;
   overflow-y: auto;
   max-height: 600px;
-  padding-bottom: 80px;
+  
 }
 .tftable {
   font-size: 12px;

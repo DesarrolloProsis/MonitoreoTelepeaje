@@ -1,4 +1,5 @@
 <template>
+
   <Navbar></Navbar>
   <div class="container mx-auto px-0 pb-100">
     <h1 class="title-center pb-4">Bitácora de Alarmas</h1>

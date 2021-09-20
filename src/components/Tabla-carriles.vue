@@ -1,32 +1,78 @@
 <template>
   <div class="container mx-auto px-0 pt-4 py-8">
-    <div class="flex flex-wrap bg-blue">
-      <div class="flex-none filter-style">
-        Tramo:
-        <select class="flex-none filter-style color-black" name="select">
-          <option value="100" selected>opcion1</option>
-          <option value="200">opcion2</option>
-          <option value="300">opcion3</option>
-        </select>
-      </div>
-      <div class="flex-none filter-style">
-        Plaza:
-        <select class="flex-none filter-style color-black" name="select">
-          <option value="100" selected>opcion1</option>
-          <option value="200">opcion2</option>
-          <option value="300">opcion3</option>
-        </select>
-      </div>
+    <div class="mt-2 mx-2 md:mx-0">
+      <p>Filtros de Búsqueda:</p>
+      <div class="flex flex-col md:flex-row border-gray-200 pb-0 mb-4">
+        <div class="flex-1 flex flex-col md:flex-row md:space-x-2">
+          <div class="flex-2">
+            <div class="my-2 p-1 bg-white flex border border-gray-200 rounded">
+              <select
+                class="p-1 px-2 outline-none w-full text-gray-800"
+                name="select"
+              >
+                <option value="" selected disabled hidden>
+                  Seleccionar Tramo
+                </option>
+                <option value="0">Opción 1</option>
+              </select>
+            </div>
+          </div>
+          <div class="flex-2">
+            <div class="my-2 p-1 bg-white flex border border-gray-200 rounded">
+              <select
+                class="p-1 px-2 outline-none w-full text-gray-800"
+                name="select"
+              >
+                <option value="" selected disabled hidden>
+                  Seleccionar Plaza
+                </option>
+                <option value="0">Opción 1</option>
+              </select>
+            </div>
+          </div>
 
-      <div class="flex-none filter-style">
-        <button class="btn-buscar">Buscar</button>
+          <div class="flex-2">
+            <div class="my-2 p-1 bg-white flex border border-gray-200 rounded btn-search">
+              <button
+                class="
+                  p-1
+                  px-2
+                  appearance-none
+                  outline-none
+                  w-full
+                  text-white
+                "
+              >
+                Buscar
+              </button>
+            </div>
+          </div>
+          <div class="flex-2">
+            <div class="my-2 p-1 bg-white flex border border-gray-200 rounded">
+              <router-link
+                to="/inicio/monitoreo-carriles/bitacora-alarmas"
+                tag="div"
+              >
+                <button
+                  class="
+                    p-1
+                    px-2
+                    appearance-none
+                    outline-none
+                    w-full
+                    text-gray-800
+                  "
+                >
+                  Ir a Bitácora de Alarmas
+                </button>
+              </router-link>
+            </div>
+          </div>
+        </div>
       </div>
-      <div class="flex-1">
-        <router-link to="/inicio/monitoreo-carriles/bitacora-alarmas" tag="div">
-          <button class="btn-carriles ml-right">Bitácora de Alarmas</button>
-        </router-link>
-      </div>
+      <hr />
     </div>
+    
     <div class="flex ta-center overflow-x-auto pt-6">
       <div
         class="flex justify-center items-center flex-none bg-carriles-gray p-5"
@@ -130,13 +176,10 @@ export default {
   border: 1px solid black;
   border-radius: 5px;
 }
-.btn-buscar {
+.btn-search {
   background-color: #017296;
   color: white;
-  height: 100%;
-  padding: 0px 10px;
-  border-radius: 5px;
-  border: 1px solid black;
+  
 }
 .btn-buscar:focus {
   outline: 0;
