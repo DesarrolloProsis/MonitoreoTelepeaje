@@ -98,7 +98,7 @@ export default {
 
         //TODO: eliminar esta y sustituir por palza_select
         var plaza_prueba = [{"Nombre":"defaultConnection"}]
-        axios.post(`${API}//Tags/?tag=${tag}`, plaza_prueba, config)      
+        axios.post(`${API}/Tags/?tag=${tag}`, plaza_prueba, config)      
           .then((res) =>{
             this.tags = []
             res.data.forEach(e =>{
