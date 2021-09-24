@@ -8,7 +8,7 @@
                                                               
     <option v-else-if="plazas.length == 0 && isLoading == false"> No hay plazas</option>
     <option v-else value="0" selected>Todas</option>
-     
+    
     <option v-for="(plaza, key) in plazas" :value="key + 1" :key="key">{{plaza.nombre}}</option>
   </select>
 </div>
@@ -25,6 +25,7 @@
 <Footer></Footer>
 </template>
 <script>
+const API = process.env.VUE_APP_URL_API_PRODUCCION
 import TablaEstatusTag from "../../components/Tabla-estatustag";
 import Navbar from "../../components/Navbar.vue";
 import Footer from "../../components/Footer-login";
@@ -67,7 +68,7 @@ export default {
           'Authorization': 'Bearer ' + getCookie("Token")
         }
       }
-      axios.get("http://prosisdev.sytes.net:84/api/Plazas", config)
+      axios.get(`${API}/Plazas`, config)
 
       .then((res) =>{
         console.log("plazas cargadas...")
@@ -97,7 +98,7 @@ export default {
 
         //TODO: eliminar esta y sustituir por palza_select
         var plaza_prueba = [{"Nombre":"defaultConnection"}]
-        axios.post(`http://prosisdev.sytes.net:84/api/Tags/?tag=${tag}`, plaza_prueba, config)      
+        axios.post(`${API}//Tags/?tag=${tag}`, plaza_prueba, config)      
           .then((res) =>{
             this.tags = []
             res.data.forEach(e =>{
