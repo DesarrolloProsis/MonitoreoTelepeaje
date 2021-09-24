@@ -16,6 +16,7 @@ import AdminPerfiles from "@/views/Modules/AdminPerfiles.vue";
 import ListaUsuarios from "@/views/Modules/ListaUsuarios.vue";
 import RegistroUsuarios from "@/views/Modules/RegistroUsuarios.vue";
 import jwt_decode from "jwt-decode";
+const API = process.env.VUE_APP_URL_API_PRODUCCION
 
 function getCookie(cname) {
   var name = cname + "=";
@@ -49,7 +50,7 @@ const routes = [{
             'Authorization': 'Bearer ' + getCookie("Token")
           }
         }
-        axios.get("http://prosisdev.sytes.net:84/api/Test", config)
+        axios.get(`${API}/Test`, config)
           .then(() => {
             next("/inicio")
           })
@@ -205,15 +206,15 @@ router.beforeEach((to, _from, next) => {
           'Authorization': 'Bearer ' + getCookie("Token")
         }
       }
-      axios.get("http://prosisdev.sytes.net:84/api/Test", config)
+      axios.get(`${API}/Test`, config)
         .then(() => {
-         
+        
           if(to.matched.some(m=>m.meta.nombre)){
             let json_token = jwt_decode(getCookie("Token"))
               console.log(json_token[to.meta.nombre])
             if( json_token[to.meta.nombre] !== "false"){
               console.log(json_token)
-             
+            
               console.log("Esta vista esta en el token")
               next()
             }else{
@@ -223,7 +224,7 @@ router.beforeEach((to, _from, next) => {
           }else{
             next();
           }
-         
+        
         })
         .catch((error) => {
           //TODO: Borrar las cookies para redirigir al login

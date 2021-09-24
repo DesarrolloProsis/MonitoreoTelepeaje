@@ -32,6 +32,7 @@
 </template>
 
 <script>
+const API = process.env.VUE_APP_URL_API_PRODUCCION
 import Footer from "../components/Footer-login.vue";
 import Header from "../components/Header-login.vue";
 import axios from "axios";
@@ -64,7 +65,7 @@ export default {
       }
       if(data["Usuario"] != "" &&  data["Password"] != ""){
         console.log("Cargando...")
-        axios.post("http://prosisdev.sytes.net:84/api/Login", data)
+        axios.post(`${API}/Login`, data)
         .then((result) => {
           console.log(result.data);
           // Set Cookie
