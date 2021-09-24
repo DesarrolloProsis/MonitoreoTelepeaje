@@ -5,7 +5,10 @@
   Plaza:
   <select class="flex-none filter-style color-black" name="select" id="selectorPlaza">
     <option v-if="isLoading == true">Cargando...</option>
+                                                              
+    <option v-else-if="plazas.length == 0 && isLoading == false"> No hay plazas</option>
     <option v-else value="0" selected>Todas</option>
+     
     <option v-for="(plaza, key) in plazas" :value="key + 1" :key="key">{{plaza.nombre}}</option>
   </select>
 </div>
@@ -89,7 +92,12 @@ export default {
       }
       if(tag != ""){
         console.log("Buscando...")
-        axios.post(`http://prosisdev.sytes.net:84/api/Tags/${tag}`, plaza_select, config)      
+        console.log("Plaza select:" + plaza_select)
+        console.log(this.plazas)
+
+        //TODO: eliminar esta y sustituir por palza_select
+        var plaza_prueba = [{"Nombre":"defaultConnection"}]
+        axios.post(`http://prosisdev.sytes.net:84/api/Tags/?tag=${tag}`, plaza_prueba, config)      
           .then((res) =>{
             this.tags = []
             res.data.forEach(e =>{

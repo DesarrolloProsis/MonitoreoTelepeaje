@@ -21,8 +21,10 @@
           name="select"
           id="selectorPlaza"
         >
-          
-          <option value="0">Todas las Plazas</option>
+          <option v-if="isLoading == true">Cargando Plazas...</option>
+                                                                    
+          <option v-else-if="plazas.length == 0 && isLoading == false"> No hay plazas</option>
+          <option v-else value="0">Todas las Plazas</option>
           <option v-for="(plaza, key) in plazas" :value="key + 1" :key="key">
             {{ plaza.nombre }}
           </option>
@@ -153,6 +155,7 @@ export default {
           this.isLoading = false;
           this.plazas = res.data;
           this.data["plazas"] = res.data;
+          console.log("Plazas:" + res.data)
           return axios
             .post(
               "http://prosisdev.sytes.net:84/api/Transacciones",

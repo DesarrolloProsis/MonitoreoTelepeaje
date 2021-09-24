@@ -100,7 +100,7 @@ const routes = [{
     component: BitacoraAlarmas,
     meta: {
       requiresCookie: true,
-      nombre:"Bitacora Alarmas"
+      nombre:"Monitoreo Carriles"
     }
   },
   {
@@ -154,7 +154,7 @@ const routes = [{
     component: Configuracion,
     meta: {
       requiresCookie: true,
-      nombre:"Configuración"
+      nombre:"Configuracion"
     }
   },
   {
@@ -210,7 +210,10 @@ router.beforeEach((to, _from, next) => {
          
           if(to.matched.some(m=>m.meta.nombre)){
             let json_token = jwt_decode(getCookie("Token"))
-            if(json_token[to.meta.nombre]!== undefined && json_token[to.meta.nombre] !== false){
+              console.log(json_token[to.meta.nombre])
+            if( json_token[to.meta.nombre] !== "false"){
+              console.log(json_token)
+             
               console.log("Esta vista esta en el token")
               next()
             }else{

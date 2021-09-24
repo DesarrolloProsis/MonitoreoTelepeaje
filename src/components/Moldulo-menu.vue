@@ -1,7 +1,7 @@
 <template>
-  <div v-if="mostrar(nombre)" class="w-1/2 md:w-1/4 p-5">
+  <div v-if="mostrar(nombre)" :class="{inactive:isInactive}"  class="w-1/2 md:w-1/4 p-5">
     <router-link :to="ruta" tag="div">
-      <img class="imagen-modulo" :src="require('@/assets/' + imagen)" />
+      <img class="imagen-modulo"  :src="require('@/assets/' + imagen)" />
     </router-link>
     <h1 class="titulo-modulo">{{ titulo }}</h1>
   </div>
@@ -13,7 +13,7 @@
 import jwt_decode from "jwt-decode";
 export default {
   name: "ModulosComp",
-  props: ["titulo", "imagen", "ruta", "nombre"],
+  props: ["titulo", "imagen", "ruta", "nombre", "isInactive"],
   methods: {
     token: function (cname) {
       var name = cname + "=";
@@ -33,7 +33,7 @@ export default {
     mostrar: function (nombre) {
       let token = this.token("Token")
       var decoded = jwt_decode(token);
-      if(decoded[nombre]!== undefined && decoded[nombre] !== false){
+      if(decoded[nombre] !== "false"){
         return true;
       }else{
         return false;
@@ -43,6 +43,10 @@ export default {
 };
 </script>
 <style scoped>
+.inactive{
+  opacity: .3;
+  pointer-events: none;
+}
 .titulo-modulo {
   text-align: center;
   padding-top: 5px;

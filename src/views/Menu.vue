@@ -8,6 +8,7 @@
       :imagen="modulo.imagen"
       :ruta="modulo.ruta"
       :nombre="modulo.nombre"
+      :isInactive="modulo.isInactive"
     ></ModulosComp>
   </div>
   <Footer></Footer>
@@ -30,49 +31,57 @@ export default {
           titulo: "Monitoreo de Servicios",
           imagen: "Menu/monitoreo-servicios.png",
           ruta: "/inicio/monitoreo-servicios",
-          nombre:"Monitoreo Servicios"
+          nombre:"Monitoreo Servicios",
+          isInactive:false
         },
         {
           titulo: "Monitoreo de Carriles",
           imagen: "Menu/monitoreo-carriles.png",
           ruta: "/inicio/monitoreo-carriles",
-          nombre:"Monitoreo Carriles"
+          nombre:"Monitoreo Carriles",
+           isInactive:false
         },
         {
           titulo: "Monitoreo de Cruces",
           imagen: "Menu/monitoreo-cruces.png",
           ruta: "/inicio/monitoreo-cruces",
-          nombre:"Monitoreo Cruces"
+          nombre:"Monitoreo Cruces",
+          isInactive:false
         },
         {
           titulo: "Envío de Transacciones",
           imagen: "Menu/envio-transacciones.png",
           ruta: "/inicio/envio-transacciones",
-          nombre:"Envio Transacciones"
+          nombre:"Envio Transacciones",
+           isInactive:false
         },
         {
           titulo: "Búsqueda de Cruces",
           imagen: "Menu/busqueda-cruces.png",
           ruta: "/inicio/busqueda-cruces",
-          nombre:"Busqueda Cruces"
+          nombre:"Busqueda Cruces",
+           isInactive:false
         },
         {
           titulo: "Bitácora de Accesos",
           imagen: "Menu/bitacora-accesos.png",
           ruta: "/inicio/bitacora-accesos",
-          nombre:"BitacoraAccesos"
+          nombre:"Bitacora Accesos",
+           isInactive:false
         },
         {
           titulo: "Estatus de TAGs",
           imagen: "Menu/estatus-tags.png",
           ruta: "/inicio/estatus-tags",
-          nombre:"Estatus Tag"
+          nombre:"Estatus Tag",
+           isInactive:false
         },
         {
           titulo: "Configuración",
           imagen: "Menu/configuracion.png",
           ruta: "/configuracion",
-          nombre:"Configuración"
+          nombre:"Configuracion",
+           isInactive:false
         },
       ],
     };
