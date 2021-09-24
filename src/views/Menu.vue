@@ -1,6 +1,6 @@
 <template>
   <Navbar></Navbar>
-  <div class="flex flex-wrap items-center full-height">
+  <div class="bg-gray-300 flex flex-wrap items-center full-height">
     <ModulosComp
       v-for="(modulo, index) in modulos"
       :key="index"
@@ -90,7 +90,7 @@ export default {
 </script>
 <style scoped>
 .full-height {
-  height: calc(100vh - 88px);
+  height: calc(100vh - 85px);
   min-height: 700px;
   margin-bottom: 40px;
 }

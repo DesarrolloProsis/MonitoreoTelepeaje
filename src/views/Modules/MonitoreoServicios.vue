@@ -22,6 +22,7 @@
   <Footer></Footer>
 </template>
 <script>
+const API = process.env.VUE_APP_URL_API_PRODUCCION
 import Navbar from "../../components/Navbar";
 import Tabla from "../../components/Tabla-monitoreo";
 import Footer from "../../components/Footer-login";
@@ -67,7 +68,7 @@ export default {
           'Authorization': 'Bearer ' + this.token
         }
       }
-      axios.get("http://prosisdev.sytes.net:84/api/Monitoreo", config)
+      axios.get(`${API}/Monitoreo`, config)
       .then(response =>{
         this.res = response.data
         this.isLoading = false

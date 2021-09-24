@@ -1,8 +1,9 @@
 <template>
   <div class="flex justify-between bg-nav">
     <div class="flex-none">
-      <router-link to="/inicio" tag="div">
-      <img class="logo" src="~@/assets/prosissinfondo.png"><img>
+      <router-link to="/inicio" class="inline-block pl-5 pt-1 text-white text-xl" tag="div">
+      <img class="logo inline" src="~@/assets/logoProsis.png" >
+      Inicio 
       </router-link>
     </div>
     <div class="flex-none">
@@ -24,7 +25,7 @@ export default{
 </script>
 <style scoped>
 .bg-nav {
-  background-color: #3e87f7;
+  background-color: #2c5282;
   padding: 10px;
 }
 .btn-salir {
@@ -35,6 +36,6 @@ export default{
   outline: none;
 }
 .logo{
- width:100px;
+  width:30px;
 }
 </style>

@@ -6,7 +6,7 @@
     <div class="mt-2 mx-2 md:mx-0">
       <p>Filtros de Búsqueda:</p>
         <div class="flex flex-col md:flex-row border-gray-200 pb-0 mb-4">
-           
+          
             <div class="flex-1 flex flex-col md:flex-row md:space-x-2">
               <div class="w-full flex-2 ">
                     <div class="my-2 p-1 bg-white flex border border-gray-200 rounded">
@@ -15,8 +15,8 @@
                 </div>
                 <div class="w-full flex-2 ">
                     <div class="my-2 p-1 bg-white flex border border-gray-200 rounded">
-                     
-                       <select
+                    
+                      <select
           class="p-1 px-2  outline-none w-full text-gray-800"
           name="select"
           id="selectorPlaza"
@@ -35,14 +35,14 @@
                 <div class="w-full flex-2">
                     <div class="my-2 p-1 bg-white flex border border-gray-200 rounded">
                         <input type="date" id="fecha"  class="p-1 px-2 appearance-none outline-none w-full text-gray-800 "> 
-                       
+                      
                       </div>
                 </div>
-                 
-                 <div class="w-full flex-1">
+                
+                <div class="w-full flex-1">
                     <div class="my-2 p-1 bg-white flex border border-gray-200 rounded btn-search ">
                       
-                        <button class="p-1 px-2 appearance-none outline-none w-full text-white " @click="buscar()">Buscar</button>
+                        <button class="p-1 px-2 appearance-none outline-none w-full text-white " :disabled="isLoading" :class="{'cursor-not-allowed': isLoading}" @click="buscar()">Buscar</button>
                     </div>
                 </div>
                   <div class="w-full flex-2">
@@ -93,6 +93,7 @@
   <Footer></Footer>
 </template>
 <script>
+const API = process.env.VUE_APP_URL_API_PRODUCCION
 import TablaBusquedaCruces from "../../components/Tabla-busquedacruces.vue";
 import Navbar from "../../components/Navbar.vue";
 import Footer from "../../components/Footer-login";
@@ -150,7 +151,7 @@ export default {
       };
 
       axios
-        .get("http://prosisdev.sytes.net:84/api/Plazas", config)
+        .get(`${API}/Plazas`, config)
         .then((res) => {
           this.isLoading = false;
           this.plazas = res.data;
@@ -158,7 +159,7 @@ export default {
           console.log("Plazas:" + res.data)
           return axios
             .post(
-              "http://prosisdev.sytes.net:84/api/Transacciones",
+              `${API}/Transacciones`,
               this.data,
               config
             )
@@ -200,7 +201,7 @@ export default {
 
       axios
         .post(
-          "http://prosisdev.sytes.net:84/api/Transacciones",
+          `${API}/Transacciones`,
           this.data,
           config
         )
@@ -278,7 +279,7 @@ export default {
       };
       if (tipo == "csv") {
         fetch(
-          "http://prosisdev.sytes.net:84/api/Transacciones/Download/Csv",
+          `${API}/Transacciones/Download/Csv`,
           requestOptions
         )
           .then((response) => response.text())
@@ -295,7 +296,7 @@ export default {
           .catch((error) => console.log("error", error));
       } else if (tipo == "excel") {
         fetch(
-          "http://prosisdev.sytes.net:84/api/Transacciones/Download/Excel/",
+          `${API}/Transacciones/Download/Excel/`,
           requestOptions
         )
           .then((response) => response.blob())
@@ -314,7 +315,7 @@ export default {
           .catch((error) => console.log("error", error));
       } else if (tipo == "txt") {
         fetch(
-          "http://prosisdev.sytes.net:84/api/Transacciones/Download/Txt",
+          `${API}/Transacciones/Download/Txt`,
           requestOptions
         )
           .then((response) => response.text())
