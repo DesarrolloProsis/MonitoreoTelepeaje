@@ -1,5 +1,5 @@
 <template>
-  <div id="header"><img id="logo-prosis" src="~@/assets/Login/LogoProsis.png"/></div>
+  <div id="header"><img id="logo-prosis" src="~@/assets/prosissinfondo.png"/></div>
 </template>
 <script>
 

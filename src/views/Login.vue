@@ -1,7 +1,7 @@
 <template>
 <div class="login">
   <Header></Header>
-  <div class="flex h-screen min-700">
+  <div class="flex h-screen  min-700">
     <div id="login-form" class="flex flex-1 justify-center items-center h-screen min-700-imp">
       <div class="container mx-auto">
         <p id="login-title">Monitoreo de Pagos Electrónicos</p>
@@ -11,13 +11,13 @@
               {{mensaje}}
           </div>
           <div class="input-container">
-            <img class="icon" src="~@/assets/Login/user.png" />
-            <input id="username" class="input-field" type="text" placeholder="Username" />
+            <img class="w-10 h-10 mt-1 mr-2 transform -rotate-180" src="~@/assets/Login/iniciar-sesion.png" />
+            <input id="username" class="input-field" type="text" placeholder="Usuario" />
           </div>
           <div class="input-container">
-            <img class="icon" src="~@/assets/Login/pass.png" />
+            <img class="w-10 h-10 mt-1 mr-2" src="~@/assets/Login/password.png" />
             <!-- <i class="fa fa-key icon"></i>-->
-            <input id="password" class="input-field" type="password" placeholder="Password" />
+            <input id="password" class="input-field" type="password" placeholder="Contraseña" />
           </div>
           <router-link to="/inicio">
             <button type="submit" class="btn" @click="login()">Iniciar Sesión</button>
@@ -37,7 +37,7 @@ import Footer from "../components/Footer-login.vue";
 import Header from "../components/Header-login.vue";
 import axios from "axios";
 export default {
- 
+
   components: {
     Footer,
     Header
@@ -154,13 +154,13 @@ export default {
   width: 100%;
   padding: 10px;
   outline: none;
-  border: 1px solid black;
+  border-bottom: 1px solid black;
   border-radius: 5px;
 }
 
 /* Set a style for the submit button */
 .btn {
-  background-color: dodgerblue;
+  background-color: #2c5282;
   color: white;
   padding: 15px 20px;
   border: none;

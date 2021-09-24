@@ -18,7 +18,7 @@ export default {
   bottom: 0;
   width: 100%;
   /* Footer height */
-  background-color: #3E87F7;
+  background-color: #2c5282;
   padding: 10px;
 }
 
