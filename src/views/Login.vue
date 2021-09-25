@@ -2,9 +2,9 @@
 <div class="login">
   <Header></Header>
   <div class="flex h-screen  min-700">
-    <div id="login-form" class="flex flex-1 justify-center items-center h-screen min-700-imp">
-      <div class="container mx-auto">
-        <p id="login-title">Monitoreo de Pagos Electrónicos</p>
+    <div id="" class="flex flex-1 justify-center items-center h-screen min-700-imp">
+      <div class="hidden container mx-auto">
+        <p id="login-title" class="font-titulo font-bold">Monitoreo de Pagos Electrónicos</p>
         <img class="img-centered" src="~@/assets/Login/top-user-logo.png" />
         <form class="bg-login-module" style="max-width: 500px; margin: auto">
           <div class="error" v-if="mensaje != ''">
@@ -25,8 +25,10 @@
         </form>
       </div>
     </div>
-    <div id="login-bg" class="flex-1 hidden md:block"></div>
+    <div class=" figura transform -rotate-90"></div>
+    <div id="login-bg" class=" hidden md:block"></div>
   </div>
+  
   <Footer></Footer>
 </div>
 </template>
@@ -91,6 +93,20 @@ export default {
 </script>
 
 <style scoped>
+.figura {
+/*   background-color: #2c5282;
+  background-size: cover;
+  height: 100vh;
+  clip-path: polygon(1% 91%, 100% 69%, 100% 100%, 0 100%); */
+  width: 0;
+  height: 0;
+  margin: auto;
+  border-right: 50px solid transparent;
+  /* border-left: 50px solid transparent; */
+  border-bottom: 100px solid #000;
+  
+}
+
 .error{
   background-color: #f5b7b1;
   padding: 5px;
@@ -133,6 +149,7 @@ export default {
   background-color: #eafff5;
   padding: 100px 50px;
   border-radius: 10px;
+  
 }
 
 .input-container {
