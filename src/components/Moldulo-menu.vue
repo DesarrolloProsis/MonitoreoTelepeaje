@@ -1,7 +1,7 @@
 <template>
   <div v-if="mostrar(nombre)" :class="{inactive:isInactive}"  class="w-1/2 md:w-1/4 p-5">
     <router-link :to="ruta" tag="div">
-      <img class="imagen-modulo"  :src="require('@/assets/' + imagen)" />
+      <img class="imagen-modulo animacion"  :src="require('@/assets/' + imagen)" />
     </router-link>
     <h1 class="titulo-modulo">{{ titulo }}</h1>
   </div>
@@ -55,15 +55,14 @@ export default {
 .imagen-modulo {
   display: block;
   margin: auto;
-  width: 260px;
-
+  width: 200px;
   background-color: #F3F4F6;
 }
 @media (min-width: 1720px) {
   .imagen-modulo {
     display: block;
     margin: auto;
-    width: 290px;
+    width: 230px;
 
     background-color: #F3F4F6;
   }

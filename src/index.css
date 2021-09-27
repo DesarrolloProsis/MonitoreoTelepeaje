@@ -3,5 +3,13 @@
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;600&display=swap');
 
 @tailwind base;
+
+.animacion{
+    @apply transition duration-500 ease-in-out; 
+}
+.animacion:hover{
+    @apply transform -translate-y-1 scale-110;
+}
+
 @tailwind components;
 @tailwind utilities;
