@@ -1,6 +1,6 @@
 <template>
 <footer id="footer">
-  <div id="left">Proyectos y sistemas informáticos S.A de C.V</div>
+  <div id="left">© 2021 Proyectos y Sistemas Informaticos.</div>
   <div id="right">Version 1.0.0</div>
 </footer>
 </template>
