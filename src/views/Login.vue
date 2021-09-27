@@ -25,7 +25,7 @@
         </form>
       </div>
     </div>
-    <div class=" figura transform -rotate-270"></div>
+    <div id="min-figura" class=" figura min-figura transform -rotate-270 "></div>
     <div id="login-bg" class=" hidden md:block"></div>
   </div>
   
@@ -97,11 +97,15 @@ export default {
   position: absolute;
   width: 79vh;
   height: 100vh;
-  margin-left: 1148px;
+  margin-left: 1150px;
   background-image: radial-gradient(ellipse farthest-corner at 45px 30px , rgba(255, 255, 255, 0) 69%, rgba(44, 82, 130, 1) 0%);
   
 }
-
+@media (max-width:1024px){
+  #min-figura{
+    display: none;
+  }
+}
 .error{
   background-color: #f5b7b1;
   padding: 5px;
@@ -126,6 +130,9 @@ export default {
   #login-title {
     text-align: center;
     font-size: 23px;
+  }
+  #min-figura{
+    visibility: hidden;
   }
 }
 

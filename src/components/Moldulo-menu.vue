@@ -57,7 +57,7 @@ export default {
   margin: auto;
   width: 260px;
 
-  background-color: #d3d3d3;
+  background-color: #F3F4F6;
 }
 @media (min-width: 1720px) {
   .imagen-modulo {
@@ -65,7 +65,7 @@ export default {
     margin: auto;
     width: 290px;
 
-    background-color: #d3d3d3;
+    background-color: #F3F4F6;
   }
 }
 </style>
