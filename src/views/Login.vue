@@ -148,7 +148,7 @@ export default {
 }
 
 .bg-login-module {
-  background-color: #eafff5;
+  background-color: #ebf8ff;
   padding: 100px 50px;
   border-radius: 10px;
   
