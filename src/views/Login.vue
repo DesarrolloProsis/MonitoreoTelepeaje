@@ -3,7 +3,7 @@
   <Header></Header>
   <div class="flex h-screen  min-700">
     <div id="" class="flex flex-1 justify-center items-center h-screen min-700-imp">
-      <div class="hidden container mx-auto">
+      <div class="absolute container mx-auto">
         <p id="login-title" class="font-titulo font-bold">Monitoreo de Pagos Electrónicos</p>
         <img class="img-centered" src="~@/assets/Login/top-user-logo.png" />
         <form class="bg-login-module" style="max-width: 500px; margin: auto">
@@ -25,7 +25,7 @@
         </form>
       </div>
     </div>
-    <div class=" figura transform -rotate-90"></div>
+    <div class=" figura transform -rotate-270"></div>
     <div id="login-bg" class=" hidden md:block"></div>
   </div>
   
@@ -94,16 +94,11 @@ export default {
 
 <style scoped>
 .figura {
-/*   background-color: #2c5282;
-  background-size: cover;
+  position: absolute;
+  width: 79vh;
   height: 100vh;
-  clip-path: polygon(1% 91%, 100% 69%, 100% 100%, 0 100%); */
-  width: 0;
-  height: 0;
-  margin: auto;
-  border-right: 50px solid transparent;
-  /* border-left: 50px solid transparent; */
-  border-bottom: 100px solid #000;
+  margin-left: 1148px;
+  background-image: radial-gradient(ellipse farthest-corner at 45px 30px , rgba(255, 255, 255, 0) 69%, rgba(44, 82, 130, 1) 0%);
   
 }
 
