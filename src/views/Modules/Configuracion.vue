@@ -55,7 +55,7 @@ export default {
 <style scoped>
 .title {
   text-align: center;
-  font-size: 25px;
+  font-size: 45px;
   padding-top: 20px;
 }
 @media (max-width: 750px) {
