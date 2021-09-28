@@ -1,6 +1,6 @@
 <template>
   <Navbar></Navbar>
-  <h1 class="title">Configuración</h1>
+  <h1 class="title font-bold font-titulo">Configuración</h1>
   <div class="container mx-auto px-auto pb-20 pt-0 md:px-48 md:pt-10">
     <div class="flex flex-wrap">
       <ModuloConfiguracion
@@ -27,21 +27,21 @@ export default {
   data() {
     return {
       modulos: [
-        {
+/*         {
           img_src: "Configuracion/creacion-perfiles.png",
           nombre: "Creación de Perfiles",
           ruta: "/configuracion/perfil-usuario",
-        },
+        }, */
         {
-          img_src: "Configuracion/lista-perfiles.png",
+          img_src: "Configuracion/lista-roles.png",
           nombre: "Administración de Perfiles",
           ruta: "/configuracion/administracion-perfiles",
         },
-        {
+/*         {
           img_src: "Configuracion/registro-usuarios.png",
           nombre: "Registro de Usuarios",
           ruta: "/configuracion/registro-usuarios",
-        },
+        }, */
         {
           img_src: "Configuracion/lista-usuarios.png",
           nombre: "Lista de Usuarios",
