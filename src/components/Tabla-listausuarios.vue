@@ -2,15 +2,15 @@
   <div class="responsive-table">
     <table class="tftable">
       <tr>
+        <th>Nombre de Usuario</th>
         <th>Nombre</th>
-        <th>Apellido</th>
         <th>Rol</th>
         <th>Cambiar Contraseña</th>
         <th>Estatus</th>
       </tr>
       <tr v-for="(usuario, index) in dataUsuarios" :key="index">
-        <td>{{ usuario.nombre }}</td>
-        <td>{{ usuario.apellido }}</td>
+        <td>username</td>
+        <td>{{ usuario.nombre + ' ' + usuario.apellido }}</td>
         <td>{{ usuario.rol }}</td>
         <td>
           <button

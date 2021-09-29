@@ -32,6 +32,7 @@
   <Footer></Footer>
 </template>
 <script>
+const API = process.env.VUE_APP_URL_API_PRODUCCION
 import TablaListaUsuarios from "../../components/Tabla-listausuarios";
 import Navbar from "../../components/Navbar.vue";
 import Footer from "../../components/Footer-login";
@@ -76,7 +77,7 @@ export default {
       this.token = getCookie("Token");
       axios
         .get(
-          `http://prosisdev.sytes.net:84/api/Usuario?Page=${this.paginaAct}&Rows=5`,
+          `${API}/Usuario?Page=${this.paginaAct}&Rows=10`,
           config
         )
         .then((result) => {
