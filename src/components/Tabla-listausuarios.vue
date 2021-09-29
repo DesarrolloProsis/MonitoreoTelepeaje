@@ -2,36 +2,30 @@
   <div class="responsive-table">
     <table class="tftable">
       <tr>
-        <th>Nombre de Usuario</th>
         <th>Nombre</th>
+        <th>Apellido</th>
         <th>Rol</th>
-        <th>Plazas Asignadas</th>
-        <th>Acciones</th>
+        <th>Cambiar Contraseña</th>
+        <th>Estatus</th>
       </tr>
       <tr v-for="(usuario, index) in dataUsuarios" :key="index">
-        <td>username</td>
-        <td>{{ usuario.nombre + ' ' + usuario.apellido }}</td>
+        <td>{{ usuario.nombre }}</td>
+        <td>{{ usuario.apellido }}</td>
         <td>{{ usuario.rol }}</td>
         <td>
-          <!-- <button
+          <button
             class="button btn-actualizar"
             @click="actualizarPass(usuario, index)"
           >
             Actualizar
-          </button> -->
+          </button>
         </td>
-        <td>
-              <multiselect
-      v-model="selected"
-      :options="options">
-    </multiselect>
-        </td>
-        <!-- <td v-if="usuario.estatus == true">
+        <td v-if="usuario.estatus == true">
           <button class="button btn-activo" @click="changeStatus(usuario)">Activo</button>
         </td>
         <td v-else-if="usuario.estatus == false">
           <button class="button btn-inactivo" @click="changeStatus(usuario)">Inactivo</button>
-        </td> -->
+        </td>
       </tr>
     </table>
   </div>
@@ -99,7 +93,6 @@
 </template>
 
 <script>
-//import Multiselect from 'vue-multiselect'
 export default {
   name: "TablaListaUsuarios",
   props: ["dataUsuarios"],
