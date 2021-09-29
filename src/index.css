@@ -10,6 +10,15 @@
 .animacion:hover{
     @apply transform -translate-y-1 scale-110;
 }
+.botonIconBuscar{
+    @apply bg-white tracking-wide text-gray-800 font-titulo font-bold rounded border-b-2 border-blue-800 shadow-md py-2 px-6 inline-flex items-center;
+}
+.botonIconBuscar:hover{
+    @apply border-blue-600 bg-blue-400 text-white transition duration-500;
+}
+.botonIconBuscar:focus{
+    @apply outline-none;
+}
 
 @tailwind components;
 @tailwind utilities;

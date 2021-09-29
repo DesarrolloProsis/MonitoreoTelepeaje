@@ -5,26 +5,28 @@
         <th>Nombre de Usuario</th>
         <th>Nombre</th>
         <th>Rol</th>
-        <th>Cambiar Contraseña</th>
-        <th>Estatus</th>
+        <th>Acciones</th>
       </tr>
       <tr v-for="(usuario, index) in dataUsuarios" :key="index">
         <td>username</td>
         <td>{{ usuario.nombre + ' ' + usuario.apellido }}</td>
         <td>{{ usuario.rol }}</td>
-        <td>
+        <!-- <td>
           <button
             class="button btn-actualizar"
             @click="actualizarPass(usuario, index)"
           >
             Actualizar
           </button>
-        </td>
-        <td v-if="usuario.estatus == true">
+        </td> -->
+<!--         <td v-if="usuario.estatus == true">
           <button class="button btn-activo" @click="changeStatus(usuario)">Activo</button>
         </td>
         <td v-else-if="usuario.estatus == false">
           <button class="button btn-inactivo" @click="changeStatus(usuario)">Inactivo</button>
+        </td> -->
+        <td>
+          Acciones
         </td>
       </tr>
     </table>

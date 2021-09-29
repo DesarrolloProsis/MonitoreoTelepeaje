@@ -1,6 +1,6 @@
 <template>
   <Navbar></Navbar>
-  <h1 class="title">Lista de Usuarios Registrados</h1>
+  <h1 class="title font-titulo font-bold">Lista de Usuarios Registrados</h1>
   <div class="container mx-auto px-0 pb-24 pt-4">
     <div class="flex flex-wrap bg-blue">
       <div class="flex-none filter-style">
@@ -20,6 +20,9 @@
       <div class="flex-1">
         <button class="btn-carriles ml-right">Descargar Excel</button>
       </div>
+    </div>
+    <div>
+      <button class="w-full botonIconBuscar  justify-center mt-3">Agregar Usuario</button>
     </div>
     <TablaListaUsuarios :dataUsuarios="perfiles"></TablaListaUsuarios>
     <button class="button-pagination" v-if="paginaAct > 1" @click="anterior()">Anterior</button>
@@ -105,7 +108,7 @@ export default {
       this.paginaAct = this.paginaAct - 1;
       axios
         .get(
-          `http://prosisdev.sytes.net:84/api/Usuario?Page=${this.paginaAct}&Rows=5`,
+          `${API}/Usuario?Page=${this.paginaAct}&Rows=10`,
           config
         )
         .then((res) => {
@@ -132,7 +135,7 @@ export default {
       this.paginaAct = this.paginaAct + 1;
       axios
         .get(
-          `http://prosisdev.sytes.net:84/api/Usuario?Page=${this.paginaAct}&Rows=5`,
+          `${API}/Usuario?Page=${this.paginaAct}&Rows=10`,
           config
         )
         .then((res) => {
