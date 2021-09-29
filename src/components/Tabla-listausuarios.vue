@@ -1,5 +1,5 @@
 <template>
-  <div class="responsive-table">
+  <div class="responsive-table">          
     <table class="tftable">
       <tr>
         <th>Nombre de Usuario</th>
@@ -25,8 +25,9 @@
         <td v-else-if="usuario.estatus == false">
           <button class="button btn-inactivo" @click="changeStatus(usuario)">Inactivo</button>
         </td> -->
+        
         <td>
-          Acciones
+          <Multiselect mode="multiple" v-model="value" :options="options" />          
         </td>
       </tr>
     </table>
@@ -93,17 +94,28 @@
   </div>
   <!-- FIN MODAL-->
 </template>
-
+<style src="@vueform/multiselect/themes/default.css"></style>
 <script>
+import Multiselect from '@vueform/multiselect'
+
 export default {
   name: "TablaListaUsuarios",
   props: ["dataUsuarios"],
+  components:{
+    Multiselect,
+  },
   data() {
     return {
       showModal: false,
       seleccionado: {},
       genPass: "",
-      errorMensaje:''
+      errorMensaje:'',
+      value: null,
+        options: [
+          'Batman',
+          'Robin',
+          'Joker',
+        ]
     };
   },
   methods: {
