@@ -24,10 +24,21 @@
         </td>
         <td v-else-if="usuario.estatus == false">
           <button class="button btn-inactivo" @click="changeStatus(usuario)">Inactivo</button>
-        </td> -->
-        
+        </td> -->  
         <td>
-          <Multiselect mode="multiple" v-model="value" :options="options" />          
+          <div>
+            <Multiselect v-model="value" placeholder="Sleccione una Acción" @close="acciones_mapper()" label="name" trackBy="name" :options="options" :searchable="true">
+              <template v-slot:singleLabel="{ value }">
+                <div class="multiselect-single-label">
+                  <img height="26" style="margin: 0 6px 0 0;" :src="value.icon"> {{ value.name }}
+                </div>
+              </template>
+
+              <template v-slot:option="{ option }">
+                <img height="22" style="margin: 0 6px 0 0;" :src="option.icon">{{ option.name }}
+              </template>
+            </Multiselect>
+          </div>
         </td>
       </tr>
     </table>
@@ -94,12 +105,11 @@
   </div>
   <!-- FIN MODAL-->
 </template>
-<style src="@vueform/multiselect/themes/default.css"></style>
 <script>
 import Multiselect from '@vueform/multiselect'
 
 export default {
-  name: "TablaListaUsuarios",
+name: "TablaListaUsuarios",
   props: ["dataUsuarios"],
   components:{
     Multiselect,
@@ -111,11 +121,13 @@ export default {
       genPass: "",
       errorMensaje:'',
       value: null,
-        options: [
-          'Batman',
-          'Robin',
-          'Joker',
+      options: [
+          { value: 'Habilitar', name: 'Habilitar' },
+          { value: 'Deshabilitar', name: 'Deshabilitar'},
+          { value: 'Agregar Plazas', name: 'Agregar Plazas'},
+          { value: 'Quitar Plazas', name: 'Quitar Plazas'},
         ]
+
     };
   },
   methods: {
@@ -141,18 +153,28 @@ export default {
         console.log("genpass:" + this.genPass)
         this.errorMensaje = "Error. Escribe una contraseña válida"
       }
-     
     },
      //! Activar o desactivar
     changeStatus: function (usuario) {
       this.seleccionado = usuario;
       this.seleccionado.estatus = !this.seleccionado.estatus;
-      
-       
+    },
+    acciones_mapper(){
+      if(this.value == 'Habilitar'){
+        console.log('Habilitar');
+      }if(this.value == 'Deshabilitar'){
+        console.log('Deshabilitar');
+      }if(this.value == 'Agregar Plazas'){
+        console.log('Agregar Plazas');
+      }if(this.value == 'Quitar Plazas'){
+        console.log('Quitar Plazas');
+      }
     }
+    
   },
 };
 </script>
+<style src="@vueform/multiselect/themes/default.css"></style>
 <style scoped>
 .input-pass {
   width: 100%;
