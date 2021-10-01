@@ -38,6 +38,7 @@ const API = process.env.VUE_APP_URL_API_PRODUCCION
 import Footer from "../components/Footer-login.vue";
 import Header from "../components/Header-login.vue";
 import axios from "axios";
+import jwt_decode from "jwt-decode";
 export default {
 
   components: {
@@ -70,6 +71,8 @@ export default {
         axios.post(`${API}/Login`, data)
         .then((result) => {
           console.log(result.data);
+          let userInfo = jwt_decode(result.data.bearer);
+          console.log(userInfo['Bitacora Accesos'])
           // Set Cookie
           let d = new Date();
           let dias = 365;

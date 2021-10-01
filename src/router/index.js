@@ -213,8 +213,7 @@ router.beforeEach((to, _from, next) => {
             let json_token = jwt_decode(getCookie("Token"))
               console.log(json_token[to.meta.nombre])
             if( json_token[to.meta.nombre] !== "false"){
-              console.log(json_token)
-            
+              console.log(json_token)            
               console.log("Esta vista esta en el token")
               next()
             }else{

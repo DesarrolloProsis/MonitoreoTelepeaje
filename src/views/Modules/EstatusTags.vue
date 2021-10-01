@@ -2,15 +2,7 @@
 <Navbar></Navbar>
 <h1 class="title">Estatus Tags</h1>
 <div class="flex justify-center pt-4 filter-style">
-  Plaza:
-  <select class="flex-none filter-style color-black" name="select" id="selectorPlaza">
-    <option v-if="isLoading == true">Cargando...</option>
-                                                              
-    <option v-else-if="plazas.length == 0 && isLoading == false"> No hay plazas</option>
-    <option v-else value="0" selected>Todas</option>
-    
-    <option v-for="(plaza, key) in plazas" :value="key + 1" :key="key">{{plaza.nombre}}</option>
-  </select>
+  <FormTramoPlaza @cambiar-tramo-plaza="recibir_tramo_plaza"></FormTramoPlaza>
 </div>
 <div class="flex justify-center">
   <div class="flex-auto text-center pt-4">
@@ -29,19 +21,23 @@ const API = process.env.VUE_APP_URL_API_PRODUCCION
 import TablaEstatusTag from "../../components/Tabla-estatustag";
 import Navbar from "../../components/Navbar.vue";
 import Footer from "../../components/Footer-login";
+import FormTramoPlaza from '../../components/Form-tramoplaza.vue'
 import axios from "axios";
 export default {
   components: {
     TablaEstatusTag,
     Navbar,
     Footer,
-  },
+    FormTramoPlaza
+  },  
   data() {
     return {
-      plazas: [],
-      token:"",
+      plazas: [],      
+      token:"",      
       tags: [],
-      isLoading: true
+      isLoading: true,
+      tramo: '',
+      plaza: ''
     };
   },
   mounted() {
@@ -79,11 +75,7 @@ export default {
   },
   methods: {
     buscarTag: function(){
-      let config = {
-        headers: {
-          'Authorization': 'Bearer ' + this.token
-        }
-      }
+      let config = { headers: { 'Authorization': 'Bearer ' + this.token } }
       let tag = document.getElementById("tag").value;
       let plaza = document.getElementById("selectorPlaza").value;
       if (plaza == 0) {
@@ -114,7 +106,10 @@ export default {
             })
           })
       }
-
+    },
+    recibir_tramo_plaza(value){
+      this.tramo = value.tramo
+      this.plaza = value.plaza
     }
   }
 };
