@@ -1,7 +1,7 @@
 <template>
   <Navbar></Navbar>
   <h1 class="title font-bold font-titulo">Configuración</h1>
-  <div class="container mx-auto px-auto pb-20 pt-0 md:px-48 md:pt-10">
+  <div class="container mx-auto px-auto pb-20 pt-0 md:px-48 md:pt-10 my-32">
     <div class="flex flex-wrap">
       <ModuloConfiguracion
         v-for="(modulo, index) in modulos"
@@ -55,7 +55,7 @@ export default {
 <style scoped>
 .title {
   text-align: center;
-  font-size: 25px;
+  font-size: 55px;
   padding-top: 20px;
 }
 @media (max-width: 750px) {
