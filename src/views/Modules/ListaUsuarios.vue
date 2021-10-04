@@ -35,7 +35,7 @@
   </div>
   <!-- MODA CREAR USUARIO -->
   <div class="sticky inset-0 " :class="{'modal-container': modalAgregar}">
-    <div v-if="modalAgregar" class="rounded-lg  justify-center border absolute inset-x-0 bg-white border-gray-400 w-69  mx-auto px-12 py-10 shadow-2xl mt-66">
+    <div v-if="modalAgregar" class="rounded-lg  justify-center border absolute inset-x-0 bg-white border-gray-400 w-69  mx-auto px-12 py-10 shadow-2xl mt-60">
       <p class="text-gray-900 font-bold text-2xl -mt-8 mb-8 text-center">Agregar Encargado de Plaza</p>
       <div class="grid grid-cols-2 mt-2">
         <p class="text-sm mb-1 font-semibold text-gray-700 sm:-ml-6">Nombre(s) *</p>
@@ -85,9 +85,10 @@ const API = process.env.VUE_APP_URL_API_PRODUCCION
 import TablaListaUsuarios from "../../components/Tabla-listausuarios";
 import Navbar from "../../components/Navbar.vue";
 import Footer from "../../components/Footer-login";
-import Multiselect from '@vueform/multiselect'
-
+import Multiselect from '@vueform/multiselect';
 import axios from "axios";
+
+
 export default {
   components: {
     TablaListaUsuarios,
@@ -122,6 +123,7 @@ export default {
     };
   },
   async beforeMount() {
+    this.$notify("Hello user!");
     let rol = await axios.get(`${API}/CatalogoRoles`)
     this.rol_Filtrado = rol.data.body
     let proxy = new Proxy(this.rol_Filtrado,{
@@ -373,29 +375,6 @@ export default {
       this.tramoSeleccionado = ''
       this.plazas = []
     },
-    plazasfil: async function (){
-      let porTramo = await axios.get(`${API}/PlazaAsignada/PorTramo/${this.tramoSeleccionado}`)
-      //let plazas = await axios.get(`${API}/PlazaAsignada`)
-      this.listaPlazas = porTramo.data.body
-      /* let filtradas = this.listaPlazas.filter(plazas => plazas.tramoAsignadoId == this.tramoSeleccionado)*/
-      let proxy = new Proxy(this.listaPlazas,{
-        get : function(target, property){
-          return property === 'length' ?
-            target.length :
-            target[property];
-        }
-      });
-      if(this.tramoSeleccionado == ''){
-        for(let i= 0; i<proxy.length; i++){
-          this.plazas.push({'value':proxy[i].plazaAsignadaId, 'label':proxy[i].nombre}) 
-        }
-      }else{
-        this.plazas = []
-        for(let i= 0; i<proxy.length; i++){
-          this.plazas.push({'value':proxy[i].plazaAsignadaId, 'label':proxy[i].nombre}) 
-        }
-      }
-    }
   },
 };
 </script>

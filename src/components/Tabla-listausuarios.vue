@@ -92,9 +92,41 @@
     </div>
   </div>
   <!-- FIN MODAL-->
+  <!-- MODAL AGREGAR PLAZAS -->
+  <div class="sticky inset-0 " :class="{'modal-container': modalPlazas}">
+    <div v-if="modalPlazas" class="rounded-lg  justify-center border absolute inset-x-0 bg-white border-gray-400 w-69  mx-auto px-12 py-10 shadow-2xl mt-60">
+      <p class="text-gray-900 font-bold text-2xl -mt-8 mb-8 text-center">Agregar Plazas a {{ seleccionado.nombre + ' ' + seleccionado.apellido }}</p>
+      <div class="grid grid-cols-2 mt-2">
+        <p class="text-sm mb-1 font-semibold text-gray-700 mt-2 sm:-ml-6">Tramo </p>
+        <p>
+        <select v-model="tramoSeleccionado" @change="plazasfil()" class="w-full border-b-2 rounded-lg">
+          <option disabled value>Selecionar...</option>     
+          <option value="1">México Acapulco</option>     
+          <option value="2">México Irapuato</option>
+        </select>
+        <span v-if="validacion" class="text-xs text-red-600">Este dato es Obligatorio</span>
+        </p>
+        <p class="text-sm mb-1 font-semibold text-gray-700 mt-2 sm:-ml-6">Plazas </p>
+        <p>
+          <label class="border-b-2 rounded-md" :class="{'border-red-400':validacion}">
+            <Multiselect v-model="plazasAsignar" mode="multiple" placeholder="Seleccione las Plazas" :searchable="true" :options="plazas" :close-on-select="false"/>
+          </label>
+          <span v-if="validacion" class="text-xs text-red-600">Este dato es Obligatorio</span>
+        </p> 
+        
+      </div>
+      <div class="mt-5 text-center ml-6">
+        <button @click="agregarPlaza" class="botonIconBuscar">Agregar</button>
+        <button @click="modalPlazas = false, tramoSeleccionado = '', validacion = false" class="botonIconCancelar">Cancelar</button>
+      </div>
+    </div>
+  </div>
 </template>
 <script>
+const API = process.env.VUE_APP_URL_API_PRODUCCION
 import Multiselect from '@vueform/multiselect'
+import axios from "axios";
+
 
 export default {
 name: "TablaListaUsuarios",
@@ -110,6 +142,12 @@ name: "TablaListaUsuarios",
       genPass: "",
       errorMensaje:'',
       value: null,
+      modalPlazas:false,
+      listaPlazas:[],
+      plazas:[{ value: '', label: '' }],
+      tramoSeleccionado:'',
+      plazasAsignar:[],
+      validacion: false
     };
   },
   methods: {
@@ -136,6 +174,48 @@ name: "TablaListaUsuarios",
         this.errorMensaje = "Error. Escribe una contraseña válida"
       }
     },
+    plazasfil: async function (){
+      let porTramo = await axios.get(`${API}/PlazaAsignada/PorTramo/${this.tramoSeleccionado}`)
+      //let plazas = await axios.get(`${API}/PlazaAsignada`)
+      this.listaPlazas = porTramo.data.body
+      /* let filtradas = this.listaPlazas.filter(plazas => plazas.tramoAsignadoId == this.tramoSeleccionado)*/
+      let proxy = new Proxy(this.listaPlazas,{
+        get : function(target, property){
+          return property === 'length' ?
+            target.length :
+            target[property];
+        }
+      });
+      if(this.tramoSeleccionado == ''){
+        for(let i= 0; i<proxy.length; i++){
+          this.plazas.push({'value':proxy[i].plazaAsignadaId, 'label':proxy[i].nombre}) 
+        }
+      }else{
+        this.plazas = []
+        for(let i= 0; i<proxy.length; i++){
+          this.plazas.push({'value':proxy[i].plazaAsignadaId, 'label':proxy[i].nombre}) 
+        }
+      }
+    },
+    agregarPlaza: function (){
+      if(this.tramoSeleccionado != '' && this.plazasAsignar != ''){
+        console.log(this.plazasAsignar);
+        for(let i=0; i< this.plazasAsignar.length;i++){
+          let nueva = this.plazasAsignar[i]
+          let data = {
+            usuarioId: 2014,
+            plazaAsignadaId: nueva
+          }
+          axios.post(`${API}/PlazaAsignada`,data) 
+          this.modalPlazas = false
+          this.tramoSeleccionado = ''
+
+        }
+      }else{
+        console.log('No Agregar');
+        this.validacion= true
+      }
+    },
      //! Activar o desactivar
     changeStatus: function (usuario) {
       this.seleccionado = usuario;
@@ -153,7 +233,12 @@ name: "TablaListaUsuarios",
       }if(this.value == 'Cambiar Contraseña'){
         this.seleccionado = usuario;
         this.showModal = true;
+      }if(this.value == 'Agregar Plazas'){
+        this.seleccionado = usuario;
+        console.log(this.seleccionado);
+        this.modalPlazas = true;
       }
+      
       this.value = ""
     },
     opticones_select_acciones(usuario){
@@ -161,14 +246,18 @@ name: "TablaListaUsuarios",
           {  value: 'Habilitar', name: 'Habilitar'},//0
           {  value: 'Deshabilitar', name: 'Deshabilitar'},//1
           {  value: 'Cambiar Contraseña', name: 'Cambiar Contraseña'},//2
+          {  value: 'Agregar Plazas', name: 'Agregar Plazas'},//3
       ]
       let filtroOpciones = []
           if(usuario.estatus == false)
             filtroOpciones.push(options[0])
-          if(usuario.estatus ==  true)
+          if(usuario.estatus ==  true){
             filtroOpciones.push(options[1])
-          if(usuario.estatus ==  true)
-            filtroOpciones.push(options[2])        
+            filtroOpciones.push(options[3])
+            filtroOpciones.push(options[2])
+          }
+          
+                    
       return filtroOpciones  
     },
   },
@@ -176,6 +265,13 @@ name: "TablaListaUsuarios",
 </script>
 <style src="@vueform/multiselect/themes/default.css"></style>
 <style scoped>
+.modal-container{
+    position: fixed;
+    width: 100%;
+    height: 100vh;
+    z-index: 1000;
+    background: rgba(0, 0, 0, 0.5);
+}
 .input-pass {
   width: 100%;
   font-size: 20px;
