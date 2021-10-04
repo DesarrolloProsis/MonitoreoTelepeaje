@@ -5,24 +5,26 @@
     <div class="flex flex-wrap bg-blue">
       <div class="flex-none filter-style">
         Nombre:
-        <input type="text" />
+        <input v-model="nombre" type="text" />
       </div>
       <div class="flex-none filter-style">
         Estatus:
-        <select class="flex-none filter-style color-black" name="select">
-          <option value="100" selected>Inactivo</option>
+        <select v-model="estatus" class="flex-none filter-style color-black" name="select" placeholder="Selecciona">
+          <option hidden selected>Seleccione</option>
+          <option value="100">Inactivo</option>
           <option value="200">Activo</option>
         </select>
       </div>
       <div class="flex-none filter-style">
-        <button class="btn-buscar">Buscar</button>
+        <button @click="buscar(nombre,estatus)" class="btn-buscar">Buscar</button>
+        <button @click="todos()" class="btn-buscar ml-1">Todos</button>
       </div>
       <div class="flex-1">
-        <button class="btn-carriles ml-right">Descargar Excel</button>
+        <button class="btn-carriles ml-right animacion">Descargar Excel</button>
       </div>
     </div>
-    <div>
-      <button class="w-full botonIconBuscar  justify-center mt-3">Agregar Usuario</button>
+    <div class="mb-6">
+      <button @click="modalAgregar=true" class="w-full botonIconBuscar justify-center mt-3 -mb-8">Agregar Usuario</button>
     </div>
     <TablaListaUsuarios :dataUsuarios="perfiles"></TablaListaUsuarios>
     <button class="button-pagination" v-if="paginaAct > 1" @click="anterior()">Anterior</button>
@@ -31,7 +33,51 @@
       Página {{ paginaAct }} de {{ maxPages }}
     </p>
   </div>
-
+  <!-- MODA CREAR USUARIO -->
+  <div class="sticky inset-0 " :class="{'modal-container': modalAgregar}">
+    <div v-if="modalAgregar" class="rounded-lg  justify-center border absolute inset-x-0 bg-white border-gray-400 w-69  mx-auto px-12 py-10 shadow-2xl mt-66">
+      <p class="text-gray-900 font-bold text-2xl -mt-8 mb-8 text-center">Agregar Encargado de Plaza</p>
+      <div class="grid grid-cols-2 mt-2">
+        <p class="text-sm mb-1 font-semibold text-gray-700 sm:-ml-6">Nombre(s)</p>
+        <input v-model="usuario.nombre" type="text" class="border rounded-lg">
+        <p class="text-sm mb-1 font-semibold text-gray-700 mt-2 sm:-ml-6">Apellido Paterno</p>
+        <input v-model="usuario.apellidoP" type="text" class="border rounded-lg">
+        <p class="text-sm mb-1 font-semibold text-gray-700 mt-2 sm:-ml-6">Apellido Materno</p>
+        <input v-model="usuario.apellidoM" type="text" class="border rounded-lg">
+        <p class="text-sm mb-1 font-semibold text-gray-700 mt-2 sm:-ml-6">Contraseña</p>
+        <input v-model="usuario.pass" type="text" class="border rounded-lg">
+        <p class="text-sm mb-1 font-semibold text-gray-700 mt-2 sm:-ml-6">Tramo</p>
+        <select v-model="tramoSeleccionado" @change="plazasfil()" class="w-full border rounded-lg">
+          <option disabled value>Selecionar...</option>     
+          <option value="1">México Acapulco</option>     
+          <option value="2">México Irapuato</option>
+        </select>
+        <p class="text-sm mb-1 font-semibold text-gray-700 mt-2 sm:-ml-6">Plazas</p>
+        <Multiselect
+          v-model="usuario.plazas"
+          mode="multiple"
+          placeholder="Seleccione las Plazas"
+          :searchable="true"
+          :options="plazas"
+          :close-on-select="false"
+        /> 
+        <p class="text-sm mb-1 font-semibold text-gray-700 mt-2 sm:-ml-6">Rol</p>
+        <Multiselect
+          v-model="usuario.rol"
+          placeholder="Seleccione un Rol"
+          :searchable="true"
+          :options="roles"
+          :close-on-select="true"
+        /> 
+        <p class="text-sm mb-1 font-semibold text-gray-700 mt-2 sm:-ml-6">Correo</p>
+        <input v-model="usuario.correo" type="text" class="border rounded-lg">
+      </div>
+      <div class="mt-5 text-center ml-6">
+        <button @click="guardar" class="botonIconBuscar">Guardar</button>
+        <button @click="cancelar, modalAgregar= false" class="botonIconCancelar">Cancelar</button>
+      </div>
+    </div>
+  </div>
   <Footer></Footer>
 </template>
 <script>
@@ -39,12 +85,15 @@ const API = process.env.VUE_APP_URL_API_PRODUCCION
 import TablaListaUsuarios from "../../components/Tabla-listausuarios";
 import Navbar from "../../components/Navbar.vue";
 import Footer from "../../components/Footer-login";
+import Multiselect from '@vueform/multiselect'
+
 import axios from "axios";
 export default {
   components: {
     TablaListaUsuarios,
     Navbar,
     Footer,
+    Multiselect
   },
   data() {
     return {
@@ -52,9 +101,40 @@ export default {
       token: "",
       paginaAct: 1,
       maxPages: 1,
+      nombre: '',
+      estatus:0,
+      modalAgregar: false,
+      usuario:{
+        nombre: '',
+        apellidoP:'',
+        apellidoM:'',
+        pass:'',
+        plazas:[],
+        rol:'',
+        correo:''
+      },
+      listaPlazas:[],
+      plazas:[{ value: '', label: '' }],
+      verdad:false,
+      tramoSeleccionado: '',
+      rol_Filtrado:[],
+      roles:[],
     };
   },
-  beforeMount() {
+  async beforeMount() {
+    let rol = await axios.get(`${API}/CatalogoRoles`)
+    this.rol_Filtrado = rol.data.body
+    let proxy = new Proxy(this.rol_Filtrado,{
+        get : function(target, property){
+          return property === 'length' ?
+            target.length :
+            target[property];
+        }
+      });
+        for(let i= 0; i<proxy.length; i++){
+          this.roles.push({'value':proxy[i].rolId, 'label':proxy[i].nombreRol}) 
+        }
+    console.log(this.roles);
     function getCookie(cname) {
       var name = cname + "=";
       var decodedCookie = decodeURIComponent(document.cookie);
@@ -78,11 +158,7 @@ export default {
         },
       };
       this.token = getCookie("Token");
-      axios
-        .get(
-          `${API}/Usuario?Page=${this.paginaAct}&Rows=10`,
-          config
-        )
+      axios.get(`${API}/Usuario?Page=${this.paginaAct}&Rows=10`,config)
         .then((result) => {
           console.log(result.data);
           this.maxPages = result.data.totalPages;
@@ -99,6 +175,9 @@ export default {
     }
   },
   methods: {
+    guardar: function (){
+      console.log(this.usuario);
+    },
     anterior: function () {
       let config = {
         headers: {
@@ -152,13 +231,141 @@ export default {
           });
         });
     },
+    todos: function (){
+      this.nombre = ''
+      let config = {
+        headers: {
+          Authorization: "Bearer " + this.token,
+        },
+      };
+      axios
+        .get(
+          `${API}/Usuario?Page=${this.paginaAct}&Rows=10`,
+          config
+        )
+        .then((res) => {
+          this.perfiles = []
+          this.maxPages = res.data.totalPages;
+          res.data.page.forEach((e) => {
+            let obj = {
+              nombre: e.nombre,
+              apellido: e.apellidoPaterno,
+              rol: e.rol,
+              estatus: e.estatus,
+            };
+            this.perfiles.push(obj);
+          });
+        });
+    },
+    buscar: function (nombre,estatus){
+      console.log(nombre);
+      console.log(estatus);
+      if(nombre != ''){
+        let config = {
+          headers: {
+            Authorization: "Bearer " + this.token,
+          },
+        };
+        axios.get(`${API}/Usuario?Page=${this.paginaAct}&Rows=10&NameFilter=${this.nombre}`,config)
+        .then((res) => {
+          this.perfiles = []
+          this.maxPages = res.data.totalPages;
+          res.data.page.forEach((e) => {
+            let obj = {
+              nombre: e.nombre,
+              apellido: e.apellidoPaterno,
+              rol: e.rol,
+              estatus: e.estatus,
+            };
+            this.perfiles.push(obj);
+          });
+        });
+      }if(estatus != undefined){
+        if(this.estatus == 100){
+          let config = {
+          headers: {
+            Authorization: "Bearer " + this.token,
+          },
+          };
+          axios.get(`${API}/Usuario?Page=${this.paginaAct}&Rows=10&EstatusFilter=false`,config)
+          .then((res) => {
+            this.perfiles = []
+            this.maxPages = res.data.totalPages;
+            res.data.page.forEach((e) => {
+              let obj = {
+                nombre: e.nombre,
+                apellido: e.apellidoPaterno,
+                rol: e.rol,
+                estatus: e.estatus,
+              };
+              this.perfiles.push(obj);
+            });
+          });
+        }if(this.estatus == 200){
+          let config = {
+          headers: {
+            Authorization: "Bearer " + this.token,
+          },
+          };
+          axios.get(`${API}/Usuario?Page=${this.paginaAct}&Rows=10&EstatusFilter=true`,config)
+          .then((res) => {
+            this.perfiles = []
+            this.maxPages = res.data.totalPages;
+            res.data.page.forEach((e) => {
+              let obj = {
+                nombre: e.nombre,
+                apellido: e.apellidoPaterno,
+                rol: e.rol,
+                estatus: e.estatus,
+              };
+              this.perfiles.push(obj);
+            });
+          });
+        }
+      }
+    },
+    cancelar: function (){
+      this.usuario = {nombre: '', apellidoP:'', apellidoM:'', contraseña:'', plazas:'', rol:'', correo: ''}
+      this.tramoSeleccionado = ''
+    },
+    plazasfil: async function (){
+      let plazas = await axios.get(`${API}/PlazaAsignada`)
+      this.listaPlazas = plazas.data.body
+      let filtradas = this.listaPlazas.filter(plazas => plazas.tramoAsignadoId == this.tramoSeleccionado)
+      console.log(filtradas);
+      let proxy = new Proxy(filtradas,{
+        get : function(target, property){
+          return property === 'length' ?
+            target.length :
+            target[property];
+        }
+      });
+      if(this.tramoSeleccionado == ''){
+        for(let i= 0; i<proxy.length; i++){
+          this.plazas.push({'value':proxy[i].plazaAsignadaId, 'label':proxy[i].nombre}) 
+        }
+      }else{
+        this.plazas = []
+        for(let i= 0; i<proxy.length; i++){
+          this.plazas.push({'value':proxy[i].plazaAsignadaId, 'label':proxy[i].nombre}) 
+        }
+      }
+    }
   },
 };
 </script>
+<style src="@vueform/multiselect/themes/default.css"></style>
 <style scoped>
+.modal-container{
+    position: fixed;
+    width: 100%;
+    height: 100vh;
+    z-index: 1000;
+    background: rgba(0, 0, 0, 0.5);
+}
 .title {
   text-align: center;
-  font-size: 25px;
+  font-size: 45px;
   padding-top: 20px;
 }
 .button-pagination {
@@ -169,7 +376,7 @@ export default {
   margin-top: 20px;
 }
 .bg-blue {
-  background-color: #0195b0;
+  background-color: #2c5282;
   padding: 10px 5px;
 }
 .filter-style {
