@@ -1,30 +1,22 @@
 <template>
   <div class="responsive-table">
-    <table class="tftable">
+    <table class="tftable" style="height:350px;">
       <tr>
-        <th>Perfil</th>
-        <th>Modulos</th>
-        <th>Plazas</th>
+        <th>Perfil</th>             
         <th>Estatus</th>
+        <th>Modulos</th>   
       </tr>
       <tr v-for="(perfiles, index) in dataPerfiles" :key="index">
-        <td>{{ perfiles.perfil }}</td>
-        <td>
-          <button class="button btn-actualizar" @click="showModulos(perfiles)">
-            Actualizar
-          </button>
-        </td>
-        <td>
-          <button class="button btn-seleccionar" @click="showPlazas(perfiles)">
-            Seleccionar
-          </button>
-        </td>
+        <td>{{ perfiles.perfil }}</td>  
         <td v-if="perfiles.estatus == true">
           <button class="button btn-activo" @click="changeStatus(perfiles)">Activo</button>
         </td>
         <td v-else-if="perfiles.estatus == false">
           <button class="button btn-inactivo" @click="changeStatus(perfiles)">Inactivo</button>
         </td>
+        <td>
+          <button class="button btn-actualizar" @click="showModulos(perfiles)">Actualizar</button>
+        </td>   
       </tr>
     </table>
   </div>
@@ -34,71 +26,31 @@
   <!--Modal Actualizar-->
   <div v-if="isModulosActive == true">
     <div class="fixed z-10 inset-0 overflow-y-auto">
-      <div
-        class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0"
-      >
+      <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
         <div class="fixed inset-0 transition-opacity" aria-hidden="true">
           <div class="absolute inset-0 bg-gray-900 opacity-10"></div>
         </div>
 
-        <span
-          class="hidden sm:inline-block sm:align-middle sm:h-screen"
-          aria-hidden="true"
-          >&#8203;</span
-        >
-        <div
-          class="inline-block align-bottom bg-white text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full"
-          role="dialog"
-          aria-modal="true"
-          aria-labelledby="modal-headline"
-        >
+        <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
+        <div class="inline-block align-bottom bg-white text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full" role="dialog" aria-modal="true" aria-labelledby="modal-headline">
           <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex">
-            <h2
-              class="text-lg leading-6 font-bold text-gray-900"
-              id="modal-headline"
-            >
-              Actualizar Módulos {{ perfilSelected.perfil }}
-            </h2>
+            <h2 class="text-lg leading-6 font-bold text-gray-900" id="modal-headline">Actualizar Módulos {{ perfilSelected.perfil }}</h2>
           </div>
           <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
             <div class="sm:flex sm:items-start">
               <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
                 <div>
-                  <!-- <p class="text-lg text-gray-500">
-                    Data: {{ perfilSelected }}
-                  </p>-->
-
-                  <p
-                    v-for="(modulos, index) in perfilSelected.modulos"
-                    :key="index"
-                  >
+                  <p v-for="(modulos, index) in perfilSelected.modulos" :key="index">
                     {{ modulos.nombre }}:
-
-                    <button
-                      class="btn btn-active"
-                      @click="cambiarModulos(index, modulos.seleccionado)"
-                      v-if="modulos.seleccionado == true"
-                    >
-                      Activo
-                    </button>
-                    <button
-                      class="btn btn-inactive"
-                      @click="cambiarModulos(index, modulos.seleccionado)"
-                      v-if="modulos.seleccionado == false"
-                    >
-                      Inactivo
-                    </button>
+                    <button v-if="modulos.seleccionado == true" @click="cambiarModulos(index, modulos.seleccionado)" class="btn btn-active">Activo</button>
+                    <button v-if="modulos.seleccionado == false" @click="cambiarModulos(index, modulos.seleccionado)" class="btn btn-inactive">Inactivo</button>
                   </p>
                 </div>
               </div>
             </div>
           </div>
           <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
-            <button
-              type="button"
-              class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-blue-600 text-base font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:ml-3 sm:w-auto sm:text-sm"
-              @click="hideModulos()"
-            >
+            <button @click="hideModulos()" class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-blue-600 text-base font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:ml-3 sm:w-auto sm:text-sm" type="button">
               Guardar
             </button>
           </div>
@@ -110,73 +62,33 @@
   <!--Modal Plazas-->
   <div v-if="isPlazasActive == true">
     <div class="fixed z-10 inset-0 overflow-y-auto">
-      <div
-        class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0"
-      >
+      <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
         <div class="fixed inset-0 transition-opacity" aria-hidden="true">
           <div class="absolute inset-0 bg-gray-900 opacity-10"></div>
         </div>
 
-        <span
-          class="hidden sm:inline-block sm:align-middle sm:h-screen"
-          aria-hidden="true"
-          >&#8203;</span
-        >
-        <div
-          class="inline-block align-bottom bg-white text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full"
-          role="dialog"
-          aria-modal="true"
-          aria-labelledby="modal-headline"
-        >
+        <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
+        <div class="inline-block align-bottom bg-white text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full" role="dialog" aria-modal="true" aria-labelledby="modal-headline">
           <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex">
-            <h2
-              class="text-lg leading-6 font-bold text-gray-900"
-              id="modal-headline"
-            >
+            <h2 class="text-lg leading-6 font-bold text-gray-900" id="modal-headline">
               Seleccionar Plazas {{ perfilSelected.perfil }}
             </h2>
           </div>
           <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
             <div class="sm:flex sm:items-start">
               <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
-                <div>
-                  <!-- <p class="text-lg text-gray-500">
-                    Data: {{ perfilSelected }}
-                  </p>-->
-
-                  <p
-                    v-for="(plaza, index) in perfilSelected.plazas"
-                    :key="index"
-                  >
+                <div>         
+                  <p v-for="(plaza, index) in perfilSelected.plazas" :key="index">
                     {{ plaza.nombre }}:
-
-                    <button
-                      class="btn btn-active"
-                      @click="cambiarPlazas(index, plaza.seleccionado)"
-                      v-if="plaza.seleccionado == true"
-                    >
-                      Activo
-                    </button>
-                    <button
-                      class="btn btn-inactive"
-                      @click="cambiarPlazas(index, plaza.seleccionado)"
-                      v-if="plaza.seleccionado == false"
-                    >
-                      Inactivo
-                    </button>
+                    <button v-if="plaza.seleccionado == true" class="btn btn-active" @click="cambiarPlazas(index, plaza.seleccionado)">Activo</button>
+                    <button v-if="plaza.seleccionado == false" class="btn btn-inactive" @click="cambiarPlazas(index, plaza.seleccionado)">Inactivo</button>
                   </p>
                 </div>
               </div>
             </div>
           </div>
           <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
-            <button
-              type="button"
-              class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-blue-600 text-base font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:ml-3 sm:w-auto sm:text-sm"
-              @click="hidePlazas()"
-            >
-              Guardar
-            </button>
+            <button @click="hidePlazas()" class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-blue-600 text-base font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:ml-3 sm:w-auto sm:text-sm" type="button">Guardar</button>
           </div>
         </div>
       </div>
@@ -270,7 +182,7 @@ export default {
   color: #025c51;
 }
 .btn-activo {
-  background-color: #614dff;
+  background-color: #00b158;
   color: #000071;
 }
 .btn-inactivo {
@@ -290,7 +202,7 @@ export default {
 }
 .tftable th {
   font-size: 14px;
-  background-color: #2ed0e1;
+  background-color: #2c5282;
   border-width: 5px;
   padding: 8px;
   border-style: solid;
@@ -314,7 +226,6 @@ export default {
   border-bottom-color: #a1a1a1;
   border-left-color: white;
   border-right-color: white;
-
   text-align: center;
 }
 </style>

@@ -1,7 +1,7 @@
 <template>
   <Navbar></Navbar>
-  <h1 class="title">Administración de Perfiles</h1>
-  <div class="container mx-auto px-0 pb-24 pt-4">
+  <h1 class="title font-titulo font-bold">Administración de Perfiles</h1>
+  <div class="container mx-auto px-0 pb-24 pt-4">    
     <div class="flex flex-wrap bg-blue">
       <div class="flex-none filter-style">
         Nombre:
@@ -20,6 +20,9 @@
       <div class="flex-1">
         <button class="btn-carriles ml-right">Descargar Excel</button>
       </div>
+    </div>
+    <div class="mb-6">
+      <button @click="modalAgregar=true" class="w-full botonIconBuscar justify-center mt-3 -mb-8">Agregar Usuario</button>
     </div>
     <TablaListaPerfiles :dataPerfiles="perfiles"></TablaListaPerfiles>
   </div>
@@ -103,7 +106,7 @@ export default {
   padding-top: 20px;
 }
 .bg-blue {
-  background-color: #0195b0;
+  background-color: #2c5282;
   padding: 10px 5px;
 }
 .filter-style {
