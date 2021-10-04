@@ -7,11 +7,11 @@
         <th>Modulos</th>   
       </tr>
       <tr v-for="(perfiles, index) in dataPerfiles" :key="index">
-        <td>{{ perfiles.perfil }}</td>  
-        <td v-if="perfiles.estatus == true">
+        <td>{{ perfiles.nombreRol }}</td>  
+        <td v-if="perfiles.activo == true || perfiles.activo == null">
           <button class="button btn-activo" @click="changeStatus(perfiles)">Activo</button>
         </td>
-        <td v-else-if="perfiles.estatus == false">
+        <td v-else-if="perfiles.activo == false">
           <button class="button btn-inactivo" @click="changeStatus(perfiles)">Inactivo</button>
         </td>
         <td>
@@ -39,12 +39,12 @@
           <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
             <div class="sm:flex sm:items-start">
               <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
-                <div>
+                <div>                  
                   <p v-for="(modulos, index) in perfilSelected.modulos" :key="index">
                     {{ modulos.nombre }}:
                     <button v-if="modulos.seleccionado == true" @click="cambiarModulos(index, modulos.seleccionado)" class="btn btn-active">Activo</button>
                     <button v-if="modulos.seleccionado == false" @click="cambiarModulos(index, modulos.seleccionado)" class="btn btn-inactive">Inactivo</button>
-                  </p>
+                  </p>                                                                        
                 </div>
               </div>
             </div>
@@ -116,11 +116,20 @@ export default {
   methods: {
     // !MODULOS
     showModulos: function (perfil) {
-      this.isModulosActive = true;
-      this.perfilSelected = perfil;
+      this.isModulosActive = true; let modulos = [];
+      //Array auxiliar para modal de modulos
+      const novalidProp = ['rolId', 'dateStamp', 'nombreRol', 'activo']    
+      Object.entries(perfil).map(item => {                                
+          if(!novalidProp.includes(item[0])){
+            modulos.push({ nombre: item[0], seleccionado: item[1] }) 
+          }
+      })             
+      this.perfilSelected = { ...perfil, modulos };      
     },
     hideModulos: function () {
       this.isModulosActive = false;
+      //Eliminar array auxiliar modulos para update
+            
       //AGREGAR CONSULTA API PARA ENVIAR DATOS ACTUALIZADOS YA SEA ENVIANDO TODOS LOS DATOS O SOLO PERFILSELECTED
     },
     cambiarModulos: function (index, estatus) {

@@ -24,7 +24,7 @@
     <div class="mb-6">
       <button @click="modalAgregar=true" class="w-full botonIconBuscar justify-center mt-3 -mb-8">Agregar Usuario</button>
     </div>
-    <TablaListaPerfiles :dataPerfiles="perfiles"></TablaListaPerfiles>
+    <TablaListaPerfiles :dataPerfiles="roles"></TablaListaPerfiles>
   </div>
   <Footer></Footer>
 </template>
@@ -66,11 +66,8 @@ export default {
           Authorization: "Bearer " + getCookie("Token"),
         },
       };
-      axios.get(`${API}/Roles?Page=1&Rows=10`, config)
-        .then((response) => {
-          roles.value = response.data.body
-          console.log(response.data.body)
-        })
+      axios.get(`${API}/CatalogoRoles`, config)
+        .then((response) => roles.value = response.data.body)
         .catch((error) => console.log(error))        
     }
     onMounted(buscar_roles)
