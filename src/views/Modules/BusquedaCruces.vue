@@ -5,8 +5,7 @@
   <div>
     <div class="mt-2 mx-2 md:mx-0">
       <p>Filtros de Búsqueda:</p>
-        <div class="flex flex-col md:flex-row border-gray-200 pb-0 mb-4">
-          
+        <div class="flex flex-col md:flex-row border-gray-200 pb-0 mb-4">          
             <div class="flex-1 flex flex-col md:flex-row md:space-x-2">
               <div class="w-full flex-2 ">
                     <div class="my-2 p-1 bg-white flex border border-gray-200 rounded">
@@ -14,21 +13,16 @@
                     </div>
                 </div>
                 <div class="w-full flex-2 ">
-                    <div class="my-2 p-1 bg-white flex border border-gray-200 rounded">
+                  <div class="my-2 p-1 bg-white flex border border-gray-200 rounded">
                     
-                      <select
-          class="p-1 px-2  outline-none w-full text-gray-800"
-          name="select"
-          id="selectorPlaza"
-        >
-          <option v-if="isLoading == true">Cargando Plazas...</option>
-                                                                    
-          <option v-else-if="plazas.length == 0 && isLoading == false"> No hay plazas</option>
-          <option v-else value="0">Todas las Plazas</option>
-          <option v-for="(plaza, key) in plazas" :value="key + 1" :key="key">
-            {{ plaza.nombre }}
-          </option>
-        </select>
+              <select class="p-1 px-2  outline-none w-full text-gray-800" name="select" id="selectorPlaza">
+                <option v-if="isLoading == true">Cargando Plazas...</option>                                                                    
+                <option v-else-if="plazas.length == 0 && isLoading == false"> No hay plazas</option>
+                <option v-else value="0">Todas las Plazas</option>
+                <option v-for="(plaza, key) in plazas" :value="key + 1" :key="key">
+                  {{ plaza.nombre }}
+                </option>
+              </select>
                     </div>
                         
                 </div>

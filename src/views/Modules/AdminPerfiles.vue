@@ -32,11 +32,51 @@
 import TablaListaPerfiles from "../../components/Tabla-listaperfiles";
 import Navbar from "../../components/Navbar.vue";
 import Footer from "../../components/Footer-login";
+const API = process.env.VUE_APP_URL_API_PRODUCCION
+import axios from 'axios';
+import { onMounted, ref } from 'vue'
 export default {
   components: {
     TablaListaPerfiles,
     Navbar,
     Footer,
+  },
+  setup(){
+    const roles = ref([])
+
+    const getCookie = (cname) => {
+      var name = cname + "=";
+      var decodedCookie = decodeURIComponent(document.cookie);
+      var ca = decodedCookie.split(";");
+      for (var i = 0; i < ca.length; i++) {
+        var c = ca[i];
+        while (c.charAt(0) == " ") {
+          c = c.substring(1);
+        }
+        if (c.indexOf(name) == 0) {
+          return c.substring(name.length, c.length);
+        }
+      }
+      return "";
+    }
+
+    const buscar_roles = async () => {
+      let config = {
+        headers: {
+          Authorization: "Bearer " + getCookie("Token"),
+        },
+      };
+      axios.get(`${API}/Roles?Page=1&Rows=10`, config)
+        .then((response) => {
+          roles.value = response.data.body
+          console.log(response.data.body)
+        })
+        .catch((error) => console.log(error))        
+    }
+    onMounted(buscar_roles)
+
+    return { roles }
+
   },
   data() {
     return {
