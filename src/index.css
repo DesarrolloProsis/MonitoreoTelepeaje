@@ -19,6 +19,15 @@
 .botonIconBuscar:focus{
     @apply outline-none;
 }
+.botonIconCancelar{
+    @apply bg-white tracking-wide text-gray-800 font-titulo font-bold rounded border-b-2 border-red-500 shadow-md py-2 px-6 inline-flex items-center ml-4 mr-4;
+}
+.botonIconCancelar:hover{
+    @apply border-red-800 bg-red-500 text-white transition duration-500;
+}
+.botonIconCancelar:focus{
+    @apply outline-none;
+}
 
 @tailwind components;
 @tailwind utilities;

@@ -6,7 +6,12 @@ module.exports = {
       titulo: ['IBM Plex Sans'],
       boton: ['Montserrat'],
     },
-    extend: {},
+    extend: {
+      spacing:{
+        '66': '20rem',
+        '69': '29rem',
+      }
+    },
   },
   variants: {
     extend: {},

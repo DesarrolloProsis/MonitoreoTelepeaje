@@ -1,16 +1,18 @@
 <template>
   <div class="responsive-table">          
-    <table class="tftable">
+    <table class="tftable" style="height:350px;">
       <tr>
         <th>Nombre de Usuario</th>
         <th>Nombre</th>
         <th>Rol</th>
+        <th>Plazas</th>
         <th>Acciones</th>
       </tr>
       <tr v-for="(usuario, index) in dataUsuarios" :key="index">
-        <td>username</td>
-        <td>{{ usuario.nombre + ' ' + usuario.apellido }}</td>
-        <td>{{ usuario.rol }}</td>
+        <td :class="{'text-gray-300': !usuario.estatus}">username</td>
+        <td :class="{'text-gray-300': !usuario.estatus}">{{ usuario.nombre + ' ' + usuario.apellido }}</td>
+        <td :class="{'text-gray-300': !usuario.estatus}">{{ usuario.rol }}</td>
+        <td :class="{'text-gray-300': !usuario.estatus}">Plazas</td>
         <!-- <td>
           <button
             class="button btn-actualizar"
@@ -27,13 +29,12 @@
         </td> -->  
         <td>
           <div>
-            <Multiselect v-model="value" placeholder="Sleccione una Acción" @close="acciones_mapper()" label="name" trackBy="name" :options="options" :searchable="true">
+            <Multiselect v-model="value" placeholder="Sleccione una Acción" @close="acciones_mapper(usuario)" label="name" trackBy="name" :options="opticones_select_acciones(usuario,index)" :searchable="true">
               <template v-slot:singleLabel="{ value }">
                 <div class="multiselect-single-label">
                   <img height="26" style="margin: 0 6px 0 0;" :src="value.icon"> {{ value.name }}
                 </div>
               </template>
-
               <template v-slot:option="{ option }">
                 <img height="22" style="margin: 0 6px 0 0;" :src="option.icon">{{ option.name }}
               </template>
@@ -46,18 +47,11 @@
   <!--MODAL DE ACTUALIZAR CONTRASEÑA -->
   <div v-if="showModal == true">
     <div class="fixed z-10 inset-0 overflow-y-auto">
-      <div
-        class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0"
-      >
+      <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
         <div class="fixed inset-0 transition-opacity" aria-hidden="true">
           <div class="absolute inset-0 bg-gray-900 opacity-10"></div>
         </div>
-
-        <span
-          class="hidden sm:inline-block sm:align-middle sm:h-screen"
-          aria-hidden="true"
-          >&#8203;</span
-        >
+        <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
         <div
           class="inline-block align-bottom bg-white text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full"
           role="dialog"
@@ -65,18 +59,12 @@
           aria-labelledby="modal-headline"
         >
           <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex">
-            <h2
-              class="text-lg leading-6 font-bold text-gray-900"
-              id="modal-headline"
-            >
-              Actualizar Contraseña
-            </h2>
+            <h2 class="text-lg leading-6 font-bold text-gray-900" id="modal-headline">Actualizar Contraseña</h2>
           </div>
           <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
-           <p style="color:red">{{errorMensaje}}</p>
+            <p style="color:red">{{errorMensaje}}</p>
             <div class="sm:flex sm:items-start">
               <div class="mt-3 text-center sm:mt-0  sm:text-left">
-                 
                 <h2>Usuario: {{ seleccionado.nombre }}</h2>
                 <h2>Escribe una contraseña nueva:</h2>
                 <input id="newpass" class="input-pass mt-2" type="password" />
@@ -117,17 +105,18 @@ name: "TablaListaUsuarios",
   data() {
     return {
       showModal: false,
+      modalNuevoUsuario:false,
       seleccionado: {},
       genPass: "",
       errorMensaje:'',
       value: null,
-      options: [
+/*       options: [
           { value: 'Habilitar', name: 'Habilitar' },
           { value: 'Deshabilitar', name: 'Deshabilitar'},
           { value: 'Agregar Plazas', name: 'Agregar Plazas'},
           { value: 'Quitar Plazas', name: 'Quitar Plazas'},
-        ]
-
+          { value: 'Editar Usuario', name: 'Editar Usuario'},
+        ] */
     };
   },
   methods: {
@@ -159,18 +148,36 @@ name: "TablaListaUsuarios",
       this.seleccionado = usuario;
       this.seleccionado.estatus = !this.seleccionado.estatus;
     },
-    acciones_mapper(){
+    acciones_mapper(usuario){
       if(this.value == 'Habilitar'){
-        console.log('Habilitar');
+        this.changeStatus(usuario)
       }if(this.value == 'Deshabilitar'){
-        console.log('Deshabilitar');
+        this.changeStatus(usuario)
       }if(this.value == 'Agregar Plazas'){
         console.log('Agregar Plazas');
       }if(this.value == 'Quitar Plazas'){
         console.log('Quitar Plazas');
+      }if(this.value == 'Cambiar Contraseña'){
+        this.seleccionado = usuario;
+        this.showModal = true;
       }
-    }
-    
+      this.value = ""
+    },
+    opticones_select_acciones(usuario){
+      let options= [
+          {  value: 'Habilitar', name: 'Habilitar'},//0
+          {  value: 'Deshabilitar', name: 'Deshabilitar'},//1
+          {  value: 'Cambiar Contraseña', name: 'Cambiar Contraseña'},//2
+      ]
+      let filtroOpciones = []
+          if(usuario.estatus == false)
+            filtroOpciones.push(options[0])
+          if(usuario.estatus ==  true)
+            filtroOpciones.push(options[1])
+          if(usuario.estatus ==  true)
+            filtroOpciones.push(options[2])        
+      return filtroOpciones  
+    },
   },
 };
 </script>
@@ -216,7 +223,7 @@ name: "TablaListaUsuarios",
 }
 .tftable th {
   font-size: 14px;
-  background-color: #2ed0e1;
+  background-color: #2c5282;
   border-width: 5px;
   padding: 8px;
   border-style: solid;
