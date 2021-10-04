@@ -38,13 +38,13 @@
     <div v-if="modalAgregar" class="rounded-lg  justify-center border absolute inset-x-0 bg-white border-gray-400 w-69  mx-auto px-12 py-10 shadow-2xl mt-66">
       <p class="text-gray-900 font-bold text-2xl -mt-8 mb-8 text-center">Agregar Encargado de Plaza</p>
       <div class="grid grid-cols-2 mt-2">
-        <p class="text-sm mb-1 font-semibold text-gray-700 sm:-ml-6">Nombre(s)</p>
+        <p class="text-sm mb-1 font-semibold text-gray-700 sm:-ml-6">Nombre(s) *</p>
         <input v-model="usuario.nombre" type="text" class="border rounded-lg">
-        <p class="text-sm mb-1 font-semibold text-gray-700 mt-2 sm:-ml-6">Apellido Paterno</p>
+        <p class="text-sm mb-1 font-semibold text-gray-700 mt-2 sm:-ml-6">Apellido Paterno *</p>
         <input v-model="usuario.apellidoP" type="text" class="border rounded-lg">
-        <p class="text-sm mb-1 font-semibold text-gray-700 mt-2 sm:-ml-6">Apellido Materno</p>
+        <p class="text-sm mb-1 font-semibold text-gray-700 mt-2 sm:-ml-6">Apellido Materno *</p>
         <input v-model="usuario.apellidoM" type="text" class="border rounded-lg">
-        <p class="text-sm mb-1 font-semibold text-gray-700 mt-2 sm:-ml-6">Contraseña</p>
+        <p class="text-sm mb-1 font-semibold text-gray-700 mt-2 sm:-ml-6">Contraseña *</p>
         <input v-model="usuario.pass" type="text" class="border rounded-lg">
         <p class="text-sm mb-1 font-semibold text-gray-700 mt-2 sm:-ml-6">Tramo</p>
         <select v-model="tramoSeleccionado" @change="plazasfil()" class="w-full border rounded-lg">
@@ -52,7 +52,7 @@
           <option value="1">México Acapulco</option>     
           <option value="2">México Irapuato</option>
         </select>
-        <p class="text-sm mb-1 font-semibold text-gray-700 mt-2 sm:-ml-6">Plazas</p>
+        <p class="text-sm mb-1 font-semibold text-gray-700 mt-2 sm:-ml-6">Plazas *</p>
         <Multiselect
           v-model="usuario.plazas"
           mode="multiple"
@@ -61,7 +61,7 @@
           :options="plazas"
           :close-on-select="false"
         /> 
-        <p class="text-sm mb-1 font-semibold text-gray-700 mt-2 sm:-ml-6">Rol</p>
+        <p class="text-sm mb-1 font-semibold text-gray-700 mt-2 sm:-ml-6">Rol *</p>
         <Multiselect
           v-model="usuario.rol"
           placeholder="Seleccione un Rol"
@@ -74,7 +74,7 @@
       </div>
       <div class="mt-5 text-center ml-6">
         <button @click="guardar" class="botonIconBuscar">Guardar</button>
-        <button @click="cancelar, modalAgregar= false" class="botonIconCancelar">Cancelar</button>
+        <button @click="cancelar(), modalAgregar= false" class="botonIconCancelar">Cancelar</button>
       </div>
     </div>
   </div>
@@ -131,10 +131,9 @@ export default {
             target[property];
         }
       });
-        for(let i= 0; i<proxy.length; i++){
-          this.roles.push({'value':proxy[i].rolId, 'label':proxy[i].nombreRol}) 
-        }
-    console.log(this.roles);
+    for(let i= 0; i<proxy.length; i++){
+      this.roles.push({'value':proxy[i].rolId, 'label':proxy[i].nombreRol}) 
+    }
     function getCookie(cname) {
       var name = cname + "=";
       var decodedCookie = decodeURIComponent(document.cookie);
@@ -160,7 +159,6 @@ export default {
       this.token = getCookie("Token");
       axios.get(`${API}/Usuario?Page=${this.paginaAct}&Rows=10`,config)
         .then((result) => {
-          console.log(result.data);
           this.maxPages = result.data.totalPages;
           result.data.page.forEach((e) => {
             let obj = {
@@ -175,8 +173,51 @@ export default {
     }
   },
   methods: {
+    getCookie: function(cname) {
+      var name = cname + "=";
+      var decodedCookie = decodeURIComponent(document.cookie);
+      var ca = decodedCookie.split(';');
+      for (var i = 0; i < ca.length; i++) {
+        var c = ca[i];
+        while (c.charAt(0) == ' ') {
+          c = c.substring(1);
+        }
+        if (c.indexOf(name) == 0) {
+          return c.substring(name.length, c.length);
+        }
+      }
+      return "";
+    },
     guardar: function (){
-      console.log(this.usuario);
+      if(this.getCookie("Token")){
+        let config = {
+          headers: {
+            'Authorization': 'Bearer ' + this.getCookie("Token")
+          }
+        }
+        const data = {
+          "password": this.usuario.pass,
+          "nombre": this.usuario.nombre,
+          "apellidoPaterno": this.usuario.apellidoP,
+          "apellidoMaterno": this.usuario.apellidoM,
+          "rol": '1',
+          "email": 'correo',
+          "estatus": true,
+        } 
+        if(this.usuario.nombre != '' && this.usuario.apellidoP != '' && this.usuario.apellidoM != '' && this.usuario.pass != '' ){
+          axios.post(`${API}/Usuario`,data,config)
+            .then((result)=>{
+                console.log(result)
+                this.errorMessage = ""
+            })
+            .catch(() =>{
+              this.errorMessage = "Hubo un error al crear el usuario, intentalo nuevamente."
+
+            })
+        }else{
+          alert('* Son campos obligatorios')
+        }
+      }
     },
     anterior: function () {
       let config = {
@@ -258,8 +299,6 @@ export default {
         });
     },
     buscar: function (nombre,estatus){
-      console.log(nombre);
-      console.log(estatus);
       if(nombre != ''){
         let config = {
           headers: {
@@ -325,15 +364,21 @@ export default {
       }
     },
     cancelar: function (){
-      this.usuario = {nombre: '', apellidoP:'', apellidoM:'', contraseña:'', plazas:'', rol:'', correo: ''}
+      this.usuario.nombre = '' 
+      this.usuario.apellidoP = '' 
+      this.usuario.apellidoM = ''
+      this.usuario.pass = '' 
+      this.usuario.rol = ''
+      this.usuario.correo = ''  
       this.tramoSeleccionado = ''
+      this.plazas = []
     },
     plazasfil: async function (){
-      let plazas = await axios.get(`${API}/PlazaAsignada`)
-      this.listaPlazas = plazas.data.body
-      let filtradas = this.listaPlazas.filter(plazas => plazas.tramoAsignadoId == this.tramoSeleccionado)
-      console.log(filtradas);
-      let proxy = new Proxy(filtradas,{
+      let porTramo = await axios.get(`${API}/PlazaAsignada/PorTramo/${this.tramoSeleccionado}`)
+      //let plazas = await axios.get(`${API}/PlazaAsignada`)
+      this.listaPlazas = porTramo.data.body
+      /* let filtradas = this.listaPlazas.filter(plazas => plazas.tramoAsignadoId == this.tramoSeleccionado)*/
+      let proxy = new Proxy(this.listaPlazas,{
         get : function(target, property){
           return property === 'length' ?
             target.length :

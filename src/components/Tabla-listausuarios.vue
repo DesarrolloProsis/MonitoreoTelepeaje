@@ -110,13 +110,6 @@ name: "TablaListaUsuarios",
       genPass: "",
       errorMensaje:'',
       value: null,
-/*       options: [
-          { value: 'Habilitar', name: 'Habilitar' },
-          { value: 'Deshabilitar', name: 'Deshabilitar'},
-          { value: 'Agregar Plazas', name: 'Agregar Plazas'},
-          { value: 'Quitar Plazas', name: 'Quitar Plazas'},
-          { value: 'Editar Usuario', name: 'Editar Usuario'},
-        ] */
     };
   },
   methods: {
