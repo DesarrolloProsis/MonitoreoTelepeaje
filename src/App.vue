@@ -1,5 +1,6 @@
 <template>
   <router-view/>
+  <notifications />
 </template>
 <style global>
 input:focus{
