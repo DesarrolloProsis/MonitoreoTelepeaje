@@ -123,7 +123,6 @@ export default {
     };
   },
   async beforeMount() {
-    this.$notify("Hello user!");
     let rol = await axios.get(`${API}/CatalogoRoles`)
     this.rol_Filtrado = rol.data.body
     let proxy = new Proxy(this.rol_Filtrado,{
