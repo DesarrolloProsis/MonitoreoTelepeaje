@@ -35,17 +35,17 @@ export default {
           isInactive:false
         },
         {
-          titulo: "Estatus de TAGs",
-          imagen: "Menu/estatus-tags.png",
-          ruta: "/inicio/estatus-tags",
-          nombre:"Estatus Tag",
-          isInactive:false
-        },
-        {
           titulo: "Monitoreo de Carriles",
           imagen: "Menu/monitoreo-carriles.png",
           ruta: "/inicio/monitoreo-carriles",
           nombre:"Monitoreo Carriles",
+          isInactive:false
+        },
+        {
+          titulo: "Monitoreo de Cruces",
+          imagen: "Menu/monitoreo-cruces.png",
+          ruta: "/inicio/monitoreo-cruces",
+          nombre:"Monitoreo Cruces",
           isInactive:false
         },
         {
@@ -62,27 +62,33 @@ export default {
           nombre:"Busqueda Cruces",
           isInactive:false
         },
-        {
+        /* {
           titulo: "Bitácora de Accesos",
           imagen: "Menu/bitacora-accesos.png",
           ruta: "/inicio/bitacora-accesos",
           nombre:"Bitacora Accesos",
           isInactive:false
+        }, */
+        {
+          titulo: "Bitácoras",
+          imagen: "Menu/bitacora-accesos.png",
+          ruta: "/bitacoras",
+          nombre:"Bitacora",
+          isInactive:false
         },
         {
-          titulo: "Monitoreo de Cruces",
-          imagen: "Menu/monitoreo-cruces.png",
-          ruta: "/inicio/monitoreo-cruces",
-          nombre:"Monitoreo Cruces",
+          titulo: "Estatus de TAGs",
+          imagen: "Menu/estatus-tags.png",
+          ruta: "/inicio/estatus-tags",
+          nombre:"Estatus Tag",
           isInactive:false
-
         },
         {
           titulo: "Configuración",
           imagen: "Menu/configuracion.png",
           ruta: "/configuracion",
           nombre:"Configuracion",
-           isInactive:false
+          isInactive:false
         },
       ],
     };
