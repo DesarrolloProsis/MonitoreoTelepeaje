@@ -28,7 +28,7 @@ export default {
     return {
       modulos: [
         {
-          titulo: "Monitoreo de Servicios",
+          titulo: "Monitoreo de Servicios en Tiempo Real",
           imagen: "Menu/monitoreo-servicios.png",
           ruta: "/inicio/monitoreo-servicios",
           nombre:"Monitoreo Servicios",
@@ -42,21 +42,21 @@ export default {
           isInactive:false
         },
         {
-          titulo: "Monitoreo de Cruces",
+          titulo: "Transacciones de Telepeaje en Tiempo Real",
           imagen: "Menu/monitoreo-cruces.png",
           ruta: "/inicio/monitoreo-cruces",
           nombre:"Monitoreo Cruces",
           isInactive:false
         },
         {
-          titulo: "Envío de Transacciones",
+          titulo: "Envío de Transacciones al Operador de Telepeaje",
           imagen: "Menu/envio-transacciones.png",
           ruta: "/inicio/envio-transacciones",
           nombre:"Envio Transacciones",
           isInactive:false
         },
         {
-          titulo: "Búsqueda de Cruces",
+          titulo: "Búsqueda de Transacciones",
           imagen: "Menu/busqueda-cruces.png",
           ruta: "/inicio/busqueda-cruces",
           nombre:"Busqueda Cruces",
