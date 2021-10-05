@@ -9,10 +9,10 @@
         <th>Acciones</th>
       </tr>
       <tr v-for="(usuario, index) in dataUsuarios" :key="index">
-        <td :class="{'text-gray-300': !usuario.estatus}">username</td>
+        <td :class="{'text-gray-300': !usuario.estatus}">{{ usuario.usuario }}</td>
         <td :class="{'text-gray-300': !usuario.estatus}">{{ usuario.nombre + ' ' + usuario.apellido }}</td>
         <td :class="{'text-gray-300': !usuario.estatus}">{{ usuario.rol }}</td>
-        <td :class="{'text-gray-300': !usuario.estatus}">Plazas</td>
+        <td :class="{'text-gray-300': !usuario.estatus}">{{ usuario.plazas }}</td>
         <!-- <td>
           <button
             class="button btn-actualizar"
@@ -97,6 +97,8 @@
     <div v-if="modalPlazas" class="rounded-lg  justify-center border absolute inset-x-0 bg-white border-gray-400 w-69  mx-auto px-12 py-10 shadow-2xl mt-60">
       <p class="text-gray-900 font-bold text-2xl -mt-8 mb-8 text-center">Agregar Plazas a {{ seleccionado.nombre + ' ' + seleccionado.apellido }}</p>
       <div class="grid grid-cols-2 mt-2">
+        <p class="text-sm mb-1 font-semibold text-gray-700  sm:-ml-6">Plazas Ya Asignadas</p>
+        <p>{{ seleccionado.plazas }}</p>
         <p class="text-sm mb-1 font-semibold text-gray-700 mt-2 sm:-ml-6">Tramo </p>
         <p>
         <select v-model="tramoSeleccionado" @change="plazasfil()" class="w-full border-b-2 rounded-lg">
@@ -116,11 +118,69 @@
         
       </div>
       <div class="mt-5 text-center ml-6">
-        <button @click="agregarPlaza" class="botonIconBuscar">Agregar</button>
+        <button @click="agregarPlaza(seleccionado)" class="botonIconBuscar">Agregar</button>
         <button @click="modalPlazas = false, tramoSeleccionado = '', validacion = false" class="botonIconCancelar">Cancelar</button>
       </div>
     </div>
   </div>
+  <!-- FIN MODAL-->
+  <!-- MODAL QUITAR PLAZAS -->
+  <div class="sticky inset-0 " :class="{'modal-container': modalQuitar}">
+    <div v-if="modalQuitar" class="rounded-lg  justify-center border absolute inset-x-0 bg-white border-gray-400 w-69  mx-auto px-12 py-10 shadow-2xl mt-60">
+      <p class="text-gray-900 font-bold text-2xl -mt-8 mb-8 text-center">Quitar Plazas a {{ seleccionado.nombre + ' ' + seleccionado.apellido }}</p>
+      <div class="grid grid-cols-2 mt-2">
+        <p class="text-sm mb-1 font-semibold text-gray-700  sm:-ml-6">Plazas Asignadas</p>
+        <p>{{ seleccionado.plazas }}</p>
+        <p class="text-sm mb-1 font-semibold text-gray-700 mt-2 sm:-ml-6">Tramo </p>
+        <p>
+        <select v-model="tramoSeleccionado" @change="plazasfil()" class="w-full border-b-2 rounded-lg">
+          <option disabled value>Selecionar...</option>     
+          <option value="1">México Acapulco</option>     
+          <option value="2">México Irapuato</option>
+        </select>
+        <span v-if="validacion" class="text-xs text-red-600">Este dato es Obligatorio</span>
+        </p>
+        <p class="text-sm mb-1 font-semibold text-gray-700 mt-2 sm:-ml-6">Plazas </p>
+        <p>
+          <label class="border-b-2 rounded-md" :class="{'border-red-400':validacion}">
+            <Multiselect v-model="plazasAsignar" mode="multiple" placeholder="Seleccione las Plazas" :searchable="true" :options="plazas" :close-on-select="false"/>
+          </label>
+          <span v-if="validacion" class="text-xs text-red-600">Este dato es Obligatorio</span>
+        </p> 
+        
+      </div>
+      <div class="mt-5 text-center ml-6">
+        <button @click="quitarPlazas(seleccionado)" class="botonIconBuscar">Agregar</button>
+        <button @click="modalQuitar = false, tramoSeleccionado = '', validacion = false" class="botonIconCancelar">Cancelar</button>
+      </div>
+    </div>
+  </div>
+  <!-- FIN MODAL-->
+  <!-- MODAL EDITAR USUARIO -->
+  <div class="sticky inset-0 " :class="{'modal-container': modalEditar}">
+    <div v-if="modalEditar" class="rounded-lg  justify-center border absolute inset-x-0 bg-white border-gray-400 w-69  mx-auto px-12 py-10 shadow-2xl mt-60">
+      <p class="text-gray-900 font-bold text-2xl -mt-8 mb-8 text-center">Editar Usuario</p>
+      <div class="grid grid-cols-2 mt-2">
+        <p class="text-sm mb-1 font-semibold text-gray-700  sm:-ml-6">Nombre</p>
+        <input v-model="usuario.nombre" type="text">
+        <p class="text-sm mb-1 font-semibold text-gray-700  sm:-ml-6">Apellidos</p>
+        <input v-model="usuario.apellidos" type="text">
+        <p class="text-sm mb-1 font-semibold text-gray-700  sm:-ml-6">Rol</p>
+        <Multiselect
+          v-model="usuario.rol"
+          placeholder="Seleccione un Rol"
+          :searchable="true"
+          :options="roles"
+          :close-on-select="true"
+        />
+      </div>
+      <div class="mt-5 text-center ml-6">
+        <button @click="editarUsuario(usuario)" class="botonIconBuscar">Agregar</button>
+        <button @click="modalEditar = false, tramoSeleccionado = '', validacion = false" class="botonIconCancelar">Cancelar</button>
+      </div>
+    </div>
+  </div>
+  <!-- FIN MODAL-->
 </template>
 <script>
 const API = process.env.VUE_APP_URL_API_PRODUCCION
@@ -143,12 +203,35 @@ name: "TablaListaUsuarios",
       errorMensaje:'',
       value: null,
       modalPlazas:false,
+      modalQuitar:false,
+      modalEditar:false,
       listaPlazas:[],
       plazas:[{ value: '', label: '' }],
       tramoSeleccionado:'',
       plazasAsignar:[],
-      validacion: false
+      validacion: false,
+      usuario:{
+        idUsuario:'',
+        nombre: '',
+        apellidos:'',
+        rol:'',
+      },
+      roles: [],
     };
+  },
+  async beforeMount(){
+    let rol = await axios.get(`${API}/CatalogoRoles`)
+    let rol_Filtrado = rol.data.body
+    let proxy = new Proxy(rol_Filtrado,{
+        get : function(target, property){
+          return property === 'length' ?
+            target.length :
+            target[property];
+        }
+      });
+    for(let i= 0; i<proxy.length; i++){
+      this.roles.push({'value':proxy[i].rolId, 'label':proxy[i].nombreRol}) 
+    }
   },
   methods: {
     actualizarPass: function (usuario) {
@@ -197,24 +280,56 @@ name: "TablaListaUsuarios",
         }
       }
     },
-    agregarPlaza: function (){
+    agregarPlaza: function (usuario){
       if(this.tramoSeleccionado != '' && this.plazasAsignar != ''){
         console.log(this.plazasAsignar);
         for(let i=0; i< this.plazasAsignar.length;i++){
           let nueva = this.plazasAsignar[i]
           let data = {
-            usuarioId: 2014,
+            usuarioId: usuario.id,
             plazaAsignadaId: nueva
           }
-          axios.post(`${API}/PlazaAsignada`,data) 
-          this.modalPlazas = false
-          this.tramoSeleccionado = ''
-
+          axios.post(`${API}/PlazaAsignada`,data)
+          .then((response)=>{
+            console.log();
+            this.modalPlazas = false
+            this.tramoSeleccionado = ''
+            if(response.data.status == 'Error'){
+              /* alert('El usuario ya tiene las plazas Asignadas') */
+              this.$router.push("/configuracion");
+            }else{
+              this.$router.push("/configuracion");
+              /* alert('Se Asignaron las plazas') */
+            }
+          })
         }
       }else{
         console.log('No Agregar');
         this.validacion= true
       }
+    },
+    quitarPlazas: function (usuario){
+      console.log(usuario);
+      for(let i=0; i< this.plazasAsignar.length;i++){
+          let quitar = this.plazasAsignar[i]
+          let usuarioId = usuario.id
+          axios.delete(`${API}/PlazaAsignada/QuitarDeUsuario/${usuarioId}/${quitar}`)
+          .then((response)=>{
+            console.log();
+            this.modalPlazas = false
+            this.tramoSeleccionado = ''
+            if(response.data.status == 'Error'){
+              /* Insertar notificacion */
+              this.$router.push("/configuracion");
+            }else{
+              this.$router.push("/configuracion");
+              /* Insertar notificacion */
+            }
+          })
+        }
+    },
+    editarUsuario: function (usuario){
+      console.log(usuario);
     },
      //! Activar o desactivar
     changeStatus: function (usuario) {
@@ -228,8 +343,6 @@ name: "TablaListaUsuarios",
         this.changeStatus(usuario)
       }if(this.value == 'Agregar Plazas'){
         console.log('Agregar Plazas');
-      }if(this.value == 'Quitar Plazas'){
-        console.log('Quitar Plazas');
       }if(this.value == 'Cambiar Contraseña'){
         this.seleccionado = usuario;
         this.showModal = true;
@@ -237,8 +350,17 @@ name: "TablaListaUsuarios",
         this.seleccionado = usuario;
         console.log(this.seleccionado);
         this.modalPlazas = true;
+      }if(this.value == 'Quitar Plazas'){
+        this.seleccionado = usuario
+        this.modalQuitar = true;
+      }if(this.value == 'Editar Usuario'){
+        console.log(usuario);
+        this.usuario.idUsuario = usuario.id
+        this.usuario.nombre = usuario.nombre
+        this.usuario.apellidos = usuario.apellido
+        this.usuario.rol = usuario.rol
+        this.modalEditar = true;
       }
-      
       this.value = ""
     },
     opticones_select_acciones(usuario){
@@ -247,13 +369,17 @@ name: "TablaListaUsuarios",
           {  value: 'Deshabilitar', name: 'Deshabilitar'},//1
           {  value: 'Cambiar Contraseña', name: 'Cambiar Contraseña'},//2
           {  value: 'Agregar Plazas', name: 'Agregar Plazas'},//3
+          {  value: 'Quitar Plazas', name: 'Quitar Plazas'},//4
+          {  value: 'Editar Usuario', name: 'Editar Usuario'},//5
       ]
       let filtroOpciones = []
           if(usuario.estatus == false)
             filtroOpciones.push(options[0])
           if(usuario.estatus ==  true){
+            filtroOpciones.push(options[5])
             filtroOpciones.push(options[1])
             filtroOpciones.push(options[3])
+            filtroOpciones.push(options[4])
             filtroOpciones.push(options[2])
           }
           

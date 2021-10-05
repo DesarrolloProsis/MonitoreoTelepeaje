@@ -160,12 +160,16 @@ export default {
       this.token = getCookie("Token");
       axios.get(`${API}/Usuario?Page=${this.paginaAct}&Rows=10`,config)
         .then((result) => {
+          console.log(result.data);
           this.maxPages = result.data.totalPages;
           result.data.page.forEach((e) => {
             let obj = {
+              id: e.usuarioId,
+              usuario: e.nombreUsuario,
               nombre: e.nombre,
               apellido: e.apellidoPaterno,
               rol: e.rol,
+              plazas: e.plazas,
               estatus: e.estatus,
             };
             this.perfiles.push(obj);
@@ -201,7 +205,7 @@ export default {
           "nombre": this.usuario.nombre,
           "apellidoPaterno": this.usuario.apellidoP,
           "apellidoMaterno": this.usuario.apellidoM,
-          "rol": '1',
+          "rol": this.usuario.rol,
           "email": 'correo',
           "estatus": true,
         } 
@@ -290,9 +294,12 @@ export default {
           this.maxPages = res.data.totalPages;
           res.data.page.forEach((e) => {
             let obj = {
+              id: e.usuarioId,
+              usuario: e.nombreUsuario,
               nombre: e.nombre,
               apellido: e.apellidoPaterno,
               rol: e.rol,
+              plazas: e.plazas,
               estatus: e.estatus,
             };
             this.perfiles.push(obj);
@@ -312,9 +319,12 @@ export default {
           this.maxPages = res.data.totalPages;
           res.data.page.forEach((e) => {
             let obj = {
+              id: e.usuarioId,
+              usuario: e.nombreUsuario,
               nombre: e.nombre,
               apellido: e.apellidoPaterno,
               rol: e.rol,
+              plazas: e.plazas,
               estatus: e.estatus,
             };
             this.perfiles.push(obj);
