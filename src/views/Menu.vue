@@ -62,11 +62,18 @@ export default {
           nombre:"Busqueda Cruces",
            isInactive:false
         },
-        {
+        /* {
           titulo: "Bitácora de Accesos",
           imagen: "Menu/bitacora-accesos.png",
           ruta: "/inicio/bitacora-accesos",
           nombre:"Bitacora Accesos",
+           isInactive:false
+        }, */
+        {
+          titulo: "Bitácoras",
+          imagen: "Menu/bitacora-accesos.png",
+          ruta: "/bitacoras",
+          nombre:"Bitacora",
            isInactive:false
         },
         {

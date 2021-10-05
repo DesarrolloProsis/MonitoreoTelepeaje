@@ -15,6 +15,8 @@ import PerfilUsuario from "@/views/Modules/PerfilUsuario.vue";
 import AdminPerfiles from "@/views/Modules/AdminPerfiles.vue";
 import ListaUsuarios from "@/views/Modules/ListaUsuarios.vue";
 import RegistroUsuarios from "@/views/Modules/RegistroUsuarios.vue";
+import Bitacoras from "@/views/Modules/Bitacoras.vue";
+import BitacoraAntifraude from "@/views/Modules/BitacoraAntifraude.vue";
 import jwt_decode from "jwt-decode";
 const API = process.env.VUE_APP_URL_API_PRODUCCION
 
@@ -141,12 +143,30 @@ const routes = [{
     }
   },
   {
+    path: "/inicio/bitacora-antifraude",
+    name: "Bitacora Antifraude",
+    component: BitacoraAntifraude,
+    meta: {
+      requiresCookie: true,
+      nombre:"BitacoraAntifraude"
+    }
+  },
+  {
     path: "/inicio/estatus-tags",
     name: "EstatusTags",
     component: EstatusTags,
     meta: {
       requiresCookie: true,
       nombre:"Estatus Tag"
+    }
+  },
+  {
+    path: "/bitacoras",
+    name: "Bitacoras",
+    component: Bitacoras,
+    meta: {
+      requiresCookie: true,
+      nombre:"Bitacoras"
     }
   },
   {
