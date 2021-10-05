@@ -1,6 +1,29 @@
 <template>
   <Navbar></Navbar>
   <h1 class="title font-titulo font-bold">Administración de Perfiles</h1>
+    <!-- Modal Rol -->
+  <div class="sticky inset-0 " :class="{'modal-container': userModal}">
+    <div v-if="userModal" class="rounded-lg  justify-center border absolute inset-x-0 bg-white border-gray-400 w-69  mx-auto px-12 py-10 shadow-2xl mt-66">
+      <p class="text-gray-900 font-bold text-2xl -mt-8 mb-8 text-center">Agregar Encargado de Plaza</p>     
+      <div class="grid grid-cols-2 mt-2">
+        <p class="text-sm mb-1 font-semibold text-gray-700 sm:-ml-6">Nombre Rol</p>
+        <input v-model="newRol.nombre" type="text" class="border rounded-lg">
+        <p class="text-sm mb-1 font-semibold text-gray-700 mt-2 sm:-ml-6">Plazas</p>
+        <Multiselect
+          v-model="usuario.plazas"
+          mode="multiple"
+          placeholder="Seleccione las Plazas"
+          :searchable="true"
+          :options="plazas"
+          :close-on-select="false"
+        /> 
+      </div>
+      <div class="mt-5 text-center ml-6">
+        <button class="botonIconBuscar">Guardar</button>
+        <button @click="abrir_modal_new_rol" class="botonIconCancelar">Cancelar</button>
+      </div>
+    </div>
+  </div>
   <div class="container mx-auto px-0 pb-24 pt-4">    
     <div class="flex flex-wrap bg-blue">
       <div class="flex-none filter-style">
@@ -22,7 +45,7 @@
       </div>
     </div>
     <div class="mb-6">
-      <button @click="modalAgregar=true" class="w-full botonIconBuscar justify-center mt-3 -mb-8">Agregar Usuario</button>
+      <button @click="abrir_modal_new_rol" class="w-full botonIconBuscar justify-center mt-3 -mb-8">Agregar Usuario</button>
     </div>
     <TablaListaPerfiles :dataPerfiles="roles"></TablaListaPerfiles>
   </div>
@@ -32,108 +55,34 @@
 import TablaListaPerfiles from "../../components/Tabla-listaperfiles";
 import Navbar from "../../components/Navbar.vue";
 import Footer from "../../components/Footer-login";
-const API = process.env.VUE_APP_URL_API_PRODUCCION
 import axios from 'axios';
-import { onMounted, ref } from 'vue'
+import Multiselect from '@vueform/multiselect'
+import { onMounted, reactive, ref } from 'vue'
+const API = process.env.VUE_APP_URL_API_PRODUCCION
 export default {
   components: {
     TablaListaPerfiles,
     Navbar,
+    Multiselect,
     Footer,
   },
   setup(){
+
     const roles = ref([])
-
-    const getCookie = (cname) => {
-      var name = cname + "=";
-      var decodedCookie = decodeURIComponent(document.cookie);
-      var ca = decodedCookie.split(";");
-      for (var i = 0; i < ca.length; i++) {
-        var c = ca[i];
-        while (c.charAt(0) == " ") {
-          c = c.substring(1);
-        }
-        if (c.indexOf(name) == 0) {
-          return c.substring(name.length, c.length);
-        }
-      }
-      return "";
-    }
-
-    const buscar_roles = async () => {
-      let config = {
-        headers: {
-          Authorization: "Bearer " + getCookie("Token"),
-        },
-      };
-      axios.get(`${API}/CatalogoRoles`, config)
+    const userModal = ref(false)
+    const buscar_roles = async () => {   
+      axios.get(`${API}/CatalogoRoles`)
         .then((response) => roles.value = response.data.body)
         .catch((error) => console.log(error))        
     }
+    const abrir_modal_new_rol = () => userModal.value = !userModal.value
+
+    const newRol = reactive({
+      nombre: "",      
+    })
     onMounted(buscar_roles)
-
-    return { roles }
-
-  },
-  data() {
-    return {
-      perfiles: [
-        {
-          perfil: "Administrador",
-          estatus: true,
-          modulos: [
-            {
-              nombre: "Bitacora Alarmas",
-              seleccionado: true,
-            },
-            {
-              nombre: "Busqueda de Cruces",
-              seleccionado: false,
-            },
-            {
-              nombre: "Configuración",
-              seleccionado: false,
-            },
-          ],
-          plazas: [
-            {
-              nombre: "Mex-Ira",
-              seleccionado: true,
-            },
-            {
-              nombre: "Mex-Aca",
-              seleccionado: false,
-            }
-          ],
-        },
-        {
-          perfil: "Sistemas",
-          estatus: false,
-          modulos: [
-            {
-              nombre: "Bitacora Alarmas",
-              seleccionado: true,
-            },
-            {
-              nombre: "Busqueda de Cruces",
-              seleccionado: true,
-            },
-          ],
-          plazas: [
-            {
-              nombre: "Mex-Ira",
-              seleccionado: true,
-            },
-            {
-              nombre: "Mex-Aca",
-              seleccionado: false,
-            }
-          ],
-        },
-      ],
-    };
-  },
-
+    return { roles, userModal, buscar_roles, abrir_modal_new_rol, newRol }
+  }, 
 };
 </script>
 <style scoped>

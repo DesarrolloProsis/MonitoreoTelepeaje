@@ -8,7 +8,7 @@
         </select>        
         <span class="mt-1">Plaza:</span>
         <select v-model="plazaSeleccionado" @change="emit_tramo_plaza" class="p-1 px-2  outline-none w-full text-gray-800 ml-3" name="select" id="selectorTramo">                                    
-            <option v-if="plazas.length" value="">Sin Plazas</option>
+            <option v-if="plazas.length == 0" value="">Sin Plazas</option>
             <option v-else value="">Selecione Plaza</option>            
             <option v-for="(plaza, key) in plazas" :value="plaza" :key="key">{{ plaza.nombre }}</option>
         </select>

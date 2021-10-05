@@ -20,7 +20,6 @@
       </tr>
     </table>
   </div>
-
   <br />
 
   <!--Modal Actualizar-->
@@ -57,44 +56,7 @@
         </div>
       </div>
     </div>
-  </div>
-  <!--Fin Modal Actualizar-->
-  <!--Modal Plazas-->
-  <div v-if="isPlazasActive == true">
-    <div class="fixed z-10 inset-0 overflow-y-auto">
-      <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
-        <div class="fixed inset-0 transition-opacity" aria-hidden="true">
-          <div class="absolute inset-0 bg-gray-900 opacity-10"></div>
-        </div>
-
-        <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
-        <div class="inline-block align-bottom bg-white text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full" role="dialog" aria-modal="true" aria-labelledby="modal-headline">
-          <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex">
-            <h2 class="text-lg leading-6 font-bold text-gray-900" id="modal-headline">
-              Seleccionar Plazas {{ perfilSelected.perfil }}
-            </h2>
-          </div>
-          <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
-            <div class="sm:flex sm:items-start">
-              <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
-                <div>         
-                  <p v-for="(plaza, index) in perfilSelected.plazas" :key="index">
-                    {{ plaza.nombre }}:
-                    <button v-if="plaza.seleccionado == true" class="btn btn-active" @click="cambiarPlazas(index, plaza.seleccionado)">Activo</button>
-                    <button v-if="plaza.seleccionado == false" class="btn btn-inactive" @click="cambiarPlazas(index, plaza.seleccionado)">Inactivo</button>
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
-            <button @click="hidePlazas()" class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-blue-600 text-base font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:ml-3 sm:w-auto sm:text-sm" type="button">Guardar</button>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-  <!--Fin Modal Plazas-->
+  </div>  
   {{perfilSelected}}
 </template>
 
@@ -108,9 +70,10 @@ export default {
       // todos los perfiles
       perfilesData: this.dataPerfiles,
       isModulosActive: false,
-      isPlazasActive: false,
+      isPlazasActive: false,      
       //perfil individual
       perfilSelected: {},
+
     };
   },
   methods: {
@@ -129,11 +92,12 @@ export default {
     hideModulos: function () {
       this.isModulosActive = false;
       //Eliminar array auxiliar modulos para update
-            
+
       //AGREGAR CONSULTA API PARA ENVIAR DATOS ACTUALIZADOS YA SEA ENVIANDO TODOS LOS DATOS O SOLO PERFILSELECTED
     },
     cambiarModulos: function (index, estatus) {
-      this.perfilSelected.modulos[index].seleccionado = !estatus;
+      this.perfilSelected.modulos[index].seleccionado = !estatus;      
+      this.perfilSelected[this.perfilSelected.modulos[index].nombre] = !estatus
       //console.log(this.perfilSelected.modulos[index].seleccionado)
     },
     // !PLAZAS
