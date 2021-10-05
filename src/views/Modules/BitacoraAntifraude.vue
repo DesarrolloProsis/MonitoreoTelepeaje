@@ -1,10 +1,12 @@
 <template>
   <Navbar></Navbar>
   <div class="container mx-auto px-0 pb-100">
-    <h1 class="title-center pb-4">Bitácora de Tags en Antifraude</h1>
+    <h1 class="title-center font-titulo font-bold pb-4">Bitácora de Tags en Antifraude</h1>
     <div class="flex flex-wrap bg-blue">
-      <FormTramoPlaza @cambiar-tramo-plaza="recibir_tramo_plaza"></FormTramoPlaza>
       <div class="flex-none filter-style">
+        <FormTramoPlaza @cambiar-tramo-plaza="recibir_tramo_plaza" :tipo="'Antifraude'"></FormTramoPlaza>
+      </div>
+      <div class="flex-none filter-style mt-1">
         Carril:
         <select class="flex-none filter-style color-black" name="select">
           <option value="100" selected>opcion1</option>
@@ -25,18 +27,43 @@
       </div>
     </div>
     <div class="container mx-auto px-0 md:px-60">
-      <!-- TABLA -->
+      <TablaAntifraude></TablaAntifraude>
     </div>
   </div>
   <Footer></Footer>
 </template>
 <script>
-import FormTramoPlaza from '../../components/Form-tramoplaza.vue'
+const API = process.env.VUE_APP_URL_API_PRODUCCION
+import FormTramoPlaza from '../../components/Form-tramoplaza.vue';
+import TablaAntifraude from "../../components/Tabla-antifraude.vue";
 import Navbar from "@/components/Navbar.vue";
 import Footer from "@/components/Footer-login";
+import axios from "axios";
 export default {
   name: "BitacoraAccesos",
-  components: { Navbar, Footer, FormTramoPlaza },
+  components: { Navbar, Footer, FormTramoPlaza, TablaAntifraude },
+
+  data() {
+    return {
+      tags: [],      
+      token:"",      
+      tramo: '',
+      plaza: ''
+
+    };
+  },
+  beforeMount (){
+    axios.get(`${API}/ListaNegra`)
+    .then((result)=>{
+      console.log(result.data.body);
+    })    
+  },
+  methods: {
+    recibir_tramo_plaza(value){
+      this.tramo = value.tramo
+      this.plaza = value.plaza
+    }
+  },
 }
 </script>
 <style scoped>
