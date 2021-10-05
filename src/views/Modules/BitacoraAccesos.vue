@@ -1,19 +1,15 @@
 <template>
   <Navbar></Navbar>
   <div class="container mx-auto px-0 pb-100">
-    <h1 class="title-center pb-4">Bitácora de Accesos</h1>
+    <h1 class="title-center font-titulo font-bold pb-4">Bitácora de Accesos</h1>
     <div class="flex flex-wrap bg-blue">
       <div class="flex-none filter-style">
         Usuario:
-        <select class="flex-none filter-style color-black" name="select">
-          <option value="100" selected>opcion1</option>
-          <option value="200">opcion2</option>
-          <option value="300">opcion3</option>
-        </select>
+        <input v-model="nombre" type="text" class="rounded"/>
       </div>
       <div class="flex-none filter-style">
         Fecha:
-        <input type="date" />
+        <input type="date" class="rounded"/>
       </div>
       <div class="flex-none filter-style">
         <button class="btn-buscar">Buscar</button>
@@ -40,41 +36,57 @@ export default {
       accesos: [
         {
           usuario: "RMendoza",
+          nombre: "Rodrigo Mendoza",
+          rol: "Admin",
           fecha_inicio: "2021/01/01 14:00:00",
           fecha_fin: "2020/01/01 15:00:30",
         },
         {
           usuario: "AMitra",
+          nombre: "Alejandro Mitra",
+          rol: "Admin",
           fecha_inicio: "2021/01/01 14:00:00",
           fecha_fin: "2020/01/01 15:00:30",
         },
         {
           usuario: "AMitra",
+          nombre: "Alejandro Mitra",
+          rol: "Admin",
           fecha_inicio: "2021/01/01 14:00:00",
           fecha_fin: "2020/01/01 15:00:30",
         },
         {
           usuario: "AMitra",
+          nombre: "Alejandro Mitra",
+          rol: "Admin",
           fecha_inicio: "2021/01/01 14:00:00",
           fecha_fin: "2020/01/01 15:00:30",
         },
         {
           usuario: "AMitra",
+          nombre: "Alejandro Mitra",
+          rol: "Admin",
           fecha_inicio: "2021/01/01 14:00:00",
           fecha_fin: "2020/01/01 15:00:30",
         },
         {
           usuario: "AMitra",
+          nombre: "Alejandro Mitra",
+          rol: "Admin",
           fecha_inicio: "2021/01/01 14:00:00",
           fecha_fin: "2020/01/01 15:00:30",
         },
         {
           usuario: "AMitra",
+          nombre: "Alejandro Mitra",
+          rol: "Admin",
           fecha_inicio: "2021/01/01 14:00:00",
           fecha_fin: "2020/01/01 15:00:30",
         },
         {
           usuario: "AMitra",
+          nombre: "Alejandro Mitra",
+          rol: "Admin",
           fecha_inicio: "2021/01/01 14:00:00",
           fecha_fin: "2020/01/01 15:00:30",
         },
@@ -93,7 +105,7 @@ export default {
   padding-top: 20px;
 }
 .bg-blue {
-  background-color: #0195b0;
+  background-color: #2c5282;
   padding: 10px 5px;
 }
 .ml-right {
