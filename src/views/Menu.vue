@@ -35,17 +35,17 @@ export default {
           isInactive:false
         },
         {
+          titulo: "Estatus de TAGs",
+          imagen: "Menu/estatus-tags.png",
+          ruta: "/inicio/estatus-tags",
+          nombre:"Estatus Tag",
+          isInactive:false
+        },
+        {
           titulo: "Monitoreo de Carriles",
           imagen: "Menu/monitoreo-carriles.png",
           ruta: "/inicio/monitoreo-carriles",
           nombre:"Monitoreo Carriles",
-           isInactive:false
-        },
-        {
-          titulo: "Monitoreo de Cruces",
-          imagen: "Menu/monitoreo-cruces.png",
-          ruta: "/inicio/monitoreo-cruces",
-          nombre:"Monitoreo Cruces",
           isInactive:false
         },
         {
@@ -53,35 +53,29 @@ export default {
           imagen: "Menu/envio-transacciones.png",
           ruta: "/inicio/envio-transacciones",
           nombre:"Envio Transacciones",
-           isInactive:false
+          isInactive:false
         },
         {
           titulo: "Búsqueda de Cruces",
           imagen: "Menu/busqueda-cruces.png",
           ruta: "/inicio/busqueda-cruces",
           nombre:"Busqueda Cruces",
-           isInactive:false
+          isInactive:false
         },
-        /* {
+        {
           titulo: "Bitácora de Accesos",
           imagen: "Menu/bitacora-accesos.png",
           ruta: "/inicio/bitacora-accesos",
           nombre:"Bitacora Accesos",
-           isInactive:false
-        }, */
-        {
-          titulo: "Bitácoras",
-          imagen: "Menu/bitacora-accesos.png",
-          ruta: "/bitacoras",
-          nombre:"Bitacora",
-           isInactive:false
+          isInactive:false
         },
         {
-          titulo: "Estatus de TAGs",
-          imagen: "Menu/estatus-tags.png",
-          ruta: "/inicio/estatus-tags",
-          nombre:"Estatus Tag",
-           isInactive:false
+          titulo: "Monitoreo de Cruces",
+          imagen: "Menu/monitoreo-cruces.png",
+          ruta: "/inicio/monitoreo-cruces",
+          nombre:"Monitoreo Cruces",
+          isInactive:false
+
         },
         {
           titulo: "Configuración",
