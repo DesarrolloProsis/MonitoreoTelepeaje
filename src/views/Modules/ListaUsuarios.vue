@@ -27,11 +27,13 @@
       <button @click="modalAgregar=true" class="w-full botonIconBuscar justify-center mt-3 -mb-8">Agregar Usuario</button>
     </div>
     <TablaListaUsuarios :dataUsuarios="perfiles"></TablaListaUsuarios>
-    <button class="button-pagination" v-if="paginaAct > 1" @click="anterior()">Anterior</button>
-    <button class="button-pagination" v-if="paginaAct < maxPages" @click="siguiente()">Siguiente</button>
-    <p  class="desc-paginacion">
-      Página {{ paginaAct }} de {{ maxPages }}
-    </p>
+    <div class="">
+      <button class="button-pagination" v-if="paginaAct > 1" @click="anterior()">Anterior</button>
+      <button class="button-pagination" v-if="paginaAct < maxPages" @click="siguiente()">Siguiente</button>
+      <p  class="desc-paginacion">
+        Página {{ paginaAct }} de {{ maxPages }}
+      </p>
+    </div>
   </div>
   <!-- MODA CREAR USUARIO -->
   <div class="sticky inset-0 " :class="{'modal-container': modalAgregar}">
@@ -46,7 +48,7 @@
         <input v-model="usuario.apellidoM" type="text" class="border rounded-lg">
         <p class="text-sm mb-1 font-semibold text-gray-700 mt-2 sm:-ml-6">Contraseña *</p>
         <input v-model="usuario.pass" type="text" class="border rounded-lg">
-        <p class="text-sm mb-1 font-semibold text-gray-700 mt-2 sm:-ml-6">Tramo</p>
+        <!-- <p class="text-sm mb-1 font-semibold text-gray-700 mt-2 sm:-ml-6">Tramo</p>
         <select v-model="tramoSeleccionado" @change="plazasfil()" class="w-full border rounded-lg">
           <option disabled value>Selecionar...</option>     
           <option value="1">México Acapulco</option>     
@@ -59,8 +61,8 @@
           placeholder="Seleccione las Plazas"
           :searchable="true"
           :options="plazas"
-          :close-on-select="false"
-        /> 
+          :close-on-select="false" 
+        /> -->
         <p class="text-sm mb-1 font-semibold text-gray-700 mt-2 sm:-ml-6">Rol *</p>
         <Multiselect
           v-model="usuario.rol"
@@ -69,8 +71,6 @@
           :options="roles"
           :close-on-select="true"
         /> 
-        <p class="text-sm mb-1 font-semibold text-gray-700 mt-2 sm:-ml-6">Correo</p>
-        <input v-model="usuario.correo" type="text" class="border rounded-lg">
       </div>
       <div class="mt-5 text-center ml-6">
         <button @click="guardar" class="botonIconBuscar">Guardar</button>
@@ -205,14 +205,18 @@ export default {
           "nombre": this.usuario.nombre,
           "apellidoPaterno": this.usuario.apellidoP,
           "apellidoMaterno": this.usuario.apellidoM,
-          "rol": this.usuario.rol,
+          "rol": '1',
           "email": 'correo',
           "estatus": true,
         } 
         if(this.usuario.nombre != '' && this.usuario.apellidoP != '' && this.usuario.apellidoM != '' && this.usuario.pass != '' ){
           axios.post(`${API}/Usuario`,data,config)
             .then((result)=>{
+              setTimeout(() => {
+                this.$router.push("/configuracion");
                 console.log(result)
+              }, 1000);
+                
                 this.errorMessage = ""
             })
             .catch(() =>{
@@ -241,9 +245,12 @@ export default {
           this.maxPages = res.data.totalPages;
           res.data.page.forEach((e) => {
             let obj = {
+              id: e.usuarioId,
+              usuario: e.nombreUsuario,
               nombre: e.nombre,
               apellido: e.apellidoPaterno,
               rol: e.rol,
+              plazas: e.plazas,
               estatus: e.estatus,
             };
             this.perfiles.push(obj);
@@ -268,9 +275,12 @@ export default {
           this.maxPages = res.data.totalPages;
           res.data.page.forEach((e) => {
             let obj = {
+              id: e.usuarioId,
+              usuario: e.nombreUsuario,
               nombre: e.nombre,
               apellido: e.apellidoPaterno,
               rol: e.rol,
+              plazas: e.plazas,
               estatus: e.estatus,
             };
             this.perfiles.push(obj);
@@ -403,7 +413,8 @@ export default {
 }
 .button-pagination {
   padding: 2px;
-  border: 1px solid black;
+  border: 1px solid #2c5282;
+  border-radius: 5px;
   margin-right: 5px;
   font-size: 12px;
   margin-top: 20px;

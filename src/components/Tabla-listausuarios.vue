@@ -329,12 +329,51 @@ name: "TablaListaUsuarios",
         }
     },
     editarUsuario: function (usuario){
-      console.log(usuario);
+      console.log(this.roles);
+      console.log(usuario.rol);
     },
      //! Activar o desactivar
     changeStatus: function (usuario) {
       this.seleccionado = usuario;
       this.seleccionado.estatus = !this.seleccionado.estatus;
+      if(this.getCookie("Token")){
+        let config = {
+          headers: {
+            'Authorization': 'Bearer ' + this.getCookie("Token")
+          }
+        }
+        console.log(config);
+        const data = {
+          "usuarioId": this.seleccionado.id,
+          "estatus": this.seleccionado.estatus = !this.seleccionado.estatus,
+        } 
+        axios.post(`${API}/Usuario`,data,config)
+          .then((result)=>{
+              console.log(result)
+              this.errorMessage = ""
+          })
+          .catch(() =>{
+            this.errorMessage = "Hubo un error al crear el usuario, intentalo nuevamente."
+          })
+      }
+    },
+    getCookie: function(cname) {
+      var name = cname + "=";
+      var decodedCookie = decodeURIComponent(document.cookie);
+      var ca = decodedCookie.split(';');
+      for (var i = 0; i < ca.length; i++) {
+        var c = ca[i];
+        while (c.charAt(0) == ' ') {
+          c = c.substring(1);
+        }
+        if (c.indexOf(name) == 0) {
+          return c.substring(name.length, c.length);
+        }
+      }
+      return "";
+    },
+    guardar: function (){
+      
     },
     acciones_mapper(usuario){
       if(this.value == 'Habilitar'){
@@ -379,7 +418,8 @@ name: "TablaListaUsuarios",
             filtroOpciones.push(options[5])
             filtroOpciones.push(options[1])
             filtroOpciones.push(options[3])
-            filtroOpciones.push(options[4])
+            if(usuario.plazas != 'S/A')
+              filtroOpciones.push(options[4])
             filtroOpciones.push(options[2])
           }
           
