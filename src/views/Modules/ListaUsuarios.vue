@@ -35,7 +35,7 @@
       </p>
     </div>
   </div>
-  <!-- MODA CREAR USUARIO -->
+  <!-- MODAL CREAR USUARIO -->
   <div class="sticky inset-0 " :class="{'modal-container': modalAgregar}">
     <div v-if="modalAgregar" class="rounded-lg  justify-center border absolute inset-x-0 bg-white border-gray-400 w-69  mx-auto px-12 py-10 shadow-2xl mt-60">
       <p class="text-gray-900 font-bold text-2xl -mt-8 mb-8 text-center">Agregar Encargado de Plaza</p>
@@ -75,6 +75,16 @@
       <div class="mt-5 text-center ml-6">
         <button @click="guardar" class="botonIconBuscar">Guardar</button>
         <button @click="cancelar(), modalAgregar= false" class="botonIconCancelar">Cancelar</button>
+      </div>
+    </div>
+  </div>
+  <!-- MODAL CARGANDO -->
+  <div class="inset-0" :class="{'modal-container': modalLoading}">
+    <div v-if="modalLoading" class=" inset-0 font-titulo mt-66 mb-8">
+      <div class="rounded-lg w-66 justify-center absolute  inset-x-0 bg-none mx-auto px-12 py-10 ">          
+        <div class="justify-center text-center block">            
+          <img src="@/assets/load.gif"  class="h-48 w-48" />
+        </div>
       </div>
     </div>
   </div>
@@ -121,6 +131,7 @@ export default {
       tramoSeleccionado: '',
       rol_Filtrado:[],
       roles:[],
+      modalLoading:false,
     };
   },
   async beforeMount() {
@@ -169,28 +180,29 @@ export default {
           headers: {
             'Authorization': 'Bearer ' + Servicio.getCookie("Token")
           }
-        }
+        } 
         const data = {
           "password": this.usuario.pass,
           "nombre": this.usuario.nombre,
           "apellidoPaterno": this.usuario.apellidoP,
           "apellidoMaterno": this.usuario.apellidoM,
-          "rol": '1',
+          "rol": this.usuario.rol.toString(),
         } 
         console.log(data);
         if(this.usuario.nombre != '' && this.usuario.apellidoP != '' && this.usuario.apellidoM != '' && this.usuario.pass != '' ){
+          this.modalLoading = true
+          this.modalAgregar = false
           axios.post(`${API}/Usuario`,data,config)
             .then((result)=>{
+              console.log(result);
               setTimeout(() => {
                 this.$router.push("/configuracion");
-                console.log(result)
+                this.modalLoading = false
               }, 1000);
-                
-                this.errorMessage = ""
+              this.errorMessage = ""
             })
             .catch(() =>{
               this.errorMessage = "Hubo un error al crear el usuario, intentalo nuevamente."
-
             })
         }else{
           alert('* Son campos obligatorios')
@@ -227,7 +239,6 @@ export default {
         });
     },
     siguiente: function () {
-      
       let config = {
         headers: {
           Authorization: "Bearer " + this.token,

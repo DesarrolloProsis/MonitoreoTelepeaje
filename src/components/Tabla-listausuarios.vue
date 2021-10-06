@@ -139,13 +139,10 @@
   <!-- MODAL CAMBIAR ROL -->
   <div class="sticky inset-0 " :class="{'modal-container': modalRol}">
     <div v-if="modalRol" class="rounded-lg  justify-center border absolute inset-x-0 bg-white border-gray-400 w-69  mx-auto px-12 py-10 shadow-2xl mt-60">
-      <p class="text-gray-900 font-bold text-2xl -mt-8 mb-8 text-center">Cambiar Rol a </p>
-      <div class="grid grid-cols-2 mt-2">
-        <p class="text-sm mb-1 font-semibold text-gray-700  sm:-ml-6">Nombre</p>
-        <input v-model="usuario.nombre" type="text">
-        <p class="text-sm mb-1 font-semibold text-gray-700  sm:-ml-6">Apellidos</p>
-        <input v-model="usuario.apellidos" type="text">
-        <p class="text-sm mb-1 font-semibold text-gray-700  sm:-ml-6">Rol</p>
+      <p class="text-gray-900 font-bold text-2xl -mt-8 mb-8 text-center">Cambiar Rol a {{ seleccionado.nombre +' '+ seleccionado.apellido }}</p>
+      <p class="text-gray-900 font-bold text-2xl -mt-8 mb-8 text-center">con Rol {{ seleccionado.rol }}</p>
+      <div class="grid grid-cols-2 mt-2">      
+        <p class="text-sm mb-1 font-semibold text-gray-700  text-center sm:-ml-6">Rol</p>
         <Multiselect
           v-model="usuario.rol"
           placeholder="Seleccione un Rol"
@@ -155,8 +152,8 @@
         />
       </div>
       <div class="mt-5 text-center ml-6">
-        <button @click="editarUsuario(usuario)" class="botonIconBuscar">Agregar</button>
-        <button @click="modalEditar = false, tramoSeleccionado = '', validacion = false" class="botonIconCancelar">Cancelar</button>
+        <button @click="cambiarRol(usuario)" class="botonIconBuscar">Agregar</button>
+        <button @click="modalRol = false,usuario.rol = ' '" class="botonIconCancelar">Cancelar</button>
       </div>
     </div>
   </div>
@@ -165,6 +162,7 @@
 <script>
 const API = process.env.VUE_APP_URL_API_PRODUCCION
 import Multiselect from '@vueform/multiselect'
+import Servicio from '../Servicios/Token-Services';
 import axios from "axios";
 
 
@@ -217,10 +215,10 @@ name: "TablaListaUsuarios",
   methods: {
     cambiarPass: function (usuario) {
       if(this.pass != ''){
-        if(this.getCookie("Token")){
+        if(Servicio.getCookie("Token")){
         let config = {
           headers: {
-            'Authorization': 'Bearer ' + this.getCookie("Token")
+            'Authorization': 'Bearer ' + Servicio.getCookie("Token")
           }
         }
         console.log(config);
@@ -246,9 +244,7 @@ name: "TablaListaUsuarios",
     },
     plazasfil: async function (){
       let porTramo = await axios.get(`${API}/PlazaAsignada/PorTramo/${this.tramoSeleccionado}`)
-      //let plazas = await axios.get(`${API}/PlazaAsignada`)
       this.listaPlazas = porTramo.data.body
-      /* let filtradas = this.listaPlazas.filter(plazas => plazas.tramoAsignadoId == this.tramoSeleccionado)*/
       let proxy = new Proxy(this.listaPlazas,{
         get : function(target, property){
           return property === 'length' ?
@@ -318,10 +314,10 @@ name: "TablaListaUsuarios",
     editarUsuario: function (usuario){
       this.seleccionado = usuario;
       console.log(this.seleccionado);
-      if(this.getCookie("Token")){
+      if(Servicio.getCookie("Token")){
         let config = {
           headers: {
-            'Authorization': 'Bearer ' + this.getCookie("Token")
+            'Authorization': 'Bearer ' + Servicio.getCookie("Token")
           }
         }
         console.log(config);
@@ -366,23 +362,30 @@ name: "TablaListaUsuarios",
           })
       }
     },
-    getCookie: function(cname) {
-      var name = cname + "=";
-      var decodedCookie = decodeURIComponent(document.cookie);
-      var ca = decodedCookie.split(';');
-      for (var i = 0; i < ca.length; i++) {
-        var c = ca[i];
-        while (c.charAt(0) == ' ') {
-          c = c.substring(1);
+    cambiarRol: function (usuario){
+      this.seleccionado = usuario;
+      console.log(this.seleccionado);
+      if(Servicio.getCookie("Token")){
+        let config = {
+          headers: {
+            'Authorization': 'Bearer ' + Servicio.getCookie("Token")
+          }
         }
-        if (c.indexOf(name) == 0) {
-          return c.substring(name.length, c.length);
-        }
+        console.log(config);
+        const data = {
+          "UsuarioId": this.seleccionado.id,
+          "rol": this.usuario.rol.toString(),
+        } 
+        console.log(data);
+        /* axios.patch(`${API}/Usuario`,data,config)
+          .then((result)=>{
+              console.log(result)
+              this.errorMessage = ""
+          })
+          .catch(() =>{
+            this.errorMessage = "Hubo un error al crear el usuario, intentalo nuevamente."
+          }) */
       }
-      return "";
-    },
-    guardar: function (){
-      
     },
     acciones_mapper(usuario){
       if(this.value == 'Habilitar'){
@@ -409,6 +412,7 @@ name: "TablaListaUsuarios",
         this.modalEditar = true;
       }if(this.value == 'Cambiar Rol'){
         console.log(usuario)
+        this.modalRol = true
         this.seleccionado = usuario;
       }
       this.value = ""

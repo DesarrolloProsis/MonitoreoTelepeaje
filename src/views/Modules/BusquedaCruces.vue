@@ -1,30 +1,19 @@
 <template>
   <Navbar></Navbar>
   <div class="container mx-auto px-0 pb-100">
-    <h1 class="title-center pb-4">Búsqueda de Cruces en Plaza</h1>
+    <h1 class="title-center font-titulo font-bold pb-4">Búsqueda de Transacciones en Plaza</h1>
   <div>
     <div class="mt-2 mx-2 md:mx-0">
       <p>Filtros de Búsqueda:</p>
         <div class="flex flex-col md:flex-row border-gray-200 pb-0 mb-4">          
             <div class="flex-1 flex flex-col md:flex-row md:space-x-2">
+              <div class="w-full flex-2">
+                  <FormTramoPlaza @cambiar-tramo-plaza="recibir_tramo_plaza" :tipo="'Transacciones'" ></FormTramoPlaza>
+                </div>
               <div class="w-full flex-2 ">
                     <div class="my-2 p-1 bg-white flex border border-gray-200 rounded">
                         <input class="inp-icon p-1 px-2 appearance-none outline-none w-full text-gray-800 " placeholder="Buscar No. Tag" type="text" id="tag" />
                     </div>
-                </div>
-                <div class="w-full flex-2 ">
-                  <div class="my-2 p-1 bg-white flex border border-gray-200 rounded">
-                    
-              <select class="p-1 px-2  outline-none w-full text-gray-800" name="select" id="selectorPlaza">
-                <option v-if="isLoading == true">Cargando Plazas...</option>                                                                    
-                <option v-else-if="plazas.length == 0 && isLoading == false"> No hay plazas</option>
-                <option v-else value="0">Todas las Plazas</option>
-                <option v-for="(plaza, key) in plazas" :value="key + 1" :key="key">
-                  {{ plaza.nombre }}
-                </option>
-              </select>
-                    </div>
-                        
                 </div>
                 <div class="w-full flex-2">
                     <div class="my-2 p-1 bg-white flex border border-gray-200 rounded">
@@ -61,10 +50,7 @@
         </div>
         <hr>
     </div>
-    
 </div>
-
-
     <TablaBusquedaCruces
       v-if="isLoading == false"
       :dataCruces="cruces"
@@ -89,6 +75,7 @@
 <script>
 const API = process.env.VUE_APP_URL_API_PRODUCCION
 import TablaBusquedaCruces from "../../components/Tabla-busquedacruces.vue";
+import FormTramoPlaza from '../../components/Form-tramoplaza.vue'
 import Navbar from "../../components/Navbar.vue";
 import Footer from "../../components/Footer-login";
 //import * as download from "downloadjs";
@@ -99,6 +86,7 @@ export default {
     TablaBusquedaCruces,
     Navbar,
     Footer,
+    FormTramoPlaza,
   },
   data() {
     return {
