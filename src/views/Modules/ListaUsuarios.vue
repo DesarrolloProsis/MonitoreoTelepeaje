@@ -86,6 +86,7 @@ import TablaListaUsuarios from "../../components/Tabla-listausuarios";
 import Navbar from "../../components/Navbar.vue";
 import Footer from "../../components/Footer-login";
 import Multiselect from '@vueform/multiselect';
+import Servicio from '../../Servicios/Token-Services';
 import axios from "axios";
 
 
@@ -135,29 +136,13 @@ export default {
     for(let i= 0; i<proxy.length; i++){
       this.roles.push({'value':proxy[i].rolId, 'label':proxy[i].nombreRol}) 
     }
-    function getCookie(cname) {
-      var name = cname + "=";
-      var decodedCookie = decodeURIComponent(document.cookie);
-      var ca = decodedCookie.split(";");
-      for (var i = 0; i < ca.length; i++) {
-        var c = ca[i];
-        while (c.charAt(0) == " ") {
-          c = c.substring(1);
-        }
-        if (c.indexOf(name) == 0) {
-          return c.substring(name.length, c.length);
-        }
-      }
-      return "";
-    }
-    // Get token config
-    if (getCookie("Token")) {
+    if (Servicio.getCookie("Token")) {
       let config = {
         headers: {
-          Authorization: "Bearer " + getCookie("Token"),
+          Authorization: "Bearer " + Servicio.getCookie("Token"),
         },
       };
-      this.token = getCookie("Token");
+      this.token =  Servicio.getCookie("Token");
       axios.get(`${API}/Usuario?Page=${this.paginaAct}&Rows=10`,config)
         .then((result) => {
           console.log(result.data);
@@ -178,26 +163,11 @@ export default {
     }
   },
   methods: {
-    getCookie: function(cname) {
-      var name = cname + "=";
-      var decodedCookie = decodeURIComponent(document.cookie);
-      var ca = decodedCookie.split(';');
-      for (var i = 0; i < ca.length; i++) {
-        var c = ca[i];
-        while (c.charAt(0) == ' ') {
-          c = c.substring(1);
-        }
-        if (c.indexOf(name) == 0) {
-          return c.substring(name.length, c.length);
-        }
-      }
-      return "";
-    },
     guardar: function (){
-      if(this.getCookie("Token")){
+      if(Servicio.getCookie("Token")){
         let config = {
           headers: {
-            'Authorization': 'Bearer ' + this.getCookie("Token")
+            'Authorization': 'Bearer ' + Servicio.getCookie("Token")
           }
         }
         const data = {
@@ -206,9 +176,8 @@ export default {
           "apellidoPaterno": this.usuario.apellidoP,
           "apellidoMaterno": this.usuario.apellidoM,
           "rol": '1',
-          "email": 'correo',
-          "estatus": true,
         } 
+        console.log(data);
         if(this.usuario.nombre != '' && this.usuario.apellidoP != '' && this.usuario.apellidoM != '' && this.usuario.pass != '' ){
           axios.post(`${API}/Usuario`,data,config)
             .then((result)=>{
