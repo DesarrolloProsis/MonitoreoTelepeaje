@@ -61,6 +61,8 @@
 </template>
 
 <script>
+import axios from 'axios';
+const API = process.env.VUE_APP_URL_API_PRODUCCION
 export default {
   name: "TablaListaPerfiles",
 
@@ -116,9 +118,14 @@ export default {
 
     //! Activar o desactivar
     changeStatus: function (perfil) {
-      this.perfilSelected = perfil;
-      this.perfilSelected.estatus = !this.perfilSelected.estatus;
-      console.log(perfil)
+      //Esto es por referencia
+      //this.perfilSelected = Object.assign(perfil)
+      //Esto es por valor
+      this.perfilSelected = { ...perfil }
+      this.perfilSelected.activo = !perfil.activo
+      axios.put(`${API}/CatalogoRoles`, this.perfilSelected)
+        .then((response) => console.log(response))
+        .catch((error) => console.log(error))
        
     }
   },
