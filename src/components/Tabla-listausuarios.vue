@@ -117,20 +117,20 @@
       <p class="text-gray-900 font-bold text-2xl -mt-8 mb-8 text-center">Editar Usuario</p>
       <div class="grid grid-cols-2 mt-2">
         <p class="text-sm mb-1 font-semibold text-gray-700  sm:-ml-6">Nombre</p>
-        <input v-model="usuario.nombre" type="text">
+        <input v-model="usuario.nombre" class="border rounded-lg" type="text">
         <p class="text-sm mb-1 font-semibold text-gray-700  sm:-ml-6">Apellidos</p>
-        <input v-model="usuario.apellidos" type="text">
-        <p class="text-sm mb-1 font-semibold text-gray-700  sm:-ml-6">Rol</p>
+        <input v-model="usuario.apellidos" class="border rounded-lg" type="text">
+        <!--<p class="text-sm mb-1 font-semibold text-gray-700  sm:-ml-6">Rol</p>
         <Multiselect
           v-model="usuario.rol"
           placeholder="Seleccione un Rol"
           :searchable="true"
           :options="roles"
           :close-on-select="true"
-        />
+        />-->
       </div>
       <div class="mt-5 text-center ml-6">
-        <button @click="editarUsuario(usuario)" class="botonIconBuscar">Agregar</button>
+        <button @click="editarUsuario(usuario)" class="botonIconBuscar">Guardar</button>
         <button @click="modalEditar = false, tramoSeleccionado = '', validacion = false" class="botonIconCancelar">Cancelar</button>
       </div>
     </div>
@@ -139,8 +139,8 @@
   <!-- MODAL CAMBIAR ROL -->
   <div class="sticky inset-0 " :class="{'modal-container': modalRol}">
     <div v-if="modalRol" class="rounded-lg  justify-center border absolute inset-x-0 bg-white border-gray-400 w-69  mx-auto px-12 py-10 shadow-2xl mt-60">
-      <p class="text-gray-900 font-bold text-2xl -mt-8 mb-8 text-center">Cambiar Rol a {{ seleccionado.nombre +' '+ seleccionado.apellido }}</p>
-      <p class="text-gray-900 font-bold text-2xl -mt-8 mb-8 text-center">con Rol {{ seleccionado.rol }}</p>
+      <p class="text-gray-900 font-bold text-2xl -mt-8 mb-8 text-center -mx-6">Cambiar Rol a {{ usuario.nombre +' '+ usuario.apellidos }}</p>
+      <p class="text-gray-900 font-bold text-2xl -mt-8 mb-8 text-center">con Rol {{ usuario.rol }}</p>
       <div class="grid grid-cols-2 mt-2">      
         <p class="text-sm mb-1 font-semibold text-gray-700  text-center sm:-ml-6">Rol</p>
         <Multiselect
@@ -152,12 +152,22 @@
         />
       </div>
       <div class="mt-5 text-center ml-6">
-        <button @click="cambiarRol(usuario)" class="botonIconBuscar">Agregar</button>
+        <button @click="cambiarRol(usuario)" class="botonIconBuscar">Cambiar</button>
         <button @click="modalRol = false,usuario.rol = ' '" class="botonIconCancelar">Cancelar</button>
       </div>
     </div>
   </div>
   <!-- FIN MODAL-->
+    <!-- MODAL CARGANDO -->
+  <div class="inset-0" :class="{'modal-container': modalLoading}">
+    <div v-if="modalLoading" class=" inset-0 font-titulo mt-66 mb-8">
+      <div class="rounded-lg w-66 justify-center absolute  inset-x-0 bg-none mx-auto px-12 py-10 ">          
+        <div class="justify-center text-center block">            
+          <img src="@/assets/load.gif"  class="h-48 w-48" />
+        </div>
+      </div>
+    </div>
+  </div>
 </template>
 <script>
 const API = process.env.VUE_APP_URL_API_PRODUCCION
@@ -181,6 +191,7 @@ name: "TablaListaUsuarios",
       modalEditar:false,
       modalPass:false,
       modalRol:false,
+      modalLoading: false,
       seleccionado: {},
       value: null,
       listaPlazas:[],
@@ -276,13 +287,16 @@ name: "TablaListaUsuarios",
           .then((response)=>{
             console.log();
             this.modalPlazas = false
+            this.modalLoading = true
             this.tramoSeleccionado = ''
             if(response.data.status == 'Error'){
               /* alert('El usuario ya tiene las plazas Asignadas') */
               this.$router.push("/configuracion/lista-usuarios");
             }else{
-              this.$router.push("/configuracion/lista-usuarios");
-              /* alert('Se Asignaron las plazas') */
+              setTimeout(() => {
+                this.$router.push("/configuracion");
+                this.modalLoading = false
+              }, 1000);
             }
           })
         }
@@ -305,8 +319,10 @@ name: "TablaListaUsuarios",
               /* Insertar notificacion */
               this.$router.push("/configuracion");
             }else{
-              this.$router.push("/configuracion");
-              /* Insertar notificacion */
+              setTimeout(() => {
+                this.$router.push("/configuracion");
+                this.modalLoading = false
+              }, 1000);
             }
           })
         }
@@ -340,10 +356,10 @@ name: "TablaListaUsuarios",
     },
     changeStatus: function (usuario) {
       this.seleccionado = usuario;
-      if(this.getCookie("Token")){
+      if(Servicio.getCookie("Token")){
         let config = {
           headers: {
-            'Authorization': 'Bearer ' + this.getCookie("Token")
+            'Authorization': 'Bearer ' + Servicio.getCookie("Token")
           }
         }
         console.log(config);
@@ -363,28 +379,33 @@ name: "TablaListaUsuarios",
       }
     },
     cambiarRol: function (usuario){
-      this.seleccionado = usuario;
-      console.log(this.seleccionado);
+      this.seleccionado = usuario
       if(Servicio.getCookie("Token")){
         let config = {
           headers: {
             'Authorization': 'Bearer ' + Servicio.getCookie("Token")
           }
         }
-        console.log(config);
         const data = {
-          "UsuarioId": this.seleccionado.id,
-          "rol": this.usuario.rol.toString(),
+          "UsuarioId": this.seleccionado.idUsuario,
+          "rol": this.seleccionado.rol.toString(),
+          "Estatus": true,
         } 
-        console.log(data);
-        /* axios.patch(`${API}/Usuario`,data,config)
-          .then((result)=>{
-              console.log(result)
+        if(this.seleccionado.rol != ''){
+        this.modalRol = false
+        this.modalLoading = true
+        axios.patch(`${API}/Usuario`,data,config)
+          .then(()=>{
+              setTimeout(() => {
+                this.$router.push("/configuracion");
+                this.modalLoading = false
+              }, 1000);
               this.errorMessage = ""
           })
           .catch(() =>{
             this.errorMessage = "Hubo un error al crear el usuario, intentalo nuevamente."
-          }) */
+          })
+        }
       }
     },
     acciones_mapper(usuario){
@@ -413,7 +434,10 @@ name: "TablaListaUsuarios",
       }if(this.value == 'Cambiar Rol'){
         console.log(usuario)
         this.modalRol = true
-        this.seleccionado = usuario;
+        this.usuario.idUsuario = usuario.id
+        this.usuario.nombre = usuario.nombre
+        this.usuario.apellidos = usuario.apellido
+        this.usuario.rol = usuario.rol
       }
       this.value = ""
     },
