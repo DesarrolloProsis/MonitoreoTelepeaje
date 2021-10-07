@@ -71,8 +71,7 @@ export default {
     return {
       // todos los perfiles
       perfilesData: this.dataPerfiles,
-      isModulosActive: false,
-      isPlazasActive: false,      
+      isModulosActive: false,        
       //perfil individual
       perfilSelected: {},
 
@@ -94,28 +93,20 @@ export default {
     hideModulos: function () {
       this.isModulosActive = false;
       //Eliminar array auxiliar modulos para update
-
+      this.perfilSelected.modulos.forEach(item => {
+        this.perfilSelected[item.nombre] = item.seleccionado
+      });
+      delete this.perfilSelected.modulos
+      console.log(this.perfilSelected)
+      axios.put(`${API}/CatalogoRoles`, this.perfilSelected)
+        .then((response) => console.log(response))
+        .catch((error) => console.log(error))
       //AGREGAR CONSULTA API PARA ENVIAR DATOS ACTUALIZADOS YA SEA ENVIANDO TODOS LOS DATOS O SOLO PERFILSELECTED
     },
     cambiarModulos: function (index, estatus) {
       this.perfilSelected.modulos[index].seleccionado = !estatus;      
-      this.perfilSelected[this.perfilSelected.modulos[index].nombre] = !estatus
-      //console.log(this.perfilSelected.modulos[index].seleccionado)
+      this.perfilSelected[this.perfilSelected.modulos[index].nombre] = !estatus      
     },
-    // !PLAZAS
-    showPlazas: function (perfil) {
-      this.isPlazasActive = true;
-      this.perfilSelected = perfil;
-    },
-    hidePlazas: function () {
-      this.isPlazasActive = false;
-      //AGREGAR CONSULTA API PARA ENVIAR DATOS ACTUALIZADOS YA SEA ENVIANDO TODOS LOS DATOS O SOLO PERFILSELECTED
-    },
-    cambiarPlazas: function (index, estatus) {
-      this.perfilSelected.plazas[index].seleccionado = !estatus;
-      //console.log(this.perfilSelected.modulos[index].seleccionado)
-    },
-
     //! Activar o desactivar
     changeStatus: function (perfil) {
       //Esto es por referencia
