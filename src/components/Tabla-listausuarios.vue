@@ -144,7 +144,7 @@
       <div class="grid grid-cols-2 mt-2">      
         <p class="text-sm mb-1 font-semibold text-gray-700  text-center sm:-ml-6">Rol</p>
         <Multiselect
-          v-model="usuario.rol"
+          v-model="seleccionado.rolId"
           placeholder="Seleccione un Rol"
           :searchable="true"
           :options="roles"
@@ -204,6 +204,7 @@ name: "TablaListaUsuarios",
         nombre: '',
         apellidos:'',
         rol:'',
+        rolId: '',
       },
       roles: [],
       pass:'',
@@ -329,24 +330,26 @@ name: "TablaListaUsuarios",
     },
     editarUsuario: function (usuario){
       this.seleccionado = usuario;
-      console.log(this.seleccionado);
       if(Servicio.getCookie("Token")){
-        let config = {
+      let config = {
           headers: {
             'Authorization': 'Bearer ' + Servicio.getCookie("Token")
           }
         }
-        console.log(config);
         const data = {
           "UsuarioId": this.seleccionado.idUsuario,
           "Nombre": this.seleccionado.nombre,
           "ApellidoPaterno": this.seleccionado.apellidos,
           "Estatus": true,
-        } 
-        console.log(data);
+        }
+        this.modalLoading = true
+        this.modalEditar = true
         axios.patch(`${API}/Usuario`,data,config)
-          .then((result)=>{
-              console.log(result)
+          .then(()=>{
+                setTimeout(() => {
+                this.$router.push("/configuracion");
+                this.modalLoading = false
+              }, 1000);
               this.errorMessage = ""
           })
           .catch(() =>{
@@ -379,7 +382,7 @@ name: "TablaListaUsuarios",
       }
     },
     cambiarRol: function (usuario){
-      this.seleccionado = usuario
+      console.log(this.seleccionado.rolId);
       if(Servicio.getCookie("Token")){
         let config = {
           headers: {
@@ -387,8 +390,8 @@ name: "TablaListaUsuarios",
           }
         }
         const data = {
-          "UsuarioId": this.seleccionado.idUsuario,
-          "rol": this.seleccionado.rol.toString(),
+          "UsuarioId": usuario.idUsuario,
+          "idrol": this.seleccionado.rolId,
           "Estatus": true,
         } 
         if(this.seleccionado.rol != ''){
@@ -426,18 +429,19 @@ name: "TablaListaUsuarios",
         this.seleccionado = usuario
         this.modalQuitar = true;
       }if(this.value == 'Editar Usuario'){
-        console.log(usuario);
         this.usuario.idUsuario = usuario.id
         this.usuario.nombre = usuario.nombre
         this.usuario.apellidos = usuario.apellido
         this.modalEditar = true;
       }if(this.value == 'Cambiar Rol'){
-        console.log(usuario)
+        console.log(usuario.rolId)
         this.modalRol = true
+        console.log(usuario);
         this.usuario.idUsuario = usuario.id
         this.usuario.nombre = usuario.nombre
         this.usuario.apellidos = usuario.apellido
         this.usuario.rol = usuario.rol
+        this.usuario.rolId = usuario.rolId
       }
       this.value = ""
     },

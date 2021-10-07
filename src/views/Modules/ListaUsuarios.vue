@@ -165,6 +165,7 @@ export default {
               nombre: e.nombre,
               apellido: e.apellidoPaterno,
               rol: e.rol,
+              rolId: e.idRol,
               plazas: e.plazas,
               estatus: e.estatus,
             };
@@ -186,7 +187,7 @@ export default {
           "nombre": this.usuario.nombre,
           "apellidoPaterno": this.usuario.apellidoP,
           "apellidoMaterno": this.usuario.apellidoM,
-          "rol": this.usuario.rol.toString(),
+          "idrol": this.usuario.rol,
         } 
         console.log(data);
         if(this.usuario.nombre != '' && this.usuario.apellidoP != '' && this.usuario.apellidoM != '' && this.usuario.pass != '' ){
