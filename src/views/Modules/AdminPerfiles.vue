@@ -49,7 +49,7 @@
     <div class="mb-6">
       <button @click="abrir_modal_new_rol" class="w-full botonIconBuscar justify-center mt-3 -mb-8">Agregar Usuario</button>
     </div>
-    <TablaListaPerfiles :dataPerfiles="roles"></TablaListaPerfiles>
+    <TablaListaPerfiles @buscar-roles="buscar_roles" :dataPerfiles="roles"></TablaListaPerfiles>
   </div>
   <Footer></Footer>
 </template>

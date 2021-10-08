@@ -98,8 +98,11 @@ export default {
       });
       delete this.perfilSelected.modulos
       console.log(this.perfilSelected)
-      axios.put(`${API}/CatalogoRoles`, this.perfilSelected)
-        .then((response) => console.log(response))
+      axios.post(`${API}/CatalogoRoles/Editar`, this.perfilSelected)
+        .then((response) => {
+          console.log(response)
+          this.$emit('buscar-roles')
+        })
         .catch((error) => console.log(error))
       //AGREGAR CONSULTA API PARA ENVIAR DATOS ACTUALIZADOS YA SEA ENVIANDO TODOS LOS DATOS O SOLO PERFILSELECTED
     },
@@ -114,8 +117,11 @@ export default {
       //Esto es por valor
       this.perfilSelected = { ...perfil }
       this.perfilSelected.activo = !perfil.activo
-      axios.put(`${API}/CatalogoRoles`, this.perfilSelected)
-        .then((response) => console.log(response))
+      axios.post(`${API}/CatalogoRoles/Editar`, this.perfilSelected)
+        .then((response) =>{
+           console.log(response)
+           this.$emit('buscar-roles')
+        })
         .catch((error) => console.log(error))
        
     }
