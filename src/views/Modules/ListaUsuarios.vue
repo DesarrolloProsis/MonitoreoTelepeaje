@@ -29,9 +29,9 @@
     <TablaListaUsuarios :dataUsuarios="perfiles"></TablaListaUsuarios>
     <div class="">
       <button class="button-pagination" v-if="paginaAct > 1" @click="anterior()">Anterior</button>
-      <button class="button-pagination" v-if="paginaAct < maxPages" @click="siguiente()">Siguiente</button>
+      <button class="button-pagination" v-if="paginaAct < maxPages-1" @click="siguiente()">Siguiente</button>
       <p  class="desc-paginacion">
-        Página {{ paginaAct }} de {{ maxPages }}
+        Página {{ paginaAct }} de {{ maxPages-1 }}
       </p>
     </div>
   </div>
