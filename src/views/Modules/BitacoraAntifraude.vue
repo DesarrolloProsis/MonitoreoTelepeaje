@@ -27,7 +27,7 @@
       </div>
     </div>
     <div class="container mx-auto px-0 md:px-60">
-      <TablaAntifraude></TablaAntifraude>
+      <TablaAntifraude :dataAntifraude="listaNegra"></TablaAntifraude>
     </div>
   </div>
   <Footer></Footer>
@@ -48,7 +48,8 @@ export default {
       tags: [],      
       token:"",      
       tramo: '',
-      plaza: ''
+      plaza: '',
+      listaNegra: [],
 
     };
   },
@@ -56,7 +57,18 @@ export default {
     axios.get(`${API}/ListaNegra`)
     .then((result)=>{
       console.log(result.data.body);
-    })    
+      result.data.body.forEach((e)=>{
+        let obj = {
+          tag: e.tag,
+          carril: e.carril,
+          fechaEntrada: e.fechaEntrada,
+          fechaSalida: e.fechaSalida,
+          causa: e.causaNombre
+        }
+        this.listaNegra.push(obj)
+      })
+    })
+    console.log(this.listaNegra);    
   },
   methods: {
     recibir_tramo_plaza(value){
@@ -76,7 +88,7 @@ export default {
   padding-top: 20px;
 }
 .bg-blue {
-  background-color: #0195b0;
+  background-color: #2c5282;
   padding: 10px 5px;
 }
 .ml-right {
