@@ -2,7 +2,7 @@
 <Navbar></Navbar>
 <h1 class="title">Estatus Tags</h1>
 <div class="flex justify-center pt-4 filter-style">
-  <FormTramoPlaza @cambiar-tramo-plaza="recibir_tramo_plaza"></FormTramoPlaza>
+  <FormTramoPlaza @cambiar-tramo-plaza="recibir_tramo_plaza" :carrilesForm="true"></FormTramoPlaza>
 </div>
 <div class="flex justify-center">
   <div class="flex-auto text-center pt-4">

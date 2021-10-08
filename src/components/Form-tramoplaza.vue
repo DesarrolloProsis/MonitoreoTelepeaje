@@ -12,6 +12,14 @@
             <option v-else value="">Selecione Plaza</option>            
             <option v-for="(plaza, key) in plazas" :value="plaza" :key="key">{{ plaza.nombre }}</option>
         </select>
+        <template v-if="carrilesForm">
+            <span class="mt-1" :class="{'mt-0 text-white': tipo == 'Antifraude'}">Plaza:</span>
+            <select v-model="plazaSeleccionado" @change="emit_tramo_plaza" class="p-1 px-2  outline-none w-full text-gray-800 ml-3" name="select" id="selectorTramo">                                    
+                <option v-if="plazas.length == 0" value="">Sin Plazas</option>
+                <option v-else value="">Selecione Plaza</option>            
+                <option v-for="(plaza, key) in plazas" :value="plaza" :key="key">{{ plaza.nombre }}</option>
+            </select>
+        </template>
     </div>
 </template>
 
@@ -19,7 +27,8 @@
 import { ref, onMounted } from 'vue'
 import axios from "axios";
 const API = process.env.VUE_APP_URL_API_PRODUCCION
-export default {        
+export default { 
+    props: ['carrilesForm'],    
     setup(_, { emit }){
         const tramos = ref([])
         const plazas = ref([])        
@@ -53,13 +62,7 @@ export default {
         }
         onMounted(obtner_plazas_por_tramo)  
         return { tramos, plazas, obtner_plazas_por_tramo, tramoSeleccionado, plazaSeleccionado, emit_tramo_plaza }
-    },
-    props:{
-        tipo: {
-            type: String,
-            default: ''
-        },
-    }
+    }, 
 }
 </script>
 

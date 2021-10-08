@@ -41,13 +41,13 @@ export default {
 }
 .tftable th {
   font-size: 14px;
-  background-color: #89e9d9;
+  background-color: #2c5282;
   border-width: 5px;
   padding: 8px;
   border-style: solid;
   border-color: white;
   text-align: left;
-  color: black;
+  color: white;
   font-weight: 400;
   text-align: center;
   margin: 3px;
