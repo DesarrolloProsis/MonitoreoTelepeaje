@@ -105,7 +105,9 @@ export default {
         plazas: null,
       },
       value: '',
-      formato:''
+      formato:'',
+      tramo:'',
+      plaza:''
     };
   },
   mounted() {
@@ -229,18 +231,24 @@ export default {
       }
     },
     buscar: function () {
-      let plaza = document.getElementById("selectorPlaza").value;
-      if (plaza == 0) {
-        var plaza_select = this.plazas;
-      } else {
-        plaza_select = [this.plazas[plaza - 1]];
+      let tagBuscar = document.getElementById("tag").value;
+      if(this.tramo != '' && this.plaza != '' && tagBuscar != ''){
+        let plaza = document.getElementById("selectorPlaza").value;
+        if (plaza == 0) {
+          var plaza_select = this.plazas;
+        } else {
+          plaza_select = [this.plazas[plaza - 1]];
+        }
+        let fecha = document.getElementById("fecha").value;
+        let tag = document.getElementById("tag").value;
+        this.paginaActual = 1;
+        this.pedirDatos(this.paginaActual, tag, plaza_select, fecha);
+        document.getElementById("fecha").value = "";
+        document.getElementById("tag").value = ""; 
+      }else{
+        alert('no buscar')
       }
-      let fecha = document.getElementById("fecha").value;
-      let tag = document.getElementById("tag").value;
-      this.paginaActual = 1;
-      this.pedirDatos(this.paginaActual, tag, plaza_select, fecha);
-      document.getElementById("fecha").value = "";
-      document.getElementById("tag").value = "";
+      /* */
     },
     downloadApi: function (tipo) {
       var myHeaders = new Headers();
