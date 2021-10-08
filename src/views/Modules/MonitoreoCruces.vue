@@ -1,45 +1,19 @@
 <template>
   <Navbar></Navbar>
   <div class="container mx-auto px-0 pb-100">
-    <h1 class="title-center pb-4">Monitoreo de Cruces Actuales de Telepeaje</h1>
+    <h1 class="title-center font-titulo font-bold pb-4">Transacciones de Telepeaje en Tiempo Real</h1>
     <div class="flex flex-wrap bg-blue">
       <div class="flex-none filter-style">
-        Tramo:
-        <select class="flex-none filter-style color-black" name="select">
-          <option value="100" selected>opcion1</option>
-          <option value="200">opcion2</option>
-          <option value="300">opcion3</option>
-        </select>
+        <FormTramoPlaza @cambiar-tramo-plaza="recibir_tramo_plaza()"></FormTramoPlaza>
       </div>
-      <div class="flex-none filter-style">
-        Plaza:
-        <select class="flex-none filter-style color-black" name="select">
-          <option value="100" selected>opcion1</option>
-          <option value="200">opcion2</option>
-          <option value="300">opcion3</option>
-        </select>
-      </div>
-      <div class="flex-none filter-style">
-        Carril:
-        <select class="flex-none filter-style color-black" name="select">
-          <option value="100" selected>opcion1</option>
-          <option value="200">opcion2</option>
-          <option value="300">opcion3</option>
-        </select>
-      </div>
-      <div class="flex-none filter-style">
-        Selección:
-        <select class="flex-none filter-style color-black" name="select">
-          <option value="100" selected>100</option>
-          <option value="200">200</option>
-          <option value="300">300</option>
-        </select>
-      </div>
-      <div class="flex-none filter-style">
+      <div class="flex-none mt-1 filter-style">
         <button class="btn-buscar">Buscar</button>
       </div>
-      <div class="flex-1">
-        <button class="btn-carriles ml-right">Descargar Excel</button>
+      <div class="flex-none mt-1 ml-right text-white">
+        Tiempo
+        <input type="text">
+        
+        <!-- <button class="btn-carriles ml-right">Descargar Excel</button> -->
       </div>
     </div>
     <TablaCruces :dataCruces="cruces"></TablaCruces>
@@ -47,12 +21,13 @@
   <Footer></Footer>
 </template>
 <script>
+import FormTramoPlaza from '../../components/Form-tramoplaza.vue';
 import TablaCruces from "../../components/Tabla-cruces.vue";
 import Navbar from "../../components/Navbar.vue";
 import Footer from "../../components/Footer-login";
 export default {
   name: "MonitoreoCruces",
-  components: { TablaCruces, Navbar, Footer },
+  components: { TablaCruces, Navbar, Footer, FormTramoPlaza},
   data() {
     return {
       cruces: [

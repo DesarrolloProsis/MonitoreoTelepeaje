@@ -1,7 +1,7 @@
 <template>
-    <div class="inline-flex">
+    <div class="inline-flex border" :class="{'w-69 mt-3': tipo == 'Transacciones'}">
         <span class="mt-1" :class="{'mt-0 text-white': tipo == 'Antifraude'}">Tramo:</span>
-        <select v-model="tramoSeleccionado" @change="obtner_plazas_por_tramo" class="p-1 px-2  outline-none w-full text-gray-800 mr-3 ml-3" name="select" id="selectorTramo">                                    
+        <select v-model="tramoSeleccionado" @change="obtner_plazas_por_tramo" class="p-1 px-2  outline-none w-full text-gray-800 mr-3 ml-3 rounded" name="select" id="selectorTramo">                                    
             <option v-for="(tramo, key) in tramos" :value="tramo" :key="key">
                 {{ tramo.text }}
             </option>

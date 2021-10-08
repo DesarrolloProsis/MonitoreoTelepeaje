@@ -28,7 +28,7 @@ export default {
     return {
       modulos: [
         {
-          titulo: "Monitoreo de Servicios",
+          titulo: "Monitoreo de Servicios en Tiempo Real",
           imagen: "Menu/monitoreo-servicios.png",
           ruta: "/inicio/monitoreo-servicios",
           nombre:"Monitoreo Servicios",
@@ -39,56 +39,56 @@ export default {
           imagen: "Menu/monitoreo-carriles.png",
           ruta: "/inicio/monitoreo-carriles",
           nombre:"Monitoreo Carriles",
-           isInactive:false
+          isInactive:false
         },
         {
-          titulo: "Monitoreo de Cruces",
+          titulo: "Transacciones de Telepeaje en Tiempo Real",
           imagen: "Menu/monitoreo-cruces.png",
           ruta: "/inicio/monitoreo-cruces",
           nombre:"Monitoreo Cruces",
           isInactive:false
         },
         {
-          titulo: "Envío de Transacciones",
+          titulo: "Envío de Transacciones al Operador de Telepeaje",
           imagen: "Menu/envio-transacciones.png",
           ruta: "/inicio/envio-transacciones",
           nombre:"Envio Transacciones",
-           isInactive:false
+          isInactive:false
         },
         {
-          titulo: "Búsqueda de Cruces",
+          titulo: "Búsqueda de Transacciones",
           imagen: "Menu/busqueda-cruces.png",
           ruta: "/inicio/busqueda-cruces",
           nombre:"Busqueda Cruces",
-           isInactive:false
+          isInactive:false
         },
         /* {
           titulo: "Bitácora de Accesos",
           imagen: "Menu/bitacora-accesos.png",
           ruta: "/inicio/bitacora-accesos",
           nombre:"Bitacora Accesos",
-           isInactive:false
+          isInactive:false
         }, */
         {
           titulo: "Bitácoras",
           imagen: "Menu/bitacora-accesos.png",
           ruta: "/bitacoras",
           nombre:"Bitacora",
-           isInactive:false
+          isInactive:false
         },
         {
           titulo: "Estatus de TAGs",
           imagen: "Menu/estatus-tags.png",
           ruta: "/inicio/estatus-tags",
           nombre:"Estatus Tag",
-           isInactive:false
+          isInactive:false
         },
         {
           titulo: "Configuración",
           imagen: "Menu/configuracion.png",
           ruta: "/configuracion",
           nombre:"Configuracion",
-           isInactive:false
+          isInactive:false
         },
       ],
     };
