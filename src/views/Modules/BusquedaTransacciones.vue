@@ -47,10 +47,10 @@
         <hr>
     </div>
 </div>
-    <TablaBusquedaCruces
+    <TablaBusquedaTransacciones
       v-if="isLoading == false"
       :dataCruces="cruces"
-    ></TablaBusquedaCruces>
+    ></TablaBusquedaTransacciones>
     <div class="loading" v-else>Cargando Datos...</div>
     <button v-if="paginaActual > 1" class="button-pagination" @click="left()">
       Anterior
@@ -70,7 +70,7 @@
 </template>
 <script>
 const API = process.env.VUE_APP_URL_API_PRODUCCION
-import TablaBusquedaCruces from "../../components/Tabla-busquedacruces.vue";
+import TablaBusquedaTransacciones from "../../components/Tabla-busquedatransacciones.vue";
 import Multiselect from '@vueform/multiselect';
 import FormTramoPlaza from '../../components/Form-tramoplaza.vue'
 import Navbar from "../../components/Navbar.vue";
@@ -80,7 +80,7 @@ import axios from "axios";
 export default {
   name: "BusquedaCruces",
   components: {
-    TablaBusquedaCruces,
+    TablaBusquedaTransacciones,
     Navbar,
     Footer,
     FormTramoPlaza,
@@ -404,7 +404,7 @@ export default {
 }
 
 .bg-blue {
-  background-color: #0195b0;
+  background-color: #2c5282;
   padding: 10px 5px;
 }
 

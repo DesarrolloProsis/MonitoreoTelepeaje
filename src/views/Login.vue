@@ -55,13 +55,6 @@ export default {
       mensaje:""
     }
   },
-  beforeMount(){
-    this.$notify({
-      title:'Nuevo Usuario',
-      text:'Se creo correctamente el nuevo usuario',
-      type: 'success'
-    });
-  },
   methods: {
     login: function() {
       document.cookie = "TipoUser=; expires=Thu, 01 Jan 1970 00:00:00 UTC;" + "SameSite=None; Secure;";

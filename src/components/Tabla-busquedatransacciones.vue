@@ -44,19 +44,18 @@ export default {
 }
 .tftable th {
   font-size: 14px;
-  background-color: #BEF265;
+  background-color: #2c5282;
   border-width: 5px;
   padding: 8px;
   border-style: solid;
   border-color: white;
   text-align: left;
-  color: BLACK;
-  font-weight: 400;
+  color: white;
+  font-weight: 500;
   text-align: center;
-  
   margin: 3px;
+  border-radius: 15px;
 }
-
 .tftable td {
   font-size: 14px;
   border-bottom-width: 2px;
