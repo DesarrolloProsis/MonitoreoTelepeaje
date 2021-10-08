@@ -53,6 +53,7 @@
   </div>
   <Footer></Footer>
 </template>
+
 <script>
 import TablaListaPerfiles from "../../components/Tabla-listaperfiles";
 import Navbar from "../../components/Navbar.vue";
