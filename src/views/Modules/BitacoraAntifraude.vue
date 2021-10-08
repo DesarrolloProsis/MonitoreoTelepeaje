@@ -20,10 +20,19 @@
       </div>
       <div class="flex-none filter-style">
         <button class="btn-buscar">Buscar</button>
-        <button class="btn-buscar ml-6">Todos</button>
+        <button class="btn-buscar ml-6 mr-66">Todos</button>
       </div>
       <div class="flex-1">
-        <button class="btn-carriles ml-right">Descargar Excel</button>
+        <Multiselect v-model="formato" placeholder="Sleccione una Acción" @close="acciones_mapper(formato)" label="name" trackBy="name" :options="opticones_select_acciones()" :searchable="true">
+                    <template v-slot:singleLabel="{ value }">
+                      <div class="multiselect-single-label">
+                        <img height="26" style="margin: 0 6px 0 0;" :src="value.icon"> {{ value.name }}
+                      </div>
+                    </template>
+                    <template v-slot:option="{ option }">
+                      <img height="22" style="margin: 0 6px 0 0;" :src="option.icon">{{ option.name }}
+                    </template>
+                  </Multiselect>
       </div>
     </div>
     <div class="container mx-auto px-0 md:px-60">
@@ -36,12 +45,13 @@
 const API = process.env.VUE_APP_URL_API_PRODUCCION
 import FormTramoPlaza from '../../components/Form-tramoplaza.vue';
 import TablaAntifraude from "../../components/Tabla-antifraude.vue";
+import Multiselect from '@vueform/multiselect';
 import Navbar from "@/components/Navbar.vue";
 import Footer from "@/components/Footer-login";
 import axios from "axios";
 export default {
   name: "BitacoraAccesos",
-  components: { Navbar, Footer, FormTramoPlaza, TablaAntifraude },
+  components: { Navbar, Footer, FormTramoPlaza, TablaAntifraude, Multiselect },
 
   data() {
     return {
@@ -50,13 +60,14 @@ export default {
       tramo: '',
       plaza: '',
       listaNegra: [],
-
+      value: '',
+      formato:'',
+      isLoading: false,
     };
   },
   beforeMount (){
     axios.get(`${API}/ListaNegra`)
     .then((result)=>{
-      console.log(result.data.body);
       result.data.body.forEach((e)=>{
         let obj = {
           tag: e.tag,
@@ -68,12 +79,35 @@ export default {
         this.listaNegra.push(obj)
       })
     })
-    console.log(this.listaNegra);    
   },
   methods: {
     recibir_tramo_plaza(value){
       this.tramo = value.tramo
       this.plaza = value.plaza
+    },
+    acciones_mapper(formato){
+      if(formato == 'excel'){
+        console.log('excel');
+      }if(formato == 'csv'){
+        console.log('csv');
+      }if(formato == 'txt'){
+        console.log('txt');
+      }
+      this.formato = ''
+    },
+    opticones_select_acciones(){
+      let options= [
+          {  value: 'excel', name: 'EXCEL'},//0
+          {  value: 'csv', name: 'CSV'},//1
+          {  value: 'txt', name: 'TXT'},//2
+      ]
+      let filtroOpciones = []
+        if(this.isLoading == false){
+          filtroOpciones.push(options[0])
+          filtroOpciones.push(options[1])
+          filtroOpciones.push(options[2])
+        }
+      return filtroOpciones
     }
   },
 }

@@ -43,10 +43,10 @@ export default {
         const obtner_plazas_por_tramo = async () => {                  
             axios.get(`${API}/PlazaAsignada/PorTramo/${tramoSeleccionado.value.id}`)
             .then((responseFullPlazas) => {  
-                console.log(responseFullPlazas)                  
+                //console.log(responseFullPlazas)                  
                 axios.get(`${API}/PlazaAsignada/DelUsuario/${1}`)
                 .then((responsePlazaUsuario) => {
-                    console.log(responsePlazaUsuario)     
+                    //console.log(responsePlazaUsuario)     
                     plazas.value = []      
                     responseFullPlazas.data.body.forEach(plaza => {
                         let objPlazaValida = responsePlazaUsuario.data.body
