@@ -199,6 +199,11 @@ export default {
               setTimeout(() => {
                 this.$router.push("/configuracion");
                 this.modalLoading = false
+                this.$notify({
+                  title:'Nuevo Usuario',
+                  text:'Se creo correctamente el nuevo usuario',
+                  type: 'success'
+                });
               }, 1000);
               this.errorMessage = ""
             })
@@ -375,6 +380,7 @@ export default {
       this.tramoSeleccionado = ''
       this.plazas = []
     },
+    
   },
 };
 </script>

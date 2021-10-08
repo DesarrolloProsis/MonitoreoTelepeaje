@@ -56,7 +56,11 @@ export default {
     }
   },
   beforeMount(){
-    this.$notify("Hello user!");
+    this.$notify({
+      title:'Nuevo Usuario',
+      text:'Se creo correctamente el nuevo usuario',
+      type: 'success'
+    });
   },
   methods: {
     login: function() {
@@ -103,7 +107,7 @@ export default {
   position: absolute;
   width: 79vh;
   height: 100vh;
-  margin-left: 1278px;
+  margin-left: 1150px;
   background-image: radial-gradient(ellipse farthest-corner at 45px 30px , rgba(255, 255, 255, 0) 69%, rgba(44, 82, 130, 1) 0%);
   
 }
