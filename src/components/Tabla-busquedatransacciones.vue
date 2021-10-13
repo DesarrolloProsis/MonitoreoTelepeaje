@@ -7,29 +7,30 @@
         <th>Fecha</th>
         <th>Carril</th>
         <th>Tipo de Vehículo</th>
-         <th>Tarifa</th>
+        <th>Tarifa</th>
       </tr>
       <tr v-for="(cruces, index) in dataCruces" :key="index">
         <td>{{cruces.plaza}}</td>
         <td>{{cruces.num_tag}}</td>
-        <td>{{cruces.fecha}}</td>
+        <td>{{moment(cruces.fecha).format("YYYY-MM-DD  HH:mm a")}}</td>
         <td>{{cruces.carril}}</td>
         <td>{{cruces.tipo_vehiculo}} </td>
-         <td>{{cruces.tarifa}} </td>
+        <td>{{cruces.tarifa}} </td>
       </tr>
     </table>
   </div>
 </template>
-
-
 <script>
+import moment from 'moment'
 export default {
   name: "TablaBusquedaCruces",
   props: ["dataCruces"],
+  created: function () {
+    this.moment = moment;
+  },
 };
 </script>
 <style scoped>
-
 .responsive-table {
     padding-top: 20px;
   overflow-x: auto;
