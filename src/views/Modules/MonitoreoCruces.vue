@@ -4,7 +4,7 @@
     <h1 class="title-center font-titulo font-bold pb-4">Transacciones de Telepeaje en Tiempo Real</h1>
     <div class="flex flex-wrap bg-blue">
       <div class="flex-none ">
-        <FormTramoPlaza @cambiar-tramo-plaza="recibir_tramo_plaza" :tipo="'Antifraude'"></FormTramoPlaza>
+        <FormTramoPlaza @cambiar-tramo-plaza="recibir_tramo_plaza" :carrilesForm="true" :tipo="'Antifraude'"></FormTramoPlaza>
       </div>
       <div class="flex-none mt-1 filter-style">
         <button class="btn-buscar">Buscar</button>
@@ -72,7 +72,7 @@ export default {
   padding-top: 20px;
 }
 .bg-blue {
-  background-color: #0195b0;
+  background-color: #2c5282;
   padding: 10px 5px;
 }
 .ml-right {
@@ -83,7 +83,7 @@ export default {
 .filter-style {
   color: white;
   font-size: 16px;
-  margin-left: 230px;
+  margin-left: 40px;
 }
 .filter-style input {
   margin-left: 20px;

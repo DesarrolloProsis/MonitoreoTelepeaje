@@ -45,7 +45,7 @@ export default {
 
 .tftable th {
   font-size: 14px;
-  background-color: #2ED0E1;
+  background-color: #2c5282;
   border-width: 5px;
   padding: 8px;
   border-style: solid;
