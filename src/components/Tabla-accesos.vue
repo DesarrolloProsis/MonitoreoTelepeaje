@@ -11,9 +11,9 @@
       <tr v-for="(accesos, index) in dataAccesos" :key="index">
         <td>{{ accesos.nombreUsuario }}</td>
         <td>{{ accesos.nombre + ' ' + accesos.apellidoP + ' ' + accesos.apellidoM}}</td>
-        <td>{{ accesos.rolId }}</td>
+        <td>{{ accesos.rol }}</td>
         <td>{{ moment(accesos.fecha_inicio).format("YYYY-MM-DD  HH:mm a") }}</td>
-        <td>{{ accesos.fecha_fin }}</td>
+        <td>{{ moment(accesos.fecha_fin).format("YYYY-MM-DD  HH:mm a") }}</td>
       </tr>
     </table>
   </div>

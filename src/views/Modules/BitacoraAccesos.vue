@@ -63,7 +63,9 @@ export default {
             apellidoP: e.apellidoPaterno,
             apellidoM: e.apellidoMaterno,
             rolId: e.rolId,
-            fecha_inicio: e.dateStamp
+            fecha_inicio: e.horaLogIn,
+            fecha_fin: e.horaLogOut,
+            rol: e.nombreRol
           }
           this.accesos.push(obj)
         })
