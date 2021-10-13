@@ -29,9 +29,9 @@
     <TablaListaUsuarios :dataUsuarios="perfiles"></TablaListaUsuarios>
     <div class="">
       <button class="button-pagination" v-if="paginaAct > 1" @click="anterior()">Anterior</button>
-      <button class="button-pagination" v-if="paginaAct < maxPages-1" @click="siguiente()">Siguiente</button>
+      <button class="button-pagination" v-if="paginaAct < maxPages" @click="siguiente()">Siguiente</button>
       <p  class="desc-paginacion">
-        Página {{ paginaAct }} de {{ maxPages-1 }}
+        Página {{ paginaAct }} de {{ maxPages }}
       </p>
     </div>
   </div>
@@ -339,9 +339,12 @@ export default {
             this.maxPages = res.data.totalPages;
             res.data.page.forEach((e) => {
               let obj = {
+                id: e.usuarioId,
+                usuario: e.nombreUsuario,
                 nombre: e.nombre,
                 apellido: e.apellidoPaterno,
                 rol: e.rol,
+                plazas: e.plazas,
                 estatus: e.estatus,
               };
               this.perfiles.push(obj);
