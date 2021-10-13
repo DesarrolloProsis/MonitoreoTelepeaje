@@ -3,16 +3,17 @@
   <div class="container mx-auto px-0 pb-100">
     <h1 class="title-center font-titulo font-bold pb-4">Transacciones de Telepeaje en Tiempo Real</h1>
     <div class="flex flex-wrap bg-blue">
-      <div class="flex-none filter-style">
-        <FormTramoPlaza @cambiar-tramo-plaza="recibir_tramo_plaza()"></FormTramoPlaza>
+      <div class="flex-none ">
+        <FormTramoPlaza @cambiar-tramo-plaza="recibir_tramo_plaza" :tipo="'Antifraude'"></FormTramoPlaza>
       </div>
       <div class="flex-none mt-1 filter-style">
         <button class="btn-buscar">Buscar</button>
       </div>
       <div class="flex-none mt-1 ml-right text-white">
-        Tiempo
-        <input type="text">
-        
+        Tiempo de actualizacion
+        <input type="text" class="text-center" placeholder="3 min">
+        No. Transacciones:
+        <input type="text" class="text-center" placeholder="30">
         <!-- <button class="btn-carriles ml-right">Descargar Excel</button> -->
       </div>
     </div>
@@ -21,47 +22,44 @@
   <Footer></Footer>
 </template>
 <script>
+const API = process.env.VUE_APP_URL_API_PRODUCCION
 import FormTramoPlaza from '../../components/Form-tramoplaza.vue';
 import TablaCruces from "../../components/Tabla-cruces.vue";
 import Navbar from "../../components/Navbar.vue";
 import Footer from "../../components/Footer-login";
+import axios from "axios";
 export default {
   name: "MonitoreoCruces",
   components: { TablaCruces, Navbar, Footer, FormTramoPlaza},
   data() {
     return {
-      cruces: [
-        {
-          plaza: "Aeropuerto",
-          carril: "A01",
-          fecha_cruce: "2021/01/01 14:00:00",
-          id_tag: "IMD1000000",
-          clase_marcada: "Auto",
-        },
-        {
-          plaza: "Aeropuerto",
-          carril: "A01",
-          fecha_cruce: "2021/01/01 14:00:00",
-          id_tag: "IMD1000000",
-          clase_marcada: "Auto",
-        },
-        {
-          plaza: "Aeropuerto",
-          carril: "A01",
-          fecha_cruce: "2021/01/01 14:00:00",
-          id_tag: "IMD1000000",
-          clase_marcada: "Auto",
-        },
-        {
-          plaza: "Aeropuerto",
-          carril: "A01",
-          fecha_cruce: "2021/01/01 14:00:00",
-          id_tag: "IMD1000000",
-          clase_marcada: "Auto",
-        },
-      ],
+      tramo:'',
+      plaza:'',
+      cruces: [],
     };
   },
+  beforeMount(){
+    axios.get(`${API}/Transacciones/Last20Transaccions/3`)
+      .then((result)=>{
+        console.log(result);
+        result.data.body.forEach((e) =>{
+          let obj = {
+            carril: e.carril,
+            clase: e.claseCajero,
+            fecha: e.fechaDeCruce,
+            tag: e.idTag
+          }
+          this.cruces.push(obj)
+        })
+      })
+  },
+  methods:{
+    recibir_tramo_plaza(value){
+      this.tramo = value.tramo
+      this.plaza = value.plaza
+      console.log(this.plaza);
+    },
+  }
 };
 </script>
 <style scoped>
@@ -85,7 +83,7 @@ export default {
 .filter-style {
   color: white;
   font-size: 16px;
-  margin-left: 10px;
+  margin-left: 230px;
 }
 .filter-style input {
   margin-left: 20px;
