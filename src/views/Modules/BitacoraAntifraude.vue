@@ -4,15 +4,9 @@
     <h1 class="title-center font-titulo font-bold pb-4">Bitácora de Tags en Antifraude</h1>
     <div class="flex flex-wrap bg-blue">
       <div class="flex-none filter-style">
-        <FormTramoPlaza @cambiar-tramo-plaza="recibir_tramo_plaza" :tipo="'Antifraude'"></FormTramoPlaza>
+        <FormTramoPlaza @cambiar-tramo-plaza="recibir_tramo_plaza" :carrilesForm="true" :tipo="'Antifraude'"></FormTramoPlaza>
       </div>
       <div class="flex-none filter-style mt-1">
-        Carril:
-        <select class="flex-none filter-style color-black" name="select">
-          <option value="100" selected>opcion1</option>
-          <option value="200">opcion2</option>
-          <option value="300">opcion3</option>
-        </select>
       </div>
       <div class="flex-none filter-style">
         Fecha:
@@ -20,19 +14,19 @@
       </div>
       <div class="flex-none filter-style">
         <button class="btn-buscar">Buscar</button>
-        <button class="btn-buscar ml-6 mr-66">Todos</button>
+        <button class="btn-buscar ml-6 mr-32">Todos</button>
       </div>
       <div class="flex-1">
         <Multiselect v-model="formato" placeholder="Sleccione una Acción" @close="acciones_mapper(formato)" label="name" trackBy="name" :options="opticones_select_acciones()" :searchable="true">
-                    <template v-slot:singleLabel="{ value }">
-                      <div class="multiselect-single-label">
-                        <img height="26" style="margin: 0 6px 0 0;" :src="value.icon"> {{ value.name }}
-                      </div>
-                    </template>
-                    <template v-slot:option="{ option }">
-                      <img height="22" style="margin: 0 6px 0 0;" :src="option.icon">{{ option.name }}
-                    </template>
-                  </Multiselect>
+          <template v-slot:singleLabel="{ value }">
+            <div class="multiselect-single-label">
+              <img height="26" style="margin: 0 6px 0 0;" :src="value.icon"> {{ value.name }}
+            </div>
+          </template>
+          <template v-slot:option="{ option }">
+            <img height="22" style="margin: 0 6px 0 0;" :src="option.icon">{{ option.name }}
+          </template>
+        </Multiselect>
       </div>
     </div>
     <div class="container mx-auto px-0 md:px-60">
