@@ -2,20 +2,20 @@
   <div class="responsive-table">
     <table class="tftable">
       <tr>
-        <th>Plaza</th>
-        <th>No Tag</th>
-        <th>Fecha</th>
+        <th>Fehca</th>
         <th>Carril</th>
-        <th>Tipo de Vehículo</th>
+        <th>Clase Cajero</th>
+        <th>Medio Pago</th>
         <th>Tarifa</th>
+        <th>Tag</th>
       </tr>
       <tr v-for="(cruces, index) in dataCruces" :key="index">
-        <td>{{cruces.plaza}}</td>
-        <td>{{cruces.num_tag}}</td>
         <td>{{moment(cruces.fecha).format("YYYY-MM-DD  HH:mm a")}}</td>
         <td>{{cruces.carril}}</td>
-        <td>{{cruces.tipo_vehiculo}} </td>
+        <td>{{cruces.clase}}</td>
+        <td>{{cruces.pago}}</td>
         <td>{{cruces.tarifa}} </td>
+        <td>{{cruces.num_tag}} </td>
       </tr>
     </table>
   </div>

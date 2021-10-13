@@ -96,13 +96,10 @@ export default {
       plazas: [],
       data: {
         pagenumber: 1,
-        rowsofpage: 7,
+        rowsofpage: 5,
         tagfilter: null,
-        carril: null,
         plaza: null,
         fechainicial: null,
-        fechafinal: null,
-        plazas: null,
       },
       value: '',
       formato:'',
@@ -133,19 +130,12 @@ export default {
           Authorization: "Bearer " + getCookie("Token"),
         },
       };
-      axios
-        .get(`${API}/Plazas`, config)
+      axios.get(`${API}/Plazas`, config)
         .then((res) => {
           this.isLoading = false;
           this.plazas = res.data;
-          this.data["plazas"] = res.data;
-          console.log("Plazas:" + res.data)
-          return axios
-            .post(
-              `${API}/Transacciones`,
-              this.data,
-              config
-            )
+
+          return axios.post(`${API}/Transacciones`,this.data,config)
             .then((res) => {
               console.log(res.data);
               this.paginas = res.data.numberOfPages;
@@ -157,6 +147,8 @@ export default {
                   carril: e.carril,
                   tipo_vehiculo: e.tipoVehiculo,
                   tarifa: e.tarifa,
+                  clase: e.descripcion,
+                  pago: e.nombrePago
                 };
                 this.cruces.push(obj);
               });
@@ -179,8 +171,9 @@ export default {
       }
       this.data["pagenumber"] = pagina;
       this.data["tagfilter"] = tag;
-      this.data["plazas"] = plazas;
+      this.data["plaza"] = plazas;
       this.data["fechainicial"] = fecha;
+      console.log(this.data);
       axios
         .post(
           `${API}/Transacciones`,
@@ -193,12 +186,14 @@ export default {
           this.paginas = res.data.numberOfPages;
           res.data.transacciones.forEach((e) => {
             let obj = {
-              plaza: e.plaza,
-              num_tag: e.noTag,
-              fecha: e.fecha,
-              carril: e.carril,
-              tipo_vehiculo: e.tipoVehiculo,
-              tarifa: e.tarifa,
+                  plaza: e.plaza,
+                  num_tag: e.noTag,
+                  fecha: e.fecha,
+                  carril: e.carril,
+                  tipo_vehiculo: e.tipoVehiculo,
+                  tarifa: e.tarifa,
+                  clase: e.descripcion,
+                  pago: e.nombrePago
             };
             this.cruces.push(obj);
           });
@@ -233,22 +228,15 @@ export default {
     buscar: function () {
       let tagBuscar = document.getElementById("tag").value;
       if(this.tramo != '' && this.plaza != '' && tagBuscar != ''){
-        let plaza = document.getElementById("selectorPlaza").value;
-        if (plaza == 0) {
-          var plaza_select = this.plazas;
-        } else {
-          plaza_select = [this.plazas[plaza - 1]];
-        }
         let fecha = document.getElementById("fecha").value;
         let tag = document.getElementById("tag").value;
         this.paginaActual = 1;
-        this.pedirDatos(this.paginaActual, tag, plaza_select, fecha);
+        this.pedirDatos(this.paginaActual, tag, this.plaza , fecha);
         document.getElementById("fecha").value = "";
         document.getElementById("tag").value = ""; 
       }else{
         alert('no buscar')
       }
-      /* */
     },
     downloadApi: function (tipo) {
       var myHeaders = new Headers();
@@ -319,6 +307,7 @@ export default {
     recibir_tramo_plaza(value){
       this.tramo = value.tramo
       this.plaza = value.plaza
+      console.log(value);
     },
     acciones_mapper(formato){
       if(formato == 'excel'){
