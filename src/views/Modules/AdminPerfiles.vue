@@ -1,6 +1,6 @@
 <template>
   <Navbar></Navbar>
-  <h1 class="title font-titulo font-bold">Administración de Perfiles</h1>
+  <h1 class="title font-titulo font-bold">Administración de Roles</h1>
     <!-- Modal Rol -->
   <div class="sticky inset-0 " :class="{'modal-container': userModal}">
     <div v-if="userModal" class="rounded-lg  justify-center border absolute inset-x-0 bg-white border-gray-400 w-69  mx-auto px-12 py-10 shadow-2xl mt-66">
@@ -60,6 +60,7 @@ import Navbar from "../../components/Navbar.vue";
 import Footer from "../../components/Footer-login";
 import axios from 'axios';
 import Multiselect from '@vueform/multiselect'
+import { notify } from "@kyvg/vue3-notification";
 import { onMounted, reactive, ref } from 'vue'
 const API = process.env.VUE_APP_URL_API_PRODUCCION
 export default {
@@ -70,7 +71,7 @@ export default {
     Footer,
   },
   setup(){
-
+    
     const roles = ref([])    
     const userModal = ref(false)
     const newRol = reactive({ nombre: "", vistas: [] })
@@ -111,11 +112,18 @@ export default {
       axios.post(`${API}/CAtalogoRoles`, objRol)
         .then((response) => {
           console.log(response)
-          newRol.vistas = []; newRol.nombre = "";
-          abrir_modal_new_rol()
-          buscar_roles()          
+          if(response.data.status == 'Ok'){
+            notify({ type: 'success', title:'Rol creado', text: `Se creo correctamente el rol ${objRol.nombreRol}`});
+            newRol.vistas = []; newRol.nombre = "";
+            abrir_modal_new_rol()
+            buscar_roles()   
+          }       
         })
-        .catch((error) => console.log(error))
+        .catch((error) => {
+          console.log(error)
+          abrir_modal_new_rol()
+          notify({ type: 'warning', title:'Rol no creado', text: `No se pudo crear el rol ${objRol.nombreRol}`});
+        })
     }   
     onMounted(buscar_roles)
     return { roles, userModal, buscar_roles, abrir_modal_new_rol, newRol, optionRoles, craer_nuevo_rol }
