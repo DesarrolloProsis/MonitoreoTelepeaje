@@ -61,7 +61,7 @@ export default {
   beforeMount(){
     this.contador = moment.utc(this.seconds).format('HH:mm:ss');
     this.expires_in = this.seconds;
-    axios.get(`${API}/Transacciones/Last20Transaccions/3`)
+    axios.get(`${API}/Transacciones/Last20Transaccions/1`)
       .then((result)=>{
         console.log(result);
         result.data.body.forEach((e) =>{
@@ -78,7 +78,7 @@ export default {
   },
   methods:{
     actualizar(){
-      axios.get(`${API}/Transacciones/Last20Transaccions/3`)
+      axios.get(`${API}/Transacciones/Last20Transaccions/1`)
       .then((result)=>{
         console.log(result);
         result.data.body.forEach((e) =>{
