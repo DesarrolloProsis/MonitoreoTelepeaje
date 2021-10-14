@@ -27,13 +27,15 @@
       <button @click="modalAgregar=true" class="w-full botonIconBuscar justify-center mt-3 -mb-8">Agregar Usuario</button>
     </div>
     <TablaListaUsuarios :dataUsuarios="perfiles"></TablaListaUsuarios>
-    <button class="button-pagination" v-if="paginaAct > 1" @click="anterior()">Anterior</button>
-    <button class="button-pagination" v-if="paginaAct < maxPages" @click="siguiente()">Siguiente</button>
-    <p  class="desc-paginacion">
-      Página {{ paginaAct }} de {{ maxPages }}
-    </p>
+    <div class="">
+      <button class="button-pagination" v-if="paginaAct > 1" @click="anterior()">Anterior</button>
+      <button class="button-pagination" v-if="paginaAct < maxPages-1" @click="siguiente()">Siguiente</button>
+      <p  class="desc-paginacion">
+        Página {{ paginaAct }} de {{ maxPages-1 }}
+      </p>
+    </div>
   </div>
-  <!-- MODA CREAR USUARIO -->
+  <!-- MODAL CREAR USUARIO -->
   <div class="sticky inset-0 " :class="{'modal-container': modalAgregar}">
     <div v-if="modalAgregar" class="rounded-lg  justify-center border absolute inset-x-0 bg-white border-gray-400 w-69  mx-auto px-12 py-10 shadow-2xl mt-60">
       <p class="text-gray-900 font-bold text-2xl -mt-8 mb-8 text-center">Agregar Encargado de Plaza</p>
@@ -46,7 +48,7 @@
         <input v-model="usuario.apellidoM" type="text" class="border rounded-lg">
         <p class="text-sm mb-1 font-semibold text-gray-700 mt-2 sm:-ml-6">Contraseña *</p>
         <input v-model="usuario.pass" type="text" class="border rounded-lg">
-        <p class="text-sm mb-1 font-semibold text-gray-700 mt-2 sm:-ml-6">Tramo</p>
+        <!-- <p class="text-sm mb-1 font-semibold text-gray-700 mt-2 sm:-ml-6">Tramo</p>
         <select v-model="tramoSeleccionado" @change="plazasfil()" class="w-full border rounded-lg">
           <option disabled value>Selecionar...</option>     
           <option value="1">México Acapulco</option>     
@@ -59,8 +61,8 @@
           placeholder="Seleccione las Plazas"
           :searchable="true"
           :options="plazas"
-          :close-on-select="false"
-        /> 
+          :close-on-select="false" 
+        /> -->
         <p class="text-sm mb-1 font-semibold text-gray-700 mt-2 sm:-ml-6">Rol *</p>
         <Multiselect
           v-model="usuario.rol"
@@ -69,12 +71,20 @@
           :options="roles"
           :close-on-select="true"
         /> 
-        <p class="text-sm mb-1 font-semibold text-gray-700 mt-2 sm:-ml-6">Correo</p>
-        <input v-model="usuario.correo" type="text" class="border rounded-lg">
       </div>
       <div class="mt-5 text-center ml-6">
         <button @click="guardar" class="botonIconBuscar">Guardar</button>
         <button @click="cancelar(), modalAgregar= false" class="botonIconCancelar">Cancelar</button>
+      </div>
+    </div>
+  </div>
+  <!-- MODAL CARGANDO -->
+  <div class="inset-0" :class="{'modal-container': modalLoading}">
+    <div v-if="modalLoading" class=" inset-0 font-titulo mt-66 mb-8">
+      <div class="rounded-lg w-66 justify-center absolute  inset-x-0 bg-none mx-auto px-12 py-10 ">          
+        <div class="justify-center text-center block">            
+          <img src="@/assets/load.gif"  class="h-48 w-48" />
+        </div>
       </div>
     </div>
   </div>
@@ -86,6 +96,7 @@ import TablaListaUsuarios from "../../components/Tabla-listausuarios";
 import Navbar from "../../components/Navbar.vue";
 import Footer from "../../components/Footer-login";
 import Multiselect from '@vueform/multiselect';
+import Servicio from '../../Servicios/Token-Services';
 import axios from "axios";
 
 
@@ -120,6 +131,7 @@ export default {
       tramoSeleccionado: '',
       rol_Filtrado:[],
       roles:[],
+      modalLoading:false,
     };
   },
   async beforeMount() {
@@ -135,37 +147,26 @@ export default {
     for(let i= 0; i<proxy.length; i++){
       this.roles.push({'value':proxy[i].rolId, 'label':proxy[i].nombreRol}) 
     }
-    function getCookie(cname) {
-      var name = cname + "=";
-      var decodedCookie = decodeURIComponent(document.cookie);
-      var ca = decodedCookie.split(";");
-      for (var i = 0; i < ca.length; i++) {
-        var c = ca[i];
-        while (c.charAt(0) == " ") {
-          c = c.substring(1);
-        }
-        if (c.indexOf(name) == 0) {
-          return c.substring(name.length, c.length);
-        }
-      }
-      return "";
-    }
-    // Get token config
-    if (getCookie("Token")) {
+    if (Servicio.getCookie("Token")) {
       let config = {
         headers: {
-          Authorization: "Bearer " + getCookie("Token"),
+          Authorization: "Bearer " + Servicio.getCookie("Token"),
         },
       };
-      this.token = getCookie("Token");
+      this.token =  Servicio.getCookie("Token");
       axios.get(`${API}/Usuario?Page=${this.paginaAct}&Rows=10`,config)
         .then((result) => {
+          console.log(result.data);
           this.maxPages = result.data.totalPages;
           result.data.page.forEach((e) => {
             let obj = {
+              id: e.usuarioId,
+              usuario: e.nombreUsuario,
               nombre: e.nombre,
               apellido: e.apellidoPaterno,
               rol: e.rol,
+              rolId: e.idRol,
+              plazas: e.plazas,
               estatus: e.estatus,
             };
             this.perfiles.push(obj);
@@ -174,46 +175,35 @@ export default {
     }
   },
   methods: {
-    getCookie: function(cname) {
-      var name = cname + "=";
-      var decodedCookie = decodeURIComponent(document.cookie);
-      var ca = decodedCookie.split(';');
-      for (var i = 0; i < ca.length; i++) {
-        var c = ca[i];
-        while (c.charAt(0) == ' ') {
-          c = c.substring(1);
-        }
-        if (c.indexOf(name) == 0) {
-          return c.substring(name.length, c.length);
-        }
-      }
-      return "";
-    },
     guardar: function (){
-      if(this.getCookie("Token")){
+      if(Servicio.getCookie("Token")){
         let config = {
           headers: {
-            'Authorization': 'Bearer ' + this.getCookie("Token")
+            'Authorization': 'Bearer ' + Servicio.getCookie("Token")
           }
-        }
+        } 
         const data = {
           "password": this.usuario.pass,
           "nombre": this.usuario.nombre,
           "apellidoPaterno": this.usuario.apellidoP,
           "apellidoMaterno": this.usuario.apellidoM,
-          "rol": '1',
-          "email": 'correo',
-          "estatus": true,
+          "idrol": this.usuario.rol,
         } 
+        console.log(data);
         if(this.usuario.nombre != '' && this.usuario.apellidoP != '' && this.usuario.apellidoM != '' && this.usuario.pass != '' ){
+          this.modalLoading = true
+          this.modalAgregar = false
           axios.post(`${API}/Usuario`,data,config)
             .then((result)=>{
-                console.log(result)
-                this.errorMessage = ""
+              console.log(result);
+              setTimeout(() => {
+                this.$router.push("/configuracion");
+                this.modalLoading = false
+              }, 1000);
+              this.errorMessage = ""
             })
             .catch(() =>{
               this.errorMessage = "Hubo un error al crear el usuario, intentalo nuevamente."
-
             })
         }else{
           alert('* Son campos obligatorios')
@@ -237,9 +227,12 @@ export default {
           this.maxPages = res.data.totalPages;
           res.data.page.forEach((e) => {
             let obj = {
+              id: e.usuarioId,
+              usuario: e.nombreUsuario,
               nombre: e.nombre,
               apellido: e.apellidoPaterno,
               rol: e.rol,
+              plazas: e.plazas,
               estatus: e.estatus,
             };
             this.perfiles.push(obj);
@@ -247,7 +240,6 @@ export default {
         });
     },
     siguiente: function () {
-      
       let config = {
         headers: {
           Authorization: "Bearer " + this.token,
@@ -264,9 +256,12 @@ export default {
           this.maxPages = res.data.totalPages;
           res.data.page.forEach((e) => {
             let obj = {
+              id: e.usuarioId,
+              usuario: e.nombreUsuario,
               nombre: e.nombre,
               apellido: e.apellidoPaterno,
               rol: e.rol,
+              plazas: e.plazas,
               estatus: e.estatus,
             };
             this.perfiles.push(obj);
@@ -290,9 +285,12 @@ export default {
           this.maxPages = res.data.totalPages;
           res.data.page.forEach((e) => {
             let obj = {
+              id: e.usuarioId,
+              usuario: e.nombreUsuario,
               nombre: e.nombre,
               apellido: e.apellidoPaterno,
               rol: e.rol,
+              plazas: e.plazas,
               estatus: e.estatus,
             };
             this.perfiles.push(obj);
@@ -312,9 +310,12 @@ export default {
           this.maxPages = res.data.totalPages;
           res.data.page.forEach((e) => {
             let obj = {
+              id: e.usuarioId,
+              usuario: e.nombreUsuario,
               nombre: e.nombre,
               apellido: e.apellidoPaterno,
               rol: e.rol,
+              plazas: e.plazas,
               estatus: e.estatus,
             };
             this.perfiles.push(obj);
@@ -393,7 +394,8 @@ export default {
 }
 .button-pagination {
   padding: 2px;
-  border: 1px solid black;
+  border: 1px solid #2c5282;
+  border-radius: 5px;
   margin-right: 5px;
   font-size: 12px;
   margin-top: 20px;

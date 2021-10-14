@@ -2,7 +2,7 @@
 <Navbar></Navbar>
 <h1 class="title">Estatus Tags</h1>
 <div class="flex justify-center pt-4 filter-style">
-  <FormTramoPlaza @cambiar-tramo-plaza="recibir_tramo_plaza"></FormTramoPlaza>
+  <FormTramoPlaza @cambiar-tramo-plaza="recibir_tramo_plaza" :carrilesForm="true" :tipo="''"></FormTramoPlaza>
 </div>
 <div class="flex justify-center">
   <div class="flex-auto text-center pt-4">
@@ -87,7 +87,6 @@ export default {
         console.log("Buscando...")
         console.log("Plaza select:" + plaza_select)
         console.log(this.plazas)
-
         //TODO: eliminar esta y sustituir por palza_select
         var plaza_prueba = [{"Nombre":"defaultConnection"}]
         axios.post(`${API}/Tags/?tag=${tag}`, plaza_prueba, config)      

@@ -1,70 +1,52 @@
 <template>
   <Navbar></Navbar>
   <div class="container mx-auto px-0 pb-100">
-    <h1 class="title-center pb-4">Búsqueda de Cruces en Plaza</h1>
+    <h1 class="title-center font-titulo font-bold pb-4">Búsqueda de Transacciones en Plaza</h1>
   <div>
     <div class="mt-2 mx-2 md:mx-0">
       <p>Filtros de Búsqueda:</p>
         <div class="flex flex-col md:flex-row border-gray-200 pb-0 mb-4">          
             <div class="flex-1 flex flex-col md:flex-row md:space-x-2">
+              <div class="w-full flex-2">
+                  <FormTramoPlaza @cambiar-tramo-plaza="recibir_tramo_plaza" :tipo="'Transacciones'" ></FormTramoPlaza>
+                </div>
               <div class="w-full flex-2 ">
                     <div class="my-2 p-1 bg-white flex border border-gray-200 rounded">
                         <input class="inp-icon p-1 px-2 appearance-none outline-none w-full text-gray-800 " placeholder="Buscar No. Tag" type="text" id="tag" />
                     </div>
                 </div>
-                <div class="w-full flex-2 ">
-                  <div class="my-2 p-1 bg-white flex border border-gray-200 rounded">
-                    
-              <select class="p-1 px-2  outline-none w-full text-gray-800" name="select" id="selectorPlaza">
-                <option v-if="isLoading == true">Cargando Plazas...</option>                                                                    
-                <option v-else-if="plazas.length == 0 && isLoading == false"> No hay plazas</option>
-                <option v-else value="0">Todas las Plazas</option>
-                <option v-for="(plaza, key) in plazas" :value="key + 1" :key="key">
-                  {{ plaza.nombre }}
-                </option>
-              </select>
-                    </div>
-                        
-                </div>
                 <div class="w-full flex-2">
                     <div class="my-2 p-1 bg-white flex border border-gray-200 rounded">
                         <input type="date" id="fecha"  class="p-1 px-2 appearance-none outline-none w-full text-gray-800 "> 
-                      
                       </div>
                 </div>
-                
                 <div class="w-full flex-1">
                     <div class="my-2 p-1 bg-white flex border border-gray-200 rounded btn-search ">
                       
                         <button class="p-1 px-2 appearance-none outline-none w-full text-white " :disabled="isLoading" :class="{'cursor-not-allowed': isLoading}" @click="buscar()">Buscar</button>
                     </div>
                 </div>
-                  <div class="w-full flex-2">
+                  <Multiselect v-model="formato" placeholder="Sleccione una Acción" @close="acciones_mapper(formato)" label="name" trackBy="name" :options="opticones_select_acciones()" :searchable="true">
+                    <template v-slot:singleLabel="{ value }">
+                      <div class="multiselect-single-label">
+                        <img height="26" style="margin: 0 6px 0 0;" :src="value.icon"> {{ value.name }}
+                      </div>
+                    </template>
+                    <template v-slot:option="{ option }">
+                      <img height="22" style="margin: 0 6px 0 0;" :src="option.icon">{{ option.name }}
+                    </template>
+                  </Multiselect>
+                  <!-- <div class="w-full flex-2">
                     <div class="my-2 p-1 bg-white flex border border-gray-200 rounded">
                       
                         <button class="p-1 px-2 appearance-none outline-none w-full text-gray-800 " @click="descargarArchivo('excel')">Exportar Excel</button>
                     </div>
-                </div>
-                  <div class="w-full flex-2">
-                    <div class="my-2 p-1 bg-white flex border border-gray-200 rounded">
-                      
-                        <button class="p-1 px-2 appearance-none outline-none w-full text-gray-800 " @click="descargarArchivo('csv')">Exportar CSV</button>
-                    </div>
-                </div>
-                  <div class="w-full flex-2">
-                    <div class="my-2 p-1 bg-white flex border border-gray-200 rounded">
-                      
-                        <button class="p-1 px-2 appearance-none outline-none w-full text-gray-800 " @click="descargarArchivo('txt')">Exportar Txt</button>
-                    </div>
-                </div>
+                  </div>-->
             </div>
         </div>
         <hr>
     </div>
-    
 </div>
-
-
     <TablaBusquedaCruces
       v-if="isLoading == false"
       :dataCruces="cruces"
@@ -89,6 +71,8 @@
 <script>
 const API = process.env.VUE_APP_URL_API_PRODUCCION
 import TablaBusquedaCruces from "../../components/Tabla-busquedacruces.vue";
+import Multiselect from '@vueform/multiselect';
+import FormTramoPlaza from '../../components/Form-tramoplaza.vue'
 import Navbar from "../../components/Navbar.vue";
 import Footer from "../../components/Footer-login";
 //import * as download from "downloadjs";
@@ -99,6 +83,8 @@ export default {
     TablaBusquedaCruces,
     Navbar,
     Footer,
+    FormTramoPlaza,
+    Multiselect,
   },
   data() {
     return {
@@ -118,6 +104,8 @@ export default {
         fechafinal: null,
         plazas: null,
       },
+      value: '',
+      formato:''
     };
   },
   mounted() {
@@ -143,7 +131,6 @@ export default {
           Authorization: "Bearer " + getCookie("Token"),
         },
       };
-
       axios
         .get(`${API}/Plazas`, config)
         .then((res) => {
@@ -192,7 +179,6 @@ export default {
       this.data["tagfilter"] = tag;
       this.data["plazas"] = plazas;
       this.data["fechainicial"] = fecha;
-
       axios
         .post(
           `${API}/Transacciones`,
@@ -251,7 +237,6 @@ export default {
       }
       let fecha = document.getElementById("fecha").value;
       let tag = document.getElementById("tag").value;
-
       this.paginaActual = 1;
       this.pedirDatos(this.paginaActual, tag, plaza_select, fecha);
       document.getElementById("fecha").value = "";
@@ -261,13 +246,10 @@ export default {
       var myHeaders = new Headers();
       myHeaders.append("Authorization", "Bearer " + this.token);
       myHeaders.append("Content-Type", "application/json");
-
       var raw = JSON.stringify(this.data);
-
       var requestOptions = {
         method: "POST",
         headers: myHeaders,
-
         body: raw,
         //redirect: "follow",
       };
@@ -326,9 +308,34 @@ export default {
           .catch((error) => console.log("error", error));
       }
     },
-    descargarArchivo: function (tipo) {
-      this.downloadApi(tipo);
+    recibir_tramo_plaza(value){
+      this.tramo = value.tramo
+      this.plaza = value.plaza
     },
+    acciones_mapper(formato){
+      if(formato == 'excel'){
+        this.downloadApi('excel')
+      }if(formato == 'csv'){
+        this.downloadApi('csv')
+      }if(formato == 'txt'){
+        this.downloadApi('txt')
+      }
+      this.formato = ''
+    },
+    opticones_select_acciones(){
+      let options= [
+          {  value: 'excel', name: 'EXCEL'},//0
+          {  value: 'csv', name: 'CSV'},//1
+          {  value: 'txt', name: 'TXT'},//2
+      ]
+      let filtroOpciones = []
+        if(this.isLoading == false){
+          filtroOpciones.push(options[0])
+          filtroOpciones.push(options[1])
+          filtroOpciones.push(options[2])
+        }
+      return filtroOpciones
+    }
   },
 };
 </script>

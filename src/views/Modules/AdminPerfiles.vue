@@ -8,18 +8,20 @@
       <div class="grid grid-cols-2 mt-2">
         <p class="text-sm mb-1 font-semibold text-gray-700 sm:-ml-6">Nombre Rol</p>
         <input v-model="newRol.nombre" type="text" class="border rounded-lg">
-        <p class="text-sm mb-1 font-semibold text-gray-700 mt-2 sm:-ml-6">Plazas</p>
-        <Multiselect
-          v-model="usuario.plazas"
-          mode="multiple"
-          placeholder="Seleccione las Plazas"
-          :searchable="true"
-          :options="plazas"
-          :close-on-select="false"
-        /> 
       </div>
+      <div class="grid grid-cols-2 mt-2">
+        <p class="text-sm mb-1 font-semibold text-gray-700 mt-2 sm:-ml-6">Vistas</p>
+        <Multiselect
+          v-model="newRol.vistas" 
+          label="text"
+          mode="multiple"
+          valueProp="alias"
+          placeholder="Seleccione las Plazas"                    
+          :options="optionRoles"
+        /> 
+      </div>      
       <div class="mt-5 text-center ml-6">
-        <button class="botonIconBuscar">Guardar</button>
+        <button @click="craer_nuevo_rol" class="botonIconBuscar">Guardar</button>
         <button @click="abrir_modal_new_rol" class="botonIconCancelar">Cancelar</button>
       </div>
     </div>
@@ -47,10 +49,11 @@
     <div class="mb-6">
       <button @click="abrir_modal_new_rol" class="w-full botonIconBuscar justify-center mt-3 -mb-8">Agregar Usuario</button>
     </div>
-    <TablaListaPerfiles :dataPerfiles="roles"></TablaListaPerfiles>
+    <TablaListaPerfiles @buscar-roles="buscar_roles" :dataPerfiles="roles"></TablaListaPerfiles>
   </div>
   <Footer></Footer>
 </template>
+
 <script>
 import TablaListaPerfiles from "../../components/Tabla-listaperfiles";
 import Navbar from "../../components/Navbar.vue";
@@ -68,24 +71,65 @@ export default {
   },
   setup(){
 
-    const roles = ref([])
+    const roles = ref([])    
     const userModal = ref(false)
+    const newRol = reactive({ nombre: "", vistas: [] })
+    const optionRoles = [{text: 'Monitoreo Servicio', alias: 'monitoreoServicios'},
+                         {text: 'Monitoreo Carriles', alias: 'monitoreoCarriles'},
+                         {text: 'Monitoreo Cruces', alias: 'monitoreoCruces'},
+                         {text: 'Envio Transacciones', alias: 'envioTransacciones'},
+                         {text: 'Busqueda Cruces', alias: 'busquedaCruces'},
+                         {text: 'Bitacora Accesos', alias: 'bitacoraAccesos'},
+                         {text: 'Estatus Tags', alias: 'estatusTags'},
+                         {text: 'Configuracion', alias: 'configuracion'}]
+    
     const buscar_roles = async () => {   
       axios.get(`${API}/CatalogoRoles`)
         .then((response) => roles.value = response.data.body)
         .catch((error) => console.log(error))        
-    }
-    const abrir_modal_new_rol = () => userModal.value = !userModal.value
-
-    const newRol = reactive({
-      nombre: "",      
-    })
+    }    
+    //Nuevo Rol
+    const abrir_modal_new_rol = () => userModal.value = !userModal.value    
+    const craer_nuevo_rol = async () => {
+      //objeto para post api
+      let objRol = {}
+      objRol['nombreRol'] = newRol.nombre
+      objRol['monitoreoServicios'] = false,
+      objRol['monitoreoCarriles'] = false,
+      objRol['monitoreoCruces'] = false,
+      objRol['envioTransacciones'] = false,
+      objRol['busquedaCruces'] = false,
+      objRol['bitacoraAccesos'] = false,
+      objRol['estatusTags'] = false,
+      objRol['configuracion'] = false,
+      objRol['dateStamp'] = new Date(),
+      objRol['activo'] = true                 
+      //Validamos que plazas selecciono el usuario y modificamos objRol            
+      newRol.vistas.forEach(item => {       
+          objRol[item] = true                   
+      })
+      axios.post(`${API}/CAtalogoRoles`, objRol)
+        .then((response) => {
+          console.log(response)
+          newRol.vistas = []; newRol.nombre = "";
+          abrir_modal_new_rol()
+          buscar_roles()          
+        })
+        .catch((error) => console.log(error))
+    }   
     onMounted(buscar_roles)
-    return { roles, userModal, buscar_roles, abrir_modal_new_rol, newRol }
+    return { roles, userModal, buscar_roles, abrir_modal_new_rol, newRol, optionRoles, craer_nuevo_rol }
   }, 
 };
 </script>
 <style scoped>
+.modal-container{
+    position: fixed;
+    width: 100%;
+    height: 100vh;
+    z-index: 1000;
+    background: rgba(0, 0, 0, 0.5);
+}
 .title {
   text-align: center;
   font-size: 25px;
@@ -158,3 +202,4 @@ export default {
   }
 }
 </style>
+<style src="@vueform/multiselect/themes/default.css"></style>

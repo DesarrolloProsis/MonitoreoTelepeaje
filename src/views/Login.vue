@@ -56,10 +56,16 @@ export default {
     }
   },
   beforeMount(){
+<<<<<<< HEAD
     alert()
     this.$notify("Hello user!");
   },
   methods: {    
+=======
+    this.$notify("Hello user!");
+  },
+  methods: {
+>>>>>>> dd01b7f535af876d5d81885b484d628813d6be2c
     login: function() {
       document.cookie = "TipoUser=; expires=Thu, 01 Jan 1970 00:00:00 UTC;" + "SameSite=None; Secure;";
       document.cookie = "Token=; expires=Thu, 01 Jan 1970 00:00:00 UTC;" + "SameSite=None; Secure;";
@@ -104,7 +110,7 @@ export default {
   position: absolute;
   width: 79vh;
   height: 100vh;
-  margin-left: 1150px;
+  margin-left: 1278px;
   background-image: radial-gradient(ellipse farthest-corner at 45px 30px , rgba(255, 255, 255, 0) 69%, rgba(44, 82, 130, 1) 0%);
   
 }

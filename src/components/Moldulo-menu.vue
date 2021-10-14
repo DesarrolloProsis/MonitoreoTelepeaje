@@ -3,7 +3,7 @@
     <router-link :to="ruta" tag="div">
       <img class="imagen-modulo animacion"  :src="require('@/assets/' + imagen)" />
     </router-link>
-    <h1 class="titulo-modulo">{{ titulo }}</h1>
+    <h1 class="text-center py-5 font-titulo font-bold">{{ titulo }}</h1>
   </div>
 </template>
 
