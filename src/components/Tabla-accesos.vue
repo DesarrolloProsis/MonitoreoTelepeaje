@@ -9,11 +9,11 @@
         <th>Fecha Fin</th>
       </tr>
       <tr v-for="(accesos, index) in dataAccesos" :key="index">
-        <td>{{accesos.usuario}}</td>
-        <td>{{accesos.nombre}}</td>
-        <td>{{accesos.rol}}</td>
-        <td>{{accesos.fecha_inicio}}</td>
-        <td>{{accesos.fecha_fin}}</td>
+        <td>{{ accesos.nombreUsuario }}</td>
+        <td>{{ accesos.nombre + ' ' + accesos.apellidoP + ' ' + accesos.apellidoM}}</td>
+        <td>{{ accesos.rol }}</td>
+        <td>{{ moment(accesos.fecha_inicio).format("YYYY-MM-DD  HH:mm a") }}</td>
+        <td>{{ moment(accesos.fecha_fin).format("YYYY-MM-DD  HH:mm a") }}</td>
       </tr>
     </table>
   </div>
@@ -21,9 +21,13 @@
 
 
 <script>
+import moment from 'moment'
 export default {
   name: "TablaAccesos",
   props: ["dataAccesos"],
+  created: function () {
+    this.moment = moment;
+  },
 };
 </script>
 <style scoped>

@@ -1,6 +1,6 @@
 <template>
   <router-view/>
-  <notifications />
+  <notifications :width="500" class="mt-20"/>
 </template>
 <style global>
 input:focus{

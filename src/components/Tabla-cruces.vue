@@ -2,18 +2,16 @@
 <div class="responsive-table">
   <table class="tftable">
     <tr>
-      <th>Plaza</th>
-      <th>Carril</th>
       <th>Fecha de Cruce</th>
+      <th>Carril</th>
       <th>ID TAG</th>
-      <th>Clase Marcada</th>
+      <th>Clase Cajero</th>
     </tr>
     <tr v-for="(cruce, index) in dataCruces" :key="index">
-      <td>{{cruce.plaza}}</td>
-      <td>{{cruce.carril}}</td>
-      <td>{{cruce.fecha_cruce}}</td>
-      <td>{{cruce.id_tag}}</td>
-      <td>{{cruce.clase_marcada}} </td>
+      <td>{{ moment(cruce.fecha).format("YYYY-MM-DD  HH:mm a") }}</td>
+      <td>{{ cruce.carril }}</td>
+      <td>{{ cruce.tag }}</td>
+      <td>{{ cruce.clase }}</td>
     </tr>
   </table>
 </div>
@@ -21,9 +19,13 @@
 
 
 <script>
+import moment from 'moment'
 export default {
   name: "Tabla",
   props: ["dataCruces"],
+  created: function () {
+    this.moment = moment;
+  },
 };
 </script>
 <style scoped>
@@ -43,7 +45,7 @@ export default {
 
 .tftable th {
   font-size: 14px;
-  background-color: #2ED0E1;
+  background-color: #2c5282;
   border-width: 5px;
   padding: 8px;
   border-style: solid;

@@ -277,7 +277,6 @@ name: "TablaListaUsuarios",
     },
     agregarPlaza: function (usuario){
       if(this.tramoSeleccionado != '' && this.plazasAsignar != ''){
-        console.log(this.plazasAsignar);
         for(let i=0; i< this.plazasAsignar.length;i++){
           let nueva = this.plazasAsignar[i]
           let data = {
@@ -286,13 +285,15 @@ name: "TablaListaUsuarios",
           }
           axios.post(`${API}/PlazaAsignada`,data)
           .then((response)=>{
-            console.log();
+            console.log(response);
             this.modalPlazas = false
             this.modalLoading = true
             this.tramoSeleccionado = ''
             if(response.data.status == 'Error'){
-              /* alert('El usuario ya tiene las plazas Asignadas') */
-              this.$router.push("/configuracion/lista-usuarios");
+              setTimeout(() => {
+                this.$router.push("/configuracion");
+                this.modalLoading = false
+              }, 1000);
             }else{
               setTimeout(() => {
                 this.$router.push("/configuracion");
@@ -301,8 +302,19 @@ name: "TablaListaUsuarios",
             }
           })
         }
+        setTimeout(()=>{
+          this.$notify({
+          title:'Plazas Asignadas',
+          text:'Se Asignaron las plazas al Usuario',
+          type: 'success'
+          });
+        },1000)
       }else{
-        console.log('No Agregar');
+        this.$notify({
+          title:'Falta llenar campos',
+          text:'Todos los campos son obligatorios',
+          type: 'error'
+        });
         this.validacion= true
       }
     },

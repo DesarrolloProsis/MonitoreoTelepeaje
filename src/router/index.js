@@ -7,7 +7,7 @@ import MonitoreoCarriles from "@/views/Modules/MonitoreoCarriles.vue";
 import BitacoraAlarmas from "@/views/Modules/BitacoraAlarmas.vue";
 import MonitoreoCruces from "@/views/Modules/MonitoreoCruces.vue";
 import EnvioTransacciones from "@/views/Modules/EnvioTransacciones.vue";
-import BusquedaCruces from "@/views/Modules/BusquedaCruces.vue";
+import BusquedaTransacciones from "@/views/Modules/BusquedaTransacciones.vue";
 import BitacoraAccesos from "@/views/Modules/BitacoraAccesos.vue";
 import EstatusTags from "@/views/Modules/EstatusTags.vue";
 import Configuracion from "@/views/Modules/Configuracion.vue";
@@ -125,12 +125,12 @@ const routes = [{
     }
   },
   {
-    path: "/inicio/busqueda-cruces",
-    name: "BusquedaCruces",
-    component: BusquedaCruces,
+    path: "/inicio/busqueda-transacciones",
+    name: "BusquedaTransacciones",
+    component: BusquedaTransacciones,
     meta: {
       requiresCookie: true,
-      nombre:"Busqueda Cruces"
+      nombre:"Busqueda Transacciones"
     }
   },
   {
@@ -231,9 +231,9 @@ router.beforeEach((to, _from, next) => {
         
           if(to.matched.some(m=>m.meta.nombre)){
             let json_token = jwt_decode(getCookie("Token"))
-              console.log(json_token[to.meta.nombre])
+              //console.log(json_token[to.meta.nombre])
             if( json_token[to.meta.nombre] !== "false"){
-              console.log(json_token)            
+              //console.log(json_token)            
               console.log("Esta vista esta en el token")
               next()
             }else{
