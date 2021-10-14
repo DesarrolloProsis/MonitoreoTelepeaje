@@ -2,10 +2,10 @@
   <Navbar></Navbar>
   <div class="container mx-auto px-0 resp-cont">
     <h1 class="title">Monitoreo de Servicios de Con Proveedor de Telepeaje</h1>
-    <button @click="btn1()" class="btn-listas" :style="{ 'background-color': isActive1 ? '#fcb32a' : 'gray' }">
+    <button @click="cambiar_delegacion(2)" class="btn-listas" :style="{ 'background-color': isActive1 ? '#fcb32a' : 'gray' }">
       Mex-Ira
     </button>
-    <button @click="btn2()" class="btn-listas" :style="{ 'background-color': isActive2 ? '#fcb32a' : 'gray' }">
+    <button @click="cambiar_delegacion(1)" class="btn-listas" :style="{ 'background-color': isActive2 ? '#fcb32a' : 'gray' }">
       Mex-Aca
     </button>
     <Tabla v-if="isLoading == false" :dataListas="statusServices"></Tabla>
@@ -40,11 +40,15 @@ export default {
         mexAca.value = !mexAca.value
         mexIra.value = false
         delegacionSelect.value = 1
+        statusServices.value = []
+        buscar_status_services()
       }
       else{
         mexIra.value = !mexIra.value
         mexAca.value = false
         delegacionSelect.value = 2
+        statusServices.value = []
+        buscar_status_services()
       }      
     }
 
@@ -55,17 +59,18 @@ export default {
         .then((response) => {
           console.log(response)
           if(response.data.status == 'Ok'){
-            let plazasUser = response.data.body.filter(item => item.plazaAsignadaId == delegacionSelect.value) 
-            plazasUser.forEach(idplaza => {
-              axios.get(`${API}/Transacciones/LastTransaction/${idplaza}`)
-                .then((response) => {
+            let plazasUser = response.data.body.filter(item => item.tramoAsignadoId == delegacionSelect.value) 
+            console.log(plazasUser)
+            plazasUser.forEach(plaza => {
+              axios.get(`${API}/Transacciones/LastTransaction/${plaza.plazaAsignadaId}`)
+                .then((response) => {                
                   if(response.data.status == 'Ok'){
-                    statusServices.value.push(response.data.body)
+                    statusServices.value.push(response.data.body[0])
                   }
                 })
             })
-            isLoading.value = true
-            console.log(plazasUser)
+            isLoading.value = false  
+            console.log(statusServices.value)          
           }
         })
         .catch((error) => {
