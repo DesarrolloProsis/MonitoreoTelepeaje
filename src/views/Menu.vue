@@ -58,7 +58,7 @@ export default {
         {
           titulo: "Búsqueda de Transacciones",
           imagen: "Menu/busqueda-cruces.png",
-          ruta: "/inicio/busqueda-cruces",
+          ruta: "/inicio/busqueda-transacciones",
           nombre:"Busqueda Cruces",
           isInactive:false
         },

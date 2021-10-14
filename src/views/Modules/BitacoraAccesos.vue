@@ -12,10 +12,19 @@
         <input type="date" class="rounded"/>
       </div>
       <div class="flex-none filter-style">
-        <button class="btn-buscar">Buscar</button>
+        <button class="btn-buscar mr-89">Buscar</button>
       </div>
       <div class="flex-1">
-        <button class="btn-carriles ml-right">Descargar Excel</button>
+        <Multiselect v-model="formato" placeholder="Sleccione una Acción" @close="acciones_mapper(formato)" label="name" trackBy="name" :options="opticones_select_acciones()" :searchable="true">
+                    <template v-slot:singleLabel="{ value }">
+                      <div class="multiselect-single-label">
+                        <img height="26" style="margin: 0 6px 0 0;" :src="value.icon"> {{ value.name }}
+                      </div>
+                    </template>
+                    <template v-slot:option="{ option }">
+                      <img height="22" style="margin: 0 6px 0 0;" :src="option.icon">{{ option.name }}
+                    </template>
+                  </Multiselect>
       </div>
     </div>
     <div class="container mx-auto px-0 md:px-60">
@@ -25,73 +34,70 @@
   <Footer></Footer>
 </template>
 <script>
+const API = process.env.VUE_APP_URL_API_PRODUCCION
 import TablaAccesos from "../../components/Tabla-accesos.vue";
+import Multiselect from '@vueform/multiselect';
 import Navbar from "../../components/Navbar.vue";
 import Footer from "../../components/Footer-login";
+import axios from "axios";
 export default {
   name: "BitacoraAccesos",
-  components: { TablaAccesos, Navbar, Footer },
+  components: { TablaAccesos, Navbar, Footer, Multiselect },
   data() {
     return {
-      accesos: [
-        {
-          usuario: "RMendoza",
-          nombre: "Rodrigo Mendoza",
-          rol: "Admin",
-          fecha_inicio: "2021/01/01 14:00:00",
-          fecha_fin: "2020/01/01 15:00:30",
-        },
-        {
-          usuario: "AMitra",
-          nombre: "Alejandro Mitra",
-          rol: "Admin",
-          fecha_inicio: "2021/01/01 14:00:00",
-          fecha_fin: "2020/01/01 15:00:30",
-        },
-        {
-          usuario: "AMitra",
-          nombre: "Alejandro Mitra",
-          rol: "Admin",
-          fecha_inicio: "2021/01/01 14:00:00",
-          fecha_fin: "2020/01/01 15:00:30",
-        },
-        {
-          usuario: "AMitra",
-          nombre: "Alejandro Mitra",
-          rol: "Admin",
-          fecha_inicio: "2021/01/01 14:00:00",
-          fecha_fin: "2020/01/01 15:00:30",
-        },
-        {
-          usuario: "AMitra",
-          nombre: "Alejandro Mitra",
-          rol: "Admin",
-          fecha_inicio: "2021/01/01 14:00:00",
-          fecha_fin: "2020/01/01 15:00:30",
-        },
-        {
-          usuario: "AMitra",
-          nombre: "Alejandro Mitra",
-          rol: "Admin",
-          fecha_inicio: "2021/01/01 14:00:00",
-          fecha_fin: "2020/01/01 15:00:30",
-        },
-        {
-          usuario: "AMitra",
-          nombre: "Alejandro Mitra",
-          rol: "Admin",
-          fecha_inicio: "2021/01/01 14:00:00",
-          fecha_fin: "2020/01/01 15:00:30",
-        },
-        {
-          usuario: "AMitra",
-          nombre: "Alejandro Mitra",
-          rol: "Admin",
-          fecha_inicio: "2021/01/01 14:00:00",
-          fecha_fin: "2020/01/01 15:00:30",
-        },
-      ],
+      accesos:[],
+      nombre:'',
+      value: '',
+      formato:'',
+      isLoading: false,
     };
+  },
+  beforeMount (){
+    axios.get(`${API}/UsuarioMonitoreo`)
+      .then((result)=>{
+        result.data.body.forEach((e)=>{
+          let obj = {
+            usuarioId: e.usuarioId,
+            nombreUsuario: e.nombreUsuario,
+            nombre: e.nombre,
+            apellidoP: e.apellidoPaterno,
+            apellidoM: e.apellidoMaterno,
+            rolId: e.rolId,
+            fecha_inicio: e.horaLogIn,
+            fecha_fin: e.horaLogOut,
+            rol: e.nombreRol
+          }
+          this.accesos.push(obj)
+        })
+        console.log(result.data.body);
+        console.log(this.accesos);
+      })
+  },
+  methods: {
+    acciones_mapper(formato){
+      if(formato == 'excel'){
+        console.log('excel');
+      }if(formato == 'csv'){
+        console.log('csv');
+      }if(formato == 'txt'){
+        console.log('txt');
+      }
+      this.formato = ''
+    },
+    opticones_select_acciones(){
+      let options= [
+          {  value: 'excel', name: 'EXCEL'},//0
+          {  value: 'csv', name: 'CSV'},//1
+          {  value: 'txt', name: 'TXT'},//2
+      ]
+      let filtroOpciones = []
+        if(this.isLoading == false){
+          filtroOpciones.push(options[0])
+          filtroOpciones.push(options[1])
+          filtroOpciones.push(options[2])
+        }
+      return filtroOpciones
+    }
   },
 };
 </script>
