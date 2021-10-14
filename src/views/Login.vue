@@ -55,7 +55,11 @@ export default {
       mensaje:""
     }
   },
-  methods: {
+  beforeMount(){
+    alert()
+    this.$notify("Hello user!");
+  },
+  methods: {    
     login: function() {
       document.cookie = "TipoUser=; expires=Thu, 01 Jan 1970 00:00:00 UTC;" + "SameSite=None; Secure;";
       document.cookie = "Token=; expires=Thu, 01 Jan 1970 00:00:00 UTC;" + "SameSite=None; Secure;";
