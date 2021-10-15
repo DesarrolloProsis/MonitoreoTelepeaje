@@ -3,13 +3,13 @@
   <h1 class="title font-titulo font-bold">Lista de Usuarios Registrados</h1>
   <div class="container mx-auto px-0 pb-24 pt-4">
     <div class="flex flex-wrap bg-blue">
-      <div class="flex-none filter-style">
+      <div class="flex-none filter-style mt-2">
         Nombre:
-        <input v-model="nombre" type="text" />
+        <input v-model="nombre" type="text" class="rounded" />
       </div>
-      <div class="flex-none filter-style">
+      <div class="flex-none filter-style mt-2">
         Estatus:
-        <select v-model="estatus" class="flex-none filter-style color-black" name="select" placeholder="Selecciona">
+        <select v-model="estatus" class="flex-none filter-style color-black rounded" name="select" placeholder="Selecciona">
           <option hidden selected>Seleccione</option>
           <option value="100">Inactivo</option>
           <option value="200">Activo</option>
@@ -19,8 +19,17 @@
         <button @click="buscar(nombre,estatus)" class="btn-buscar">Buscar</button>
         <button @click="todos()" class="btn-buscar ml-1">Todos</button>
       </div>
-      <div class="flex-1">
-        <button class="btn-carriles ml-right animacion">Descargar Excel</button>
+      <div class="flex-1 ml-89">
+        <Multiselect v-model="formato" placeholder="Sleccione una Acción" @close="acciones_mapper(formato)" label="name" trackBy="name" :options="opticones_select_acciones()" :searchable="true">
+          <template v-slot:singleLabel="{ value }">
+            <div class="multiselect-single-label">
+              <img height="26" style="margin: 0 6px 0 0;" :src="value.icon"> {{ value.name }}
+            </div>
+          </template>
+          <template v-slot:option="{ option }">
+            <img height="22" style="margin: 0 6px 0 0;" :src="option.icon">{{ option.name }}
+          </template>
+        </Multiselect>
       </div>
     </div>
     <div class="mb-6">
@@ -383,6 +392,28 @@ export default {
       this.tramoSeleccionado = ''
       this.plazas = []
     },
+    acciones_mapper(formato){
+      if(formato == 'excel'){
+        console.log('excel');
+      }if(formato == 'csv'){
+        console.log('csv');
+      }if(formato == 'txt'){
+        console.log('txt');
+      }
+      this.formato = ''
+    },
+    opticones_select_acciones(){
+      let options= [
+          {  value: 'excel', name: 'EXCEL'},//0
+          {  value: 'csv', name: 'CSV'},//1
+          {  value: 'txt', name: 'TXT'},//2
+      ]
+      let filtroOpciones = []
+          filtroOpciones.push(options[0])
+          filtroOpciones.push(options[1])
+          filtroOpciones.push(options[2])
+      return filtroOpciones
+    }
     
   },
 };

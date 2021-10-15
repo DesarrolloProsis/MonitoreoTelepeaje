@@ -4,7 +4,7 @@
     <!-- Modal Rol -->
   <div class="sticky inset-0 " :class="{'modal-container': userModal}">
     <div v-if="userModal" class="rounded-lg  justify-center border absolute inset-x-0 bg-white border-gray-400 w-69  mx-auto px-12 py-10 shadow-2xl mt-66">
-      <p class="text-gray-900 font-bold text-2xl -mt-8 mb-8 text-center">Agregar Encargado de Plaza</p>     
+      <p class="text-gray-900 font-bold text-2xl -mt-8 mb-8 text-center">Agregar Nuevo Rol</p>     
       <div class="grid grid-cols-2 mt-2">
         <p class="text-sm mb-1 font-semibold text-gray-700 sm:-ml-6">Nombre Rol</p>
         <input v-model="newRol.nombre" type="text" class="border rounded-lg">
@@ -42,8 +42,17 @@
       <div class="flex-none filter-style">
         <button class="btn-buscar">Buscar</button>
       </div>
-      <div class="flex-1">
-        <button class="btn-carriles ml-right">Descargar Excel</button>
+      <div class="flex-1 ml-89 hidden">
+        <Multiselect v-model="formato" placeholder="Sleccione una Acción" @close="acciones_mapper(formato)" label="name" trackBy="name" :options="opticones_select_acciones()" :searchable="true">
+          <template v-slot:singleLabel="{ value }">
+            <div class="multiselect-single-label">
+              <img height="26" style="margin: 0 6px 0 0;" :src="value.icon"> {{ value.name }}
+            </div>
+          </template>
+          <template v-slot:option="{ option }">
+            <img height="22" style="margin: 0 6px 0 0;" :src="option.icon">{{ option.name }}
+          </template>
+        </Multiselect>
       </div>
     </div>
     <div class="mb-6">
@@ -124,9 +133,32 @@ export default {
           abrir_modal_new_rol()
           notify({ type: 'warning', title:'Rol no creado', text: `No se pudo crear el rol ${objRol.nombreRol}`});
         })
+    }
+    function  acciones_mapper (formato){
+      if(formato == 'excel'){
+        console.log('excel');
+      }if(formato == 'csv'){
+        console.log('csv');
+      }if(formato == 'txt'){
+        console.log('txt');
+      }
+      this.formato = ''
+    }
+    function opticones_select_acciones(){
+      let options= [
+          {  value: 'excel', name: 'EXCEL'},//0
+          {  value: 'csv', name: 'CSV'},//1
+          {  value: 'txt', name: 'TXT'},//2
+      ]
+      let filtroOpciones = []
+          filtroOpciones.push(options[0])
+          filtroOpciones.push(options[1])
+          filtroOpciones.push(options[2])
+      return filtroOpciones
     }   
     onMounted(buscar_roles)
-    return { roles, userModal, buscar_roles, abrir_modal_new_rol, newRol, optionRoles, craer_nuevo_rol }
+    return { roles, userModal, buscar_roles, abrir_modal_new_rol, newRol, optionRoles, craer_nuevo_rol,opticones_select_acciones,acciones_mapper }
+
   }, 
 };
 </script>
