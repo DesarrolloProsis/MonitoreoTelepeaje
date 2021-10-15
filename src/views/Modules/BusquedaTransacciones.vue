@@ -171,15 +171,9 @@ export default {
       }
       this.data["pagenumber"] = pagina;
       this.data["tagfilter"] = tag;
-      this.data["plaza"] = plazas;
+      this.data["idplaza"] = plazas;
       this.data["fechainicial"] = fecha;
-      console.log(this.data);
-      axios
-        .post(
-          `${API}/Transacciones`,
-          this.data,
-          config
-        )
+      axios.post(`${API}/Transacciones`,this.data,config)
         .then((res) => {
           this.cruces = [];
           this.paginas = res.data.numberOfPages;
@@ -226,17 +220,13 @@ export default {
       }
     },
     buscar: function () {
-      let tagBuscar = document.getElementById("tag").value;
-      if(this.tramo != '' && this.plaza != '' && tagBuscar != ''){
         let fecha = document.getElementById("fecha").value;
         let tag = document.getElementById("tag").value;
         this.paginaActual = 1;
-        this.pedirDatos(this.paginaActual, tag, this.plaza , fecha);
+        let plaza = this.plaza
+        this.pedirDatos(this.paginaActual, tag, plaza , fecha);
         document.getElementById("fecha").value = "";
         document.getElementById("tag").value = ""; 
-      }else{
-        alert('no buscar')
-      }
     },
     downloadApi: function (tipo) {
       var myHeaders = new Headers();
@@ -307,7 +297,7 @@ export default {
     recibir_tramo_plaza(value){
       this.tramo = value.tramo
       this.plaza = value.plaza
-      console.log(value);
+      console.log(this.plaza);
     },
     acciones_mapper(formato){
       if(formato == 'excel'){
