@@ -2,7 +2,7 @@
   <Navbar></Navbar>
   <h1 class="title font-titulo font-bold">Lista de Usuarios Registrados</h1>
   <div class="container mx-auto px-0 pb-24 pt-4">
-    <div class="flex flex-wrap bg-blue">
+    <div class="flex flex-wrap bg-blue rounded-lg">
       <div class="flex-none filter-style mt-2">
         Nombre:
         <input v-model="nombre" type="text" class="rounded" />
@@ -19,7 +19,7 @@
         <button @click="buscar(nombre,estatus)" class="btn-buscar">Buscar</button>
         <button @click="todos()" class="btn-buscar ml-1">Todos</button>
       </div>
-      <div class="flex-1 ml-89">
+      <div class="flex-1 ml-89 hidden">
         <Multiselect v-model="formato" placeholder="Sleccione una Acción" @close="acciones_mapper(formato)" label="name" trackBy="name" :options="opticones_select_acciones()" :searchable="true">
           <template v-slot:singleLabel="{ value }">
             <div class="multiselect-single-label">

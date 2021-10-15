@@ -27,7 +27,7 @@
     </div>
   </div>
   <div class="container mx-auto px-0 pb-24 pt-4">    
-    <div class="flex flex-wrap bg-blue">
+    <div class="flex flex-wrap bg-blue rounded-lg">
       <div class="flex-none filter-style">
         Nombre:
         <input type="text" />
