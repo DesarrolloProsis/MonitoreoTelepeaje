@@ -62,6 +62,7 @@
 
 <script>
 import axios from 'axios';
+import { notify } from "@kyvg/vue3-notification";
 const API = process.env.VUE_APP_URL_API_PRODUCCION
 export default {
   name: "TablaListaPerfiles",
@@ -101,9 +102,17 @@ export default {
       axios.post(`${API}/CatalogoRoles/Editar`, this.perfilSelected)
         .then((response) => {
           console.log(response)
-          this.$emit('buscar-roles')
+          if(response.data.status == 'Ok'){
+            notify({ type: 'success', title:'Rol actualizado', text: `Se actualizo correctamente el rol ${this.perfilSelected.nombreRol}`});
+            this.perfilSelected = {}
+            this.$emit('buscar-roles')
+          }          
         })
-        .catch((error) => console.log(error))
+        .catch((error) => {
+          console.log(error)
+          notify({ type: 'warning', title:'Rol no actualizado', text: `No se pudo actualizar el rol ${this.perfilSelected.nombreRol}`});
+          this.perfilSelected = {}
+        })
       //AGREGAR CONSULTA API PARA ENVIAR DATOS ACTUALIZADOS YA SEA ENVIANDO TODOS LOS DATOS O SOLO PERFILSELECTED
     },
     cambiarModulos: function (index, estatus) {
@@ -119,10 +128,18 @@ export default {
       this.perfilSelected.activo = !perfil.activo
       axios.post(`${API}/CatalogoRoles/Editar`, this.perfilSelected)
         .then((response) =>{
-           console.log(response)
-           this.$emit('buscar-roles')
+          console.log(response)                
+          if(response.data.status == 'Ok'){
+            notify({ type: 'success', title:'Rol actualizado', text: `Se actualizo correctamente el rol ${this.perfilSelected.nombreRol}`});
+            this.perfilSelected = {}
+            this.$emit('buscar-roles')
+          }  
         })
-        .catch((error) => console.log(error))
+        .catch((error) => {
+          console.log(error)
+          notify({ type: 'warning', title:'Rol no actualizado', text: `No se pudo actualizar el rol ${this.perfilSelected.nombreRol}`});
+          this.perfilSelected = {}
+        })
        
     }
   },

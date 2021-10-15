@@ -2,21 +2,13 @@
   <Navbar></Navbar>
   <div class="container mx-auto px-0 resp-cont">
     <h1 class="title">Monitoreo de Servicios de Con Proveedor de Telepeaje</h1>
-    <button
-      :style="{ 'background-color': isActive1 ? '#fcb32a' : 'gray' }"
-      @click="btn1()"
-      class="btn-listas"
-    >
+    <button @click="cambiar_delegacion(2)" class="btn-listas" :style="{ 'background-color': isActive1 ? '#fcb32a' : 'gray' }">
       Mex-Ira
     </button>
-    <button
-      :style="{ 'background-color': isActive2 ? '#fcb32a' : 'gray' }"
-      @click="btn2()"
-      class="btn-listas"
-    >
+    <button @click="cambiar_delegacion(1)" class="btn-listas" :style="{ 'background-color': isActive2 ? '#fcb32a' : 'gray' }">
       Mex-Aca
     </button>
-    <Tabla v-if="isLoading == false" :dataListas="listas"></Tabla>
+    <Tabla v-if="isLoading == false" :dataListas="statusServices"></Tabla>
     <div class="loading" v-else>Cargando Datos...</div>
   </div>
   <Footer></Footer>
@@ -26,121 +18,69 @@ const API = process.env.VUE_APP_URL_API_PRODUCCION
 import Navbar from "../../components/Navbar";
 import Tabla from "../../components/Tabla-monitoreo";
 import Footer from "../../components/Footer-login";
+import Service from '../../Servicios/Token-Services'
+import jwt_decode from "jwt-decode";
 import axios from "axios";
+import { onMounted, ref } from 'vue'
 export default {
   components: {
     Navbar,
     Tabla,
     Footer
   },
-  data() {
-    return {
-      res:[],
-      listas: [],
-      isActive1: true,
-      isActive2: false,
-      token:"",
-      isLoading:true
+  setup(){
+    const statusServices = ref([])
+    const mexIra = ref(true)
+    const mexAca = ref(false)
+    const delegacionSelect = ref(1)
+    const isLoading = ref(true)
 
-    };
-  },
-  mounted() {
-    function getCookie(cname) {
-      var name = cname + "=";
-      var decodedCookie = decodeURIComponent(document.cookie);
-      var ca = decodedCookie.split(';');
-      for (var i = 0; i < ca.length; i++) {
-        var c = ca[i];
-        while (c.charAt(0) == ' ') {
-          c = c.substring(1);
-        }
-        if (c.indexOf(name) == 0) {
-          return c.substring(name.length, c.length);
-        }
+    const cambiar_delegacion = (id) => {
+      if(id == 1){
+        mexAca.value = !mexAca.value
+        mexIra.value = false
+        delegacionSelect.value = 1
+        statusServices.value = []
+        buscar_status_services()
       }
-      return "";
+      else{
+        mexIra.value = !mexIra.value
+        mexAca.value = false
+        delegacionSelect.value = 2
+        statusServices.value = []
+        buscar_status_services()
+      }      
     }
 
-    if(getCookie("Token")){
-      this.token = getCookie("Token")
-      let config = {
-        headers: {
-          'Authorization': 'Bearer ' + this.token
-        }
-      }
-      axios.get(`${API}/Monitoreo`, config)
-      .then(response =>{
-        this.res = response.data
-        this.isLoading = false
-        if(this.res.length != 0){
-          let listaIra = this.res["historicosIrapuato"]
-          listaIra.forEach(e =>{
-            let obj = {
-              plaza: e.plaza,
-              actualizacionProveedor: e.ultimaActualizacionCarriles,
-              ultactCarriles: e.ultimaActualizacionProveedor,
-              ultimoLstabint: e.ultimoLstabint,
-            
-            }
-            this.listas.push(obj)
-          })
-
-        }
-      })
+    const buscar_status_services = () => {
+      var decoded = jwt_decode(Service.getCookie("Token"));
+      console.log(decoded)
+      axios.get(`${API}/PlazaAsignada/DelUsuario/1`)
+        .then((response) => {
+          console.log(response)
+          if(response.data.status == 'Ok'){
+            let plazasUser = response.data.body.filter(item => item.tramoAsignadoId == delegacionSelect.value) 
+            console.log(plazasUser)
+            plazasUser.forEach(plaza => {
+              axios.get(`${API}/Transacciones/LastTransaction/${plaza.plazaAsignadaId}`)
+                .then((response) => {                
+                  if(response.data.status == 'Ok'){
+                    statusServices.value.push(response.data.body[0])
+                  }
+                })
+            })
+            isLoading.value = false  
+            console.log(statusServices.value)          
+          }
+        })
+        .catch((error) => {
+          console.log(error)
+        })
     }
-    this.btn1();
-    this.interval = setInterval(() => this.actualizarData(), 1000*60);
-  },
-  methods: {
-    actualizarData:function(){
-      console.log("Actualizando data....")
-      if(this.token){
-        let config = {
-          headers: {
-            'Authorization': 'Bearer ' + this.token
-          }
-        }
-        axios.get("http://prosisdev.sytes.net:84/api/Monitoreo", config)
-        .then(response =>{
-          this.res = response.data
-          console.log("Data actualizada exitosamente")
-        })
-      }
-    },
-    pedirLista: function (nombre){
-      this.listas = []
-      if(this.res.length != 0){
-        let lista = this.res[nombre]
-        lista.forEach(e =>{
-          let obj = {
-            plaza: e.plaza,
-            actualizacionProveedor: e.ultimaActualizacionCarriles,
-            ultactCarriles: e.ultimaActualizacionProveedor,
-            ultimoLstabint: e.ultimoLstabint,
-          }
-          this.listas.push(obj)
-        })
+    onMounted(buscar_status_services)
+    return { statusServices, mexAca, mexIra, isLoading, cambiar_delegacion }
 
-      }
-    },
-    btn1: function () {
-      this.isActive1 = true;
-      this.isActive2 = false;
-      //Consulta Axios
-      this.pedirLista("historicosIrapuato")
-
-    },
-    btn2: function () {
-      this.isActive2 = true;
-      this.isActive1 = false;
-      //Consulta Axios
-      this.pedirLista("historicosAcapulco")
-
-    },
-  },
-  unmounted(){
-    clearInterval(this.interval)
-  }
+  },  
 };
 </script>
 <style scoped>

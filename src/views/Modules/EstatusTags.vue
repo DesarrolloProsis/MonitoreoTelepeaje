@@ -76,21 +76,20 @@ export default {
   methods: {
     buscarTag: function(){
       let config = { headers: { 'Authorization': 'Bearer ' + this.token } }
-      let tag = document.getElementById("tag").value;
-      let plaza = document.getElementById("selectorPlaza").value;
-      if (plaza == 0) {
-        var plaza_select = this.plazas
-      } else {
-        plaza_select = [this.plazas[plaza - 1]]
-      }
+      var tag = document.getElementById("tag").value;         
       if(tag != ""){
-        console.log("Buscando...")
-        console.log("Plaza select:" + plaza_select)
-        console.log(this.plazas)
-        //TODO: eliminar esta y sustituir por palza_select
-        var plaza_prueba = [{"Nombre":"defaultConnection"}]
-        axios.post(`${API}/Tags/?tag=${tag}`, plaza_prueba, config)      
+        console.log("Buscando...")                
+        //TODO: eliminar esta y sustituir por palza_select        
+        let urlQuery = ''
+        
+        if(this.plaza != '' && this.plaza != undefined)          
+           urlQuery = `Tags?PlazaId=${this.plaza}&Tag=${tag}`        
+        else
+            urlQuery = `Tags?Tag=${tag}`
+        
+        axios.get(`${API}/${urlQuery}`, config)      
           .then((res) =>{
+            console.log(res)
             this.tags = []
             res.data.forEach(e =>{
               let obj = {

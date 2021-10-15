@@ -6,14 +6,14 @@
         
         <th id="left-border">Plaza</th>
         <th>Última Actualización Proveedor</th>
-        <th>Última Actualización Carriles</th>
-        <th id="right-border">Último Lstabint</th>
+        <th>Última Transaccione</th>
+        <th id="right-border">Último Envio al Operador</th>
       </tr>
       <tr v-for="(lista, index) in dataListas" :key="index">
-        <td>{{lista.plaza}}</td>
-        <td :class="`${lista.actualizacionProveedor == null ? 'sinconexion' : ''}`">{{lista.actualizacionProveedor == null ? "Sin conexión":lista.actualizacionProveedor}}</td>
-         <td :class="`${lista.ultactCarriles == null ? 'sinconexion' : ''}`">{{lista.ultactCarriles == null ? "Sin conexión":lista.ultactCarriles}}</td>
-          <td :class="`${lista.ultimoLstabint == null ? 'sinconexion' : ''}`">{{lista.ultimoLstabint == null ? "Sin conexión":lista.ultimoLstabint}}</td>
+        <td>{{lista.nombrePlaza}}</td>
+        <td :class="`${lista.fechaActualizacionOperador == '' ? 'sinconexion' : ''}`">{{lista.fechaActualizacionOperador == '' ? "Sin conexión":lista.fechaActualizacionOperador}}</td>
+         <td :class="`${lista.fechaDeCruce == '' ? 'sinconexion' : ''}`">{{lista.fechaDeCruce == '' ? "Sin conexión":lista.fechaDeCruce}}</td>
+          <td :class="`${lista.fechaEnvioOperador == '' ? 'sinconexion' : ''}`">{{lista.fechaEnvioOperador == '' ? "Sin conexión":lista.fechaEnvioOperador}}</td>
       </tr>
     </table>
   </div>
