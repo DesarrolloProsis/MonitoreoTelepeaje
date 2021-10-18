@@ -8,7 +8,7 @@
         <div class="flex flex-col md:flex-row border-gray-200 pb-0 mb-4">          
             <div class="flex-1 flex flex-col md:flex-row md:space-x-2">
               <div class="w-full flex-2">
-                  <FormTramoPlaza @cambiar-tramo-plaza="recibir_tramo_plaza" :tipo="'Transacciones'" ></FormTramoPlaza>
+                  <FormTramoPlaza @cambiar-tramo-plaza="recibir_tramo_plaza" :tipo="'Transacciones'"></FormTramoPlaza>
                 </div>
               <div class="w-full flex-2 ">
                     <div class="my-2 p-1 bg-white flex border border-gray-200 rounded">
@@ -35,13 +35,7 @@
                     <template v-slot:option="{ option }">
                       <img height="22" style="margin: 0 6px 0 0;" :src="option.icon">{{ option.name }}
                     </template>
-                  </Multiselect>
-                  <!-- <div class="w-full flex-2">
-                    <div class="my-2 p-1 bg-white flex border border-gray-200 rounded">
-                      
-                        <button class="p-1 px-2 appearance-none outline-none w-full text-gray-800 " @click="descargarArchivo('excel')">Exportar Excel</button>
-                    </div>
-                  </div>-->
+                  </Multiselect>       
             </div>
         </div>
         <hr>
@@ -75,7 +69,7 @@ import Multiselect from '@vueform/multiselect';
 import FormTramoPlaza from '../../components/Form-tramoplaza.vue'
 import Navbar from "../../components/Navbar.vue";
 import Footer from "../../components/Footer-login";
-//import * as download from "downloadjs";
+import saveAs from "file-saver";
 import axios from "axios";
 export default {
   name: "BusquedaCruces",
@@ -242,71 +236,49 @@ export default {
       var myHeaders = new Headers();
       myHeaders.append("Authorization", "Bearer " + this.token);
       myHeaders.append("Content-Type", "application/json");
-      var raw = JSON.stringify(this.data);
-      var requestOptions = {
-        method: "POST",
-        headers: myHeaders,
-        body: raw,
-        //redirect: "follow",
-      };
+      //let fecha = document.getElementById("fecha").value;
+      let tag = document.getElementById("tag").value;
+      let plaza = this.plaza
+      let carril = ''
+      var raw = {
+        "tagFilter": tag,
+        "carril": carril,
+        "plaza": plaza,
+        "fechaInicial": null,
+        "fechaFinal": null
+      }
+
       if (tipo == "csv") {
-        fetch(
-          `${API}/Transacciones/Download/Csv`,
-          requestOptions
-        )
-          .then((response) => response.text())
+        axios.post(`${API}/Transacciones/Download/Csv`,raw)          
           .then((result) => {
-            console.log(result);
-            let today = new Date().toISOString().slice(0, 10);
-            const url = window.URL.createObjectURL(new Blob([result]));
-            const link = document.createElement("a");
-            link.href = url;
-            link.setAttribute("download", today + ".csv");
-            document.body.appendChild(link);
-            link.click();
+            console.log(result.data);
+            this.downloadString(result.data, "text/csv", "my.csv")
           })
           .catch((error) => console.log("error", error));
-      } else if (tipo == "excel") {
-        fetch(
-          `${API}/Transacciones/Download/Excel/`,
-          requestOptions
-        )
-          .then((response) => response.blob())
-          .then((blob) => {
-            const url = window.URL.createObjectURL(new Blob([blob]));
-            const link = document.createElement("a");
-            let today = new Date().toISOString().slice(0, 10);
-            link.href = url;
-            link.setAttribute("download", `${today}.xls`);
-            document.body.appendChild(link);
-            link.click();
+      } 
+      else if (tipo == "excel") {
+        alert()
+        this.xml_hhtp_request(`${API}/Transacciones/Download/Excel/jua/jua/${plaza}`, 'test.xlsx')
+        // axios.post(`${API}/Transacciones/Download/Excel/`, raw)          
+        //   .then((response) => {
+        //     console.log(response)    
 
-            link.parentNode.removeChild(link);
-          })
+        //   })
 
-          .catch((error) => console.log("error", error));
-      } else if (tipo == "txt") {
-        fetch(
-          `${API}/Transacciones/Download/Txt`,
-          requestOptions
-        )
-          .then((response) => response.text())
+        //   .catch((error) => console.log("error", error));
+      } 
+      else if (tipo == "txt") {
+        axios.post(`${API}/Transacciones/Download/Txt`, raw)          
           .then((result) => {
-            console.log(result);
-            let today = new Date().toISOString().slice(0, 10);
-            const url = window.URL.createObjectURL(new Blob([result]));
-            const link = document.createElement("a");
-            link.href = url;
-            link.setAttribute("download", today + ".txt");
-            document.body.appendChild(link);
-            link.click();
+            console.log(result.data);
+            this.downloadString(result.data, "text/txt", "my.txt")
           })
           .catch((error) => console.log("error", error));
       }
     },
     recibir_tramo_plaza(value){
-      this.tramo = value.tramo
-      this.plaza = value.plaza
+      this.tramo = value.tramo == undefined ? null : ''
+      this.plaza = value.plaza == undefined ? 0 : value.plaza
       console.log(value);
     },
     acciones_mapper(formato){
@@ -332,6 +304,35 @@ export default {
           filtroOpciones.push(options[2])
         }
       return filtroOpciones
+    },
+    xml_hhtp_request(urlToFile,nameFile){
+      try{
+      var oReq = new XMLHttpRequest();  
+      oReq.open("GET", urlToFile, true);    
+      oReq.responseType = "blob";  
+      oReq.send();              
+      oReq.onload = function () {
+      var file = new Blob([oReq.response], {
+          type: "application/pdf",
+      });       
+        saveAs(file, nameFile);
+      };  
+      }
+      catch(error){
+        console.log(error)
+      }       
+    },
+    downloadString(text, fileType, fileName) {
+      var blob = new Blob([text], { type: fileType });
+      var a = document.createElement('a');
+      a.download = fileName;
+      a.href = URL.createObjectURL(blob);
+      a.dataset.downloadurl = [fileType, a.download, a.href].join(':');
+      a.style.display = "none";
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      setTimeout(function() { URL.revokeObjectURL(a.href); }, 1500);
     }
   },
 };

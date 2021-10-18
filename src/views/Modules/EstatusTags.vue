@@ -2,7 +2,7 @@
 <Navbar></Navbar>
 <h1 class="title">Estatus Tags</h1>
 <div class="flex justify-center pt-4 filter-style">
-  <FormTramoPlaza @cambiar-tramo-plaza="recibir_tramo_plaza" :carrilesForm="true" :tipo="''"></FormTramoPlaza>
+  <FormTramoPlaza @cambiar-tramo-plaza="recibir_tramo_plaza" :carrilesForm="false" :tipo="''"></FormTramoPlaza>
 </div>
 <div class="flex justify-center">
   <div class="flex-auto text-center pt-4">
@@ -91,17 +91,17 @@ export default {
           .then((res) =>{
             console.log(res)
             this.tags = []
-            res.data.forEach(e =>{
+            
               let obj = {
-                tag: e.tag,
-                plaza:e.plaza,
-                estatus: e.estado,
-                saldo: e.saldo,
-                tipo_tag: e.tipoTag,
-                ult_act: e.actualizacion,
+                tag: res.data.tag,
+                plaza: res.data.plaza,
+                estatus: res.data.estado,
+                saldo: res.data.saldo,
+                tipo_tag: res.data.tipoTag,
+                ult_act: res.data.actualizacion,
               }
               this.tags.push(obj)
-            })
+            
           })
       }
     },
