@@ -270,12 +270,7 @@ export default {
       this.plaza = value.plaza == undefined ? 0 : value.plaza
       console.log(value);
     },
-      }if(formato == 'txt'){
-        this.downloadApi('txt')
-      }
-      this.formato = ''
-    },
-    opticones_select_acciones(){
+     opticones_select_acciones(){
       let options= [
           {  value: 'excel', name: 'EXCEL'},//0
           {  value: 'csv', name: 'CSV'},//1
