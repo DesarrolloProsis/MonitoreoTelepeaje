@@ -267,21 +267,9 @@ export default {
       }
     },
     recibir_tramo_plaza(value){
-<<<<<<< HEAD
-      this.tramo = value.tramo == undefined ? null : ''
       this.plaza = value.plaza == undefined ? 0 : value.plaza
       console.log(value);
-=======
-      this.tramo = value.tramo
-      this.plaza = value.plaza
-      console.log(this.plaza);
->>>>>>> 7548ebd4a693b4348399e172686ffd720349274f
     },
-    acciones_mapper(formato){
-      if(formato == 'excel'){
-        this.downloadApi('excel')
-      }if(formato == 'csv'){
-        this.downloadApi('csv')
       }if(formato == 'txt'){
         this.downloadApi('txt')
       }
