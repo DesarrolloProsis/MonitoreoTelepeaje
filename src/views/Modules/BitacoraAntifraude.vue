@@ -32,6 +32,15 @@
     <div class="container mx-auto px-0 md:px-60">
       <TablaAntifraude :dataAntifraude="listaNegra"></TablaAntifraude>
     </div>
+    <div class="mt-20">
+      <Paginacion
+        :total-pages="totalPaginas" 
+        :total="100"
+        :current-page="currentPage"
+        :has-more-pages="hasMorePages" 
+        @pagechanged="showMore"
+      ></Paginacion>
+    </div>
   </div>
   <Footer></Footer>
 </template>
@@ -43,9 +52,10 @@ import Multiselect from '@vueform/multiselect';
 import Navbar from "@/components/Navbar.vue";
 import Footer from "@/components/Footer-login";
 import axios from "axios";
+import Paginacion from "../../components/Paginacion.vue"
 export default {
   name: "BitacoraAccesos",
-  components: { Navbar, Footer, FormTramoPlaza, TablaAntifraude, Multiselect },
+  components: { Navbar, Footer, FormTramoPlaza, TablaAntifraude, Multiselect, Paginacion },
 
   data() {
     return {
@@ -57,11 +67,20 @@ export default {
       value: '',
       formato:'',
       isLoading: false,
+      paginaAct: '',
+      page: 0,
+      totalPaginas: 0,
+      currentPage: 0,
+      hasMorePages: true,
+
     };
   },
   beforeMount (){
-    axios.get(`${API}/ListaNegra`)
+  axios.get(`${API}/ListaNegra/Paginacion/2/${this.page}`)
     .then((result)=>{
+      console.log(result.data);
+      this.totalPaginas = result.data.numberPages
+      this.currentPage = result.data.now + 1
       result.data.body.forEach((e)=>{
         let obj = {
           tag: e.tag,
@@ -75,6 +94,25 @@ export default {
     })
   },
   methods: {
+    showMore(page){
+      this.listaNegra = []
+      axios.get(`${API}/ListaNegra/Paginacion/2/${page}`)
+        .then((result)=>{
+          console.log(result.data);
+          this.totalPaginas = result.data.numberPages
+          this.currentPage = result.data.now
+          result.data.body.forEach((e)=>{
+            let obj = {
+              tag: e.tag,
+              carril: e.carril,
+              fechaEntrada: e.fechaEntrada,
+              fechaSalida: e.fechaSalida,
+              causa: e.causaNombre
+            }
+            this.listaNegra.push(obj)
+          })
+        })
+    },
     recibir_tramo_plaza(value){
       this.tramo = value.tramo
       this.plaza = value.plaza
@@ -107,6 +145,14 @@ export default {
 }
 </script>
 <style scoped>
+.button-pagination {
+  padding: 2px;
+  border: 1px solid #2c5282;
+  border-radius: 5px;
+  margin-right: 5px;
+  font-size: 12px;
+  margin-top: 20px;
+}
 .pb-100 {
   padding-bottom: 100px;
 }
