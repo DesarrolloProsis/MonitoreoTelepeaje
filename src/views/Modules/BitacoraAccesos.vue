@@ -137,6 +137,26 @@ export default {
           })
         })
       }
+      if(fecha != null && nombre != null){
+        this.accesos = []
+        axios.get(`${API}/UsuarioMonitoreo/${nombre}/${fecha}`)
+        .then((result)=>{
+          result.data.body.forEach((e)=>{
+            let obj = {
+              usuarioId: e.usuarioId,
+              nombreUsuario: e.nombreUsuario,
+              nombre: e.nombre,
+              apellidoP: e.apellidoPaterno,
+              apellidoM: e.apellidoMaterno,
+              rolId: e.rolId,
+              fecha_inicio: e.horaLogIn,
+              fecha_fin: e.horaLogOut,
+              rol: e.nombreRol
+            }
+            this.accesos.push(obj)
+          })
+        })
+      }
     },
     acciones_mapper(formato){
       if(formato == 'excel'){
