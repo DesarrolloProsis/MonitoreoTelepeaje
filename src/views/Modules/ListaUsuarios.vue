@@ -2,7 +2,7 @@
   <Navbar></Navbar>
   <h1 class="title font-titulo font-bold">Lista de Usuarios Registrados</h1>
   <div class="container mx-auto px-0 pb-24 pt-4">
-    <div class="flex flex-wrap bg-blue">
+    <div class="flex flex-wrap bg-blue">      
       <div class="flex-none filter-style">
         Nombre:
         <input v-model="nombre" type="text" />
@@ -19,8 +19,17 @@
         <button @click="buscar(nombre,estatus)" class="btn-buscar">Buscar</button>
         <button @click="todos()" class="btn-buscar ml-1">Todos</button>
       </div>
-      <div class="flex-1">
-        <button class="btn-carriles ml-right animacion">Descargar Excel</button>
+      <div class="flex-none ml-10 w-48">
+        <Multiselect v-model="formato" placeholder="Seleccione una Acción" @close="downloadApi(formato)" label="name" trackBy="name" :options="opticones_select_acciones()" :searchable="true">
+          <template v-slot:singleLabel="{ value }">
+            <div class="multiselect-single-label">
+              <img height="26" style="margin: 0 6px 0 0;" :src="value.icon"> {{ value.name }}
+            </div>
+          </template>
+          <template v-slot:option="{ option }">
+            <img height="22" style="margin: 0 6px 0 0;" :src="option.icon">{{ option.name }}
+          </template>
+        </Multiselect>
       </div>
     </div>
     <div class="mb-6">
@@ -48,21 +57,6 @@
         <input v-model="usuario.apellidoM" type="text" class="border rounded-lg">
         <p class="text-sm mb-1 font-semibold text-gray-700 mt-2 sm:-ml-6">Contraseña *</p>
         <input v-model="usuario.pass" type="text" class="border rounded-lg">
-        <!-- <p class="text-sm mb-1 font-semibold text-gray-700 mt-2 sm:-ml-6">Tramo</p>
-        <select v-model="tramoSeleccionado" @change="plazasfil()" class="w-full border rounded-lg">
-          <option disabled value>Selecionar...</option>     
-          <option value="1">México Acapulco</option>     
-          <option value="2">México Irapuato</option>
-        </select>
-        <p class="text-sm mb-1 font-semibold text-gray-700 mt-2 sm:-ml-6">Plazas *</p>
-        <Multiselect
-          v-model="usuario.plazas"
-          mode="multiple"
-          placeholder="Seleccione las Plazas"
-          :searchable="true"
-          :options="plazas"
-          :close-on-select="false" 
-        /> -->
         <p class="text-sm mb-1 font-semibold text-gray-700 mt-2 sm:-ml-6">Rol *</p>
         <Multiselect
           v-model="usuario.rol"
@@ -97,9 +91,8 @@ import Navbar from "../../components/Navbar.vue";
 import Footer from "../../components/Footer-login";
 import Multiselect from '@vueform/multiselect';
 import Servicio from '../../Servicios/Token-Services';
+import saveAs from "file-saver";
 import axios from "axios";
-
-
 export default {
   components: {
     TablaListaUsuarios,
@@ -132,6 +125,8 @@ export default {
       rol_Filtrado:[],
       roles:[],
       modalLoading:false,
+      //addEmi
+      formato: ''
     };
   },
   async beforeMount() {
@@ -383,7 +378,43 @@ export default {
       this.tramoSeleccionado = ''
       this.plazas = []
     },
+    opticones_select_acciones(){
+      let options= [
+          {  value: 'excel', name: 'EXCEL'},//0
+          {  value: 'csv', name: 'CSV'},//1
+          {  value: 'txt', name: 'TXT'},//2
+      ]
+      let filtroOpciones = []      
+      filtroOpciones.push(options[0])
+      filtroOpciones.push(options[1])
+      filtroOpciones.push(options[2])      
+      return filtroOpciones
+    },
+    downloadApi(){
+      if (this.formato == "csv") {
+        this.xml_hhtp_request(`${API}/Usuario/Download/Csv`, 'test.csv')
+      } 
+      else if (this.formato == "excel") {        
+        //this.xml_hhtp_request(`${API}/Transacciones/Download/Excel?tag=${tag}&carril=${carril}&plaza=${plaza}&fechaInicial=${fechaInicial}&fechaFinal=${fechaFinal}`, 'test.xlsx')
     
+      } 
+      else if (this.formato == "txt") {
+        this.xml_hhtp_request(`${API}/Usuario/Download/txt`, 'test.txt')
+      }
+      console.log(this.formato)
+    },
+     xml_hhtp_request(urlToFile,nameFile){      
+      var oReq = new XMLHttpRequest();  
+      oReq.open("GET", urlToFile, true);    
+      oReq.responseType = "blob";  
+      oReq.send();              
+      oReq.onload = function () {
+        var file = new Blob([oReq.response], {
+          type: "application/pdf",
+        });       
+        saveAs(file, nameFile);  
+      };            
+    },
   },
 };
 </script>

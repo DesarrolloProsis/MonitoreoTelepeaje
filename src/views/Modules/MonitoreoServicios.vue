@@ -2,10 +2,10 @@
   <Navbar></Navbar>
   <div class="container mx-auto px-0 resp-cont">
     <h1 class="title">Monitoreo de Servicios de Con Proveedor de Telepeaje</h1>
-    <button @click="cambiar_delegacion(2)" class="btn-listas" :style="{ 'background-color': isActive1 ? '#fcb32a' : 'gray' }">
+    <button @click="cambiar_delegacion(1)" class="btn-listas" :style="{ 'background-color': mexAca ? '#fcb32a' : 'gray' }">
       Mex-Ira
     </button>
-    <button @click="cambiar_delegacion(1)" class="btn-listas" :style="{ 'background-color': isActive2 ? '#fcb32a' : 'gray' }">
+    <button @click="cambiar_delegacion(2)" class="btn-listas" :style="{ 'background-color': mexIra ? '#fcb32a' : 'gray' }">
       Mex-Aca
     </button>
     <Tabla v-if="isLoading == false" :dataListas="statusServices"></Tabla>
@@ -56,11 +56,12 @@ export default {
       var decoded = jwt_decode(Service.getCookie("Token"));
       console.log(decoded)
       axios.get(`${API}/PlazaAsignada/DelUsuario/1`)
-        .then((response) => {
+        .then((response) => {          
           console.log(response)
           if(response.data.status == 'Ok'){
             let plazasUser = response.data.body.filter(item => item.tramoAsignadoId == delegacionSelect.value) 
             console.log(plazasUser)
+            //for iterar plazas
             plazasUser.forEach(plaza => {
               axios.get(`${API}/Transacciones/LastTransaction/${plaza.plazaAsignadaId}`)
                 .then((response) => {                

@@ -31,11 +31,10 @@ export default {
 <style scoped>
 
 .responsive-table {
-    padding-top: 20px;
+  padding-top: 20px;
   overflow-x: auto;
   overflow-y: auto;
   max-height: 600px;
-  
 }
 .tftable {
   font-size: 12px;

@@ -21,8 +21,7 @@
                       </div>
                 </div>
                 <div class="w-full flex-1">
-                    <div class="my-2 p-1 bg-white flex border border-gray-200 rounded btn-search ">
-                      
+                    <div class="my-2 p-1 bg-white flex border border-gray-200 rounded btn-search ">                      
                         <button class="p-1 px-2 appearance-none outline-none w-full text-white " :disabled="isLoading" :class="{'cursor-not-allowed': isLoading}" @click="buscar()">Buscar</button>
                     </div>
                 </div>
@@ -247,7 +246,7 @@ export default {
       this.plaza = value.plaza == undefined ? 0 : value.plaza
       console.log(value);
     },
-     opticones_select_acciones(){
+    opticones_select_acciones(){
       let options= [
           {  value: 'excel', name: 'EXCEL'},//0
           {  value: 'csv', name: 'CSV'},//1
@@ -326,7 +325,6 @@ export default {
 
 .inp-icon {
   background: url("~@/assets/search.png") no-repeat 100%;
-
   background-size: 16px;
 }
 
