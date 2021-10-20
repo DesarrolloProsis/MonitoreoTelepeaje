@@ -3,14 +3,13 @@
   <div class="container mx-auto px-0 pb-100">
     <h1 class="title-center font-titulo font-bold pb-4">Bitácora de Tags en Antifraude</h1>
     <div class="flex flex-wrap bg-blue">
-      <div class="flex-none filter-style">
+      <div class="flex-none filter-style mt-1">
         <FormTramoPlaza @cambiar-tramo-plaza="recibir_tramo_plaza" :carrilesForm="true" :tipo="'Antifraude'"></FormTramoPlaza>
       </div>
       <div class="flex-none filter-style mt-1">
       </div>
-      <div class="flex-none filter-style">
-        Fecha:
-        <input type="date" />
+      <div class="flex-none filter-style mt-2">
+        Fecha:<input type="date" class="rounded"/>
       </div>
       <div class="flex-none filter-style">
         <button class="btn-buscar">Buscar</button>
