@@ -97,6 +97,13 @@ export default {
       })
     },
     buscar(nombre, fecha){
+      if(nombre == null && fecha == null){
+        this.$notify({
+          title:'No Hay Datos',
+          text:'No se indico ningún dato para filtrar',
+          type: 'warn'
+        });
+      }
       if(nombre != null && fecha == null){
         this.accesos = []
         axios.get(`${API}/UsuarioMonitoreo/${nombre}/null`)
