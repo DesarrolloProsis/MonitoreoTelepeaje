@@ -9,10 +9,11 @@
       </div>
       <div class="flex-none filter-style mt-2">
         Fecha:
-        <input type="date" class="rounded"/>
+        <input v-model="fecha" type="date" class="rounded"/>
       </div>
       <div class="flex-none filter-style">
-        <button class="btn-buscar mr-89">Buscar</button>
+        <button @click="buscar(nombre, fecha )" class="btn-buscar mr-2">Buscar</button>
+        <button @click="todos()" class="btn-buscar mr-89">Todos</button>
       </div>
       <div class="flex-1">
         <Multiselect v-model="formato" placeholder="Sleccione una Acción" @close="acciones_mapper(formato)" label="name" trackBy="name" :options="opticones_select_acciones()" :searchable="true">
@@ -46,14 +47,15 @@ export default {
   data() {
     return {
       accesos:[],
-      nombre:'',
+      nombre:null,
       value: '',
       formato:'',
       isLoading: false,
+      fecha:null
     };
   },
   beforeMount (){
-    axios.get(`${API}/UsuarioMonitoreo`)
+    axios.get(`${API}/UsuarioMonitoreo/null/null`)
       .then((result)=>{
         result.data.body.forEach((e)=>{
           let obj = {
@@ -69,11 +71,73 @@ export default {
           }
           this.accesos.push(obj)
         })
-        console.log(result.data.body);
-        console.log(this.accesos);
       })
   },
   methods: {
+    todos(){
+      this.accesos = []
+      this.nombre = null
+      this.fecha = null
+      axios.get(`${API}/UsuarioMonitoreo/null/null`)
+      .then((result)=>{
+        result.data.body.forEach((e)=>{
+          let obj = {
+            usuarioId: e.usuarioId,
+            nombreUsuario: e.nombreUsuario,
+            nombre: e.nombre,
+            apellidoP: e.apellidoPaterno,
+            apellidoM: e.apellidoMaterno,
+            rolId: e.rolId,
+            fecha_inicio: e.horaLogIn,
+            fecha_fin: e.horaLogOut,
+            rol: e.nombreRol
+          }
+          this.accesos.push(obj)
+        })
+      })
+    },
+    buscar(nombre, fecha){
+      if(nombre != null && fecha == null){
+        this.accesos = []
+        axios.get(`${API}/UsuarioMonitoreo/${nombre}/null`)
+        .then((result)=>{
+          result.data.body.forEach((e)=>{
+            let obj = {
+              usuarioId: e.usuarioId,
+              nombreUsuario: e.nombreUsuario,
+              nombre: e.nombre,
+              apellidoP: e.apellidoPaterno,
+              apellidoM: e.apellidoMaterno,
+              rolId: e.rolId,
+              fecha_inicio: e.horaLogIn,
+              fecha_fin: e.horaLogOut,
+              rol: e.nombreRol
+            }
+            this.accesos.push(obj)
+          })
+        })
+      }
+      if(fecha != null && nombre == null){
+        this.accesos = []
+        axios.get(`${API}/UsuarioMonitoreo/null/${fecha}`)
+        .then((result)=>{
+          result.data.body.forEach((e)=>{
+            let obj = {
+              usuarioId: e.usuarioId,
+              nombreUsuario: e.nombreUsuario,
+              nombre: e.nombre,
+              apellidoP: e.apellidoPaterno,
+              apellidoM: e.apellidoMaterno,
+              rolId: e.rolId,
+              fecha_inicio: e.horaLogIn,
+              fecha_fin: e.horaLogOut,
+              rol: e.nombreRol
+            }
+            this.accesos.push(obj)
+          })
+        })
+      }
+    },
     acciones_mapper(formato){
       if(formato == 'excel'){
         console.log('excel');
