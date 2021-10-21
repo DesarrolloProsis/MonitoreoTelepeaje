@@ -78,9 +78,9 @@ export default {
   },
   methods:{
     actualizar(){
+      this.cruces = []
       axios.get(`${API}/Transacciones/Last20Transaccions/2`)
       .then((result)=>{
-        console.log(result);
         result.data.body.forEach((e) =>{
           let obj = {
             carril: e.carril,
