@@ -9,10 +9,10 @@
       <div class="flex-none filter-style mt-1">
       </div>
       <div class="flex-none filter-style mt-2">
-        Fecha:<input type="date" class="rounded"/>
+        Fecha:<input v-model="fecha" type="date" class="rounded"/>
       </div>
       <div class="flex-none filter-style">
-        <button class="btn-buscar">Buscar</button>
+        <button @click="buscar(plaza,carril,fecha)" class="btn-buscar">Buscar</button>
         <button class="btn-buscar ml-6 mr-32">Todos</button>
       </div>
       <div class="flex-1">
@@ -41,6 +41,16 @@
       ></Paginacion>
     </div>
   </div>
+  <!-- MODAL CARGANDO -->
+  <div class="inset-0" :class="{'modal-container': modalLoading}">
+    <div v-if="modalLoading" class=" inset-0 font-titulo mt-66 mb-8">
+      <div class="rounded-lg w-66 justify-center absolute  inset-x-0 bg-none mx-auto px-12 py-10 ">          
+        <div class="justify-center text-center block">            
+          <img src="@/assets/load.gif"  class="h-48 w-48" />
+        </div>
+      </div>
+    </div>
+  </div>
   <Footer></Footer>
 </template>
 <script>
@@ -61,7 +71,9 @@ export default {
       tags: [],      
       token:"",      
       tramo: '',
-      plaza: '',
+      plaza: null,
+      carril: null,
+      fecha:null,
       listaNegra: [],
       value: '',
       formato:'',
@@ -69,17 +81,18 @@ export default {
       paginaAct: '',
       page: 0,
       totalPaginas: 0,
-      currentPage: 0,
+      currentPage: 1,
       hasMorePages: true,
+      modalLoading: false
 
     };
   },
   beforeMount (){
-  axios.get(`${API}/ListaNegra/Paginacion/2/${this.page}`)
+  axios.get(`${API}/ListaNegra/Paginacion/null/${this.page}/null/null`)
     .then((result)=>{
       console.log(result.data);
       this.totalPaginas = result.data.numberPages
-      this.currentPage = result.data.now + 1
+      this.currentPage = result.data.now
       result.data.body.forEach((e)=>{
         let obj = {
           tag: e.tag,
@@ -93,9 +106,47 @@ export default {
     })
   },
   methods: {
+    buscar(plaza,carril,fecha){
+      this.page = 1
+      this.modalLoading = true
+      if(carril == ''){
+        let carril = null
+        axios.get(`${API}/ListaNegra/Paginacion/${plaza}/${this.page}/${carril}/${fecha}`)
+        .then((result)=>{
+          console.log(result.data);
+          if(result.data.status == 'Ok'){
+            this.modalLoading = false
+            this.totalPaginas = result.data.numberPages
+            this.currentPage = result.data.now
+            result.data.body.forEach((e)=>{
+              let obj = {
+                tag: e.tag,
+                carril: e.carril,
+                fechaEntrada: e.fechaEntrada,
+                fechaSalida: e.fechaSalida,
+                causa: e.causaNombre
+              }
+              this.listaNegra.push(obj)
+            })
+          }else{
+            this.modalLoading = false
+            this.$notify({
+              title:'Sin Información',
+              text:'No se encontrtaron Tags en esta plaza',
+              type: 'warn'
+            });
+          }
+        })
+      }
+    },
     showMore(page){
       this.listaNegra = []
-      axios.get(`${API}/ListaNegra/Paginacion/2/${page}`)
+      let plaza = this.plaza
+      let fecha = this.fecha;
+      if(this.carril == ''){
+        var datoCarril = null
+      }
+      axios.get(`${API}/ListaNegra/Paginacion/${plaza}/${page}/${datoCarril}/${fecha}`)
         .then((result)=>{
           console.log(result.data);
           this.totalPaginas = result.data.numberPages
@@ -115,6 +166,7 @@ export default {
     recibir_tramo_plaza(value){
       this.tramo = value.tramo
       this.plaza = value.plaza
+      this.carril = value.carril
     },
     acciones_mapper(formato){
       if(formato == 'excel'){
@@ -144,6 +196,13 @@ export default {
 }
 </script>
 <style scoped>
+.modal-container{
+    position: fixed;
+    width: 100%;
+    height: 100vh;
+    z-index: 1000;
+    background: rgba(0, 0, 0, 0.5);
+}
 .button-pagination {
   padding: 2px;
   border: 1px solid #2c5282;

@@ -1,6 +1,6 @@
 <template>
     <div class="responsive-table">          
-        <table class="tftable" style="height:350px;">
+        <table class="tftable">
             <tr>
                 <th>Tag</th>
                 <th>Carril</th>
@@ -52,6 +52,7 @@ export default {
     overflow-x: auto;
     overflow-y: auto;
     max-height: 500px;
+    width: 110%; 
 }
 .tftable {
     font-size: 12px;

@@ -2,20 +2,18 @@
   <div class="responsive-table">
     <table class="tftable">
       <tr>
-        <th>Plaza</th>
         <th>No Tag</th>
-        <th>Fecha de Envío</th>
+        <th>Fecha de Transaccion</th>
         <th>Carril</th>
-        <th>Tipo de Vehículo</th>
+        <th>Clase Cajero</th>
         <th>Tarifa</th>
       </tr>
       <tr v-for="(transaccion, index) in dataTransacciones" :key="index">
-        <td>{{transaccion.plaza}}</td>
-        <td>{{transaccion.num_tag}}</td>
-        <td>{{transaccion.fecha_envio}}</td>
+        <td>{{transaccion.tag}}</td>
+        <td>{{ moment(transaccion.fechaEnvio).format("YYYY-MM-DD  HH:mm a") }}</td>
         <td>{{transaccion.carril}}</td>
-        <td>{{transaccion.tipo_vehiculo}} </td>
-        <td>{{transaccion.tarifa}} </td>
+        <td>{{transaccion.claseCajero}} </td>
+        <td>${{transaccion.tarifa}} </td>
       </tr>
     </table>
   </div>
@@ -23,9 +21,13 @@
 
 
 <script>
+import moment from 'moment'
 export default {
   name: "TablaTransacciones",
   props: ["dataTransacciones"],
+  created: function () {
+    this.moment = moment;
+  },
 };
 </script>
 <style scoped>
