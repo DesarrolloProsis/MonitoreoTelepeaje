@@ -34,7 +34,7 @@ export default {
         }, */
         {
           img_src: "Configuracion/lista-roles.png",
-          nombre: "Administración de Perfiles",
+          nombre: "Administración de Roles",
           ruta: "/configuracion/administracion-perfiles",
         },
 /*         {

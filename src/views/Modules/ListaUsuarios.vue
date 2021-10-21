@@ -2,14 +2,14 @@
   <Navbar></Navbar>
   <h1 class="title font-titulo font-bold">Lista de Usuarios Registrados</h1>
   <div class="container mx-auto px-0 pb-24 pt-4">
-    <div class="flex flex-wrap bg-blue">      
-      <div class="flex-none filter-style">
+    <div class="flex flex-wrap bg-blue rounded-lg">
+      <div class="flex-none filter-style mt-2">
         Nombre:
-        <input v-model="nombre" type="text" />
+        <input v-model="nombre" type="text" class="rounded" />
       </div>
-      <div class="flex-none filter-style">
+      <div class="flex-none filter-style mt-2">
         Estatus:
-        <select v-model="estatus" class="flex-none filter-style color-black" name="select" placeholder="Selecciona">
+        <select v-model="estatus" class="flex-none filter-style color-black rounded" name="select" placeholder="Selecciona">
           <option hidden selected>Seleccione</option>
           <option value="100">Inactivo</option>
           <option value="200">Activo</option>
@@ -19,8 +19,8 @@
         <button @click="buscar(nombre,estatus)" class="btn-buscar">Buscar</button>
         <button @click="todos()" class="btn-buscar ml-1">Todos</button>
       </div>
-      <div class="flex-none ml-10 w-48">
-        <Multiselect v-model="formato" placeholder="Seleccione una Acción" @close="downloadApi(formato)" label="name" trackBy="name" :options="opticones_select_acciones()" :searchable="true">
+      <div class="flex-1 ml-89 hidden">
+        <Multiselect v-model="formato" placeholder="Sleccione una Acción" @close="acciones_mapper(formato)" label="name" trackBy="name" :options="opticones_select_acciones()" :searchable="true">
           <template v-slot:singleLabel="{ value }">
             <div class="multiselect-single-label">
               <img height="26" style="margin: 0 6px 0 0;" :src="value.icon"> {{ value.name }}
@@ -377,6 +377,16 @@ export default {
       this.usuario.correo = ''  
       this.tramoSeleccionado = ''
       this.plazas = []
+    },
+    acciones_mapper(formato){
+      if(formato == 'excel'){
+        console.log('excel');
+      }if(formato == 'csv'){
+        console.log('csv');
+      }if(formato == 'txt'){
+        console.log('txt');
+      }
+      this.formato = ''
     },
     opticones_select_acciones(){
       let options= [
