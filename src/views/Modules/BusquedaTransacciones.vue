@@ -21,12 +21,11 @@
                       </div>
                 </div>
                 <div class="w-full flex-1">
-                    <div class="my-2 p-1 bg-white flex border border-gray-200 rounded btn-search ">
-                      
+                    <div class="my-2 p-1 bg-white flex border border-gray-200 rounded btn-search ">                      
                         <button class="p-1 px-2 appearance-none outline-none w-full text-white " :disabled="isLoading" :class="{'cursor-not-allowed': isLoading}" @click="buscar()">Buscar</button>
                     </div>
                 </div>
-                  <Multiselect v-model="formato" placeholder="Sleccione una Acción" @close="acciones_mapper(formato)" label="name" trackBy="name" :options="opticones_select_acciones()" :searchable="true">
+                  <Multiselect v-model="formato" placeholder="Sleccione una Acción" @close="downloadApi(formato)" label="name" trackBy="name" :options="opticones_select_acciones()" :searchable="true">
                     <template v-slot:singleLabel="{ value }">
                       <div class="multiselect-single-label">
                         <img height="26" style="margin: 0 6px 0 0;" :src="value.icon"> {{ value.name }}
@@ -226,51 +225,28 @@ export default {
       var myHeaders = new Headers();
       myHeaders.append("Authorization", "Bearer " + this.token);
       myHeaders.append("Content-Type", "application/json");
-      //let fecha = document.getElementById("fecha").value;
+      let fecha = document.getElementById("fecha").value;
       let tag = document.getElementById("tag").value;
       let plaza = this.plaza
       let carril = ''
-      var raw = {
-        "tagFilter": tag,
-        "carril": carril,
-        "plaza": plaza,
-        "fechaInicial": null,
-        "fechaFinal": null
-      }
-
+      let fechaInicial = fecha
+      let fechaFinal = ''
       if (tipo == "csv") {
-        axios.post(`${API}/Transacciones/Download/Csv`,raw)          
-          .then((result) => {
-            console.log(result.data);
-            this.downloadString(result.data, "text/csv", "my.csv")
-          })
-          .catch((error) => console.log("error", error));
+        this.xml_hhtp_request(`${API}/Transacciones/Download/Csv?tag=${tag}&carril=${carril}&plaza=${plaza}&fechaInicial=${fechaInicial}&fechaFinal=${fechaFinal}`, 'test.csv')
       } 
-      else if (tipo == "excel") {
-        alert()
-        this.xml_hhtp_request(`${API}/Transacciones/Download/Excel/jua/jua/${plaza}`, 'test.xlsx')
-        // axios.post(`${API}/Transacciones/Download/Excel/`, raw)          
-        //   .then((response) => {
-        //     console.log(response)    
-
-        //   })
-
-        //   .catch((error) => console.log("error", error));
+      else if (tipo == "excel") {        
+        this.xml_hhtp_request(`${API}/Transacciones/Download/Excel?tag=${tag}&carril=${carril}&plaza=${plaza}&fechaInicial=${fechaInicial}&fechaFinal=${fechaFinal}`, 'test.xlsx')
+    
       } 
       else if (tipo == "txt") {
-        axios.post(`${API}/Transacciones/Download/Txt`, raw)          
-          .then((result) => {
-            console.log(result.data);
-            this.downloadString(result.data, "text/txt", "my.txt")
-          })
-          .catch((error) => console.log("error", error));
+        this.xml_hhtp_request(`${API}/Transacciones/Download/txt?tag=${tag}&carril=${carril}&plaza=${plaza}&fechaInicial=${fechaInicial}&fechaFinal=${fechaFinal}`, 'test.txt')
       }
     },
     recibir_tramo_plaza(value){
       this.plaza = value.plaza == undefined ? 0 : value.plaza
       console.log(value);
     },
-     opticones_select_acciones(){
+    opticones_select_acciones(){
       let options= [
           {  value: 'excel', name: 'EXCEL'},//0
           {  value: 'csv', name: 'CSV'},//1
@@ -284,35 +260,18 @@ export default {
         }
       return filtroOpciones
     },
-    xml_hhtp_request(urlToFile,nameFile){
-      try{
+    xml_hhtp_request(urlToFile,nameFile){      
       var oReq = new XMLHttpRequest();  
       oReq.open("GET", urlToFile, true);    
       oReq.responseType = "blob";  
       oReq.send();              
       oReq.onload = function () {
-      var file = new Blob([oReq.response], {
+        var file = new Blob([oReq.response], {
           type: "application/pdf",
-      });       
-        saveAs(file, nameFile);
-      };  
-      }
-      catch(error){
-        console.log(error)
-      }       
+        });       
+        saveAs(file, nameFile);  
+      };            
     },
-    downloadString(text, fileType, fileName) {
-      var blob = new Blob([text], { type: fileType });
-      var a = document.createElement('a');
-      a.download = fileName;
-      a.href = URL.createObjectURL(blob);
-      a.dataset.downloadurl = [fileType, a.download, a.href].join(':');
-      a.style.display = "none";
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      setTimeout(function() { URL.revokeObjectURL(a.href); }, 1500);
-    }
   },
 };
 </script>
@@ -366,7 +325,6 @@ export default {
 
 .inp-icon {
   background: url("~@/assets/search.png") no-repeat 100%;
-
   background-size: 16px;
 }
 

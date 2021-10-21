@@ -13,6 +13,7 @@ function getCookie(cname) {
     }
     return "";
 }
+
 export default{
     getCookie,
 }
