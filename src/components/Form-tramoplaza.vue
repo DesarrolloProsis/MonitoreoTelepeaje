@@ -65,7 +65,7 @@ export default {
         }
 
         const obtener_carriles_por_plaza = async () => {             
-            axios.get(`http://10.1.1.180:85/api/Carriles/${plazaSeleccionado.value.plazaAsignadaId}`)
+            axios.get(`${API}/Carriles/${plazaSeleccionado.value.plazaAsignadaId}`)
                 .then((response) => {                    
                     console.log(response.data.body)
                     if(response.data.body.length == 0 || response.data.body == null){
