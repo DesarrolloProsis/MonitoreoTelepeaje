@@ -2,29 +2,30 @@
   <Navbar></Navbar>
   <div class="container mx-auto px-0 pb-100">
     <h1 class="title-center font-titulo font-bold pb-4">Bitácora de Accesos</h1>
-    <div class="flex flex-wrap bg-blue">
-      <div class="flex-none filter-style">
+    <div class="flex flex-wrap bg-blue rounded-lg">
+      <div class="flex-none filter-style mt-2">
         Usuario:
         <input v-model="nombre" type="text" class="rounded"/>
       </div>
-      <div class="flex-none filter-style">
+      <div class="flex-none filter-style mt-2">
         Fecha:
-        <input type="date" class="rounded"/>
+        <input v-model="fecha" type="date" class="rounded"/>
       </div>
       <div class="flex-none filter-style">
-        <button class="btn-buscar mr-89">Buscar</button>
+        <button @click="buscar(nombre, fecha )" class="btn-buscar mr-2">Buscar</button>
+        <button @click="todos()" class="btn-buscar mr-89">Todos</button>
       </div>
       <div class="flex-1">
         <Multiselect v-model="formato" placeholder="Sleccione una Acción" @close="acciones_mapper(formato)" label="name" trackBy="name" :options="opticones_select_acciones()" :searchable="true">
-                    <template v-slot:singleLabel="{ value }">
-                      <div class="multiselect-single-label">
-                        <img height="26" style="margin: 0 6px 0 0;" :src="value.icon"> {{ value.name }}
-                      </div>
-                    </template>
-                    <template v-slot:option="{ option }">
-                      <img height="22" style="margin: 0 6px 0 0;" :src="option.icon">{{ option.name }}
-                    </template>
-                  </Multiselect>
+          <template v-slot:singleLabel="{ value }">
+            <div class="multiselect-single-label">
+              <img height="26" style="margin: 0 6px 0 0;" :src="value.icon"> {{ value.name }}
+            </div>
+          </template>
+          <template v-slot:option="{ option }">
+            <img height="22" style="margin: 0 6px 0 0;" :src="option.icon">{{ option.name }}
+          </template>
+        </Multiselect>
       </div>
     </div>
     <div class="container mx-auto px-0 md:px-60">
@@ -46,14 +47,15 @@ export default {
   data() {
     return {
       accesos:[],
-      nombre:'',
+      nombre:null,
       value: '',
       formato:'',
       isLoading: false,
+      fecha:null
     };
   },
   beforeMount (){
-    axios.get(`${API}/UsuarioMonitoreo`)
+    axios.get(`${API}/UsuarioMonitoreo/null/null`)
       .then((result)=>{
         result.data.body.forEach((e)=>{
           let obj = {
@@ -69,11 +71,100 @@ export default {
           }
           this.accesos.push(obj)
         })
-        console.log(result.data.body);
-        console.log(this.accesos);
       })
   },
   methods: {
+    todos(){
+      this.accesos = []
+      this.nombre = null
+      this.fecha = null
+      axios.get(`${API}/UsuarioMonitoreo/null/null`)
+      .then((result)=>{
+        result.data.body.forEach((e)=>{
+          let obj = {
+            usuarioId: e.usuarioId,
+            nombreUsuario: e.nombreUsuario,
+            nombre: e.nombre,
+            apellidoP: e.apellidoPaterno,
+            apellidoM: e.apellidoMaterno,
+            rolId: e.rolId,
+            fecha_inicio: e.horaLogIn,
+            fecha_fin: e.horaLogOut,
+            rol: e.nombreRol
+          }
+          this.accesos.push(obj)
+        })
+      })
+    },
+    buscar(nombre, fecha){
+      if(nombre == null && fecha == null){
+        this.$notify({
+          title:'No Hay Datos',
+          text:'No se indico ningún dato para filtrar',
+          type: 'warn'
+        });
+      }
+      if(nombre != null && fecha == null){
+        this.accesos = []
+        axios.get(`${API}/UsuarioMonitoreo/${nombre}/null`)
+        .then((result)=>{
+          result.data.body.forEach((e)=>{
+            let obj = {
+              usuarioId: e.usuarioId,
+              nombreUsuario: e.nombreUsuario,
+              nombre: e.nombre,
+              apellidoP: e.apellidoPaterno,
+              apellidoM: e.apellidoMaterno,
+              rolId: e.rolId,
+              fecha_inicio: e.horaLogIn,
+              fecha_fin: e.horaLogOut,
+              rol: e.nombreRol
+            }
+            this.accesos.push(obj)
+          })
+        })
+      }
+      if(fecha != null && nombre == null){
+        this.accesos = []
+        axios.get(`${API}/UsuarioMonitoreo/null/${fecha}`)
+        .then((result)=>{
+          result.data.body.forEach((e)=>{
+            let obj = {
+              usuarioId: e.usuarioId,
+              nombreUsuario: e.nombreUsuario,
+              nombre: e.nombre,
+              apellidoP: e.apellidoPaterno,
+              apellidoM: e.apellidoMaterno,
+              rolId: e.rolId,
+              fecha_inicio: e.horaLogIn,
+              fecha_fin: e.horaLogOut,
+              rol: e.nombreRol
+            }
+            this.accesos.push(obj)
+          })
+        })
+      }
+      if(fecha != null && nombre != null){
+        this.accesos = []
+        axios.get(`${API}/UsuarioMonitoreo/${nombre}/${fecha}`)
+        .then((result)=>{
+          result.data.body.forEach((e)=>{
+            let obj = {
+              usuarioId: e.usuarioId,
+              nombreUsuario: e.nombreUsuario,
+              nombre: e.nombre,
+              apellidoP: e.apellidoPaterno,
+              apellidoM: e.apellidoMaterno,
+              rolId: e.rolId,
+              fecha_inicio: e.horaLogIn,
+              fecha_fin: e.horaLogOut,
+              rol: e.nombreRol
+            }
+            this.accesos.push(obj)
+          })
+        })
+      }
+    },
     acciones_mapper(formato){
       if(formato == 'excel'){
         console.log('excel');

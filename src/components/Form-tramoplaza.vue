@@ -71,6 +71,9 @@ export default {
                     if(response.data.body.length == 0 || response.data.body == null){
                         notify({ type: 'warning', title:'Sin carriles en plaza', text: `No se pudo encontrar carriles`});
                     }
+                    else{
+                        carriles.value = response.data.body
+                    }
                 })
                 .catch((error) => console.log(error))
             
