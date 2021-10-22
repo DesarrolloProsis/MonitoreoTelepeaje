@@ -16,16 +16,7 @@
         <button class="btn-buscar ml-6 mr-32">Todos</button>
       </div>
       <div class="flex-1">
-        <Multiselect v-model="formato" placeholder="Sleccione una Acción" @close="acciones_mapper(formato)" label="name" trackBy="name" :options="opticones_select_acciones()" :searchable="true">
-          <template v-slot:singleLabel="{ value }">
-            <div class="multiselect-single-label">
-              <img height="26" style="margin: 0 6px 0 0;" :src="value.icon"> {{ value.name }}
-            </div>
-          </template>
-          <template v-slot:option="{ option }">
-            <img height="22" style="margin: 0 6px 0 0;" :src="option.icon">{{ option.name }}
-          </template>
-        </Multiselect>
+        <FilesDownload @download-api="downloadApi"></FilesDownload>   
       </div>
     </div>
     <div class="container mx-auto px-0 md:px-60">
@@ -47,14 +38,15 @@
 const API = process.env.VUE_APP_URL_API_PRODUCCION
 import FormTramoPlaza from '../../components/Form-tramoplaza.vue';
 import TablaAntifraude from "../../components/Tabla-antifraude.vue";
-import Multiselect from '@vueform/multiselect';
 import Navbar from "@/components/Navbar.vue";
 import Footer from "@/components/Footer-login";
+import FilesDownload from '../../components/Files-descargar.vue'
+import ServiceFiles from '../../Servicios/Files-Service'
 import axios from "axios";
 import Paginacion from "../../components/Paginacion.vue"
 export default {
   name: "BitacoraAccesos",
-  components: { Navbar, Footer, FormTramoPlaza, TablaAntifraude, Multiselect, Paginacion },
+  components: { Navbar, Footer, FormTramoPlaza, TablaAntifraude, FilesDownload, Paginacion },
 
   data() {
     return {
@@ -112,34 +104,17 @@ export default {
           })
         })
     },
-    recibir_tramo_plaza(value){
-      this.tramo = value.tramo
-      this.plaza = value.plaza
-    },
-    acciones_mapper(formato){
-      if(formato == 'excel'){
-        console.log('excel');
-      }if(formato == 'csv'){
-        console.log('csv');
-      }if(formato == 'txt'){
-        console.log('txt');
-      }
-      this.formato = ''
-    },
-    opticones_select_acciones(){
-      let options= [
-          {  value: 'excel', name: 'EXCEL'},//0
-          {  value: 'csv', name: 'CSV'},//1
-          {  value: 'txt', name: 'TXT'},//2
-      ]
-      let filtroOpciones = []
-        if(this.isLoading == false){
-          filtroOpciones.push(options[0])
-          filtroOpciones.push(options[1])
-          filtroOpciones.push(options[2])
-        }
-      return filtroOpciones
-    }
+    downloadApi(formato){
+      if (formato == "csv") {
+        ServiceFiles.xml_hhtp_request(`${API}/ListaNegra/Download/Csv`, 'test.csv')
+      } 
+      else if (formato == "excel") {        
+        ServiceFiles.xml_hhtp_request(`${API}/ListaNegra/Download/Excel`, 'test.xlsx')    
+      } 
+      else if (formato == "txt") {
+        ServiceFiles.xml_hhtp_request(`${API}/ListaNegra/Download/txt`, 'test.txt')
+      }      
+    }, 
   },
 }
 </script>
