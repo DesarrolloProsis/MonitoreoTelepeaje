@@ -1,192 +1,68 @@
 <template>
   <div class="responsive-table">
-    <table class="tftable">
+    <table class="tftable" style="height:350px;">
       <tr>
-        <th>Perfil</th>
-        <th>Modulos</th>
-        <th>Plazas</th>
+        <th>Perfil</th>             
         <th>Estatus</th>
+        <th>Modulos</th>   
       </tr>
       <tr v-for="(perfiles, index) in dataPerfiles" :key="index">
-        <td>{{ perfiles.perfil }}</td>
-        <td>
-          <button class="button btn-actualizar" @click="showModulos(perfiles)">
-            Actualizar
-          </button>
-        </td>
-        <td>
-          <button class="button btn-seleccionar" @click="showPlazas(perfiles)">
-            Seleccionar
-          </button>
-        </td>
-        <td v-if="perfiles.estatus == true">
+        <td>{{ perfiles.nombreRol }}</td>  
+        <td v-if="perfiles.activo == true || perfiles.activo == null">
           <button class="button btn-activo" @click="changeStatus(perfiles)">Activo</button>
         </td>
-        <td v-else-if="perfiles.estatus == false">
+        <td v-else-if="perfiles.activo == false">
           <button class="button btn-inactivo" @click="changeStatus(perfiles)">Inactivo</button>
         </td>
+        <td>
+          <button class="button btn-actualizar" @click="showModulos(perfiles)">Actualizar</button>
+        </td>   
       </tr>
     </table>
   </div>
-
   <br />
 
   <!--Modal Actualizar-->
   <div v-if="isModulosActive == true">
     <div class="fixed z-10 inset-0 overflow-y-auto">
-      <div
-        class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0"
-      >
+      <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
         <div class="fixed inset-0 transition-opacity" aria-hidden="true">
           <div class="absolute inset-0 bg-gray-900 opacity-10"></div>
         </div>
 
-        <span
-          class="hidden sm:inline-block sm:align-middle sm:h-screen"
-          aria-hidden="true"
-          >&#8203;</span
-        >
-        <div
-          class="inline-block align-bottom bg-white text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full"
-          role="dialog"
-          aria-modal="true"
-          aria-labelledby="modal-headline"
-        >
+        <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
+        <div class="inline-block align-bottom bg-white text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full" role="dialog" aria-modal="true" aria-labelledby="modal-headline">
           <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex">
-            <h2
-              class="text-lg leading-6 font-bold text-gray-900"
-              id="modal-headline"
-            >
-              Actualizar Módulos {{ perfilSelected.perfil }}
-            </h2>
+            <h2 class="text-lg leading-6 font-bold text-gray-900" id="modal-headline">Actualizar Módulos {{ perfilSelected.perfil }}</h2>
           </div>
           <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
             <div class="sm:flex sm:items-start">
               <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
-                <div>
-                  <!-- <p class="text-lg text-gray-500">
-                    Data: {{ perfilSelected }}
-                  </p>-->
-
-                  <p
-                    v-for="(modulos, index) in perfilSelected.modulos"
-                    :key="index"
-                  >
+                <div>                  
+                  <p v-for="(modulos, index) in perfilSelected.modulos" :key="index">
                     {{ modulos.nombre }}:
-
-                    <button
-                      class="btn btn-active"
-                      @click="cambiarModulos(index, modulos.seleccionado)"
-                      v-if="modulos.seleccionado == true"
-                    >
-                      Activo
-                    </button>
-                    <button
-                      class="btn btn-inactive"
-                      @click="cambiarModulos(index, modulos.seleccionado)"
-                      v-if="modulos.seleccionado == false"
-                    >
-                      Inactivo
-                    </button>
-                  </p>
+                    <button v-if="modulos.seleccionado == true" @click="cambiarModulos(index, modulos.seleccionado)" class="btn btn-active">Activo</button>
+                    <button v-if="modulos.seleccionado == false" @click="cambiarModulos(index, modulos.seleccionado)" class="btn btn-inactive">Inactivo</button>
+                  </p>                                                                        
                 </div>
               </div>
             </div>
           </div>
           <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
-            <button
-              type="button"
-              class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-blue-600 text-base font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:ml-3 sm:w-auto sm:text-sm"
-              @click="hideModulos()"
-            >
+            <button @click="hideModulos()" class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-blue-600 text-base font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:ml-3 sm:w-auto sm:text-sm" type="button">
               Guardar
             </button>
           </div>
         </div>
       </div>
     </div>
-  </div>
-  <!--Fin Modal Actualizar-->
-  <!--Modal Plazas-->
-  <div v-if="isPlazasActive == true">
-    <div class="fixed z-10 inset-0 overflow-y-auto">
-      <div
-        class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0"
-      >
-        <div class="fixed inset-0 transition-opacity" aria-hidden="true">
-          <div class="absolute inset-0 bg-gray-900 opacity-10"></div>
-        </div>
-
-        <span
-          class="hidden sm:inline-block sm:align-middle sm:h-screen"
-          aria-hidden="true"
-          >&#8203;</span
-        >
-        <div
-          class="inline-block align-bottom bg-white text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full"
-          role="dialog"
-          aria-modal="true"
-          aria-labelledby="modal-headline"
-        >
-          <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex">
-            <h2
-              class="text-lg leading-6 font-bold text-gray-900"
-              id="modal-headline"
-            >
-              Seleccionar Plazas {{ perfilSelected.perfil }}
-            </h2>
-          </div>
-          <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
-            <div class="sm:flex sm:items-start">
-              <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
-                <div>
-                  <!-- <p class="text-lg text-gray-500">
-                    Data: {{ perfilSelected }}
-                  </p>-->
-
-                  <p
-                    v-for="(plaza, index) in perfilSelected.plazas"
-                    :key="index"
-                  >
-                    {{ plaza.nombre }}:
-
-                    <button
-                      class="btn btn-active"
-                      @click="cambiarPlazas(index, plaza.seleccionado)"
-                      v-if="plaza.seleccionado == true"
-                    >
-                      Activo
-                    </button>
-                    <button
-                      class="btn btn-inactive"
-                      @click="cambiarPlazas(index, plaza.seleccionado)"
-                      v-if="plaza.seleccionado == false"
-                    >
-                      Inactivo
-                    </button>
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
-            <button
-              type="button"
-              class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-blue-600 text-base font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:ml-3 sm:w-auto sm:text-sm"
-              @click="hidePlazas()"
-            >
-              Guardar
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-  <!--Fin Modal Plazas-->
-  {{perfilSelected}}
+  </div>  
 </template>
 
 <script>
+import axios from 'axios';
+import { notify } from "@kyvg/vue3-notification";
+const API = process.env.VUE_APP_URL_API_PRODUCCION
 export default {
   name: "TablaListaPerfiles",
 
@@ -195,45 +71,74 @@ export default {
     return {
       // todos los perfiles
       perfilesData: this.dataPerfiles,
-      isModulosActive: false,
-      isPlazasActive: false,
+      isModulosActive: false,        
       //perfil individual
       perfilSelected: {},
+
     };
   },
   methods: {
     // !MODULOS
     showModulos: function (perfil) {
-      this.isModulosActive = true;
-      this.perfilSelected = perfil;
+      this.isModulosActive = true; let modulos = [];
+      //Array auxiliar para modal de modulos
+      const novalidProp = ['rolId', 'dateStamp', 'nombreRol', 'activo']    
+      Object.entries(perfil).map(item => {                                
+          if(!novalidProp.includes(item[0])){
+            modulos.push({ nombre: item[0], seleccionado: item[1] }) 
+          }
+      })             
+      this.perfilSelected = { ...perfil, modulos };      
     },
     hideModulos: function () {
       this.isModulosActive = false;
+      //Eliminar array auxiliar modulos para update
+      this.perfilSelected.modulos.forEach(item => {
+        this.perfilSelected[item.nombre] = item.seleccionado
+      });
+      delete this.perfilSelected.modulos
+      console.log(this.perfilSelected)
+      axios.post(`${API}/CatalogoRoles/Editar`, this.perfilSelected)
+        .then((response) => {
+          console.log(response)
+          if(response.data.status == 'Ok'){
+            notify({ type: 'success', title:'Rol actualizado', text: `Se actualizo correctamente el rol ${this.perfilSelected.nombreRol}`});
+            this.perfilSelected = {}
+            this.$emit('buscar-roles')
+          }          
+        })
+        .catch((error) => {
+          console.log(error)
+          notify({ type: 'warning', title:'Rol no actualizado', text: `No se pudo actualizar el rol ${this.perfilSelected.nombreRol}`});
+          this.perfilSelected = {}
+        })
       //AGREGAR CONSULTA API PARA ENVIAR DATOS ACTUALIZADOS YA SEA ENVIANDO TODOS LOS DATOS O SOLO PERFILSELECTED
     },
     cambiarModulos: function (index, estatus) {
-      this.perfilSelected.modulos[index].seleccionado = !estatus;
-      //console.log(this.perfilSelected.modulos[index].seleccionado)
+      this.perfilSelected.modulos[index].seleccionado = !estatus;      
+      this.perfilSelected[this.perfilSelected.modulos[index].nombre] = !estatus      
     },
-    // !PLAZAS
-    showPlazas: function (perfil) {
-      this.isPlazasActive = true;
-      this.perfilSelected = perfil;
-    },
-    hidePlazas: function () {
-      this.isPlazasActive = false;
-      //AGREGAR CONSULTA API PARA ENVIAR DATOS ACTUALIZADOS YA SEA ENVIANDO TODOS LOS DATOS O SOLO PERFILSELECTED
-    },
-    cambiarPlazas: function (index, estatus) {
-      this.perfilSelected.plazas[index].seleccionado = !estatus;
-      //console.log(this.perfilSelected.modulos[index].seleccionado)
-    },
-
     //! Activar o desactivar
     changeStatus: function (perfil) {
-      this.perfilSelected = perfil;
-      this.perfilSelected.estatus = !this.perfilSelected.estatus;
-      console.log(perfil)
+      //Esto es por referencia
+      //this.perfilSelected = Object.assign(perfil)
+      //Esto es por valor
+      this.perfilSelected = { ...perfil }
+      this.perfilSelected.activo = !perfil.activo
+      axios.post(`${API}/CatalogoRoles/Editar`, this.perfilSelected)
+        .then((response) =>{
+          console.log(response)                
+          if(response.data.status == 'Ok'){
+            notify({ type: 'success', title:'Rol actualizado', text: `Se actualizo correctamente el rol ${this.perfilSelected.nombreRol}`});
+            this.perfilSelected = {}
+            this.$emit('buscar-roles')
+          }  
+        })
+        .catch((error) => {
+          console.log(error)
+          notify({ type: 'warning', title:'Rol no actualizado', text: `No se pudo actualizar el rol ${this.perfilSelected.nombreRol}`});
+          this.perfilSelected = {}
+        })
        
     }
   },
@@ -270,7 +175,7 @@ export default {
   color: #025c51;
 }
 .btn-activo {
-  background-color: #614dff;
+  background-color: #00b158;
   color: #000071;
 }
 .btn-inactivo {
@@ -290,7 +195,7 @@ export default {
 }
 .tftable th {
   font-size: 14px;
-  background-color: #2ed0e1;
+  background-color: #2c5282;
   border-width: 5px;
   padding: 8px;
   border-style: solid;
@@ -314,7 +219,6 @@ export default {
   border-bottom-color: #a1a1a1;
   border-left-color: white;
   border-right-color: white;
-
   text-align: center;
 }
 </style>

@@ -2,15 +2,7 @@
 <Navbar></Navbar>
 <h1 class="title">Estatus Tags</h1>
 <div class="flex justify-center pt-4 filter-style">
-  Plaza:
-  <select class="flex-none filter-style color-black" name="select" id="selectorPlaza">
-    <option v-if="isLoading == true">Cargando...</option>
-                                                              
-    <option v-else-if="plazas.length == 0 && isLoading == false"> No hay plazas</option>
-    <option v-else value="0" selected>Todas</option>
-     
-    <option v-for="(plaza, key) in plazas" :value="key + 1" :key="key">{{plaza.nombre}}</option>
-  </select>
+  <FormTramoPlaza @cambiar-tramo-plaza="recibir_tramo_plaza" :carrilesForm="true" :tipo="''"></FormTramoPlaza>
 </div>
 <div class="flex justify-center">
   <div class="flex-auto text-center pt-4">
@@ -25,22 +17,27 @@
 <Footer></Footer>
 </template>
 <script>
+const API = process.env.VUE_APP_URL_API_PRODUCCION
 import TablaEstatusTag from "../../components/Tabla-estatustag";
 import Navbar from "../../components/Navbar.vue";
 import Footer from "../../components/Footer-login";
+import FormTramoPlaza from '../../components/Form-tramoplaza.vue'
 import axios from "axios";
 export default {
   components: {
     TablaEstatusTag,
     Navbar,
     Footer,
-  },
+    FormTramoPlaza
+  },  
   data() {
     return {
-      plazas: [],
-      token:"",
+      plazas: [],      
+      token:"",      
       tags: [],
-      isLoading: true
+      isLoading: true,
+      tramo: '',
+      plaza: ''
     };
   },
   mounted() {
@@ -67,7 +64,7 @@ export default {
           'Authorization': 'Bearer ' + getCookie("Token")
         }
       }
-      axios.get("http://prosisdev.sytes.net:84/api/Plazas", config)
+      axios.get(`${API}/Plazas`, config)
 
       .then((res) =>{
         console.log("plazas cargadas...")
@@ -78,42 +75,39 @@ export default {
   },
   methods: {
     buscarTag: function(){
-      let config = {
-        headers: {
-          'Authorization': 'Bearer ' + this.token
-        }
-      }
-      let tag = document.getElementById("tag").value;
-      let plaza = document.getElementById("selectorPlaza").value;
-      if (plaza == 0) {
-        var plaza_select = this.plazas
-      } else {
-        plaza_select = [this.plazas[plaza - 1]]
-      }
+      let config = { headers: { 'Authorization': 'Bearer ' + this.token } }
+      var tag = document.getElementById("tag").value;         
       if(tag != ""){
-        console.log("Buscando...")
-        console.log("Plaza select:" + plaza_select)
-        console.log(this.plazas)
-
-        //TODO: eliminar esta y sustituir por palza_select
-        var plaza_prueba = [{"Nombre":"defaultConnection"}]
-        axios.post(`http://prosisdev.sytes.net:84/api/Tags/?tag=${tag}`, plaza_prueba, config)      
+        console.log("Buscando...")                
+        //TODO: eliminar esta y sustituir por palza_select        
+        let urlQuery = ''
+        
+        if(this.plaza != '' && this.plaza != undefined)          
+           urlQuery = `Tags?PlazaId=${this.plaza}&Tag=${tag}`        
+        else
+            urlQuery = `Tags?Tag=${tag}`
+        
+        axios.get(`${API}/${urlQuery}`, config)      
           .then((res) =>{
+            console.log(res)
             this.tags = []
-            res.data.forEach(e =>{
+            
               let obj = {
-                tag: e.tag,
-                plaza:e.plaza,
-                estatus: e.estado,
-                saldo: e.saldo,
-                tipo_tag: e.tipoTag,
-                ult_act: e.actualizacion,
+                tag: res.data.tag,
+                plaza: res.data.plaza,
+                estatus: res.data.estado,
+                saldo: res.data.saldo,
+                tipo_tag: res.data.tipoTag,
+                ult_act: res.data.actualizacion,
               }
               this.tags.push(obj)
-            })
+            
           })
       }
-
+    },
+    recibir_tramo_plaza(value){
+      this.tramo = value.tramo
+      this.plaza = value.plaza
     }
   }
 };

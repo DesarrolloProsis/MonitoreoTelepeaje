@@ -1,6 +1,6 @@
 <template>
 <footer id="footer">
-  <div id="left">Proyectos y sistemas informáticos S.A de C.V</div>
+  <div id="left">© 2021 Proyectos y Sistemas Informaticos.</div>
   <div id="right">Version 1.0.0</div>
 </footer>
 </template>
@@ -18,7 +18,7 @@ export default {
   bottom: 0;
   width: 100%;
   /* Footer height */
-  background-color: #3E87F7;
+  background-color: #2c5282;
   padding: 10px;
 }
 

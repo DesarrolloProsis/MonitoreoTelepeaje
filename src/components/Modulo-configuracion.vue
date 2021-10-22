@@ -1,9 +1,9 @@
 <template>
-  <div class="w-full p-5 md:w-1/2">
+  <div class="w-full p-5 -mt-10 md:w-1/2">
     <router-link :to="ruta" tag="div">
-      <div class="border p-8">
-        <img class="img" :src="require('@/assets/' + img_src)" />
-        <h1>{{ nombre }}</h1>
+      <div class=" animacion p-8 ">
+        <img class="img border" :src="require('@/assets/' + img_src)" />
+        <h1 class="text-center">{{ nombre }}</h1>
       </div>
     </router-link>
   </div>
@@ -16,14 +16,16 @@ export default {
 </script>
 <style scoped>
 .border {
-  border: 1px solid #707070;
-  border-radius: 15px;
+  border: 1px solid #ffffff;
+  border-radius: 150px;
   -webkit-box-shadow: 5px 5px 14px -5px rgba(0, 0, 0, 0.44);
   box-shadow: 5px 5px 14px -5px rgba(0, 0, 0, 0.44);
 }
 .img {
   display: block;
   margin: auto;
+  width: 200px;
+  background-color: #F3F4F6;
 }
 .border h1 {
   text-align: center;

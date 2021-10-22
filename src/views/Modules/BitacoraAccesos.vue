@@ -1,25 +1,22 @@
 <template>
   <Navbar></Navbar>
   <div class="container mx-auto px-0 pb-100">
-    <h1 class="title-center pb-4">Bitácora de Accesos</h1>
-    <div class="flex flex-wrap bg-blue">
-      <div class="flex-none filter-style">
+    <h1 class="title-center font-titulo font-bold pb-4">Bitácora de Accesos</h1>
+    <div class="flex flex-wrap bg-blue rounded-lg">
+      <div class="flex-none filter-style mt-2">
         Usuario:
-        <select class="flex-none filter-style color-black" name="select">
-          <option value="100" selected>opcion1</option>
-          <option value="200">opcion2</option>
-          <option value="300">opcion3</option>
-        </select>
+        <input v-model="nombre" type="text" class="rounded"/>
       </div>
-      <div class="flex-none filter-style">
+      <div class="flex-none filter-style mt-2">
         Fecha:
-        <input type="date" />
+        <input v-model="fecha" type="date" class="rounded"/>
       </div>
       <div class="flex-none filter-style">
-        <button class="btn-buscar">Buscar</button>
+        <button @click="buscar(nombre, fecha )" class="btn-buscar mr-2">Buscar</button>
+        <button @click="todos()" class="btn-buscar mr-89">Todos</button>
       </div>
       <div class="flex-1">
-        <button class="btn-carriles ml-right">Descargar Excel</button>
+        <FilesDownload @download-api="downloadApi"></FilesDownload>   
       </div>
     </div>
     <div class="container mx-auto px-0 md:px-60">
@@ -29,57 +26,155 @@
   <Footer></Footer>
 </template>
 <script>
+const API = process.env.VUE_APP_URL_API_PRODUCCION
 import TablaAccesos from "../../components/Tabla-accesos.vue";
 import Navbar from "../../components/Navbar.vue";
 import Footer from "../../components/Footer-login";
+import FilesDownload from '../../components/Files-descargar.vue'
+import ServiceFiles from '../../Servicios/Files-Service'
+import axios from "axios";
 export default {
   name: "BitacoraAccesos",
-  components: { TablaAccesos, Navbar, Footer },
+  components: { TablaAccesos, Navbar, Footer, FilesDownload },
   data() {
     return {
-      accesos: [
-        {
-          usuario: "RMendoza",
-          fecha_inicio: "2021/01/01 14:00:00",
-          fecha_fin: "2020/01/01 15:00:30",
-        },
-        {
-          usuario: "AMitra",
-          fecha_inicio: "2021/01/01 14:00:00",
-          fecha_fin: "2020/01/01 15:00:30",
-        },
-        {
-          usuario: "AMitra",
-          fecha_inicio: "2021/01/01 14:00:00",
-          fecha_fin: "2020/01/01 15:00:30",
-        },
-        {
-          usuario: "AMitra",
-          fecha_inicio: "2021/01/01 14:00:00",
-          fecha_fin: "2020/01/01 15:00:30",
-        },
-        {
-          usuario: "AMitra",
-          fecha_inicio: "2021/01/01 14:00:00",
-          fecha_fin: "2020/01/01 15:00:30",
-        },
-        {
-          usuario: "AMitra",
-          fecha_inicio: "2021/01/01 14:00:00",
-          fecha_fin: "2020/01/01 15:00:30",
-        },
-        {
-          usuario: "AMitra",
-          fecha_inicio: "2021/01/01 14:00:00",
-          fecha_fin: "2020/01/01 15:00:30",
-        },
-        {
-          usuario: "AMitra",
-          fecha_inicio: "2021/01/01 14:00:00",
-          fecha_fin: "2020/01/01 15:00:30",
-        },
-      ],
+      accesos:[],
+      nombre:null,
+      value: '',
+      formato:'',
+      isLoading: false,
+      fecha:null
     };
+  },
+  beforeMount (){
+    axios.get(`${API}/UsuarioMonitoreo/null/null`)
+      .then((result)=>{
+        result.data.body.forEach((e)=>{
+          let obj = {
+            usuarioId: e.usuarioId,
+            nombreUsuario: e.nombreUsuario,
+            nombre: e.nombre,
+            apellidoP: e.apellidoPaterno,
+            apellidoM: e.apellidoMaterno,
+            rolId: e.rolId,
+            fecha_inicio: e.horaLogIn,
+            fecha_fin: e.horaLogOut,
+            rol: e.nombreRol
+          }
+          this.accesos.push(obj)
+        })
+      })
+  },
+  methods: {
+    todos(){
+      this.accesos = []
+      this.nombre = null
+      this.fecha = null
+      axios.get(`${API}/UsuarioMonitoreo/null/null`)
+      .then((result)=>{
+        result.data.body.forEach((e)=>{
+          let obj = {
+            usuarioId: e.usuarioId,
+            nombreUsuario: e.nombreUsuario,
+            nombre: e.nombre,
+            apellidoP: e.apellidoPaterno,
+            apellidoM: e.apellidoMaterno,
+            rolId: e.rolId,
+            fecha_inicio: e.horaLogIn,
+            fecha_fin: e.horaLogOut,
+            rol: e.nombreRol
+          }
+          this.accesos.push(obj)
+        })
+      })
+    },
+    buscar(nombre, fecha){
+      if(nombre == null && fecha == null){
+        this.$notify({
+          title:'No Hay Datos',
+          text:'No se indico ningún dato para filtrar',
+          type: 'warn'
+        });
+      }
+      if(nombre != null && fecha == null){
+        this.accesos = []
+        axios.get(`${API}/UsuarioMonitoreo/${nombre}/null`)
+        .then((result)=>{
+          result.data.body.forEach((e)=>{
+            let obj = {
+              usuarioId: e.usuarioId,
+              nombreUsuario: e.nombreUsuario,
+              nombre: e.nombre,
+              apellidoP: e.apellidoPaterno,
+              apellidoM: e.apellidoMaterno,
+              rolId: e.rolId,
+              fecha_inicio: e.horaLogIn,
+              fecha_fin: e.horaLogOut,
+              rol: e.nombreRol
+            }
+            this.accesos.push(obj)
+          })
+        })
+      }
+      if(fecha != null && nombre == null){
+        this.accesos = []
+        axios.get(`${API}/UsuarioMonitoreo/null/${fecha}`)
+        .then((result)=>{
+          result.data.body.forEach((e)=>{
+            let obj = {
+              usuarioId: e.usuarioId,
+              nombreUsuario: e.nombreUsuario,
+              nombre: e.nombre,
+              apellidoP: e.apellidoPaterno,
+              apellidoM: e.apellidoMaterno,
+              rolId: e.rolId,
+              fecha_inicio: e.horaLogIn,
+              fecha_fin: e.horaLogOut,
+              rol: e.nombreRol
+            }
+            this.accesos.push(obj)
+          })
+        })
+      }
+      if(fecha != null && nombre != null){
+        this.accesos = []
+        axios.get(`${API}/UsuarioMonitoreo/${nombre}/${fecha}`)
+        .then((result)=>{
+          result.data.body.forEach((e)=>{
+            let obj = {
+              usuarioId: e.usuarioId,
+              nombreUsuario: e.nombreUsuario,
+              nombre: e.nombre,
+              apellidoP: e.apellidoPaterno,
+              apellidoM: e.apellidoMaterno,
+              rolId: e.rolId,
+              fecha_inicio: e.horaLogIn,
+              fecha_fin: e.horaLogOut,
+              rol: e.nombreRol
+            }
+            this.accesos.push(obj)
+          })
+        })
+      }
+    },
+    downloadApi(formato){
+      let nombrenew = 'null'
+      let fechanew = 'null'
+      if(this.nombre != '')
+        nombrenew = this.nombre
+      if(this.fecha != '')
+        fechanew = this.fecha
+      
+      if (formato == "csv") {
+        ServiceFiles.xml_hhtp_request(`${API}/UsuarioMonitoreo/Download/Csv?userName=${nombrenew}&HoraInicio=${fechanew}`, 'bitacoraAcceso.csv')
+      } 
+      else if (formato == "excel") {        
+        ServiceFiles.xml_hhtp_request(`${API}/UsuarioMonitoreo/Download/Excel?userName=${nombrenew}&HoraInicio=${fechanew}`, 'bitacoraAcceso.xlsx')    
+      } 
+      else if (formato == "txt") {
+        ServiceFiles.xml_hhtp_request(`${API}/UsuarioMonitoreo/Download/txt?userName=${nombrenew}&HoraInicio=${fechanew}`, 'bitacoraAcceso.txt')
+      }      
+    },  
   },
 };
 </script>
@@ -93,7 +188,7 @@ export default {
   padding-top: 20px;
 }
 .bg-blue {
-  background-color: #0195b0;
+  background-color: #2c5282;
   padding: 10px 5px;
 }
 .ml-right {

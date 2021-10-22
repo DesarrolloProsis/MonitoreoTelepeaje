@@ -7,7 +7,7 @@ import MonitoreoCarriles from "@/views/Modules/MonitoreoCarriles.vue";
 import BitacoraAlarmas from "@/views/Modules/BitacoraAlarmas.vue";
 import MonitoreoCruces from "@/views/Modules/MonitoreoCruces.vue";
 import EnvioTransacciones from "@/views/Modules/EnvioTransacciones.vue";
-import BusquedaCruces from "@/views/Modules/BusquedaCruces.vue";
+import BusquedaTransacciones from "@/views/Modules/BusquedaTransacciones.vue";
 import BitacoraAccesos from "@/views/Modules/BitacoraAccesos.vue";
 import EstatusTags from "@/views/Modules/EstatusTags.vue";
 import Configuracion from "@/views/Modules/Configuracion.vue";
@@ -15,7 +15,10 @@ import PerfilUsuario from "@/views/Modules/PerfilUsuario.vue";
 import AdminPerfiles from "@/views/Modules/AdminPerfiles.vue";
 import ListaUsuarios from "@/views/Modules/ListaUsuarios.vue";
 import RegistroUsuarios from "@/views/Modules/RegistroUsuarios.vue";
+import Bitacoras from "@/views/Modules/Bitacoras.vue";
+import BitacoraAntifraude from "@/views/Modules/BitacoraAntifraude.vue";
 import jwt_decode from "jwt-decode";
+const API = process.env.VUE_APP_URL_API_PRODUCCION
 
 function getCookie(cname) {
   var name = cname + "=";
@@ -49,7 +52,7 @@ const routes = [{
             'Authorization': 'Bearer ' + getCookie("Token")
           }
         }
-        axios.get("http://prosisdev.sytes.net:84/api/Test", config)
+        axios.get(`${API}/Test`, config)
           .then(() => {
             next("/inicio")
           })
@@ -122,12 +125,12 @@ const routes = [{
     }
   },
   {
-    path: "/inicio/busqueda-cruces",
-    name: "BusquedaCruces",
-    component: BusquedaCruces,
+    path: "/inicio/busqueda-transacciones",
+    name: "BusquedaTransacciones",
+    component: BusquedaTransacciones,
     meta: {
       requiresCookie: true,
-      nombre:"Busqueda Cruces"
+      nombre:"Busqueda Transacciones"
     }
   },
   {
@@ -140,12 +143,30 @@ const routes = [{
     }
   },
   {
+    path: "/inicio/bitacora-antifraude",
+    name: "Bitacora Antifraude",
+    component: BitacoraAntifraude,
+    meta: {
+      requiresCookie: true,
+      nombre:"BitacoraAntifraude"
+    }
+  },
+  {
     path: "/inicio/estatus-tags",
     name: "EstatusTags",
     component: EstatusTags,
     meta: {
       requiresCookie: true,
       nombre:"Estatus Tag"
+    }
+  },
+  {
+    path: "/bitacoras",
+    name: "Bitacoras",
+    component: Bitacoras,
+    meta: {
+      requiresCookie: true,
+      nombre:"Bitacoras"
     }
   },
   {
@@ -205,15 +226,14 @@ router.beforeEach((to, _from, next) => {
           'Authorization': 'Bearer ' + getCookie("Token")
         }
       }
-      axios.get("http://prosisdev.sytes.net:84/api/Test", config)
+      axios.get(`${API}/Test`, config)
         .then(() => {
-         
+        
           if(to.matched.some(m=>m.meta.nombre)){
             let json_token = jwt_decode(getCookie("Token"))
-              console.log(json_token[to.meta.nombre])
+              //console.log(json_token[to.meta.nombre])
             if( json_token[to.meta.nombre] !== "false"){
-              console.log(json_token)
-             
+              //console.log(json_token)            
               console.log("Esta vista esta en el token")
               next()
             }else{
@@ -223,7 +243,7 @@ router.beforeEach((to, _from, next) => {
           }else{
             next();
           }
-         
+        
         })
         .catch((error) => {
           //TODO: Borrar las cookies para redirigir al login

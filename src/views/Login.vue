@@ -1,23 +1,23 @@
 <template>
 <div class="login">
   <Header></Header>
-  <div class="flex h-screen min-700">
-    <div id="login-form" class="flex flex-1 justify-center items-center h-screen min-700-imp">
-      <div class="container mx-auto">
-        <p id="login-title">Monitoreo de Pagos Electrónicos</p>
+  <div class="flex h-screen  min-700">
+    <div id="" class="flex flex-1 justify-center items-center h-screen min-700-imp">
+      <div class="absolute container mx-auto">
+        <p id="login-title" class="font-titulo font-bold">Monitoreo de Pagos Electrónicos</p>
         <img class="img-centered" src="~@/assets/Login/top-user-logo.png" />
         <form class="bg-login-module" style="max-width: 500px; margin: auto">
           <div class="error" v-if="mensaje != ''">
               {{mensaje}}
           </div>
           <div class="input-container">
-            <img class="icon" src="~@/assets/Login/user.png" />
-            <input id="username" class="input-field" type="text" placeholder="Username" />
+            <img class="w-10 h-10 mt-1 mr-2 transform -rotate-180" src="~@/assets/Login/iniciar-sesion.png" />
+            <input id="username" class="input-field" type="text" placeholder="Usuario" />
           </div>
           <div class="input-container">
-            <img class="icon" src="~@/assets/Login/pass.png" />
+            <img class="w-10 h-10 mt-1 mr-2" src="~@/assets/Login/password.png" />
             <!-- <i class="fa fa-key icon"></i>-->
-            <input id="password" class="input-field" type="password" placeholder="Password" />
+            <input id="password" class="input-field" type="password" placeholder="Contraseña" />
           </div>
           <router-link to="/inicio">
             <button type="submit" class="btn" @click="login()">Iniciar Sesión</button>
@@ -25,18 +25,22 @@
         </form>
       </div>
     </div>
-    <div id="login-bg" class="flex-1 hidden md:block"></div>
+    <div id="min-figura" class=" figura min-figura transform -rotate-270 "></div>
+    <div id="login-bg" class=" hidden md:block"></div>
   </div>
+  
   <Footer></Footer>
 </div>
 </template>
 
 <script>
+const API = process.env.VUE_APP_URL_API_PRODUCCION
 import Footer from "../components/Footer-login.vue";
 import Header from "../components/Header-login.vue";
 import axios from "axios";
+import jwt_decode from "jwt-decode";
 export default {
- 
+
   components: {
     Footer,
     Header
@@ -64,9 +68,11 @@ export default {
       }
       if(data["Usuario"] != "" &&  data["Password"] != ""){
         console.log("Cargando...")
-        axios.post("http://prosisdev.sytes.net:84/api/Login", data)
+        axios.post(`${API}/Login`, data)
         .then((result) => {
           console.log(result.data);
+          let userInfo = jwt_decode(result.data.bearer);
+          console.log(userInfo['Bitacora Accesos'])
           // Set Cookie
           let d = new Date();
           let dias = 365;
@@ -90,6 +96,19 @@ export default {
 </script>
 
 <style scoped>
+.figura {
+  position: absolute;
+  width: 79vh;
+  height: 100vh;
+  margin-left: 1150px;
+  background-image: radial-gradient(ellipse farthest-corner at 45px 30px , rgba(255, 255, 255, 0) 69%, rgba(44, 82, 130, 1) 0%);
+  
+}
+@media (max-width:1024px){
+  #min-figura{
+    display: none;
+  }
+}
 .error{
   background-color: #f5b7b1;
   padding: 5px;
@@ -115,6 +134,9 @@ export default {
     text-align: center;
     font-size: 23px;
   }
+  #min-figura{
+    visibility: hidden;
+  }
 }
 
 #login-bg {
@@ -129,9 +151,10 @@ export default {
 }
 
 .bg-login-module {
-  background-color: #eafff5;
+  background-color: #ebf8ff;
   padding: 100px 50px;
   border-radius: 10px;
+  
 }
 
 .input-container {
@@ -153,13 +176,13 @@ export default {
   width: 100%;
   padding: 10px;
   outline: none;
-  border: 1px solid black;
+  border-bottom: 1px solid black;
   border-radius: 5px;
 }
 
 /* Set a style for the submit button */
 .btn {
-  background-color: dodgerblue;
+  background-color: #2c5282;
   color: white;
   padding: 15px 20px;
   border: none;

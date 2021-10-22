@@ -1,5 +1,9 @@
 <template>
-  <div id="header"><img id="logo-prosis" src="~@/assets/Login/LogoProsis.png"/></div>
+  <div id="header" class="grid grid-cols-3">
+    <div class="mx-auto"><img id="logo-prosis" src="~@/assets/prosissinfondo.png"/></div>
+    <div class="mx-auto"><img id="logo-prosis" src="~@/assets/CAPUFE.png"/></div>
+    <div class="mx-auto"><img id="logo-prosis" src="~@/assets/COMUNICAICONES.png"/></div>
+  </div>
 </template>
 <script>
 
@@ -17,11 +21,11 @@ export default {
   width: 100%;
   /* Footer height */
   background-color: transparent;
-  padding: 10px;
+  padding: 20px;
 }
 
 #logo-prosis{
-    width: 180px;
+    width: 280px;
 }
 
 </style>

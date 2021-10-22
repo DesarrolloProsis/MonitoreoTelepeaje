@@ -1,7 +1,7 @@
 <template>
   <Navbar></Navbar>
-  <h1 class="title">Configuración</h1>
-  <div class="container mx-auto px-auto pb-20 pt-0 md:px-48 md:pt-10">
+  <h1 class="title font-bold font-titulo">Configuración</h1>
+  <div class="container mx-auto px-auto pb-20 pt-0 md:px-48 md:pt-10 my-32">
     <div class="flex flex-wrap">
       <ModuloConfiguracion
         v-for="(modulo, index) in modulos"
@@ -27,21 +27,21 @@ export default {
   data() {
     return {
       modulos: [
-        {
+/*         {
           img_src: "Configuracion/creacion-perfiles.png",
           nombre: "Creación de Perfiles",
           ruta: "/configuracion/perfil-usuario",
-        },
+        }, */
         {
-          img_src: "Configuracion/lista-perfiles.png",
-          nombre: "Administración de Perfiles",
+          img_src: "Configuracion/lista-roles.png",
+          nombre: "Administración de Roles",
           ruta: "/configuracion/administracion-perfiles",
         },
-        {
+/*         {
           img_src: "Configuracion/registro-usuarios.png",
           nombre: "Registro de Usuarios",
           ruta: "/configuracion/registro-usuarios",
-        },
+        }, */
         {
           img_src: "Configuracion/lista-usuarios.png",
           nombre: "Lista de Usuarios",
@@ -55,7 +55,7 @@ export default {
 <style scoped>
 .title {
   text-align: center;
-  font-size: 25px;
+  font-size: 55px;
   padding-top: 20px;
 }
 @media (max-width: 750px) {
