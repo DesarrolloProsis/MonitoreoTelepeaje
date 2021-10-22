@@ -19,17 +19,8 @@
         <button @click="buscar(nombre,estatus)" class="btn-buscar">Buscar</button>
         <button @click="todos()" class="btn-buscar ml-1">Todos</button>
       </div>
-      <div class="flex-1 ml-89 hidden">
-        <Multiselect v-model="formato" placeholder="Sleccione una Acción" @close="acciones_mapper(formato)" label="name" trackBy="name" :options="opticones_select_acciones()" :searchable="true">
-          <template v-slot:singleLabel="{ value }">
-            <div class="multiselect-single-label">
-              <img height="26" style="margin: 0 6px 0 0;" :src="value.icon"> {{ value.name }}
-            </div>
-          </template>
-          <template v-slot:option="{ option }">
-            <img height="22" style="margin: 0 6px 0 0;" :src="option.icon">{{ option.name }}
-          </template>
-        </Multiselect>
+      <div class="flex-1 ml-64">
+        <FilesDownload @download-api="downloadApi"></FilesDownload>
       </div>
     </div>
     <div class="mb-6">
@@ -91,14 +82,16 @@ import Navbar from "../../components/Navbar.vue";
 import Footer from "../../components/Footer-login";
 import Multiselect from '@vueform/multiselect';
 import Servicio from '../../Servicios/Token-Services';
-import saveAs from "file-saver";
+import FilesDownload from '../../components/Files-descargar.vue'
+import ServiceFiles from '../../Servicios/Files-Service'
 import axios from "axios";
 export default {
   components: {
     TablaListaUsuarios,
     Navbar,
     Footer,
-    Multiselect
+    Multiselect,
+    FilesDownload
   },
   data() {
     return {
@@ -378,53 +371,17 @@ export default {
       this.tramoSeleccionado = ''
       this.plazas = []
     },
-    acciones_mapper(formato){
-      if(formato == 'excel'){
-        console.log('excel');
-      }if(formato == 'csv'){
-        console.log('csv');
-      }if(formato == 'txt'){
-        console.log('txt');
-      }
-      this.formato = ''
-    },
-    opticones_select_acciones(){
-      let options= [
-          {  value: 'excel', name: 'EXCEL'},//0
-          {  value: 'csv', name: 'CSV'},//1
-          {  value: 'txt', name: 'TXT'},//2
-      ]
-      let filtroOpciones = []      
-      filtroOpciones.push(options[0])
-      filtroOpciones.push(options[1])
-      filtroOpciones.push(options[2])      
-      return filtroOpciones
-    },
-    downloadApi(){
-      if (this.formato == "csv") {
-        this.xml_hhtp_request(`${API}/Usuario/Download/Csv`, 'test.csv')
+    downloadApi(formato){
+      if (formato == "csv") {
+        ServiceFiles.xml_hhtp_request(`${API}/Usuario/Download/Csv?NameFilter=${this.nombre}&EstatusFilter=${Boolean(this.estatus)}`, 'test.csv')
       } 
-      else if (this.formato == "excel") {        
-        //this.xml_hhtp_request(`${API}/Transacciones/Download/Excel?tag=${tag}&carril=${carril}&plaza=${plaza}&fechaInicial=${fechaInicial}&fechaFinal=${fechaFinal}`, 'test.xlsx')
-    
+      else if (formato == "excel") {        
+        ServiceFiles.xml_hhtp_request(`${API}/Transacciones/Download/Excel?NameFilter=${this.nombre}&EstatusFilter=${Boolean(this.estatus)}`, 'test.xlsx')    
       } 
-      else if (this.formato == "txt") {
-        this.xml_hhtp_request(`${API}/Usuario/Download/txt`, 'test.txt')
-      }
-      console.log(this.formato)
-    },
-     xml_hhtp_request(urlToFile,nameFile){      
-      var oReq = new XMLHttpRequest();  
-      oReq.open("GET", urlToFile, true);    
-      oReq.responseType = "blob";  
-      oReq.send();              
-      oReq.onload = function () {
-        var file = new Blob([oReq.response], {
-          type: "application/pdf",
-        });       
-        saveAs(file, nameFile);  
-      };            
-    },
+      else if (formato == "txt") {
+        ServiceFiles.xml_hhtp_request(`${API}/Usuario/Download/txt?NameFilter=${this.nombre}&EstatusFilter=${Boolean(this.estatus)}`, 'test.txt')
+      }      
+    },      
   },
 };
 </script>
