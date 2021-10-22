@@ -17,7 +17,7 @@
             <select v-model="carrilSeleccionado" @change="emit_tramo_plaza" class="p-1 px-2  outline-none w-full text-gray-800 ml-3 rounded" name="select" id="selectorTramo">                                    
                 <option v-if="carriles.length == 0" value="">Sin Carriles</option>
                 <option v-else value="">Selecione Carril</option>            
-                <option v-for="(carril, key) in carriles" :value="carril" :key="key">{{ carril }}</option>
+                <option v-for="(carril, key) in carriles" :value="carril" :key="key">{{ carril.lineaCarril }}</option>
             </select>
         </template>
     </div>
@@ -81,7 +81,7 @@ export default {
         }
 
         const emit_tramo_plaza = () => {
-            emit('cambiar-tramo-plaza', { 'tramo': tramoSeleccionado.value.id, plaza:plazaSeleccionado.value.plazaAsignadaId, carril: carrilSeleccionado.value })
+            emit('cambiar-tramo-plaza', { 'tramo': tramoSeleccionado.value.id, plaza:plazaSeleccionado.value.plazaAsignadaId, carril: carrilSeleccionado.value.lineaCarril })
         }
         onMounted(obtner_plazas_por_tramo)  
         return { tramos, plazas, obtner_plazas_por_tramo, obtener_carriles_por_plaza, tramoSeleccionado, plazaSeleccionado, carrilSeleccionado, emit_tramo_plaza, carriles }
