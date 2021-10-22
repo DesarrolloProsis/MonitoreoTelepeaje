@@ -26,6 +26,7 @@
 <script>
 import { ref, onMounted } from 'vue'
 import axios from "axios";
+import { notify } from "@kyvg/vue3-notification";
 const API = process.env.VUE_APP_URL_API_PRODUCCION
 export default { 
     props: ['carrilesForm', 'tipo'],    
@@ -56,17 +57,26 @@ export default {
                             plazas.value.push(objPlazaValida)                        
                     });                   
                     
-                    props.carrilesForm == true
-                    ? obtener_carriles_por_plaza()
-                    : emit_tramo_plaza()                                            
+                    if(props.carrilesForm)                    
+                        emit_tramo_plaza()                                            
                 })                             
             })
             .catch((error) => { console.log(error)})
         }
 
-        const obtener_carriles_por_plaza = async () => {            
-            let carril = 'A' + Math.random()
-            carriles.value.push(carril)
+        const obtener_carriles_por_plaza = async () => {             
+            axios.get(`${API}/Carriles/${plazaSeleccionado.value.plazaAsignadaId}`)
+                .then((response) => {                    
+                    console.log(response.data.body)
+                    if(response.data.body.length == 0 || response.data.body == null){
+                        notify({ type: 'warning', title:'Sin carriles en plaza', text: `No se pudo encontrar carriles`});
+                    }
+                    else{
+                        carriles.value = response.data.body
+                    }
+                })
+                .catch((error) => console.log(error))
+            
             emit_tramo_plaza()
         }
 

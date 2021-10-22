@@ -25,36 +25,19 @@
                         <button class="p-1 px-2 appearance-none outline-none w-full text-white " :disabled="isLoading" :class="{'cursor-not-allowed': isLoading}" @click="buscar()">Buscar</button>
                     </div>
                 </div>
-                  <Multiselect v-model="formato" placeholder="Sleccione una Acción" @close="downloadApi(formato)" label="name" trackBy="name" :options="opticones_select_acciones()" :searchable="true">
-                    <template v-slot:singleLabel="{ value }">
-                      <div class="multiselect-single-label">
-                        <img height="26" style="margin: 0 6px 0 0;" :src="value.icon"> {{ value.name }}
-                      </div>
-                    </template>
-                    <template v-slot:option="{ option }">
-                      <img height="22" style="margin: 0 6px 0 0;" :src="option.icon">{{ option.name }}
-                    </template>
-                  </Multiselect>       
+                <FilesDownload @download-api="downloadApi"></FilesDownload>
             </div>
         </div>
         <hr>
     </div>
-</div>
+  </div>
     <TablaBusquedaTransacciones
       v-if="isLoading == false"
       :dataCruces="cruces"
     ></TablaBusquedaTransacciones>
     <div class="loading" v-else>Cargando Datos...</div>
-    <button v-if="paginaActual > 1" class="button-pagination" @click="left()">
-      Anterior
-    </button>
-    <button
-      v-if="paginaActual < paginas"
-      class="button-pagination"
-      @click="right()"
-    >
-      Siguiente
-    </button>
+    <button v-if="paginaActual > 1" class="button-pagination" @click="left()">Anterior</button>
+    <button v-if="paginaActual < paginas" class="button-pagination" @click="right()">Siguiente</button>
     <p v-if="isLoading == false" class="desc-paginacion">
       Página {{ paginaActual }} de {{ paginas }}
     </p>
@@ -64,20 +47,20 @@
 <script>
 const API = process.env.VUE_APP_URL_API_PRODUCCION
 import TablaBusquedaTransacciones from "../../components/Tabla-busquedatransacciones.vue";
-import Multiselect from '@vueform/multiselect';
 import FormTramoPlaza from '../../components/Form-tramoplaza.vue'
 import Navbar from "../../components/Navbar.vue";
 import Footer from "../../components/Footer-login";
-import saveAs from "file-saver";
 import axios from "axios";
+import FilesDownload from '../../components/Files-descargar.vue'
+import ServiceFiles from '../../Servicios/Files-Service'
 export default {
   name: "BusquedaCruces",
   components: {
     TablaBusquedaTransacciones,
     Navbar,
     Footer,
-    FormTramoPlaza,
-    Multiselect,
+    FormTramoPlaza,    
+    FilesDownload
   },
   data() {
     return {
@@ -222,6 +205,7 @@ export default {
         document.getElementById("tag").value = ""; 
     },
     downloadApi: function (tipo) {
+      console.log(tipo)
       var myHeaders = new Headers();
       myHeaders.append("Authorization", "Bearer " + this.token);
       myHeaders.append("Content-Type", "application/json");
@@ -232,46 +216,20 @@ export default {
       let fechaInicial = fecha
       let fechaFinal = ''
       if (tipo == "csv") {
-        this.xml_hhtp_request(`${API}/Transacciones/Download/Csv?tag=${tag}&carril=${carril}&plaza=${plaza}&fechaInicial=${fechaInicial}&fechaFinal=${fechaFinal}`, 'test.csv')
+        ServiceFiles.xml_hhtp_request(`${API}/Transacciones/Download/Csv?tag=${tag}&carril=${carril}&plaza=${plaza}&fechaInicial=${fechaInicial}&fechaFinal=${fechaFinal}`, 'transacciones.csv')
       } 
       else if (tipo == "excel") {        
-        this.xml_hhtp_request(`${API}/Transacciones/Download/Excel?tag=${tag}&carril=${carril}&plaza=${plaza}&fechaInicial=${fechaInicial}&fechaFinal=${fechaFinal}`, 'test.xlsx')
-    
+        ServiceFiles.xml_hhtp_request(`${API}/Transacciones/Download/Excel?tag=${tag}&carril=${carril}&plaza=${plaza}&fechaInicial=${fechaInicial}&fechaFinal=${fechaFinal}`, 'transacciones.xlsx')            
       } 
       else if (tipo == "txt") {
-        this.xml_hhtp_request(`${API}/Transacciones/Download/txt?tag=${tag}&carril=${carril}&plaza=${plaza}&fechaInicial=${fechaInicial}&fechaFinal=${fechaFinal}`, 'test.txt')
+        ServiceFiles.xml_hhtp_request(`${API}/Transacciones/Download/txt?tag=${tag}&carril=${carril}&plaza=${plaza}&fechaInicial=${fechaInicial}&fechaFinal=${fechaFinal}`, 'transacciones.txt')
       }
     },
     recibir_tramo_plaza(value){
       this.plaza = value.plaza == undefined ? 0 : value.plaza
       console.log(value);
     },
-    opticones_select_acciones(){
-      let options= [
-          {  value: 'excel', name: 'EXCEL'},//0
-          {  value: 'csv', name: 'CSV'},//1
-          {  value: 'txt', name: 'TXT'},//2
-      ]
-      let filtroOpciones = []
-        if(this.isLoading == false){
-          filtroOpciones.push(options[0])
-          filtroOpciones.push(options[1])
-          filtroOpciones.push(options[2])
-        }
-      return filtroOpciones
-    },
-    xml_hhtp_request(urlToFile,nameFile){      
-      var oReq = new XMLHttpRequest();  
-      oReq.open("GET", urlToFile, true);    
-      oReq.responseType = "blob";  
-      oReq.send();              
-      oReq.onload = function () {
-        var file = new Blob([oReq.response], {
-          type: "application/pdf",
-        });       
-        saveAs(file, nameFile);  
-      };            
-    },
+  
   },
 };
 </script>
