@@ -101,7 +101,8 @@ export default {
     buscar(plaza,carril,fecha){
       this.page = 1
       this.modalLoading = true
-      if(carril == ''){
+      console.log(carril);
+      if(carril == '' || carril == undefined){
         let carril = null
         axios.get(`${API}/ListaNegra/Paginacion/${plaza}/${this.page}/${carril}/${fecha}`)
         .then((result)=>{
@@ -124,7 +125,7 @@ export default {
             this.modalLoading = false
             this.$notify({
               title:'Sin Información',
-              text:'No se encontrtaron Tags en esta plaza',
+              text:'No se encontraron Tags',
               type: 'warn'
             });
           }
