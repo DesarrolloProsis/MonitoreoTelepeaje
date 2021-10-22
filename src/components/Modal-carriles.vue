@@ -49,8 +49,11 @@
                   Carril: {{ carril }}
                 </h3>
                 <div class="mt-2">
-                  <p class="text-lg text-gray-500">
+                  <!--<p class="text-lg text-gray-500">
                     Tipo de alarma: {{ tipoalarma }}
+                  </p>-->
+                  <p class="text-lg text-gray-500">
+                    Tipo de alarma: Corte de Energía
                   </p>
                 </div>
               </div>

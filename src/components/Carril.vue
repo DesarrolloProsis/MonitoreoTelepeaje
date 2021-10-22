@@ -18,12 +18,41 @@
         <span class="circulo-none"></span>
       </div>
     </div>
-    <div class="flex-1 bg-carriles-green mh-other">
+    <!-- <div class="flex-1 bg-carriles-green mh-other">
       {{ carril.lectura_valida }}
     </div>
     <div class="flex-1 bg-carriles-red mh-other">
       {{ carril.lectura_invalida }}
+    </div> -->
+    <div class="flex-1 bg-carriles-blue mh-other">
+      {{ carril.ultimo_cruce }}
     </div>
+  </div>
+
+  <div
+    class="flex flex-col flex-wrap flex-none mr-2"
+    v-for="(carril, index) in carrilesB"
+    :key="index"
+  >
+    <div class="flex-1 bg-carriles-cian mh-cuerpo">
+      {{ carril.cuerpo }}
+      <div v-if="carril.status == 'Green'">
+        <span class="circulo-green"></span>
+      </div>
+      <div v-else-if="carril.status == 'Red'">
+        <span class="circulo-red"></span>
+        <ModalCarriles :carril="carril.cuerpo" tipoalarma="ejemplotipoalarma"></ModalCarriles>
+      </div>
+       <div v-else>
+        <span class="circulo-none"></span>
+      </div>
+    </div>
+    <!-- <div class="flex-1 bg-carriles-green mh-other">
+      {{ carril.lectura_valida }}
+    </div>
+    <div class="flex-1 bg-carriles-red mh-other">
+      {{ carril.lectura_invalida }}
+    </div> -->
     <div class="flex-1 bg-carriles-blue mh-other">
       {{ carril.ultimo_cruce }}
     </div>
@@ -38,7 +67,7 @@ export default {
       ModalCarriles
   },
   
-  props: ["carrilesdata"],
+  props: ["carrilesdata", "carrilesB"],
   
 };
 </script>

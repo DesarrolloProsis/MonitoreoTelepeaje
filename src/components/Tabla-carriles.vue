@@ -61,6 +61,7 @@
                     outline-none
                     w-full
                     text-gray-800
+                    hidden
                   "
                 >
                   Ir a Bitácora de Alarmas
@@ -74,18 +75,24 @@
     </div>
     
     <div class="flex ta-center overflow-x-auto pt-6">
-      <div
-        class="flex justify-center items-center flex-none bg-carriles-gray p-5"
-      >
-        <div>Plaza:<br />Tlalpan</div>
+      <div class="flex justify-center items-center flex-none bg-carriles-gray p-5">
+        <div>Plaza:<br />Tepozotlan<br />Cuerpo A</div>
+      </div>
+      <div class="flex flex-col flex-none">
+        <div class="flex-1 bg-carriles-gray mh-cuerpo lh-cuerpo">Carril</div>
+        <div class="flex-1 bg-carriles-gray mh-other ">Último Cruce</div>
+      </div>
+      <Carril :carrilesdata="carriles"></Carril>
+    </div>
+    <div class="flex ta-center overflow-x-auto pt-6">
+      <div class="flex justify-center items-center flex-none bg-carriles-gray p-5">
+        <div>Plaza:<br />Tepozotlan<br />Cuerpo B</div>
       </div>
       <div class="flex flex-col flex-none">
         <div class="flex-1 bg-carriles-gray mh-cuerpo lh-cuerpo">Cuerpo</div>
-        <div class="flex-1 bg-carriles-gray mh-other">Lecturas Válidas</div>
-        <div class="flex-1 bg-carriles-gray mh-other">Lecturas Inválidas</div>
-        <div class="flex-1 bg-carriles-gray mh-other">Último Cruce</div>
+        <div class="flex-1 bg-carriles-gray mh-other ">Último Cruce</div>
       </div>
-      <Carril :carrilesdata="carriles"></Carril>
+      <Carril :carrilesB="carrilesB"></Carril>
     </div>
   </div>
 </template>
@@ -101,20 +108,134 @@ export default {
     return {
       carriles: [
         {
-          cuerpo: "A01",
+          cuerpo: "A09",
+          status: "Green",
+          lectura_valida: "1280",
+          lectura_invalida: "1180",
+          ultimo_cruce: "11:10",
+        },
+        {
+          cuerpo: "A10",
           status: "Red",
           lectura_valida: "1280",
           lectura_invalida: "1180",
           ultimo_cruce: "11:10",
         },
         {
-          cuerpo: "A02",
-          status: "Red",
+          cuerpo: "A11",
+          status: "Green",
+          lectura_valida: "1280",
+          lectura_invalida: "1180",
+          ultimo_cruce: "11:10",
+        },
+        {
+          cuerpo: "A12",
+          status: "Green",
+          lectura_valida: "1280",
+          lectura_invalida: "1180",
+          ultimo_cruce: "11:10",
+        },
+        {
+          cuerpo: "A13",
+          status: "Green",
+          lectura_valida: "1280",
+          lectura_invalida: "1180",
+          ultimo_cruce: "11:10",
+        },
+        {
+          cuerpo: "A14",
+          status: "Green",
+          lectura_valida: "1280",
+          lectura_invalida: "1180",
+          ultimo_cruce: "11:10",
+        },
+        {
+          cuerpo: "A15",
+          status: "Green",
+          lectura_valida: "1280",
+          lectura_invalida: "1180",
+          ultimo_cruce: "11:10",
+        },
+        {
+          cuerpo: "A19",
+          status: "Green",
+          lectura_valida: "1280",
+          lectura_invalida: "1180",
+          ultimo_cruce: "11:10",
+        },
+        {
+          cuerpo: "A20",
+          status: "Green",
           lectura_valida: "1280",
           lectura_invalida: "1180",
           ultimo_cruce: "11:10",
         },
       ],
+      carrilesB: [
+        {
+          cuerpo: "B02",
+          status: "Green",
+          lectura_valida: "1280",
+          lectura_invalida: "1180",
+          ultimo_cruce: "11:10",
+        },
+        {
+          cuerpo: "B03",
+          status: "Green",
+          lectura_valida: "1280",
+          lectura_invalida: "1180",
+          ultimo_cruce: "11:10",
+        },
+        {
+          cuerpo: "B04",
+          status: "Green",
+          lectura_valida: "1280",
+          lectura_invalida: "1180",
+          ultimo_cruce: "11:10",
+        },
+        {
+          cuerpo: "B05",
+          status: "Green",
+          lectura_valida: "1280",
+          lectura_invalida: "1180",
+          ultimo_cruce: "11:10",
+        },
+        {
+          cuerpo: "B06",
+          status: "Green",
+          lectura_valida: "1280",
+          lectura_invalida: "1180",
+          ultimo_cruce: "11:10",
+        },
+        {
+          cuerpo: "B07",
+          status: "Green",
+          lectura_valida: "1280",
+          lectura_invalida: "1180",
+          ultimo_cruce: "11:10",
+        },
+        {
+          cuerpo: "B08",
+          status: "Green",
+          lectura_valida: "1280",
+          lectura_invalida: "1180",
+          ultimo_cruce: "11:10",
+        },
+        {
+          cuerpo: "B17",
+          status: "Green",
+          lectura_valida: "1280",
+          lectura_invalida: "1180",
+          ultimo_cruce: "11:10",
+        },
+        {
+          cuerpo: "B19",
+          status: "Green",
+          lectura_valida: "1280",
+          lectura_invalida: "1180",
+          ultimo_cruce: "11:10",
+        },
+      ]
     };
   },
 };
