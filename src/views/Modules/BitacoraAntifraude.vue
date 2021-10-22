@@ -102,7 +102,7 @@ export default {
       this.page = 1
       this.modalLoading = true
       console.log(carril);
-      if(carril == ''){
+      if(carril == '' || carril == undefined){
         let carril = null
         axios.get(`${API}/ListaNegra/Paginacion/${plaza}/${this.page}/${carril}/${fecha}`)
         .then((result)=>{
