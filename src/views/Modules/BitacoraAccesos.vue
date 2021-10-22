@@ -16,16 +16,7 @@
         <button @click="todos()" class="btn-buscar mr-89">Todos</button>
       </div>
       <div class="flex-1">
-        <Multiselect v-model="formato" placeholder="Sleccione una Acción" @close="acciones_mapper(formato)" label="name" trackBy="name" :options="opticones_select_acciones()" :searchable="true">
-          <template v-slot:singleLabel="{ value }">
-            <div class="multiselect-single-label">
-              <img height="26" style="margin: 0 6px 0 0;" :src="value.icon"> {{ value.name }}
-            </div>
-          </template>
-          <template v-slot:option="{ option }">
-            <img height="22" style="margin: 0 6px 0 0;" :src="option.icon">{{ option.name }}
-          </template>
-        </Multiselect>
+        <FilesDownload @download-api="downloadApi"></FilesDownload>   
       </div>
     </div>
     <div class="container mx-auto px-0 md:px-60">
@@ -37,13 +28,14 @@
 <script>
 const API = process.env.VUE_APP_URL_API_PRODUCCION
 import TablaAccesos from "../../components/Tabla-accesos.vue";
-import Multiselect from '@vueform/multiselect';
 import Navbar from "../../components/Navbar.vue";
 import Footer from "../../components/Footer-login";
+import FilesDownload from '../../components/Files-descargar.vue'
+import ServiceFiles from '../../Servicios/Files-Service'
 import axios from "axios";
 export default {
   name: "BitacoraAccesos",
-  components: { TablaAccesos, Navbar, Footer, Multiselect },
+  components: { TablaAccesos, Navbar, Footer, FilesDownload },
   data() {
     return {
       accesos:[],
@@ -165,30 +157,24 @@ export default {
         })
       }
     },
-    acciones_mapper(formato){
-      if(formato == 'excel'){
-        console.log('excel');
-      }if(formato == 'csv'){
-        console.log('csv');
-      }if(formato == 'txt'){
-        console.log('txt');
-      }
-      this.formato = ''
-    },
-    opticones_select_acciones(){
-      let options= [
-          {  value: 'excel', name: 'EXCEL'},//0
-          {  value: 'csv', name: 'CSV'},//1
-          {  value: 'txt', name: 'TXT'},//2
-      ]
-      let filtroOpciones = []
-        if(this.isLoading == false){
-          filtroOpciones.push(options[0])
-          filtroOpciones.push(options[1])
-          filtroOpciones.push(options[2])
-        }
-      return filtroOpciones
-    }
+    downloadApi(formato){
+      let nombrenew = 'null'
+      let fechanew = 'null'
+      if(this.nombre != '')
+        nombrenew = this.nombre
+      if(this.fecha != '')
+        fechanew = this.fecha
+      
+      if (formato == "csv") {
+        ServiceFiles.xml_hhtp_request(`${API}/Usuario/Download/Csv?userName=${nombrenew}&HoraInicio=${fechanew}`, 'test.csv')
+      } 
+      else if (formato == "excel") {        
+        ServiceFiles.xml_hhtp_request(`${API}/Transacciones/Download/Excel?userName=${nombrenew}&HoraInicio=${fechanew}`, 'test.xlsx')    
+      } 
+      else if (formato == "txt") {
+        ServiceFiles.xml_hhtp_request(`${API}/Usuario/Download/txt?userName=${nombrenew}&HoraInicio=${fechanew}`, 'test.txt')
+      }      
+    },  
   },
 };
 </script>
