@@ -216,13 +216,13 @@ export default {
       let fechaInicial = fecha
       let fechaFinal = ''
       if (tipo == "csv") {
-        ServiceFiles.xml_hhtp_request(`${API}/Transacciones/Download/Csv?tag=${tag}&carril=${carril}&plaza=${plaza}&fechaInicial=${fechaInicial}&fechaFinal=${fechaFinal}`, 'test.csv')
+        ServiceFiles.xml_hhtp_request(`${API}/Transacciones/Download/Csv?tag=${tag}&carril=${carril}&plaza=${plaza}&fechaInicial=${fechaInicial}&fechaFinal=${fechaFinal}`, 'transacciones.csv')
       } 
       else if (tipo == "excel") {        
-        ServiceFiles.xml_hhtp_request(`${API}/Transacciones/Download/Excel?tag=${tag}&carril=${carril}&plaza=${plaza}&fechaInicial=${fechaInicial}&fechaFinal=${fechaFinal}`, 'test.xlsx')            
+        ServiceFiles.xml_hhtp_request(`${API}/Transacciones/Download/Excel?tag=${tag}&carril=${carril}&plaza=${plaza}&fechaInicial=${fechaInicial}&fechaFinal=${fechaFinal}`, 'transacciones.xlsx')            
       } 
       else if (tipo == "txt") {
-        ServiceFiles.xml_hhtp_request(`${API}/Transacciones/Download/txt?tag=${tag}&carril=${carril}&plaza=${plaza}&fechaInicial=${fechaInicial}&fechaFinal=${fechaFinal}`, 'test.txt')
+        ServiceFiles.xml_hhtp_request(`${API}/Transacciones/Download/txt?tag=${tag}&carril=${carril}&plaza=${plaza}&fechaInicial=${fechaInicial}&fechaFinal=${fechaFinal}`, 'transacciones.txt')
       }
     },
     recibir_tramo_plaza(value){

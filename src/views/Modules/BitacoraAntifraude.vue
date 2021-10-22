@@ -106,13 +106,13 @@ export default {
     },
     downloadApi(formato){
       if (formato == "csv") {
-        ServiceFiles.xml_hhtp_request(`${API}/ListaNegra/Download/Csv`, 'test.csv')
+        ServiceFiles.xml_hhtp_request(`${API}/ListaNegra/Download/Csv`, 'bitacoraAntifraudes.csv')
       } 
       else if (formato == "excel") {        
-        ServiceFiles.xml_hhtp_request(`${API}/ListaNegra/Download/Excel`, 'test.xlsx')    
+        ServiceFiles.xml_hhtp_request(`${API}/ListaNegra/Download/Excel`, 'bitacoraAntifraudes.xlsx')    
       } 
       else if (formato == "txt") {
-        ServiceFiles.xml_hhtp_request(`${API}/ListaNegra/Download/txt`, 'test.txt')
+        ServiceFiles.xml_hhtp_request(`${API}/ListaNegra/Download/txt`, 'bitacoraAntifraudes.txt')
       }      
     }, 
   },

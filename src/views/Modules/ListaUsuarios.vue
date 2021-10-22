@@ -373,13 +373,13 @@ export default {
     },
     downloadApi(formato){
       if (formato == "csv") {
-        ServiceFiles.xml_hhtp_request(`${API}/Usuario/Download/Csv?NameFilter=${this.nombre}&EstatusFilter=${Boolean(this.estatus)}`, 'test.csv')
+        ServiceFiles.xml_hhtp_request(`${API}/Usuario/Download/Csv?NameFilter=${this.nombre}&EstatusFilter=${Boolean(this.estatus)}`, 'listaUsuarios.csv')
       } 
       else if (formato == "excel") {        
-        ServiceFiles.xml_hhtp_request(`${API}/Usuario/Download/Excel?NameFilter=${this.nombre}&EstatusFilter=${Boolean(this.estatus)}`, 'test.xlsx')    
+        ServiceFiles.xml_hhtp_request(`${API}/Usuario/Download/Excel?NameFilter=${this.nombre}&EstatusFilter=${Boolean(this.estatus)}`, 'listaUsuarios.xlsx')    
       } 
       else if (formato == "txt") {
-        ServiceFiles.xml_hhtp_request(`${API}/Usuario/Download/txt?NameFilter=${this.nombre}&EstatusFilter=${Boolean(this.estatus)}`, 'test.txt')
+        ServiceFiles.xml_hhtp_request(`${API}/Usuario/Download/txt?NameFilter=${this.nombre}&EstatusFilter=${Boolean(this.estatus)}`, 'listaUsuarios.txt')
       }      
     },      
   },

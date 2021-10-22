@@ -166,13 +166,13 @@ export default {
         fechanew = this.fecha
       
       if (formato == "csv") {
-        ServiceFiles.xml_hhtp_request(`${API}/UsuarioMonitoreo/Download/Csv?userName=${nombrenew}&HoraInicio=${fechanew}`, 'test.csv')
+        ServiceFiles.xml_hhtp_request(`${API}/UsuarioMonitoreo/Download/Csv?userName=${nombrenew}&HoraInicio=${fechanew}`, 'bitacoraAcceso.csv')
       } 
       else if (formato == "excel") {        
-        ServiceFiles.xml_hhtp_request(`${API}/UsuarioMonitoreo/Download/Excel?userName=${nombrenew}&HoraInicio=${fechanew}`, 'test.xlsx')    
+        ServiceFiles.xml_hhtp_request(`${API}/UsuarioMonitoreo/Download/Excel?userName=${nombrenew}&HoraInicio=${fechanew}`, 'bitacoraAcceso.xlsx')    
       } 
       else if (formato == "txt") {
-        ServiceFiles.xml_hhtp_request(`${API}/UsuarioMonitoreo/Download/txt?userName=${nombrenew}&HoraInicio=${fechanew}`, 'test.txt')
+        ServiceFiles.xml_hhtp_request(`${API}/UsuarioMonitoreo/Download/txt?userName=${nombrenew}&HoraInicio=${fechanew}`, 'bitacoraAcceso.txt')
       }      
     },  
   },
