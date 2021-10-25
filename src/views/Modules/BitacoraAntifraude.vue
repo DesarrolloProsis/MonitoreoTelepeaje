@@ -11,9 +11,12 @@
       <div class="flex-none filter-style mt-2">
         Fecha:<input v-model="fecha" type="date" class="rounded"/>
       </div>
+      <div class="flex-none filter-style mt-2 mx-3">
+        Tag: <input v-model="tag" class="rounded text-center text-white" placeholder="IMDM000000" type="text" />
+      </div>
       <div class="flex-none filter-style">
-        <button @click="buscar(plaza,carril,fecha)" class="btn-buscar">Buscar</button>
-        <button class="btn-buscar ml-6 mr-32">Todos</button>
+        <button @click="buscar(plaza,carril,fecha,tag)" class="btn-buscar">Buscar</button>
+        <button @click="todo()" class="btn-buscar ml-2 mr-1">Limpiar</button>
       </div>
       <div class="flex-1">
         <FilesDownload @download-api="downloadApi"></FilesDownload>   
@@ -66,12 +69,13 @@ export default {
       plaza: null,
       carril: null,
       fecha:null,
+      tag:null,
       listaNegra: [],
       value: '',
       formato:'',
       isLoading: false,
       paginaAct: '',
-      page: 0,
+      page: 1,
       totalPaginas: 0,
       currentPage: 1,
       hasMorePages: true,
@@ -79,32 +83,76 @@ export default {
 
     };
   },
-  beforeMount (){
-  axios.get(`${API}/ListaNegra/Paginacion/null/${this.page}/null/null`)
-    .then((result)=>{
-      console.log(result.data);
-      this.totalPaginas = result.data.numberPages
-      this.currentPage = result.data.now
-      result.data.body.forEach((e)=>{
-        let obj = {
-          tag: e.tag,
-          carril: e.carril,
-          fechaEntrada: e.fechaEntrada,
-          fechaSalida: e.fechaSalida,
-          causa: e.causaNombre
-        }
-        this.listaNegra.push(obj)
-      })
-    })
-  },
   methods: {
-    buscar(plaza,carril,fecha){
+    todo(){
+      this.listaNegra = []
+      this.carril = null
+      this.fecha = null
+      this.tag = null
+    },
+    buscar(plaza,carril,fecha,tag){
       this.page = 1
       this.modalLoading = true
-      console.log(carril);
-      if(carril == '' || carril == undefined){
+      if(carril == '' || carril == undefined && tag == '' || tag == undefined){
         let carril = null
-        axios.get(`${API}/ListaNegra/Paginacion/${plaza}/${this.page}/${carril}/${fecha}`)
+        let tag = null
+        axios.get(`${API}/ListaNegra/Paginacion/${plaza}/${this.page}/${carril}/${fecha}/${tag}`)
+        .then((result)=>{
+          console.log(result.data);
+          if(result.data.status == 'Ok'){
+            this.modalLoading = false
+            this.totalPaginas = result.data.numberPages
+            this.currentPage = result.data.now
+            result.data.body.forEach((e)=>{
+              let obj = {
+                tag: e.tag,
+                carril: e.carril,
+                fechaEntrada: e.fechaEntrada,
+                fechaSalida: e.fechaSalida,
+                causa: e.causaNombre
+              }
+              this.listaNegra.push(obj)
+            })
+          }else{
+            this.modalLoading = false
+            this.$notify({
+              title:'Sin Información',
+              text:'No se encontraron Tags',
+              type: 'warn'
+            });
+          }
+        })
+      }if(carril == '' || carril == undefined && tag != ''){
+        this.listaNegra = []
+        let carril = null
+        axios.get(`${API}/ListaNegra/Paginacion/${plaza}/${this.page}/${carril}/${fecha}/${tag}`)
+        .then((result)=>{
+          console.log(result.data);
+          if(result.data.status == 'Ok'){
+            this.modalLoading = false
+            this.totalPaginas = result.data.numberPages
+            this.currentPage = result.data.now
+            result.data.body.forEach((e)=>{
+              let obj = {
+                tag: e.tag,
+                carril: e.carril,
+                fechaEntrada: e.fechaEntrada,
+                fechaSalida: e.fechaSalida,
+                causa: e.causaNombre
+              }
+              this.listaNegra.push(obj)
+            })
+          }else{
+            this.modalLoading = false
+            this.$notify({
+              title:'Sin Información',
+              text:'No se encontraron Tags',
+              type: 'warn'
+            });
+          }
+        })
+      }else{
+        axios.get(`${API}/ListaNegra/Paginacion/${plaza}/${this.page}/${carril}/${fecha}/${tag}`)
         .then((result)=>{
           console.log(result.data);
           if(result.data.status == 'Ok'){
@@ -136,10 +184,12 @@ export default {
       this.listaNegra = []
       let plaza = this.plaza
       let fecha = this.fecha;
-      if(this.carril == ''){
+      let tag = this.tag
+      if(this.carril == '' || this.carril == undefined){
         var datoCarril = null
       }
-      axios.get(`${API}/ListaNegra/Paginacion/${plaza}/${page}/${datoCarril}/${fecha}`)
+      console.log([plaza,fecha,datoCarril,tag]);
+      axios.get(`${API}/ListaNegra/Paginacion/${plaza}/${page}/${datoCarril}/${fecha}/${tag}`)
         .then((result)=>{
           console.log(result.data);
           this.totalPaginas = result.data.numberPages

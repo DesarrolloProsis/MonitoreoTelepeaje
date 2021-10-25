@@ -7,7 +7,7 @@
         <FormTramoPlaza @cambiar-tramo-plaza="recibir_tramo_plaza" :carrilesForm="true" :tipo="'Antifraude'"></FormTramoPlaza>
       </div>
       <div class="flex-none mt-1 filter-style">
-        <button class="btn-buscar">Buscar</button>
+        <button @click="buscar(plaza, carril)" class="btn-buscar">Buscar</button>
       </div>
       <!-- <div class="flex-none mt-1 ml-right text-white">
         Tiempo de actualizacion
@@ -51,6 +51,7 @@ export default {
     return {
       tramo:'',
       plaza:'',
+      carril:'',
       cruces: [],
       tiempo:'',
       contador:'',
@@ -61,7 +62,7 @@ export default {
   beforeMount(){
     this.contador = moment.utc(this.seconds).format('HH:mm:ss');
     this.expires_in = this.seconds;
-    axios.get(`${API}/Transacciones/Last20Transaccions/2`)
+    axios.get(`${API}/Transacciones/Last20Transaccions/${this.plaza}/${this.carril}`)
       .then((result)=>{
         console.log(result);
         result.data.body.forEach((e) =>{
@@ -77,6 +78,54 @@ export default {
       this._setInterval()
   },
   methods:{
+    buscar(plaza,carril){
+      this.cruces = []
+      console.log([plaza,carril]);
+      if(carril == undefined){
+        let carril = null
+        axios.get(`${API}/Transacciones/Last20Transaccions/${plaza}/${carril}`)
+        .then((result)=>{
+          console.log(result);
+          result.data.body.forEach((e) =>{
+            let obj = {
+              carril: e.carril,
+              clase: e.claseCajero,
+              fecha: e.fechaDeCruce,
+              tag: e.idTag
+            }
+            this.cruces.push(obj)
+          })
+        })
+      }else{
+        this.cruces = []
+        axios.get(`${API}/Transacciones/Last20Transaccions/${plaza}/${carril}`)
+        .then((result)=>{
+          console.log(result);
+          result.data.body.forEach((e) =>{
+            let obj = {
+              carril: e.carril,
+              clase: e.claseCajero,
+              fecha: e.fechaDeCruce,
+              tag: e.idTag
+            }
+            this.cruces.push(obj)
+          })
+        })
+      }
+      /* axios.get(`${API}/Transacciones/Last20Transaccions/${plaza}/${carril}`)
+      .then((result)=>{
+        console.log(result);
+        result.data.body.forEach((e) =>{
+          let obj = {
+            carril: e.carril,
+            clase: e.claseCajero,
+            fecha: e.fechaDeCruce,
+            tag: e.idTag
+          }
+          this.cruces.push(obj)
+        })
+      }) */
+    },
     actualizar(){
       this.cruces = []
       axios.get(`${API}/Transacciones/Last20Transaccions/2`)
@@ -95,16 +144,7 @@ export default {
     recibir_tramo_plaza(value){
       this.tramo = value.tramo
       this.plaza = value.plaza
-    },
-    tiempos (){
-      if(this.tiempo == 'uno'){
-        this.seconds = 60
-      }else if(this.tiempo == 'dos'){
-        this.seconds = 120
-      }else if(this.tiempo == 'tres'){
-        this.seconds = 180
-      }
-      this.expires_in = this.seconds;
+      this.carril = value.carril
     },
     _setInterval: function() {
       this.interval = setInterval(() => {

@@ -39,6 +39,11 @@ export default {
                 },
                 {
                     img_src: "Menu/bitacora-accesos.png",
+                    nombre: "Bitácora De Listas",
+                    ruta: "/inicio/bitacora-listas",
+                },
+                {
+                    img_src: "Menu/bitacora-accesos.png",
                     nombre: "Bitácora De Accesos",
                     ruta: "/inicio/bitacora-accesos",
                 },
