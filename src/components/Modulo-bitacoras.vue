@@ -1,5 +1,5 @@
 <template>
-    <div class="w-full p-5 -mt-10 md:w-1/3">
+    <div class="w-full p-5 -mt-10 md:w-1/4">
         <router-link :to="ruta" tag="div">
             <div class=" animacion p-8 ">
                 <img class="img border" :src="require('@/assets/' + img_src)" />

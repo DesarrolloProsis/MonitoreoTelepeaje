@@ -11,10 +11,10 @@
       </tr>
       <tr v-for="(lista, index) in dataListas" :key="index">
         <td>{{lista.nombrePlaza}}</td>
-        <td :class="`${lista.fechaActualizacionOperador == '' ? 'sinconexion' : ''}`">{{lista.fechaActualizacionOperador == '' ? "Sin conexión":lista.fechaActualizacionOperador}}</td>         
-          <td :class="`${lista.fechaEnvioOperador == '' ? 'sinconexion' : ''}`">{{lista.fechaEnvioOperador == '' ? "Sin conexión":lista.fechaEnvioOperador}}</td>
-          <td :class="`${lista.fechaDeCruce == '' ? 'sinconexion' : ''}`">{{lista.fechaDeCruce == '' ? "Sin conexión":lista.fechaDeCruce}}</td>
-          <td :class="`${lista.tag == '' ? 'sinconexion' : ''}`">{{lista.tag == '' ? "Sin conexión":lista.tag}}</td>
+        <td :class="`${lista.fechaActualizacionOperador == '' ? 'sinconexion' : ''}`">{{moment(lista.fechaActualizacionOperador == '' ? "Sin conexión":lista.fechaActualizacionOperadorn).format("YYYY-MM-DD  HH:mm a")}}</td> 
+          <td :class="`${lista.fechaEnvioOperador == '' ? 'sinconexion' : ''}`">{{moment(lista.fechaEnvioOperador == '' ? "Sin conexión":lista.fechaEnvioOperador).format("YYYY-MM-DD  HH:mm a")}}</td>
+          <td :class="`${lista.fechaDeCruce == '' ? 'sinconexion' : ''}`">{{moment(lista.fechaDeCruce == '' ? "Sin conexión":lista.fechaDeCruce).format("YYYY-MM-DD  HH:mm a")}}</td>
+          <td :class="`${lista.idTag == '' ? 'sinconexion' : ''}`">{{lista.idTag == '' ? "Sin conexión":lista.idTag}}</td>
       </tr>
     </table>
   </div>
@@ -24,9 +24,13 @@
 
 
 <script>
+import moment from 'moment'
 export default {
   name: "Tabla",
   props: ["dataListas"],
+  created: function () {
+    this.moment = moment;
+    },
 };
 </script>
 <style scoped>

@@ -1,7 +1,7 @@
 <template>
   <Navbar></Navbar>
   <div class="container mx-auto px-0 resp-cont">
-    <h1 class="title">Monitoreo de Servicios de Con Proveedor de Telepeaje</h1>
+    <h1 class="title">Monitoreo de Servicios</h1>
     <button @click="cambiar_delegacion(1)" class="btn-listas" :style="{ 'background-color': mexAca ? '#fcb32a' : 'gray' }">
       Mex-Ira
     </button>

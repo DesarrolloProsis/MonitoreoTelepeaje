@@ -17,6 +17,7 @@ import ListaUsuarios from "@/views/Modules/ListaUsuarios.vue";
 import RegistroUsuarios from "@/views/Modules/RegistroUsuarios.vue";
 import Bitacoras from "@/views/Modules/Bitacoras.vue";
 import BitacoraAntifraude from "@/views/Modules/BitacoraAntifraude.vue";
+import BitacoraListas from "@/views/Modules/BitacoraListas.vue"
 import jwt_decode from "jwt-decode";
 const API = process.env.VUE_APP_URL_API_PRODUCCION
 
@@ -149,6 +150,15 @@ const routes = [{
     meta: {
       requiresCookie: true,
       nombre:"BitacoraAntifraude"
+    }
+  },
+  {
+    path: "/inicio/bitacora-listas",
+    name: "Bitacora Listas",
+    component: BitacoraListas,
+    meta: {
+      requiresCookie: true,
+      nombre:"BitacoraListas"
     }
   },
   {
