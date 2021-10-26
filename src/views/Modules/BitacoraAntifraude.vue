@@ -91,93 +91,136 @@ export default {
       this.tag = null
     },
     buscar(plaza,carril,fecha,tag){
-      this.page = 1
-      this.modalLoading = true
-      if(carril == '' || carril == undefined && tag == '' || tag == undefined){
-        let carril = null
-        let tag = null
-        axios.get(`${API}/ListaNegra/Paginacion/${plaza}/${this.page}/${carril}/${fecha}/${tag}`)
-        .then((result)=>{
-          console.log(result.data);
-          if(result.data.status == 'Ok'){
-            this.modalLoading = false
-            this.totalPaginas = result.data.numberPages
-            this.currentPage = result.data.now
-            result.data.body.forEach((e)=>{
-              let obj = {
-                tag: e.tag,
-                carril: e.carril,
-                fechaEntrada: e.fechaEntrada,
-                fechaSalida: e.fechaSalida,
-                causa: e.causaNombre
-              }
-              this.listaNegra.push(obj)
-            })
-          }else{
-            this.modalLoading = false
-            this.$notify({
+      console.log(carril);
+      this.listaNegra = []
+      if(plaza == '' || plaza == null || plaza == undefined){
+        this.$notify({
               title:'Sin Información',
-              text:'No se encontraron Tags',
+              text:'Se debe de seleccionar la plaza para realizar una busqueda',
               type: 'warn'
             });
-          }
-        })
-      }if(carril == '' || carril == undefined && tag != ''){
-        this.listaNegra = []
-        let carril = null
-        axios.get(`${API}/ListaNegra/Paginacion/${plaza}/${this.page}/${carril}/${fecha}/${tag}`)
-        .then((result)=>{
-          console.log(result.data);
-          if(result.data.status == 'Ok'){
-            this.modalLoading = false
-            this.totalPaginas = result.data.numberPages
-            this.currentPage = result.data.now
-            result.data.body.forEach((e)=>{
-              let obj = {
-                tag: e.tag,
-                carril: e.carril,
-                fechaEntrada: e.fechaEntrada,
-                fechaSalida: e.fechaSalida,
-                causa: e.causaNombre
-              }
-              this.listaNegra.push(obj)
-            })
-          }else{
-            this.modalLoading = false
-            this.$notify({
-              title:'Sin Información',
-              text:'No se encontraron Tags',
-              type: 'warn'
-            });
-          }
-        })
       }else{
-        axios.get(`${API}/ListaNegra/Paginacion/${plaza}/${this.page}/${carril}/${fecha}/${tag}`)
-        .then((result)=>{
-          console.log(result.data);
-          if(result.data.status == 'Ok'){
-            this.modalLoading = false
-            this.totalPaginas = result.data.numberPages
-            this.currentPage = result.data.now
-            result.data.body.forEach((e)=>{
-              let obj = {
-                tag: e.tag,
-                carril: e.carril,
-                fechaEntrada: e.fechaEntrada,
-                fechaSalida: e.fechaSalida,
-                causa: e.causaNombre
-              }
-              this.listaNegra.push(obj)
-            })
-          }else{
-            this.modalLoading = false
-            this.$notify({
-              title:'Sin Información',
-              text:'No se encontraron Tags',
-              type: 'warn'
-            });
-          }
-        })
+        console.log(carril);
+        this.page = 1
+        this.modalLoading = true
+        if((carril == '' || carril == undefined) && (tag == '' || tag == undefined)){
+          console.log('if');
+          let carrilif = null
+          let tag = null
+          this.listaNegra = []
+          axios.get(`${API}/ListaNegra/Paginacion/${plaza}/${this.page}/${carrilif}/${fecha}/${tag}`)
+          .then((result)=>{
+            console.log(result.data);
+            if(result.data.status == 'Ok'){
+              this.modalLoading = false
+              this.totalPaginas = result.data.numberPages
+              this.currentPage = result.data.now
+              result.data.body.forEach((e)=>{
+                let obj = {
+                  tag: e.tag,
+                  carril: e.carril,
+                  fechaEntrada: e.fechaEntrada,
+                  fechaSalida: e.fechaSalida,
+                  causa: e.causaNombre
+                }
+                this.listaNegra.push(obj)
+              })
+            }else{
+              this.modalLoading = false
+              this.$notify({
+                title:'Sin Información',
+                text:'No se encontraron Tags',
+                type: 'warn'
+              });
+            }
+          })
+        }else if((tag != '' || tag != undefined) && (carril == '' || carril == undefined)){
+          console.log('primer else if');
+          this.listaNegra = []
+          let carrilelseif = null
+          axios.get(`${API}/ListaNegra/Paginacion/${plaza}/${this.page}/${carrilelseif}/${fecha}/${tag}`)
+          .then((result)=>{
+            console.log(result.data);
+            if(result.data.status == 'Ok'){
+              this.modalLoading = false
+              this.totalPaginas = result.data.numberPages
+              this.currentPage = result.data.now
+              result.data.body.forEach((e)=>{
+                let obj = {
+                  tag: e.tag,
+                  carril: e.carril,
+                  fechaEntrada: e.fechaEntrada,
+                  fechaSalida: e.fechaSalida,
+                  causa: e.causaNombre
+                }
+                this.listaNegra.push(obj)
+              })
+            }else{
+              this.modalLoading = false
+              this.$notify({
+                title:'Sin Información',
+                text:'No se encontraron Tags',
+                type: 'warn'
+              });
+            }
+          })
+        }else if((carril != '' || carril != undefined) && (tag == '' || tag == undefined)){
+          this.listaNegra = []
+          let tag = null
+          axios.get(`${API}/ListaNegra/Paginacion/${plaza}/${this.page}/${carril}/${fecha}/${tag}`)
+          .then((result)=>{
+            console.log(result.data);
+            if(result.data.status == 'Ok'){
+              this.modalLoading = false
+              this.totalPaginas = result.data.numberPages
+              this.currentPage = result.data.now
+              result.data.body.forEach((e)=>{
+                let obj = {
+                  tag: e.tag,
+                  carril: e.carril,
+                  fechaEntrada: e.fechaEntrada,
+                  fechaSalida: e.fechaSalida,
+                  causa: e.causaNombre
+                }
+                this.listaNegra.push(obj)
+              })
+            }else{
+              this.modalLoading = false
+              this.$notify({
+                title:'Sin Información',
+                text:'No se encontraron Tags',
+                type: 'warn'
+              });
+            }
+          })
+        }else{
+          axios.get(`${API}/ListaNegra/Paginacion/${plaza}/${this.page}/${carril}/${fecha}/${tag}`)
+          .then((result)=>{
+            console.log(result.data);
+            if(result.data.status == 'Ok'){
+              this.modalLoading = false
+              this.totalPaginas = result.data.numberPages
+              this.currentPage = result.data.now
+              result.data.body.forEach((e)=>{
+                let obj = {
+                  tag: e.tag,
+                  carril: e.carril,
+                  fechaEntrada: e.fechaEntrada,
+                  fechaSalida: e.fechaSalida,
+                  causa: e.causaNombre
+                }
+                this.listaNegra.push(obj)
+              })
+            }else{
+              this.modalLoading = false
+              this.$notify({
+                title:'Sin Información',
+                text:'No se encontraron Tags',
+                type: 'warn'
+              });
+            }
+          })
+        }
       }
     },
     showMore(page){
