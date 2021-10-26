@@ -10,8 +10,8 @@
                 Fecha:<input v-model="fecha" type="date" class="rounded"/>
             </div>
             <div class="flex-none filter-style mr-69">
-                <button @click="buscar(plaza,carril,fecha,tag)" class="btn-buscar">Buscar</button>
-                <button @click="todo()" class="btn-buscar ml-2 mr-1">Limpiar</button>
+                <button @click="buscar(plaza,fecha)" class="btn-buscar">Buscar</button>
+                <button @click="limpiar(plaza)" class="btn-buscar ml-2 mr-1">Limpiar</button>
             </div>
             <div class="flex-1">
                 <FilesDownload @download-api="downloadApi"></FilesDownload>   
@@ -68,29 +68,76 @@ export default {
         };
     },
     beforeMount(){
-        axios.get(`${API}/Historico/2/null`)
-        .then((result)=>{
-          console.log(result.data);
-          if(result.data.status == 'Ok'){
-            this.modalLoading = false
-            result.data.body.forEach((e)=>{
-              let obj = {
-                fechaCreacion: e.fechaCreacion,
-                numeroDeTags: e.numeroDeTags,
-                timepoTotal: e.timepoTotal
-              }
-              this.listaHistorico.push(obj)
+        
+    },
+    methods: {
+        limpiar(plaza){
+            this.listaHistorico = []
+            this.fecha = null
+            axios.get(`${API}/Historico/${plaza}/${this.fecha}`)
+            .then((result)=>{
+                if(result.data.status == 'Ok'){
+                    this.modalLoading = false
+                    result.data.body.forEach((e)=>{
+                        let obj = {
+                            fechaCreacion: e.fechaCreacion,
+                            numeroDeTags: e.numeroDeTags,
+                            timepoTotal: e.timepoTotal
+                        }
+                        this.listaHistorico.push(obj)
+                    })
+                }else{
+                    this.modalLoading = false
+                    this.$notify({
+                        title:'Sin Información',
+                        text:'No se encontraron listas',
+                        type: 'warn'
+                    });
+                }
             })
-          }else{
-            this.modalLoading = false
-            this.$notify({
-              title:'Sin Información',
-              text:'No se encontraron Tags',
-              type: 'warn'
-            });
-          }
-        })
-    }
+        },
+        buscar(plaza, fecha){
+            this.listaHistorico = []
+            this.modalLoading= true
+            if(plaza == '' || plaza == undefined){
+                this.modalLoading= false
+                this.$notify({
+                    title:'Sin Información',
+                    text:'Se debe de seleccionar la plaza para realizar una busqueda',
+                    type: 'warn'
+                });
+            }else{
+                axios.get(`${API}/Historico/${plaza}/${fecha}`)
+                .then((result)=>{
+                    if(result.data.status == 'Ok'){
+                        this.modalLoading = false
+                        result.data.body.forEach((e)=>{
+                            let obj = {
+                                fechaCreacion: e.fechaCreacion,
+                                numeroDeTags: e.numeroDeTags,
+                                timepoTotal: e.timepoTotal
+                            }
+                            this.listaHistorico.push(obj)
+                        })
+                    }else{
+                        setTimeout(() => {
+                            this.modalLoading = false
+                            this.$notify({
+                                title:'Sin Información',
+                                text:'No se encontraron listas',
+                                type: 'warn'
+                            });
+                        }, 1000)
+                        
+                    }
+                })
+            }
+        },
+        recibir_tramo_plaza(value){
+            this.tramo = value.tramo
+            this.plaza = value.plaza
+        },
+    },
 }
 </script>
 <style scoped>
