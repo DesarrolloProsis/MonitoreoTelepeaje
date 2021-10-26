@@ -2,10 +2,10 @@
   <Navbar></Navbar>
   <div class="container mx-auto px-0 resp-cont">
     <h1 class="title">Monitoreo de Servicios</h1>
-    <button @click="cambiar_delegacion(1)" class="btn-listas" :style="{ 'background-color': mexAca ? '#fcb32a' : 'gray' }">
+    <button @click="cambiar_delegacion(2)" class="btn-listas" :style="{ 'background-color': mexAca ? 'gray' : '#fcb32a' }">
       Mex-Ira
     </button>
-    <button @click="cambiar_delegacion(2)" class="btn-listas" :style="{ 'background-color': mexIra ? '#fcb32a' : 'gray' }">
+    <button @click="cambiar_delegacion(1)" class="btn-listas" :style="{ 'background-color': mexIra ? 'gray' : '#fcb32a' }">
       Mex-Aca
     </button>
     <Tabla v-if="isLoading == false" :dataListas="statusServices"></Tabla>
@@ -51,11 +51,10 @@ export default {
         buscar_status_services()
       }      
     }
-
     const buscar_status_services = () => {
       var decoded = jwt_decode(Service.getCookie("Token"));
-      console.log(decoded)
-      axios.get(`${API}/PlazaAsignada/DelUsuario/1`)
+      console.log(decoded.UsuarioId)
+      axios.get(`${API}/PlazaAsignada/DelUsuario/${decoded.UsuarioId}`)
         .then((response) => {          
           console.log(response)
           if(response.data.status == 'Ok'){
