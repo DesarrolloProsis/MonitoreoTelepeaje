@@ -1,13 +1,29 @@
 <template>
   <div class="responsive-table">
     <table class="tftable" style="height:350px;">
-      <tr>
+      <tr class="">
         <th>Perfil</th>             
-        <th>Estatus</th>
-        <th>Modulos</th>   
+        <!-- <th>Estatus</th>
+        <th>Modulos</th>  -->  
+        <th>Acciones</th>
       </tr>
       <tr v-for="(perfiles, index) in dataPerfiles" :key="index">
-        <td>{{ perfiles.nombreRol }}</td>  
+        <td :class="{'text-gray-300': perfiles.activo == false}">{{ perfiles.nombreRol }}</td>
+        <td class="w-66">
+          <div class="w-66 mx-auto">
+            <Multiselect v-model="value" placeholder="Sleccione una Acción" @close="acciones_mapper(perfiles)" label="name" trackBy="name" :options="opticones_select_acciones(perfiles,index)" :searchable="true">
+              <template v-slot:singleLabel="{ value }">
+                <div class="multiselect-single-label">
+                  <img height="26" style="margin: 0 6px 0 0;" :src="value.icon"> {{ value.name }}
+                </div>
+              </template>
+              <template v-slot:option="{ option }">
+                <img height="22" style="margin: 0 6px 0 0;" :src="option.icon">{{ option.name }}
+              </template>
+            </Multiselect>
+          </div>
+        </td>
+        <!-- <td>{{ perfiles.nombreRol }}</td>  
         <td v-if="perfiles.activo == true || perfiles.activo == null">
           <button class="button btn-activo" @click="changeStatus(perfiles)">Activo</button>
         </td>
@@ -16,20 +32,19 @@
         </td>
         <td>
           <button class="button btn-actualizar" @click="showModulos(perfiles)">Actualizar</button>
-        </td>   
+        </td> -->   
       </tr>
     </table>
   </div>
   <br />
 
   <!--Modal Actualizar-->
-  <div v-if="isModulosActive == true">
+  <!-- <div v-if="isModulosActive == true">
     <div class="fixed z-10 inset-0 overflow-y-auto">
       <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
         <div class="fixed inset-0 transition-opacity" aria-hidden="true">
           <div class="absolute inset-0 bg-gray-900 opacity-10"></div>
         </div>
-
         <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
         <div class="inline-block align-bottom bg-white text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full" role="dialog" aria-modal="true" aria-labelledby="modal-headline">
           <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex">
@@ -56,17 +71,36 @@
         </div>
       </div>
     </div>
+  </div> -->
+  <div class="sticky inset-0 " :class="{'modal-container': isModulosActive}">
+    <div v-if="isModulosActive" class="rounded-lg  justify-center border absolute inset-x-0 bg-white border-gray-400 w-69  mx-auto px-12 py-10 shadow-2xl mt-60">
+      <p class="text-gray-900 font-bold text-2xl -mt-8 mb-8 text-center">Actualizar Módulos {{ perfilSelected.perfil }}</p>
+      <div class="grid grid-cols-2 mt-2" v-for="(modulos, index) in perfilSelected.modulos" :key="index">
+        <p>{{ modulos.nombre }}</p>
+        <p class="text-center">
+          <button v-if="modulos.seleccionado == true" @click="cambiarModulos(index, modulos.seleccionado)" class="btn btn-active">Activo</button>
+          <button v-if="modulos.seleccionado == false" @click="cambiarModulos(index, modulos.seleccionado)" class="btn btn-inactive">Inactivo</button>
+        </p>
+      </div>
+      <div class="mt-5 text-center ml-6">
+        <button class="botonIconBuscar">Guardar</button>
+        <button @click="isModulosActive = false" class="botonIconCancelar">Cancelar</button>
+      </div>
+    </div>
   </div>  
 </template>
 
 <script>
+import Multiselect from '@vueform/multiselect'
 import axios from 'axios';
 import { notify } from "@kyvg/vue3-notification";
 const API = process.env.VUE_APP_URL_API_PRODUCCION
 export default {
   name: "TablaListaPerfiles",
-
   props: ["dataPerfiles"],
+  components:{
+    Multiselect,
+  },
   data() {
     return {
       // todos los perfiles
@@ -74,9 +108,11 @@ export default {
       isModulosActive: false,        
       //perfil individual
       perfilSelected: {},
+      value:'',
 
     };
   },
+
   methods: {
     // !MODULOS
     showModulos: function (perfil) {
@@ -139,12 +175,45 @@ export default {
           notify({ type: 'warning', title:'Rol no actualizado', text: `No se pudo actualizar el rol ${this.perfilSelected.nombreRol}`});
           this.perfilSelected = {}
         })
-       
-    }
+    },
+    acciones_mapper(perfil){
+      if(this.value == 'Habilitar'){
+        this.changeStatus(perfil)
+      }
+      if(this.value == 'Deshabilitar'){
+        this.changeStatus(perfil)
+      }
+      if(this.value == 'Editar Modulos'){
+        this.showModulos(perfil)
+      }
+      this.value = ""
+    },
+    opticones_select_acciones(perfil){
+      let options= [
+          {  value: 'Habilitar', name: 'Habilitar'},//0
+          {  value: 'Deshabilitar', name: 'Deshabilitar'},//1
+          {  value: 'Editar Modulos', name: 'Editar Modulos'},//2
+      ]
+      let filtroOpciones = []
+          if(perfil.activo == false){
+            filtroOpciones.push(options[0])    
+          }if(perfil.activo == true){
+            filtroOpciones.push(options[1])  
+            filtroOpciones.push(options[2])             
+          }
+      return filtroOpciones  
+    },
   },
 };
 </script>
 <style scoped>
+.modal-container{
+    position: fixed;
+    width: 100%;
+    height: 100vh;
+    z-index: 1000;
+    background: rgba(0, 0, 0, 0.5);
+}
 .btn {
   padding: 5px;
   border-radius: 5px;

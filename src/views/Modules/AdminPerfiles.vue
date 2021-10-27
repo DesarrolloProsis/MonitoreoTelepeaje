@@ -30,19 +30,20 @@
     <div class="flex flex-wrap bg-blue rounded-lg">
       <div class="flex-none filter-style">
         Nombre:
-        <input type="text" />
+        <input v-model="nombre" type="text" />
       </div>
       <div class="flex-none filter-style">
         Estatus:
-        <select class="flex-none filter-style color-black" name="select">
-          <option value="100" selected>Inactivo</option>
+        <select class="flex-none filter-style color-black" name="select" placeholder="Selecciona">
+          <option hidden selected>Seleccione </option>
+          <option value="100">Inactivo</option>
           <option value="200">Activo</option>
         </select>
       </div>
       <div class="flex-none filter-style">
-        <button class="btn-buscar">Buscar</button>
+        <button @click="buscar(nombre)"  class="btn-buscar">Buscar</button>
       </div>
-      <div class="flex-1 ml-89 hidden">
+      <!-- <div class="flex-1 ml-89 hidden">
         <Multiselect v-model="formato" placeholder="Sleccione una Acción" @close="acciones_mapper(formato)" label="name" trackBy="name" :options="opticones_select_acciones()" :searchable="true">
           <template v-slot:singleLabel="{ value }">
             <div class="multiselect-single-label">
@@ -53,7 +54,7 @@
             <img height="22" style="margin: 0 6px 0 0;" :src="option.icon">{{ option.name }}
           </template>
         </Multiselect>
-      </div>
+      </div> -->
     </div>
     <div class="mb-6">
       <button @click="abrir_modal_new_rol" class="w-full botonIconBuscar justify-center mt-3 -mb-8">Agregar Usuario</button>
@@ -81,6 +82,7 @@ export default {
   },
   setup(){
     
+    const nombre = ref('')
     const roles = ref([])    
     const userModal = ref(false)
     const newRol = reactive({ nombre: "", vistas: [] })
@@ -134,7 +136,7 @@ export default {
           notify({ type: 'warning', title:'Rol no creado', text: `No se pudo crear el rol ${objRol.nombreRol}`});
         })
     }
-    function  acciones_mapper (formato){
+    /* function  acciones_mapper (formato){
       if(formato == 'excel'){
         console.log('excel');
       }if(formato == 'csv'){
@@ -155,9 +157,12 @@ export default {
           filtroOpciones.push(options[1])
           filtroOpciones.push(options[2])
       return filtroOpciones
-    }   
+    } */
+    function buscar (nombre){
+      console.log(nombre);
+    }
     onMounted(buscar_roles)
-    return { roles, userModal, buscar_roles, abrir_modal_new_rol, newRol, optionRoles, craer_nuevo_rol,opticones_select_acciones,acciones_mapper }
+    return { roles, userModal, buscar_roles, abrir_modal_new_rol, newRol, optionRoles, craer_nuevo_rol,nombre,buscar }
 
   }, 
 };
