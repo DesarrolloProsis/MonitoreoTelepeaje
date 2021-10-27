@@ -24,6 +24,8 @@
 </template>
 
 <script>
+import Servicio from '../Servicios/Token-Services';
+import jwt_decode from "jwt-decode";
 import { ref, onMounted } from 'vue'
 import axios from "axios";
 import { notify } from "@kyvg/vue3-notification";
@@ -44,8 +46,11 @@ export default {
         const obtner_plazas_por_tramo = async () => {                  
             axios.get(`${API}/PlazaAsignada/PorTramo/${tramoSeleccionado.value.id}`)
             .then((responseFullPlazas) => {  
-                //console.log(responseFullPlazas)                  
-                axios.get(`${API}/PlazaAsignada/DelUsuario/${1}`)
+                //console.log(responseFullPlazas)     
+                Servicio.getCookie("Token")
+                let info = jwt_decode(Servicio.getCookie("Token"))
+                console.log(info.UsuarioId);             
+                axios.get(`${API}/PlazaAsignada/DelUsuario/${info.UsuarioId}`)
                 .then((responsePlazaUsuario) => {
                     //console.log(responsePlazaUsuario)     
                     plazas.value = []      
