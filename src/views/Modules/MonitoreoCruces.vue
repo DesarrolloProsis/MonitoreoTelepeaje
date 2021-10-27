@@ -9,30 +9,19 @@
       <div class="flex-none mt-1 filter-style">
         <button @click="buscar(plaza, carril)" class="btn-buscar">Buscar</button>
       </div>
-      <!-- <div class="flex-none mt-1 ml-right text-white">
+      <div class="flex-none mt-1 ml-right text-white">
         Tiempo de actualizacion
-        <select v-model="tiempo" @change="tiempos" class="text-gray-800 w-16 rounded">
-          <option value="uno">1 min</option>
-          <option value="dos">2 min</option>
+        <select v-model="tiempo" @change="tiempos(this.tiempo)" class="text-gray-800 w-16 rounded">
           <option value="tres">3 min</option>
+          <option value="seis">6 min</option>
+          <option value="nueve">9 min</option>
+          <option value="quince">15 min</option>
+          <option value="treinta">30 min</option>
         </select>
-        No. Transacciones:
-        <input type="text" class="text-center rounded" placeholder="30">
-        <button class="btn-carriles ml-right">Descargar Excel</button>
-        <Multiselect v-model="formato" placeholder="Sleccione una Acción" @close="acciones_mapper(formato)" label="name" trackBy="name" :options="opticones_select_acciones()" :searchable="true">
-          <template v-slot:singleLabel="{ value }">
-            <div class="multiselect-single-label">
-              <img height="26" style="margin: 0 6px 0 0;" :src="value.icon"> {{ value.name }}
-            </div>
-          </template>
-          <template v-slot:option="{ option }">
-            <img height="22" style="margin: 0 6px 0 0;" :src="option.icon">{{ option.name }}
-          </template>
-        </Multiselect>
-      </div> -->
+      </div>
     </div>
     <TablaCruces :dataCruces="cruces"></TablaCruces>
-    <p class="mt-10">Próxima actualización en {{ contador.slice(4)  }}</p>
+    <p class="mt-10">Próxima actualización en {{ contador.slice(3)  }}</p>
   </div>
   <Footer></Footer>
 </template>
@@ -112,34 +101,56 @@ export default {
           })
         })
       }
-      /* axios.get(`${API}/Transacciones/Last20Transaccions/${plaza}/${carril}`)
-      .then((result)=>{
-        console.log(result);
-        result.data.body.forEach((e) =>{
-          let obj = {
-            carril: e.carril,
-            clase: e.claseCajero,
-            fecha: e.fechaDeCruce,
-            tag: e.idTag
-          }
-          this.cruces.push(obj)
-        })
-      }) */
     },
-    actualizar(){
-      this.cruces = []
-      axios.get(`${API}/Transacciones/Last20Transaccions/2`)
-      .then((result)=>{
-        result.data.body.forEach((e) =>{
-          let obj = {
-            carril: e.carril,
-            clase: e.claseCajero,
-            fecha: e.fechaDeCruce,
-            tag: e.idTag
-          }
-          this.cruces.push(obj)
+    tiempos(minutos){
+      if(minutos == 'tres'){
+        this.seconds = 180
+        this.expires_in = this.seconds
+      }else if(minutos == 'seis'){
+        this.seconds = 360
+        this.expires_in = this.seconds
+      }else if(minutos == 'nueve'){
+        this.seconds = 540
+        this.expires_in = this.seconds
+      }else if(minutos == 'quince'){
+        this.seconds = 900
+        this.expires_in = this.seconds
+      }else if(minutos == 'treinta'){
+        this.seconds = 1800
+        this.expires_in = this.seconds
+      }
+    },
+    actualizar(plaza,carril){
+      if(plaza != undefined && carril != undefined){
+        this.cruces = []
+        axios.get(`${API}/Transacciones/Last20Transaccions/${plaza}/${carril}`)
+        .then((result)=>{
+          result.data.body.forEach((e) =>{
+            let obj = {
+              carril: e.carril,
+              clase: e.claseCajero,
+              fecha: e.fechaDeCruce,
+              tag: e.idTag
+            }
+            this.cruces.push(obj)
+          })
         })
-      })
+      }else if(plaza != undefined && carril == undefined){
+        let crl = null
+        this.cruces = []
+        axios.get(`${API}/Transacciones/Last20Transaccions/${plaza}/${crl}`)
+        .then((result)=>{
+          result.data.body.forEach((e) =>{
+            let obj = {
+              carril: e.carril,
+              clase: e.claseCajero,
+              fecha: e.fechaDeCruce,
+              tag: e.idTag
+            }
+            this.cruces.push(obj)
+          })
+        })
+      }
     },
     recibir_tramo_plaza(value){
       this.tramo = value.tramo
@@ -150,7 +161,7 @@ export default {
       this.interval = setInterval(() => {
         if(this.expires_in === 1){
           this.expires_in = this.seconds
-          this.actualizar()         
+          this.actualizar(this.plaza,this.carril)         
           /* clearInterval(this.interval); */
         }
         else {

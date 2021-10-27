@@ -20,7 +20,7 @@
         <div class="container mx-auto px-0 md:px-60">
             <TablaListas :dataHistorico="listaHistorico"></TablaListas>
         </div>
-        <div class="mt-20 hidden">
+        <div class="mt-20">
             <Paginacion
                 :total-pages="totalPaginas" 
                 :total="100"
@@ -49,13 +49,11 @@ import TablaListas from "../../components/Tabla-listas.vue";
 import Navbar from "@/components/Navbar.vue";
 import Footer from "@/components/Footer-login";
 import FilesDownload from '../../components/Files-descargar.vue'
-
 import axios from "axios";
 import Paginacion from "../../components/Paginacion.vue"
 export default {
     name: "BitacoraAccesos",
     components: { Navbar, Footer, FormTramoPlaza, TablaListas, FilesDownload, Paginacion },
-
     data() {
         return {
             tramo: '',
@@ -64,20 +62,24 @@ export default {
             tag:null,
             listaHistorico: [],
             formato:'',
-            modalLoading: false
+            modalLoading: false,
+            page: 1,
+            totalPaginas: 0,
+            currentPage: 1,
+            hasMorePages: true,
         };
     },
-    beforeMount(){
-        
-    },
+    beforeMount(){},
     methods: {
         limpiar(plaza){
             this.listaHistorico = []
             this.fecha = null
-            axios.get(`${API}/Historico/${plaza}/${this.fecha}`)
+            axios.get(`${API}/Historico/${plaza}/${this.fecha}/${this.page}`)
             .then((result)=>{
                 if(result.data.status == 'Ok'){
                     this.modalLoading = false
+                    this.totalPaginas = result.data.numberPages
+                    this.currentPage = result.data.now
                     result.data.body.forEach((e)=>{
                         let obj = {
                             fechaCreacion: e.fechaCreacion,
@@ -107,10 +109,12 @@ export default {
                     type: 'warn'
                 });
             }else{
-                axios.get(`${API}/Historico/${plaza}/${fecha}`)
+                axios.get(`${API}/Historico/${plaza}/${fecha}/${this.page}`)
                 .then((result)=>{
                     if(result.data.status == 'Ok'){
                         this.modalLoading = false
+                        this.totalPaginas = result.data.numberPages
+                        this.currentPage = result.data.now
                         result.data.body.forEach((e)=>{
                             let obj = {
                                 fechaCreacion: e.fechaCreacion,
@@ -136,6 +140,34 @@ export default {
         recibir_tramo_plaza(value){
             this.tramo = value.tramo
             this.plaza = value.plaza
+        },
+        showMore(page){
+            this.listaHistorico = []
+            let plaza = this.plaza
+            let fecha = this.fecha;
+            axios.get(`${API}/Historico/${plaza}/${fecha}/${page}`)
+            .then((result)=>{
+                if(result.data.status == 'Ok'){
+                    this.modalLoading = false
+                    result.data.body.forEach((e)=>{
+                        let obj = {
+                            fechaCreacion: e.fechaCreacion,
+                            numeroDeTags: e.numeroDeTags,
+                            timepoTotal: e.timepoTotal
+                        }
+                        this.listaHistorico.push(obj)
+                    })
+                }else{
+                    setTimeout(() => {
+                        this.modalLoading = false
+                        this.$notify({
+                            title:'Sin Información',
+                            text:'No se encontraron listas',
+                            type: 'warn'
+                        });
+                    }, 1000)  
+                }
+            })
         },
     },
 }
