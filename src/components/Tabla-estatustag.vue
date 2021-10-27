@@ -3,7 +3,6 @@
     <table class="tftable">
       <tr>
         <th>Tag</th>
-        <th>Plaza</th>
         <th>Estatus</th>
         <th>Saldo</th>
         <th>Tipo Tag</th>
@@ -11,20 +10,23 @@
       </tr>
       <tr v-for="(tags, index) in datatag" :key="index">
         <td>{{ tags.tag }}</td>
-        <td>{{tags.plaza}}</td>
         <td>{{ tags.estatus }}</td>
         <td>{{ tags.saldo }}</td>
         <td>{{ tags.tipo_tag }}</td>
-        <td>{{ tags.ult_act }}</td>
+        <td>{{ moment(tags.ult_act).format("YYYY-MM-DD  HH:mm a") }}</td>
       </tr>
     </table>
   </div>
 </template>
 
 <script>
+import moment from 'moment'
 export default {
   name: "TablaEstatusTag",
   props: ["datatag"],
+  created: function () {
+    this.moment = moment;
+  },
 };
 </script>
 <style scoped>
