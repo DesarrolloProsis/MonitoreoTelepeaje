@@ -41,7 +41,8 @@
         </select>
       </div>
       <div class="flex-none filter-style">
-        <button @click="buscar(nombre)"  class="btn-buscar">Buscar</button>
+        <!--<button @click="buscar(nombre)"  class="btn-buscar">Buscar</button>-->
+        <button @click="todos(nombre)"  class="btn-buscar mx-3">Todos</button>
       </div>
       <!-- <div class="flex-1 ml-89 hidden">
         <Multiselect v-model="formato" placeholder="Sleccione una Acción" @close="acciones_mapper(formato)" label="name" trackBy="name" :options="opticones_select_acciones()" :searchable="true">
@@ -161,8 +162,19 @@ export default {
     function buscar (nombre){
       console.log(nombre);
     }
+    function todos (nombre){
+      let name = nombre.slice(0,3)+'Pulido'
+      //console.log(nombre.slice(0,3));
+      notify({
+                  title:'Nuevo Usuario',
+                  text: `Se creo el Usuario ${name}`,
+                  duration: 20000,
+                  closeonclick:true,
+                  type: 'success'
+                });
+    }
     onMounted(buscar_roles)
-    return { roles, userModal, buscar_roles, abrir_modal_new_rol, newRol, optionRoles, craer_nuevo_rol,nombre,buscar }
+    return { roles, userModal, buscar_roles, abrir_modal_new_rol, newRol, optionRoles, craer_nuevo_rol,nombre,buscar,todos }
 
   }, 
 };

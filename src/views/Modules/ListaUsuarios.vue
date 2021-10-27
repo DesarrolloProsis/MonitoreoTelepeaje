@@ -179,17 +179,20 @@ export default {
         } 
         console.log(data);
         if(this.usuario.nombre != '' && this.usuario.apellidoP != '' && this.usuario.apellidoM != '' && this.usuario.pass != '' ){
+          let userName = this.usuario.nombre.slice(0,3)+this.usuario.apellidoP
           this.modalLoading = true
           this.modalAgregar = false
           axios.post(`${API}/Usuario`,data,config)
             .then((result)=>{
               console.log(result);
               setTimeout(() => {
-                this.$router.push("/configuracion");
+                //this.$router.push("/configuracion");
                 this.modalLoading = false
                 this.$notify({
                   title:'Nuevo Usuario',
-                  text:'Se creo correctamente el nuevo usuario',
+                  text:`Se creo correctamente el nuevo usuario ${userName}`,
+                  duration: 20000,
+                  closeonclick:true,
                   type: 'success'
                 });
               }, 1000);
@@ -199,7 +202,13 @@ export default {
               this.errorMessage = "Hubo un error al crear el usuario, intentalo nuevamente."
             })
         }else{
-          alert('* Son campos obligatorios')
+          this.$notify({
+                  title:'Nuevo Usuario',
+                  text:`Todos los campos son obligatorios`,
+                  duration: 20000,
+                  closeonclick:true,
+                  type: 'warn'
+                });
         }
       }
     },
