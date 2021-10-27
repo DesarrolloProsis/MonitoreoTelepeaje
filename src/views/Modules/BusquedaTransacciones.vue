@@ -12,18 +12,23 @@
                 </div>
               <div class="w-full flex-2 ">
                     <div class="my-2 p-1 bg-white flex border border-gray-200 rounded">
-                        <input class="inp-icon p-1 px-2 appearance-none outline-none w-full text-gray-800 " placeholder="Buscar No. Tag" type="text" id="tag" />
+                        <input v-model="tag" class="inp-icon p-1 px-2 appearance-none outline-none w-full text-gray-800 " placeholder="Buscar No. Tag" type="text" />
                     </div>
                 </div>
                 <div class="w-full flex-2">
                     <div class="my-2 p-1 bg-white flex border border-gray-200 rounded">
-                        <input type="date" id="fecha"  class="p-1 px-2 appearance-none outline-none w-full text-gray-800 "> 
+                        <input v-model="fecha" type="date" class="p-1 px-2 appearance-none outline-none w-full text-gray-800 "> 
                       </div>
                 </div>
                 <div class="w-full flex-1">
                     <div class="my-2 p-1 bg-white flex border border-gray-200 rounded btn-search ">                      
-                        <button class="p-1 px-2 appearance-none outline-none w-full text-white " :disabled="isLoading" :class="{'cursor-not-allowed': isLoading}" @click="buscar()">Buscar</button>
+                        <button class="p-1 px-2 appearance-none outline-none w-full text-white " :disabled="isLoading" :class="{'cursor-not-allowed': isLoading}" @click="serch(plaza, tag, fecha)">Buscar</button>
                     </div>
+                </div>
+                <div class="w-full flex-1">
+                  <div class="my-2 p-1 bg-white flex border border-gray-200 rounded btn-search ">                      
+                    <button class="p-1 px-2 appearance-none outline-none w-full text-white " :disabled="isLoading" :class="{'cursor-not-allowed': isLoading}" @click="limpiar()">Limpiar</button>
+                  </div>
                 </div>
                 <FilesDownload @download-api="downloadApi"></FilesDownload>
             </div>
@@ -32,15 +37,42 @@
     </div>
   </div>
     <TablaBusquedaTransacciones
-      v-if="isLoading == false"
       :dataCruces="cruces"
     ></TablaBusquedaTransacciones>
-    <div class="loading" v-else>Cargando Datos...</div>
-    <button v-if="paginaActual > 1" class="button-pagination" @click="left()">Anterior</button>
+    <div class="mt-16 -mb-44">
+      <Paginacion
+        :total-pages="totalPaginas" 
+        :total="100"
+        :current-page="currentPage"
+        :has-more-pages="hasMorePages" 
+        @pagechanged="showMore"
+      ></Paginacion>
+    </div>
+      <!-- MODAL CARGANDO -->
+  <div class="inset-0" :class="{'modal-container': modalLoading}">
+    <div v-if="modalLoading" class=" inset-0 font-titulo mt-66 mb-8">
+      <div class="rounded-lg w-66 justify-center absolute  inset-x-0 bg-none mx-auto px-12 py-10 ">          
+        <div class="justify-center text-center block">            
+          <img src="@/assets/load.gif"  class="h-48 w-48" />
+        </div>
+      </div>
+    </div>
+  </div>
+    <!--<button v-if="paginaActual > 1" class="button-pagination" @click="left()">Anterior</button>
     <button v-if="paginaActual < paginas" class="button-pagination" @click="right()">Siguiente</button>
-    <p v-if="isLoading == false" class="desc-paginacion">
+    <p  class="desc-paginacion">
       Página {{ paginaActual }} de {{ paginas }}
-    </p>
+    </p>-->
+  </div>
+<!-- MODAL CARGANDO -->
+  <div class="inset-0" :class="{'modal-container': modalLoading}">
+    <div v-if="modalLoading" class=" inset-0 font-titulo mt-66 mb-8">
+      <div class="rounded-lg w-66 justify-center absolute  inset-x-0 bg-none mx-auto px-12 py-10 ">          
+        <div class="justify-center text-center block">            
+          <img src="@/assets/load.gif"  class="h-48 w-48" />
+        </div>
+      </div>
+    </div>
   </div>
   <Footer></Footer>
 </template>
@@ -53,6 +85,7 @@ import Footer from "../../components/Footer-login";
 import axios from "axios";
 import FilesDownload from '../../components/Files-descargar.vue'
 import ServiceFiles from '../../Servicios/Files-Service'
+import Paginacion from "../../components/Paginacion.vue"
 export default {
   name: "BusquedaCruces",
   components: {
@@ -60,30 +93,38 @@ export default {
     Navbar,
     Footer,
     FormTramoPlaza,    
-    FilesDownload
+    FilesDownload,
+    Paginacion
   },
   data() {
     return {
-      isLoading: true,
+      //isLoading: false,
       cruces: [],
-      paginas: 1,
-      paginaActual: 1,
+      //paginas: 1,
+      //paginaActual: 1,
       token: "",
-      plazas: [],
-      data: {
+      //plazas: [],
+      /*data: {
         pagenumber: 1,
         rowsofpage: 5,
         tagfilter: null,
         plaza: null,
         fechainicial: null,
-      },
-      value: '',
+      },*/
+      tag:null,
+      fecha:null,
+      //value: '',
       formato:'',
       tramo:'',
-      plaza:''
+      plaza:'',
+      page: 1,
+      totalPaginas: 0,
+      currentPage: 1,
+      hasMorePages: true,
+      modalLoading: false
     };
   },
-  mounted() {
+/* mounted() {
     function getCookie(cname) {
       var name = cname + "=";
       var decodedCookie = decodeURIComponent(document.cookie);
@@ -131,9 +172,75 @@ export default {
             });
         });
     }
-  },
+  },*/
   methods: {
-    pedirDatos: function (pagina, tag, plazas, fecha) {
+    limpiar(){
+      this.cruces = []
+      this.fecha = null
+      this.tag = null
+      this.totalPaginas = 0
+      this.currentPage = 1
+      this.hasMorePages = true
+    },
+    serch(plaza,tag, fecha){
+      this.cruces=[]
+      console.log([plaza,tag,fecha]);
+      if(plaza == '' || plaza == undefined || plaza == null){
+        this.$notify({
+          title:'Sin Información',
+          text:'Se debe de seleccionar la plaza para realizar una busqueda',
+          type: 'warn'
+        });
+      }else{
+        axios.get(`${API}/Transacciones/BusquedaTransacciones/${plaza}/${this.page}/null/null`)
+        .then((result)=>{
+          console.log(result);
+          if(result.data.status == "Ok"){
+            this.modalLoading = false
+            this.totalPaginas = result.data.numberPages
+            this.currentPage = result.data.now
+            result.data.body.forEach((e)=>{
+              let obj = {
+                tag: e.noTag,
+                carril: e.carril,
+                fecha: e.fecha,
+                medioPago: e.nombrePago,
+                tipo: e.tipoVehiculo,
+                tarifa: e.tarifa
+              }
+              this.cruces.push(obj)
+            })
+          }
+        })
+      }
+    },
+    showMore(page){
+      this.cruces = []
+      let plaza = this.plaza
+      let fecha = this.fecha;
+      let tag = this.tag
+      axios.get(`${API}/Transacciones/BusquedaTransacciones/${plaza}/${page}/${fecha}/${tag}`)
+        .then((result)=>{
+          console.log(result);
+          if(result.data.status == "Ok"){
+            this.modalLoading = false
+            this.totalPaginas = result.data.numberPages
+            this.currentPage = result.data.now
+            result.data.body.forEach((e)=>{
+              let obj = {
+                tag: e.noTag,
+                carril: e.carril,
+                fecha: e.fecha,
+                medioPago: e.nombrePago,
+                tipo: e.tipoVehiculo,
+                tarifa: e.tarifa
+              }
+              this.cruces.push(obj)
+            })
+          }
+        })
+    },
+    /*pedirDatos: function (pagina, tag, plazas, fecha) {
       let config = {
         headers: {
           Authorization: "Bearer " + this.token,
@@ -168,8 +275,8 @@ export default {
             this.cruces.push(obj);
           });
         });
-    },
-    left: function () {
+    },*/
+    /*left: function () {
       if (this.paginaActual <= this.paginas) {
         this.paginaActual = this.paginaActual - 1;
         this.pedirDatos(
@@ -181,8 +288,8 @@ export default {
       } else {
         console.log("No se puede regresar la pagina");
       }
-    },
-    right: function () {
+    },*/
+    /*right: function () {
       if (this.paginaActual < this.paginas) {
         this.paginaActual = this.paginaActual + 1;
         this.pedirDatos(
@@ -194,8 +301,8 @@ export default {
       } else {
         console.log("No se puede cambiar la pagina");
       }
-    },
-    buscar: function () {
+    },*/
+    /*buscar: function () {
         let fecha = document.getElementById("fecha").value;
         let tag = document.getElementById("tag").value;
         this.paginaActual = 1;
@@ -203,31 +310,53 @@ export default {
         this.pedirDatos(this.paginaActual, tag, plaza , fecha);
         document.getElementById("fecha").value = "";
         document.getElementById("tag").value = ""; 
-    },
-    downloadApi: function (tipo) {
+    },*/
+    downloadApi (tipo) {
       console.log(tipo)
       var myHeaders = new Headers();
       myHeaders.append("Authorization", "Bearer " + this.token);
       myHeaders.append("Content-Type", "application/json");
-      let fecha = document.getElementById("fecha").value;
-      let tag = document.getElementById("tag").value;
-      let plaza = this.plaza
-      let carril = ''
-      let fechaInicial = fecha
-      let fechaFinal = ''
-      if (tipo == "csv") {
-        ServiceFiles.xml_hhtp_request(`${API}/Transacciones/Download/Csv?tag=${tag}&carril=${carril}&plaza=${plaza}&fechaInicial=${fechaInicial}&fechaFinal=${fechaFinal}`, 'transacciones.csv')
-      } 
-      else if (tipo == "excel") {        
-        ServiceFiles.xml_hhtp_request(`${API}/Transacciones/Download/Excel?tag=${tag}&carril=${carril}&plaza=${plaza}&fechaInicial=${fechaInicial}&fechaFinal=${fechaFinal}`, 'transacciones.xlsx')            
-      } 
-      else if (tipo == "txt") {
-        ServiceFiles.xml_hhtp_request(`${API}/Transacciones/Download/txt?tag=${tag}&carril=${carril}&plaza=${plaza}&fechaInicial=${fechaInicial}&fechaFinal=${fechaFinal}`, 'transacciones.txt')
+      if(this.fecha == null && this.tag == null){
+        let fecha = ''
+        let tag = ''
+        let plaza = this.plaza
+        let carril = ''
+        let fechaInicial = fecha
+        let fechaFinal = ''
+        if (tipo == "csv") {
+          ServiceFiles.xml_hhtp_request(`${API}/Transacciones/Download/Csv?tag=${tag}&carril=${carril}&plaza=${plaza}&fechaInicial=${fechaInicial}&fechaFinal=${fechaFinal}`, 'transacciones.csv')
+        } 
+        else if (tipo == "excel") {        
+          ServiceFiles.xml_hhtp_request(`${API}/Transacciones/Download/Excel?tag=${tag}&carril=${carril}&plaza=${plaza}&fechaInicial=${fechaInicial}&fechaFinal=${fechaFinal}`, 'transacciones.xlsx')            
+        } 
+        else if (tipo == "txt") {
+          ServiceFiles.xml_hhtp_request(`${API}/Transacciones/Download/txt?tag=${tag}&carril=${carril}&plaza=${plaza}&fechaInicial=${fechaInicial}&fechaFinal=${fechaFinal}`, 'transacciones.txt')
+        }
+      }else{
+        let fecha = this.fecha
+        let tag = this.tag
+        let plaza = this.plaza
+        let carril = ''
+        let fechaInicial = fecha
+        let fechaFinal = ''
+        if (tipo == "csv") {
+          ServiceFiles.xml_hhtp_request(`${API}/Transacciones/Download/Csv?tag=${tag}&carril=${carril}&plaza=${plaza}&fechaInicial=${fechaInicial}&fechaFinal=${fechaFinal}`, 'transacciones.csv')
+        } 
+        else if (tipo == "excel") {        
+          ServiceFiles.xml_hhtp_request(`${API}/Transacciones/Download/Excel?tag=${tag}&carril=${carril}&plaza=${plaza}&fechaInicial=${fechaInicial}&fechaFinal=${fechaFinal}`, 'transacciones.xlsx')            
+        } 
+        else if (tipo == "txt") {
+          ServiceFiles.xml_hhtp_request(`${API}/Transacciones/Download/txt?tag=${tag}&carril=${carril}&plaza=${plaza}&fechaInicial=${fechaInicial}&fechaFinal=${fechaFinal}`, 'transacciones.txt')
+        }
       }
     },
-    recibir_tramo_plaza(value){
+    /*recibir_tramo_plaza(value){
       this.plaza = value.plaza == undefined ? 0 : value.plaza
       console.log(value);
+    },*/
+    recibir_tramo_plaza(value){
+      this.tramo = value.tramo
+      this.plaza = value.plaza
     },
   
   },

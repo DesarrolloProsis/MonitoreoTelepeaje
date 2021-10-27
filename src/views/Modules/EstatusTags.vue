@@ -2,12 +2,12 @@
 <Navbar></Navbar>
 <h1 class="title">Estatus Tags</h1>
 <div class="flex justify-center pt-4 filter-style">
-  <FormTramoPlaza @cambiar-tramo-plaza="recibir_tramo_plaza" :carrilesForm="true" :tipo="''"></FormTramoPlaza>
+  <FormTramoPlaza @cambiar-tramo-plaza="recibir_tramo_plaza" :tipo="''"></FormTramoPlaza>
 </div>
 <div class="flex justify-center">
   <div class="flex-auto text-center pt-4">
-    <input id="tag" class="input-tags" type="text" placeholder="IMDM0000" />
-    <img class="img-search" src="~@/assets/search.png" @click="buscarTag()"/>
+    <input id="tag" v-model="tag" class="input-tags" type="text" placeholder="IMDM0000" />
+    <img class="img-search" src="~@/assets/search.png" @click="buscar(plaza,tag)"/>
   </div>
 </div>
 
@@ -37,10 +37,11 @@ export default {
       tags: [],
       isLoading: true,
       tramo: '',
-      plaza: ''
+      plaza: '',
+      tag: null
     };
   },
-  mounted() {
+  /*mounted() {
     function getCookie(cname) {
       var name = cname + "=";
       var decodedCookie = decodeURIComponent(document.cookie);
@@ -72,22 +73,45 @@ export default {
         this.isLoading = false;
       })
     }
-  },
+  },*/
   methods: {
-    buscarTag: function(){
-      let config = { headers: { 'Authorization': 'Bearer ' + this.token } }
+    buscar(plaza,tag){
+      if(plaza != null && tag != null){
+        console.log([plaza,tag]);
+        axios.get(`${API}/Tags/BusquedaTag/${plaza}/${tag}`)
+        .then((result)=>{
+          this.tags = []
+          let obj = {
+            tag: result.data.tag,
+            estatus: result.data.estado,
+            saldo: result.data.saldo,
+            tipo_tag: result.data.tipoTag,
+            ult_act: result.data.actualizacion,
+          }
+          this.tags.push(obj)
+        })
+      }else{
+        this.$notify({
+          title:'Sin Información',
+          text:'Se debe de seleccionar la plaza e ingresar el tag para realizar una busqueda',
+          type: 'warn'
+        });
+      }
+    },
+    /*buscarTag: function(){
+      //let config = { headers: { 'Authorization': 'Bearer ' + this.token } }
       var tag = document.getElementById("tag").value;         
       if(tag != ""){
         console.log("Buscando...")                
         //TODO: eliminar esta y sustituir por palza_select        
         let urlQuery = ''
-        
+        console.log(this.plaza);
         if(this.plaza != '' && this.plaza != undefined)          
-           urlQuery = `Tags?PlazaId=${this.plaza}&Tag=${tag}`        
+          urlQuery = `Tags?PlazaId=${this.plaza}&Tag=${tag}`        
         else
             urlQuery = `Tags?Tag=${tag}`
         
-        axios.get(`${API}/${urlQuery}`, config)      
+        axios.get(`${API}/${urlQuery}`)      
           .then((res) =>{
             console.log(res)
             this.tags = []
@@ -104,7 +128,7 @@ export default {
             
           })
       }
-    },
+    },*/
     recibir_tramo_plaza(value){
       this.tramo = value.tramo
       this.plaza = value.plaza

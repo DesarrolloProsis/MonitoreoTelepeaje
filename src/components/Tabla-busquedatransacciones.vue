@@ -12,10 +12,10 @@
       <tr v-for="(cruces, index) in dataCruces" :key="index">
         <td>{{moment(cruces.fecha).format("YYYY-MM-DD  HH:mm a")}}</td>
         <td>{{cruces.carril}}</td>
-        <td>{{cruces.clase}}</td>
-        <td>{{cruces.pago}}</td>
+        <td>{{cruces.tipo}}</td>
+        <td>{{cruces.medioPago}}</td>
         <td>{{cruces.tarifa}} </td>
-        <td>{{cruces.num_tag}} </td>
+        <td>{{cruces.tag}} </td>
       </tr>
     </table>
   </div>
