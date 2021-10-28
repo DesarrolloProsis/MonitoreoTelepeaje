@@ -30,19 +30,19 @@
     <div class="flex flex-wrap bg-blue rounded-lg">
       <div class="flex-none filter-style">
         Nombre:
-        <input v-model="nombre" type="text" />
+        <input v-model="nombre" type="text" class="rounded "/>
       </div>
       <div class="flex-none filter-style">
         Estatus:
-        <select class="flex-none filter-style color-black" name="select" placeholder="Selecciona">
+        <select v-model="estatus" class="flex-none filter-style color-black rounded" name="select" placeholder="Selecciona">
           <option hidden selected>Seleccione </option>
-          <option value="100">Inactivo</option>
-          <option value="200">Activo</option>
+          <option value="true">Activo</option>
+          <option value="false">Inactivo</option>
         </select>
       </div>
       <div class="flex-none filter-style">
-        <!--<button @click="buscar(nombre)"  class="btn-buscar">Buscar</button>-->
-        <button @click="todos(nombre)"  class="btn-buscar mx-3">Todos</button>
+        <button @click="buscar(nombre,estatus)"  class="btn-buscar">Buscar</button>
+        <button @click="todos()"  class="btn-buscar mx-3">Todos</button>
       </div>
       <!-- <div class="flex-1 ml-89 hidden">
         <Multiselect v-model="formato" placeholder="Sleccione una Acción" @close="acciones_mapper(formato)" label="name" trackBy="name" :options="opticones_select_acciones()" :searchable="true">
@@ -83,7 +83,8 @@ export default {
   },
   setup(){
     
-    const nombre = ref('')
+    const nombre = ref(null)
+    const estatus = ref(null)
     const roles = ref([])    
     const userModal = ref(false)
     const newRol = reactive({ nombre: "", vistas: [] })
@@ -97,8 +98,12 @@ export default {
                          {text: 'Configuracion', alias: 'configuracion'}]
     
     const buscar_roles = async () => {   
-      axios.get(`${API}/CatalogoRoles`)
-        .then((response) => roles.value = response.data.body)
+      axios.get(`${API}/CatalogoRoles/null/null`)
+        .then((response) => {
+            roles.value = response.data.body 
+            console.log(response.data.body );
+          }
+        )
         .catch((error) => console.log(error))        
     }    
     //Nuevo Rol
@@ -159,22 +164,29 @@ export default {
           filtroOpciones.push(options[2])
       return filtroOpciones
     } */
-    function buscar (nombre){
+    function buscar (nombre,estatus){
       console.log(nombre);
+      axios.get(`${API}/CatalogoRoles/${nombre}/${estatus}`)
+        .then((response) => {
+            roles.value = response.data.body 
+            console.log(response.data.body );
+          }
+        )
+        .catch((error) => console.log(error))
     }
-    function todos (nombre){
-      let name = nombre.slice(0,3)+'Pulido'
-      //console.log(nombre.slice(0,3));
-      notify({
-                  title:'Nuevo Usuario',
-                  text: `Se creo el Usuario ${name}`,
-                  duration: 20000,
-                  closeonclick:true,
-                  type: 'success'
-                });
+    function todos (){
+      nombre.value = null
+      estatus.value = null
+      axios.get(`${API}/CatalogoRoles/null/null`)
+        .then((response) => {
+            roles.value = response.data.body 
+            console.log(response.data.body );
+          }
+        )
+        .catch((error) => console.log(error))
     }
     onMounted(buscar_roles)
-    return { roles, userModal, buscar_roles, abrir_modal_new_rol, newRol, optionRoles, craer_nuevo_rol,nombre,buscar,todos }
+    return { roles, userModal, buscar_roles, abrir_modal_new_rol, newRol, optionRoles, craer_nuevo_rol,nombre,estatus,buscar,todos }
 
   }, 
 };
