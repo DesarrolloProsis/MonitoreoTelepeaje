@@ -58,7 +58,7 @@ export default {
   display: block;
   margin: auto;
   width: 200px;
-  background-color: #adadad;
+  background-color:transparent;
 }
 @media (min-width: 1720px) {
   .imagen-modulo {

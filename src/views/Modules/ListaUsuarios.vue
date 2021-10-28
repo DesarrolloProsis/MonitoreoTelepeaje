@@ -123,7 +123,7 @@ export default {
     };
   },
   async beforeMount() {
-    let rol = await axios.get(`${API}/CatalogoRoles`)
+    let rol = await axios.get(`${API}/CatalogoRoles/null/null`)
     this.rol_Filtrado = rol.data.body
     let proxy = new Proxy(this.rol_Filtrado,{
         get : function(target, property){
