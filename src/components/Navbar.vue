@@ -23,7 +23,6 @@ export default{
     logout: function(){
       if(Servicio.getCookie("Token")){
         let info = jwt_decode(Servicio.getCookie("Token"))
-        console.log(info.UsuarioId);
         axios.patch(`${API}/Login?UsuarioId=${info.UsuarioId}`)
       }
       document.cookie = "TipoUser=; expires=Thu, 01 Jan 1970 00:00:00 UTC;" + "SameSite=None; Secure;";

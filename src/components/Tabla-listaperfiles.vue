@@ -83,7 +83,7 @@
         </p>
       </div>
       <div class="mt-5 text-center ml-6">
-        <button class="botonIconBuscar">Guardar</button>
+        <button @click="hideModulos()" class="botonIconBuscar">Guardar</button>
         <button @click="isModulosActive = false" class="botonIconCancelar">Cancelar</button>
       </div>
     </div>

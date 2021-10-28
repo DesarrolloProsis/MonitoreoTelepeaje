@@ -1,5 +1,5 @@
 <template>
-    <div class="w-full p-5 -mt-10 md:w-1/4">
+    <div class="w-full p-5 -mt-10 md:w-1/4" :class="{'ml-20': mostrar == 'false'}">
         <router-link :to="ruta" tag="div">
             <div class=" animacion p-8 ">
                 <img class="img border" :src="require('@/assets/' + img_src)" />
@@ -11,7 +11,7 @@
 <script>
 export default {
     name: "ModuloConfiguracion",
-    props: ["nombre", "img_src", "ruta"],
+    props: ["nombre", "img_src", "ruta", "mostrar"],
 };
 </script>
 <style scoped>

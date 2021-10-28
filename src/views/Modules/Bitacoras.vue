@@ -9,12 +9,15 @@
                 :nombre="modulo.nombre"
                 :img_src="modulo.img_src"
                 :ruta="modulo.ruta"
+                :mostrar="carriles"
             ></ModuloBitacoras>
         </div>
     </div>
     <Footer></Footer>
 </template>
 <script>
+import Servicio from '../../Servicios/Token-Services';
+import jwt_decode from "jwt-decode";
 import Navbar from "../../components/Navbar.vue";
 import Footer from "../../components/Footer-login";
 import ModuloBitacoras from "../../components/Modulo-bitacoras";
@@ -27,6 +30,56 @@ export default {
     data() {
         return {
             modulos: [
+                /*{
+                    img_src: "Menu/bitacora-accesos.png",
+                    nombre: "Bitácora De Alarmas",
+                    ruta: "/inicio/monitoreo-carriles/bitacora-alarmas",
+                },
+                {
+                    img_src: "Menu/bitacora-accesos.png",
+                    nombre: "Bitácora De Antifraude",
+                    ruta: "/inicio/bitacora-antifraude",
+                },
+                {
+                    img_src: "Menu/bitacora-accesos.png",
+                    nombre: "Bitácora De Listas",
+                    ruta: "/inicio/bitacora-listas",
+                },
+                {
+                    img_src: "Menu/bitacora-accesos.png",
+                    nombre: "Bitácora De Accesos",
+                    ruta: "/inicio/bitacora-accesos",
+                },*/
+            ],
+            carriles:true,
+        };
+    },
+    beforeMount(){
+        if(Servicio.getCookie("Token")){
+            let info = jwt_decode(Servicio.getCookie("Token"))
+            this.carriles = info['Monitoreo Carriles']
+            console.log(this.carriles);
+        }
+        if(this.carriles == 'false'){
+            this.modulos = [
+                {
+                    img_src: "Menu/bitacora-accesos.png",
+                    nombre: "Bitácora De Antifraude",
+                    ruta: "/inicio/bitacora-antifraude",
+                },
+                {
+                    img_src: "Menu/bitacora-accesos.png",
+                    nombre: "Bitácora De Listas",
+                    ruta: "/inicio/bitacora-listas",
+                },
+                {
+                    img_src: "Menu/bitacora-accesos.png",
+                    nombre: "Bitácora De Accesos",
+                    ruta: "/inicio/bitacora-accesos",
+                },
+            ]
+        }else{
+            this.modulos= [
                 {
                     img_src: "Menu/bitacora-accesos.png",
                     nombre: "Bitácora De Alarmas",
@@ -46,10 +99,10 @@ export default {
                     img_src: "Menu/bitacora-accesos.png",
                     nombre: "Bitácora De Accesos",
                     ruta: "/inicio/bitacora-accesos",
-                },
-            ],
-        };
-    },
+                }
+            ]    
+        }
+    }
 };
 </script>
 <style scoped>
