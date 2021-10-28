@@ -10,6 +10,7 @@
                 :img_src="modulo.img_src"
                 :ruta="modulo.ruta"
                 :mostrar="carriles"
+                :color="modulo.color"
             ></ModuloBitacoras>
         </div>
     </div>
@@ -63,42 +64,49 @@ export default {
         if(this.carriles == 'false'){
             this.modulos = [
                 {
-                    img_src: "Menu/bitacora-accesos.png",
+                    img_src: "Menu/bitacoras.png",
                     nombre: "Bitácora De Antifraude",
                     ruta: "/inicio/bitacora-antifraude",
+                    color: "green"
                 },
                 {
-                    img_src: "Menu/bitacora-accesos.png",
+                    img_src: "Menu/bitacoras.png",
                     nombre: "Bitácora De Listas",
                     ruta: "/inicio/bitacora-listas",
+                    color: "red"
                 },
                 {
-                    img_src: "Menu/bitacora-accesos.png",
+                    img_src: "Menu/bitacoras.png",
                     nombre: "Bitácora De Accesos",
                     ruta: "/inicio/bitacora-accesos",
+                    color: "yellow"
                 },
             ]
         }else{
             this.modulos= [
                 {
-                    img_src: "Menu/bitacora-accesos.png",
+                    img_src: "Menu/bitacoras.png",
                     nombre: "Bitácora De Alarmas",
                     ruta: "/inicio/monitoreo-carriles/bitacora-alarmas",
+                    color: "green"
                 },
                 {
-                    img_src: "Menu/bitacora-accesos.png",
+                    img_src: "Menu/bitacoras.png",
                     nombre: "Bitácora De Antifraude",
                     ruta: "/inicio/bitacora-antifraude",
+                    color: "red"
                 },
                 {
-                    img_src: "Menu/bitacora-accesos.png",
+                    img_src: "Menu/bitacoras.png",
                     nombre: "Bitácora De Listas",
                     ruta: "/inicio/bitacora-listas",
+                    color: "yellow"
                 },
                 {
-                    img_src: "Menu/bitacora-accesos.png",
+                    img_src: "Menu/bitacoras.png",
                     nombre: "Bitácora De Accesos",
                     ruta: "/inicio/bitacora-accesos",
+                    color: "blue"
                 }
             ]    
         }

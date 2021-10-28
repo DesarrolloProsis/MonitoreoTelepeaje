@@ -1,9 +1,11 @@
 <template>
   <div v-if="mostrar(nombre)" :class="{inactive:isInactive}"  class="w-1/2 md:w-1/4 p-5">
-    <router-link :to="ruta" tag="div">
-      <img class="imagen-modulo animacion"  :src="require('@/assets/' + imagen)" />
+    <div class="bg-blue-100 rounded-lg animacion">
+      <router-link :to="ruta" tag="div" class="">
+      <img class="imagen-modulo  "  :src="require('@/assets/' + imagen)" />
     </router-link>
     <h1 class="text-center py-5 font-titulo font-bold">{{ titulo }}</h1>
+    </div>
   </div>
 </template>
 
@@ -56,15 +58,15 @@ export default {
   display: block;
   margin: auto;
   width: 200px;
-  background-color: #F3F4F6;
+  background-color: #adadad;
 }
 @media (min-width: 1720px) {
   .imagen-modulo {
     display: block;
     margin: auto;
     width: 230px;
-
-    background-color: #F3F4F6;
+    padding: 15px ;
+    background-color: transparent;
   }
 }
 </style>

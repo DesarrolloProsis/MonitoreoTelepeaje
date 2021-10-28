@@ -1,9 +1,9 @@
 <template>
     <div class="w-full p-5 -mt-10 md:w-1/4" :class="{'ml-20': mostrar == 'false'}">
         <router-link :to="ruta" tag="div">
-            <div class=" animacion p-8 ">
-                <img class="img border" :src="require('@/assets/' + img_src)" />
-                <h1 class="text-center">{{ nombre }}</h1>
+            <div class="rounded-lg  animacion p-8 " :class="{'bg-blue-100': color == 'blue', 'bg-green-100': color == 'green','bg-red-100': color == 'red', 'bg-yellow-100': color == 'yellow'}">
+                <img class="img " :src="require('@/assets/' + img_src)" />
+                <h1 class="text-center py-5 font-titulo font-bold">{{ nombre }}</h1>
             </div>
         </router-link>
     </div>
@@ -11,7 +11,7 @@
 <script>
 export default {
     name: "ModuloConfiguracion",
-    props: ["nombre", "img_src", "ruta", "mostrar"],
+    props: ["nombre", "img_src", "ruta", "mostrar","color"],
 };
 </script>
 <style scoped>
@@ -25,7 +25,7 @@ export default {
     display: block;
     margin: auto;
     width: 200px;
-    background-color: #F3F4F6;
+    background-color: transparent;
 }
 .border h1 {
     text-align: center;

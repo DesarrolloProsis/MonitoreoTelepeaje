@@ -6,7 +6,7 @@
       Inicio 
       </router-link>
     </div>
-    <span class="text-white">Bienvenido {{ nombre }}</span>
+    <span class="text-white mt-2">Bienvenido {{ nombre }}</span>
     <div class="flex-none border border-red-600 rounded-lg bg-red-500 animacion -mt-1">
       <router-link to="/" tag="div">
         <button class="btn-salir mt-2" @click="logout()">Salir</button>

@@ -57,7 +57,7 @@ export default {
         },
         {
           titulo: "Búsqueda de Transacciones",
-          imagen: "Menu/busqueda-cruces.png",
+          imagen: "Menu/busqueda-transacciones.png",
           ruta: "/inicio/busqueda-transacciones",
           nombre:"Busqueda Cruces",
           isInactive:false
@@ -71,7 +71,7 @@ export default {
         }, */
         {
           titulo: "Bitácoras",
-          imagen: "Menu/bitacora-accesos.png",
+          imagen: "Menu/bitacoras.png",
           ruta: "/bitacoras",
           nombre:"Bitacora",
           isInactive:false
@@ -108,6 +108,3 @@ export default {
   }
 }
 </style>
-
-/// mandar eltipo de rol y que me retorne los modulos
-//para el router un endpoint donde le envio un dato y me retorna si puedo entrar o no a la ruta
