@@ -6,9 +6,10 @@
       Inicio 
       </router-link>
     </div>
-    <div class="flex-none">
+    <span class="text-white">Bienvenido {{ nombre }}</span>
+    <div class="flex-none border border-red-600 rounded-lg bg-red-500 animacion -mt-1">
       <router-link to="/" tag="div">
-        <button class="btn-salir" @click="logout()">Salir</button>
+        <button class="btn-salir mt-2" @click="logout()">Salir</button>
       </router-link>
     </div>
   </div>
@@ -19,6 +20,16 @@ import Servicio from '../Servicios/Token-Services';
 import jwt_decode from "jwt-decode";
 import axios from "axios";
 export default{
+  data(){
+    return {
+      nombre:''
+    }
+  },
+  beforeMount() {
+    Servicio.getCookie("Token")
+    let info = jwt_decode(Servicio.getCookie("Token"))
+    this.nombre = info.nameid
+  },
   methods:{
     logout: function(){
       if(Servicio.getCookie("Token")){
@@ -40,6 +51,7 @@ export default{
 .btn-salir {
   color: white;
   padding: 0px 10px;
+  width: 80px;
 }
 .btn-salir:focus {
   outline: none;
