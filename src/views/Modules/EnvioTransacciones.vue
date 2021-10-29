@@ -14,6 +14,7 @@
       </div>
       <div class="flex-none filter-style mx-16">
         <button @click="buscar(plaza,fecha,carril,tag)" class="btn-buscar">Buscar</button>
+        <button @click="todos(plaza)" class="btn-buscar ml-4 -mr-8">Limpiar</button>
       </div>
       <div class="flex-1">
         <Multiselect v-model="formato" placeholder="Sleccione un Formato" @close="acciones_mapper(formato)" label="name" trackBy="name" :options="opticones_select_acciones()" :searchable="true">
@@ -107,10 +108,47 @@ export default {
     })
   },*/
   methods:{
+    todos (plaza) {
+      this.transacciones = []
+      this.carril = ''
+      this.tag =''
+      let data = {
+        "plazaId": plaza,
+        "carril": 'null',
+        "fecha": 'null',
+        "tag": 'null',
+        "skip": 1
+      }
+      axios.post(`${API}/Transacciones/TransactionsFiltros`,data)
+      .then((result)=>{
+        console.log(result);
+        if(result.data.status == 'Ok'){
+          this.modalLoading = false
+          this.totalPaginas = result.data.numberPages
+          this.currentPage = result.data.now
+          result.data.body.forEach((e) => {
+            let obj = {
+              tag: e.idTag,
+              fechaEnvio: e.fechaEnvioOperador,
+              carril: e.carril,
+              claseCajero: e.claseCajero,
+              tarifa: e.tarifa
+            };
+            this.transacciones.push(obj);
+          });
+        }else{
+          this.modalLoading = false
+          this.$notify({
+            title:'Sin Información',
+            text:'No se encontrtaron transacciones en esta plaza',
+            type: 'warn'
+          });
+        }
+      })
+    },
     buscar: function(plaza, fecha, carril, tag){
       console.log([plaza,fecha,carril,tag]);
       if(carril == undefined && tag == ''){
-        console.log('if');
         let datoCarril = 'null'
         tag = 'null'
         this.modalLoading = true
@@ -122,7 +160,6 @@ export default {
           "tag": tag,
           "skip": 1
         }
-        console.log(data);
         axios.post(`${API}/Transacciones/TransactionsFiltros`,data)
         .then((result)=>{
           console.log(result);
