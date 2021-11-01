@@ -11,7 +11,7 @@
       </div>
       <div class="flex-none mt-1 ml-right text-white">
         Tiempo de actualizacion
-        <select v-model="tiempo" @change="tiempos(this.tiempo)" class="text-gray-800 w-16 rounded">
+        <select v-model="tiempo" @change="tiempos(tiempo)" class="text-gray-800 w-16 rounded">
           <option value="tres">3 min</option>
           <option value="seis">6 min</option>
           <option value="nueve">9 min</option>

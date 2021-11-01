@@ -30,7 +30,7 @@
       </div>
     </div>
     <TablaTransacciones :dataTransacciones="transacciones"></TablaTransacciones>
-    <div class="mt-20">
+    <div class="mt-20 -mb-32">
       <Paginacion
         :total-pages="totalPaginas" 
         :total="100"
@@ -111,7 +111,8 @@ export default {
     todos (plaza) {
       this.transacciones = []
       this.carril = ''
-      this.tag =''
+      this.tag = ''
+      this.fecha = ''
       let data = {
         "plazaId": plaza,
         "carril": 'null',
