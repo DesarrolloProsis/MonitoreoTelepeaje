@@ -1,6 +1,6 @@
 <template>
   <div v-if="mostrar(nombre)" :class="{inactive:isInactive}"  class="w-1/2 md:w-1/4 p-5">
-    <div class="bg-blue-100 rounded-lg animacion">
+    <div class="bg-blue-100 m-2 rounded-lg animacion">
       <router-link :to="ruta" tag="div" class="">
       <img class="imagen-modulo  "  :src="require('@/assets/' + imagen)" />
     </router-link>
