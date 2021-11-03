@@ -120,7 +120,7 @@ export default {
       tramoSeleccionado: '',
       rol_Filtrado:[],
       roles:[],
-      modalLoading:true,
+      modalLoading:false,
       //addEmi
       formato: ''
     };
