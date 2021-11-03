@@ -4,66 +4,21 @@
       <p>Filtros de Búsqueda:</p>
       <div class="flex flex-col md:flex-row border-gray-200 pb-0 mb-4">
         <div class="flex-1 flex flex-col md:flex-row md:space-x-2">
-          <div class="flex-2">
-            <div class="my-2 p-1 bg-white flex border border-gray-200 rounded">
-              <select
-                class="p-1 px-2 outline-none w-full text-gray-800"
-                name="select"
-              >
-                <option value="" selected disabled hidden>
-                  Seleccionar Tramo
-                </option>
-                <option value="0">Opción 1</option>
-              </select>
-            </div>
-          </div>
-          <div class="flex-2">
-            <div class="my-2 p-1 bg-white flex border border-gray-200 rounded">
-              <select
-                class="p-1 px-2 outline-none w-full text-gray-800"
-                name="select"
-              >
-                <option value="" selected disabled hidden>
-                  Seleccionar Plaza
-                </option>
-                <option value="0">Opción 1</option>
-              </select>
-            </div>
+          <div class="w-full ">
+            <FormTramoPlaza @cambiar-tramo-plaza="recibir_tramo_plaza" :tipo="'Transacciones'"></FormTramoPlaza>
           </div>
 
           <div class="flex-2">
             <div class="my-2 p-1 bg-white flex border border-gray-200 rounded btn-search">
-              <button
-                class="
-                  p-1
-                  px-2
-                  appearance-none
-                  outline-none
-                  w-full
-                  text-white
-                "
-              >
+              <button class="p-1 px-2 appearance-none outline-none w-full text-white">
                 Buscar
               </button>
             </div>
           </div>
           <div class="flex-2">
             <div class="my-2 p-1 bg-white flex border border-gray-200 rounded">
-              <router-link
-                to="/inicio/monitoreo-carriles/bitacora-alarmas"
-                tag="div"
-              >
-                <button
-                  class="
-                    p-1
-                    px-2
-                    appearance-none
-                    outline-none
-                    w-full
-                    text-gray-800
-                    hidden
-                  "
-                >
+              <router-link to="/inicio/monitoreo-carriles/bitacora-alarmas" tag="div">
+                <button class="p-1 px-2 appearance-none outline-none w-full text-gray-800 hidden">
                   Ir a Bitácora de Alarmas
                 </button>
               </router-link>
@@ -98,14 +53,18 @@
 </template>
 <script>
 import Carril from "../components/Carril";
+import FormTramoPlaza from '../components/Form-tramoplaza.vue'
 
 export default {
   name: "TablaCarriles",
   components: {
     Carril,
+    FormTramoPlaza
   },
   data() {
     return {
+      plaza: '',
+      tramo: '',
       carriles: [
         {
           cuerpo: "A09",
@@ -236,8 +195,14 @@ export default {
           ultimo_cruce: "11:10",
         },
       ]
-    };
+    };    
   },
+  methods: {
+    recibir_tramo_plaza(value){
+      this.tramo = value.tramo
+      this.plaza = value.plaza      
+    }
+  }
 };
 </script>
 <style scoped>
