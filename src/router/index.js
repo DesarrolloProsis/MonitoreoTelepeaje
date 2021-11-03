@@ -248,7 +248,7 @@ router.beforeEach((to, _from, next) => {
               next()
             }else{
               console.log("Esta no esta en el token")
-              next('/')
+              next('/')              
             }   
           }else{
             next();
@@ -261,12 +261,12 @@ router.beforeEach((to, _from, next) => {
           document.cookie = "Token=; expires=Thu, 01 Jan 1970 00:00:00 UTC;" + "SameSite=None; Secure;";
           console.log("Error Validando Token...")
           console.log(error)
-          next('/')
+          next('/')          
         })
     } else {
       document.cookie = "TipoUser=; expires=Thu, 01 Jan 1970 00:00:00 UTC;" + "SameSite=None; Secure;";
       document.cookie = "Token=; expires=Thu, 01 Jan 1970 00:00:00 UTC;" + "SameSite=None; Secure;";
-      next('/')
+      next('/')      
     }
   } else {
     next();

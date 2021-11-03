@@ -1,20 +1,15 @@
 <template>
-
-  <div
-    class="flex flex-col flex-wrap flex-none mr-2"
-    v-for="(carril, index) in carrilesdata"
-    :key="index"
-  >
+  <div v-for="(carril, index) in carrilesdata" :key="index" class="flex flex-col flex-wrap flex-none mr-2">
     <div class="flex-1 bg-carriles-cian mh-cuerpo">
-      {{ carril.cuerpo }}
-      <div v-if="carril.status == 'Green'">
+      {{ carril.carril }}
+      <div v-if="carril.estado == 'NA' || carril.estado == 'NB'">
         <span class="circulo-green"></span>
       </div>
-      <div v-else-if="carril.status == 'Red'">
+      <div v-else-if="carril.status == 'XB' || carril.estado == 'XA'">
         <span class="circulo-red"></span>
         <ModalCarriles :carril="carril.cuerpo" tipoalarma="ejemplotipoalarma"></ModalCarriles>
       </div>
-       <div v-else>
+      <div v-else>
         <span class="circulo-none"></span>
       </div>
     </div>
@@ -25,39 +20,9 @@
       {{ carril.lectura_invalida }}
     </div> -->
     <div class="flex-1 bg-carriles-blue mh-other">
-      {{ carril.ultimo_cruce }}
+      {{ carril.ultimoCruce.substring(0,8) }}
     </div>
-  </div>
-
-  <div
-    class="flex flex-col flex-wrap flex-none mr-2"
-    v-for="(carril, index) in carrilesB"
-    :key="index"
-  >
-    <div class="flex-1 bg-carriles-cian mh-cuerpo">
-      {{ carril.cuerpo }}
-      <div v-if="carril.status == 'Green'">
-        <span class="circulo-green"></span>
-      </div>
-      <div v-else-if="carril.status == 'Red'">
-        <span class="circulo-red"></span>
-        <ModalCarriles :carril="carril.cuerpo" tipoalarma="ejemplotipoalarma"></ModalCarriles>
-      </div>
-       <div v-else>
-        <span class="circulo-none"></span>
-      </div>
-    </div>
-    <!-- <div class="flex-1 bg-carriles-green mh-other">
-      {{ carril.lectura_valida }}
-    </div>
-    <div class="flex-1 bg-carriles-red mh-other">
-      {{ carril.lectura_invalida }}
-    </div> -->
-    <div class="flex-1 bg-carriles-blue mh-other">
-      {{ carril.ultimo_cruce }}
-    </div>
-  </div>
-  
+  </div>  
 </template>
 <script>
 import ModalCarriles from "../components/Modal-carriles";
@@ -67,7 +32,7 @@ export default {
       ModalCarriles
   },
   
-  props: ["carrilesdata", "carrilesB"],
+  props: ["carrilesdata"],
   
 };
 </script>

@@ -10,7 +10,7 @@
 
           <div class="flex-2">
             <div class="my-2 p-1 bg-white flex border border-gray-200 rounded btn-search">
-              <button class="p-1 px-2 appearance-none outline-none w-full text-white">
+              <button @click="buscar_carriles_plaza" class="p-1 px-2 appearance-none outline-none w-full text-white">
                 Buscar
               </button>
             </div>
@@ -29,17 +29,17 @@
       <hr />
     </div>
     
-    <div class="flex ta-center overflow-x-auto pt-6">
+    <div v-for="(carrilTramo, key) in carrilesTramos" :key="key" class="flex ta-center overflow-x-auto pt-6">
       <div class="flex justify-center items-center flex-none bg-carriles-gray p-5">
-        <div>Plaza:<br />Tepozotlan<br />Cuerpo A</div>
+        <div>Plaza:<br />Tepozotlan<br />{{carrilTramo.nombreGare}}</div>
       </div>
       <div class="flex flex-col flex-none">
         <div class="flex-1 bg-carriles-gray mh-cuerpo lh-cuerpo">Carril</div>
         <div class="flex-1 bg-carriles-gray mh-other ">Último Cruce</div>
       </div>
-      <Carril :carrilesdata="carriles"></Carril>
+      <Carril :carrilesdata="carrilTramo.carriles" :tipo="'alarma'"></Carril>
     </div>
-    <div class="flex ta-center overflow-x-auto pt-6">
+    <!-- <div class="flex ta-center overflow-x-auto pt-6">
       <div class="flex justify-center items-center flex-none bg-carriles-gray p-5">
         <div>Plaza:<br />Tepozotlan<br />Cuerpo B</div>
       </div>
@@ -48,12 +48,14 @@
         <div class="flex-1 bg-carriles-gray mh-other ">Último Cruce</div>
       </div>
       <Carril :carrilesB="carrilesB"></Carril>
-    </div>
+    </div> -->
   </div>
 </template>
 <script>
 import Carril from "../components/Carril";
 import FormTramoPlaza from '../components/Form-tramoplaza.vue'
+import axios from "axios";
+const API = process.env.VUE_APP_URL_API_PRODUCCION
 
 export default {
   name: "TablaCarriles",
@@ -65,6 +67,7 @@ export default {
     return {
       plaza: '',
       tramo: '',
+      carrilesTramos: [],
       carriles: [
         {
           cuerpo: "A09",
@@ -197,8 +200,48 @@ export default {
       ]
     };    
   },
-  methods: {
+  beforeMount(){
+    this.plaza = '184'
+    this.buscar_carriles_plaza()
+  },
+  methods: {  
+    buscar_carriles_plaza(){
+      this.carrilesTramos = []
+      axios.get(`${API}/CarrilesMonitoreo?PlazaId=${this.plaza}`)
+        .then((response) => {
+          console.log(response.data)
+          let tramos = []
+          response.data.forEach((item) => {
+            console.log(item.id_gare)
+            console.log(!tramos.some(tr => tr.id_gare == item.id_gare))
+            if(!tramos.some(tr => tr.id_gare == item.id_gare)){
+              tramos.push({id_gare: item.id_gare, nombre: item.gare})
+            }
+          });
+          console.log(tramos)
+          let tramosCarril = []
+          tramos.forEach((item2) => {
+            let carriles = response.data.filter(itemfilter => itemfilter.id_gare == item2.id_gare)
+            carriles.sort((a,b) => {          
+                console.log(parseInt(a.carril.substring(1,3)))      
+                return parseInt(a.carril.substring(1,3)) - parseInt(b.carril.substring(1,3))
+            })
+            tramosCarril.push({
+              nombreGare: item2.nombre,
+              idGare: item2.id_gare,
+              carriles: carriles            
+            })
+          })
+          console.log(tramosCarril)
+          this.carrilesTramos = tramosCarril
+        })     
+        .catch((error) => {
+          console.log(error)
+        })      
+      
+    }, 
     recibir_tramo_plaza(value){
+      console.log(value)
       this.tramo = value.tramo
       this.plaza = value.plaza      
     }

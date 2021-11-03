@@ -46,7 +46,7 @@ export default {
         const obtner_plazas_por_tramo = async () => {                  
             axios.get(`${API}/PlazaAsignada/PorTramo/${tramoSeleccionado.value.id}`)
             .then((responseFullPlazas) => {  
-                //console.log(responseFullPlazas)     
+                console.log(responseFullPlazas)     
                 Servicio.getCookie("Token")
                 let info = jwt_decode(Servicio.getCookie("Token"))
                 console.log(info.UsuarioId);             
@@ -56,12 +56,11 @@ export default {
                     plazas.value = []      
                     responseFullPlazas.data.body.forEach(plaza => {
                         let objPlazaValida = responsePlazaUsuario.data.body
-                        .find(item => item.plazaAsignadaId == plaza.plazaAsignadaId)
-
+                        .find(item => item.plazaAsignadaId == plaza.plazaAsignadaId)                        
                         if(objPlazaValida != undefined)
-                            plazas.value.push(objPlazaValida)                        
+                            plazas.value.push({ ...objPlazaValida, numeroPlazaCapufe: plaza.numeroPlazaCapufe})                        
                     });                   
-                    
+                    console.log(plazas.value)
                     if(props.carrilesForm)                    
                         emit_tramo_plaza()                                            
                 })                             
@@ -86,7 +85,11 @@ export default {
         }
 
         const emit_tramo_plaza = () => {
-            emit('cambiar-tramo-plaza', { 'tramo': tramoSeleccionado.value.id, plaza:plazaSeleccionado.value.plazaAsignadaId, carril: carrilSeleccionado.value.lineaCarril })
+            console.log(props)
+            if(props.tipo == 'alarma')
+                emit('cambiar-tramo-plaza', { 'tramo': tramoSeleccionado.value.id, plaza:plazaSeleccionado.value.numeroPlazaCapufe, carril: carrilSeleccionado.value.lineaCarril })
+            else
+                emit('cambiar-tramo-plaza', { 'tramo': tramoSeleccionado.value.id, plaza:plazaSeleccionado.value.plazaAsignadaId, carril: carrilSeleccionado.value.lineaCarril })
         }
         onMounted(obtner_plazas_por_tramo)  
         return { tramos, plazas, obtner_plazas_por_tramo, obtener_carriles_por_plaza, tramoSeleccionado, plazaSeleccionado, carrilSeleccionado, emit_tramo_plaza, carriles }
