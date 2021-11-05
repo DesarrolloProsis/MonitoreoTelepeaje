@@ -41,15 +41,16 @@
     </div>
   </div>
   <!-- MODAL CARGANDO -->
-  <div class="inset-0" :class="{'modal-container': modalLoading}">
-    <div v-if="modalLoading" class=" inset-0 font-titulo mt-66 mb-8">
-      <div class="rounded-lg w-66 justify-center absolute  inset-x-0 bg-none mx-auto px-12 py-10 ">          
-        <div class="justify-center text-center block">            
-          <img src="@/assets/load.gif"  class="h-48 w-48" />
+    <div class="inset-0" :class="{'modal-container': modalLoading}">
+      <div v-if="modalLoading" class=" inset-0 font-titulo mt-56 mb-8">
+        <div class="rounded-lg w-66 justify-center absolute inset-x-0 bg-none mx-69 px-12 py-10 ">          
+          <div class="justify-center text-center block">            
+            <!--<img src="@/assets/load.gif"  class="h-48 w-48" />-->
+            <Spinner/>
+          </div>
         </div>
       </div>
     </div>
-  </div>
   <Footer></Footer>
 </template>
 <script>
@@ -60,10 +61,11 @@ import Multiselect from '@vueform/multiselect';
 import Navbar from "../../components/Navbar.vue";
 import Footer from "../../components/Footer-login";
 import Paginacion from "../../components/Paginacion.vue"
+import Spinner from '../../components/Spinner.vue'
 import axios from "axios";
 export default {
   name: "EnvioTransacciones",
-  components: { TablaTransacciones, Navbar, Footer,FormTramoPlaza,Multiselect,Paginacion },
+  components: { TablaTransacciones, Navbar, Footer,FormTramoPlaza,Multiselect,Paginacion, Spinner },
   data() {
     return {
       transacciones: [],
@@ -164,7 +166,7 @@ export default {
         axios.post(`${API}/Transacciones/TransactionsFiltros`,data)
         .then((result)=>{
           console.log(result);
-          if(result.data.status == 'Ok'){
+          if((result.data.status == 'Ok') && (result.data.body.length > 0)){
             this.modalLoading = false
             this.totalPaginas = result.data.numberPages
             this.currentPage = result.data.now
@@ -201,7 +203,7 @@ export default {
         axios.post(`${API}/Transacciones/TransactionsFiltros`,data)
         .then((result)=>{
           console.log(result);
-          if(result.data.status == 'Ok'){
+          if((result.data.status == 'Ok') && (result.data.body.length > 0)){
             this.modalLoading = false
             this.totalPaginas = result.data.numberPages
             this.currentPage = result.data.now
@@ -219,7 +221,7 @@ export default {
             this.modalLoading = false
             this.$notify({
               title:'Sin Información',
-              text:'No se encontrtaron transacciones en esta plaza',
+              text:'No se encontrtaron transacciones con el tag ingresado',
               type: 'warn'
             });
           }
@@ -238,7 +240,7 @@ export default {
         axios.post(`${API}/Transacciones/TransactionsFiltros`,data)
         .then((result)=>{
           console.log(result);
-          if(result.data.status == 'Ok'){
+          if((result.data.status == 'Ok') && (result.data.body.length > 0)){
             this.modalLoading = false
             this.totalPaginas = result.data.numberPages
             this.currentPage = result.data.now
@@ -256,7 +258,7 @@ export default {
             this.modalLoading = false
             this.$notify({
               title:'Sin Información',
-              text:'No se encontrtaron transacciones en esta plaza',
+              text:'No se encontrtaron transacciones en el carril seleccionado',
               type: 'warn'
             });
           }
@@ -275,7 +277,7 @@ export default {
         axios.post(`${API}/Transacciones/TransactionsFiltros`,data)
         .then((result)=>{
           console.log(result);
-          if(result.data.status == 'Ok'){
+          if((result.data.status == 'Ok') && (result.data.body.length > 0)){
             this.modalLoading = false
             this.totalPaginas = result.data.numberPages
             this.currentPage = result.data.now
@@ -293,7 +295,7 @@ export default {
             this.modalLoading = false
             this.$notify({
               title:'Sin Información',
-              text:'No se encontrtaron transacciones en esta plaza',
+              text:'No se encontrtaron transacciones',
               type: 'warn'
             });
           }
@@ -364,7 +366,7 @@ export default {
     width: 100%;
     height: 100vh;
     z-index: 1000;
-    background: rgba(0, 0, 0, 0.5);
+    background: rgba(0, 0, 0, 0.2);
 }
 .filter-style-2 {
   color: white;
