@@ -50,10 +50,22 @@
       <Carril :carrilesB="carrilesB"></Carril>
     </div> -->
   </div>
+  <!-- MODAL CARGANDO -->
+  <div class="inset-0" :class="{'modal-container': modalLoading}">
+      <div v-if="modalLoading" class=" inset-0 font-titulo mt-56 mb-8">
+          <div class="rounded-lg w-66 justify-center absolute inset-x-0 bg-none mx-69 px-12 py-10 ">          
+              <div class="justify-center text-center block">            
+                  <!--<img src="@/assets/load.gif"  class="h-48 w-48" />-->
+                  <Spinner/>
+              </div>
+          </div>
+      </div>
+  </div>
 </template>
 <script>
 import Carril from "../components/Carril";
 import FormTramoPlaza from '../components/Form-tramoplaza.vue'
+import Spinner from '../components/Spinner.vue'
 import axios from "axios";
 const API = process.env.VUE_APP_URL_API_PRODUCCION
 
@@ -61,143 +73,15 @@ export default {
   name: "TablaCarriles",
   components: {
     Carril,
-    FormTramoPlaza
+    FormTramoPlaza,
+    Spinner
   },
   data() {
     return {
       plaza: '',
       tramo: '',
       carrilesTramos: [],
-      carriles: [
-        {
-          cuerpo: "A09",
-          status: "Green",
-          lectura_valida: "1280",
-          lectura_invalida: "1180",
-          ultimo_cruce: "11:10",
-        },
-        {
-          cuerpo: "A10",
-          status: "Red",
-          lectura_valida: "1280",
-          lectura_invalida: "1180",
-          ultimo_cruce: "11:10",
-        },
-        {
-          cuerpo: "A11",
-          status: "Green",
-          lectura_valida: "1280",
-          lectura_invalida: "1180",
-          ultimo_cruce: "11:10",
-        },
-        {
-          cuerpo: "A12",
-          status: "Green",
-          lectura_valida: "1280",
-          lectura_invalida: "1180",
-          ultimo_cruce: "11:10",
-        },
-        {
-          cuerpo: "A13",
-          status: "Green",
-          lectura_valida: "1280",
-          lectura_invalida: "1180",
-          ultimo_cruce: "11:10",
-        },
-        {
-          cuerpo: "A14",
-          status: "Green",
-          lectura_valida: "1280",
-          lectura_invalida: "1180",
-          ultimo_cruce: "11:10",
-        },
-        {
-          cuerpo: "A15",
-          status: "Green",
-          lectura_valida: "1280",
-          lectura_invalida: "1180",
-          ultimo_cruce: "11:10",
-        },
-        {
-          cuerpo: "A19",
-          status: "Green",
-          lectura_valida: "1280",
-          lectura_invalida: "1180",
-          ultimo_cruce: "11:10",
-        },
-        {
-          cuerpo: "A20",
-          status: "Green",
-          lectura_valida: "1280",
-          lectura_invalida: "1180",
-          ultimo_cruce: "11:10",
-        },
-      ],
-      carrilesB: [
-        {
-          cuerpo: "B02",
-          status: "Green",
-          lectura_valida: "1280",
-          lectura_invalida: "1180",
-          ultimo_cruce: "11:10",
-        },
-        {
-          cuerpo: "B03",
-          status: "Green",
-          lectura_valida: "1280",
-          lectura_invalida: "1180",
-          ultimo_cruce: "11:10",
-        },
-        {
-          cuerpo: "B04",
-          status: "Green",
-          lectura_valida: "1280",
-          lectura_invalida: "1180",
-          ultimo_cruce: "11:10",
-        },
-        {
-          cuerpo: "B05",
-          status: "Green",
-          lectura_valida: "1280",
-          lectura_invalida: "1180",
-          ultimo_cruce: "11:10",
-        },
-        {
-          cuerpo: "B06",
-          status: "Green",
-          lectura_valida: "1280",
-          lectura_invalida: "1180",
-          ultimo_cruce: "11:10",
-        },
-        {
-          cuerpo: "B07",
-          status: "Green",
-          lectura_valida: "1280",
-          lectura_invalida: "1180",
-          ultimo_cruce: "11:10",
-        },
-        {
-          cuerpo: "B08",
-          status: "Green",
-          lectura_valida: "1280",
-          lectura_invalida: "1180",
-          ultimo_cruce: "11:10",
-        },
-        {
-          cuerpo: "B17",
-          status: "Green",
-          lectura_valida: "1280",
-          lectura_invalida: "1180",
-          ultimo_cruce: "11:10",
-        },
-        {
-          cuerpo: "B19",
-          status: "Green",
-          lectura_valida: "1280",
-          lectura_invalida: "1180",
-          ultimo_cruce: "11:10",
-        },
-      ]
+      modalLoading: true
     };    
   },
   beforeMount(){
@@ -234,9 +118,12 @@ export default {
           })
           console.log(tramosCarril)
           this.carrilesTramos = tramosCarril
+          this.modalLoading = false
+          
         })     
         .catch((error) => {
           console.log(error)
+          this.modalLoading = false
         })      
       
     }, 
@@ -249,6 +136,13 @@ export default {
 };
 </script>
 <style scoped>
+.modal-container{
+    position: fixed;
+    width: 100%;
+    height: 100vh;
+    z-index: 1000;
+    background: rgba(0, 0, 0, 0.2);
+}
 .color-black {
   color: black !important;
 }
