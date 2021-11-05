@@ -493,7 +493,7 @@ export default {
     width: 100%;
     height: 100vh;
     z-index: 1000;
-    background: rgba(0, 0, 0, 0.5);
+    background: rgba(0, 0, 0, 0.2);
 }
 .loading {
   text-align: center;
