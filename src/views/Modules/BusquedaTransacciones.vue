@@ -3,7 +3,7 @@
   <div class="container mx-auto px-0 pb-100">
     <h1 class="title-center font-titulo font-bold pb-4">Búsqueda de Transacciones en Plaza</h1>
   <div>
-    <div class="mt-2 mx-2 md:mx-0">
+    <div class="-mt-4 mx-2 md:mx-0">
       <p>Filtros de Búsqueda:</p>
         <div class="flex flex-col md:flex-row border-gray-200 pb-0 mb-4">          
             <div class="flex-1 flex flex-col md:flex-row md:space-x-2">
@@ -22,12 +22,12 @@
                 </div>
                 <div class="w-full flex-1">
                     <div class="my-2 p-1 bg-white flex border border-gray-200 rounded btn-search ">                      
-                        <button class="p-1 px-2 appearance-none outline-none w-full text-white " :disabled="isLoading" :class="{'cursor-not-allowed': isLoading}" @click="serch(plaza, tag, fecha)">Buscar</button>
+                        <button class="p-1 px-2 appearance-none outline-none w-full text-white " :disabled="modalLoading" :class="{'cursor-not-allowed': modalLoading}" @click="serch(plaza, tag, fecha)">Buscar</button>
                     </div>
                 </div>
                 <div class="w-full flex-1">
                   <div class="my-2 p-1 bg-white flex border border-gray-200 rounded btn-search ">                      
-                    <button class="p-1 px-2 appearance-none outline-none w-full text-white " :disabled="isLoading" :class="{'cursor-not-allowed': isLoading}" @click="limpiar()">Limpiar</button>
+                    <button class="p-1 px-2 appearance-none outline-none w-full text-white " :disabled="modalLoading" :class="{'cursor-not-allowed': modalLoading}" @click="limpiar(plaza)">Limpiar</button>
                   </div>
                 </div>
                 <FilesDownload @download-api="downloadApi"></FilesDownload>
@@ -50,10 +50,11 @@
     </div>
       <!-- MODAL CARGANDO -->
   <div class="inset-0" :class="{'modal-container': modalLoading}">
-    <div v-if="modalLoading" class=" inset-0 font-titulo mt-66 mb-8">
-      <div class="rounded-lg w-66 justify-center absolute  inset-x-0 bg-none mx-auto px-12 py-10 ">          
+    <div v-if="modalLoading" class=" inset-0 font-titulo mt-56 mb-8">
+      <div class="rounded-lg w-66 justify-center absolute inset-x-0 bg-none mx-69 px-12 py-10 ">          
         <div class="justify-center text-center block">            
-          <img src="@/assets/load.gif"  class="h-48 w-48" />
+          <!--<img src="@/assets/load.gif"  class="h-48 w-48" />-->
+          <Spinner/>
         </div>
       </div>
     </div>
@@ -64,17 +65,7 @@
       Página {{ paginaActual }} de {{ paginas }}
     </p>-->
   </div>
-<!-- MODAL CARGANDO -->
-  <div class="inset-0" :class="{'modal-container': modalLoading}">
-    <div v-if="modalLoading" class=" inset-0 font-titulo mt-66 mb-8">
-      <div class="rounded-lg w-66 justify-center absolute  inset-x-0 bg-none mx-auto px-12 py-10 ">          
-        <div class="justify-center text-center block">            
-          <img src="@/assets/load.gif"  class="h-48 w-48" />
-        </div>
-      </div>
-    </div>
-  </div>
-  <Footer></Footer>
+<Footer></Footer>
 </template>
 <script>
 const API = process.env.VUE_APP_URL_API_PRODUCCION
@@ -86,6 +77,7 @@ import axios from "axios";
 import FilesDownload from '../../components/Files-descargar.vue'
 import ServiceFiles from '../../Servicios/Files-Service'
 import Paginacion from "../../components/Paginacion.vue"
+import Spinner from '../../components/Spinner.vue'
 export default {
   name: "BusquedaCruces",
   components: {
@@ -94,7 +86,8 @@ export default {
     Footer,
     FormTramoPlaza,    
     FilesDownload,
-    Paginacion
+    Paginacion,
+    Spinner
   },
   data() {
     return {
@@ -174,44 +167,166 @@ export default {
     }
   },*/
   methods: {
-    limpiar(){
+    limpiar(plaza){
+      this.modalLoading = true
       this.cruces = []
       this.fecha = null
       this.tag = null
-      this.totalPaginas = 0
-      this.currentPage = 1
-      this.hasMorePages = true
+      axios.get(`${API}/Transacciones/BusquedaTransacciones/${plaza}/${this.page}/null/null`)
+      .then((result)=>{
+        console.log(result);
+        if(result.data.status == "Ok"){
+          this.modalLoading = false
+          this.totalPaginas = result.data.numberPages
+          this.currentPage = result.data.now
+          result.data.body.forEach((e)=>{
+            let obj = {
+              tag: e.noTag,
+              carril: e.carril,
+              fecha: e.fecha,
+              medioPago: e.nombrePago,
+              tipo: e.tipoVehiculo,
+              tarifa: e.tarifa
+            }
+            this.cruces.push(obj)
+          })
+        }else{
+          this.modalLoading = false
+          this.$notify({
+            title:'Sin Información',
+            text:'No sé tiene conexión hacia la plaza seleccionada',
+            type: 'warn'
+          });
+        }
+      })
     },
     serch(plaza,tag, fecha){
+      this.modalLoading = true
       this.cruces=[]
       console.log([plaza,tag,fecha]);
       if(plaza == '' || plaza == undefined || plaza == null){
+        this.modalLoading = false
         this.$notify({
           title:'Sin Información',
           text:'Se debe de seleccionar la plaza para realizar una busqueda',
           type: 'warn'
         });
       }else{
-        axios.get(`${API}/Transacciones/BusquedaTransacciones/${plaza}/${this.page}/null/null`)
-        .then((result)=>{
-          console.log(result);
-          if(result.data.status == "Ok"){
-            this.modalLoading = false
-            this.totalPaginas = result.data.numberPages
-            this.currentPage = result.data.now
-            result.data.body.forEach((e)=>{
-              let obj = {
-                tag: e.noTag,
-                carril: e.carril,
-                fecha: e.fecha,
-                medioPago: e.nombrePago,
-                tipo: e.tipoVehiculo,
-                tarifa: e.tarifa
-              }
-              this.cruces.push(obj)
-            })
-          }
-        })
+        if((tag == '' || tag == undefined || tag == null) && (fecha == '' || fecha == undefined || fecha == null)){
+          axios.get(`${API}/Transacciones/BusquedaTransacciones/${plaza}/${this.page}/null/null`)
+          .then((result)=>{
+            console.log(result);
+            if(result.data.status == "Ok"){
+              this.modalLoading = false
+              this.totalPaginas = result.data.numberPages
+              this.currentPage = result.data.now
+              result.data.body.forEach((e)=>{
+                let obj = {
+                  tag: e.noTag,
+                  carril: e.carril,
+                  fecha: e.fecha,
+                  medioPago: e.nombrePago,
+                  tipo: e.tipoVehiculo,
+                  tarifa: e.tarifa
+                }
+                this.cruces.push(obj)
+              })
+            }else{
+              this.modalLoading = false
+              this.$notify({
+                title:'Sin Información',
+                text:'No sé tiene conexión hacia la plaza seleccionada',
+                type: 'warn'
+              });
+            }
+          })
+        }else if ((tag != '' || tag != undefined || tag != null) && (fecha == '' || fecha == undefined || fecha == null)){
+          console.log(tag);
+          axios.get(`${API}/Transacciones/BusquedaTransacciones/${plaza}/${this.page}/null/${tag}`)
+          .then((result)=>{
+            console.log(result);
+            if((result.data.status == "Ok") && (result.data.body.length > 0)){
+              this.modalLoading = false
+              this.totalPaginas = result.data.numberPages
+              this.currentPage = result.data.now
+              result.data.body.forEach((e)=>{
+                let obj = {
+                  tag: e.noTag,
+                  carril: e.carril,
+                  fecha: e.fecha,
+                  medioPago: e.nombrePago,
+                  tipo: e.tipoVehiculo,
+                  tarifa: e.tarifa
+                }
+                this.cruces.push(obj)
+              })
+            }else{
+              this.modalLoading = false
+              this.$notify({
+                title:'Sin Información',
+                text:'No se encontró el tag ingresado',
+                type: 'warn'
+              });
+            }
+          })
+        }else if ((fecha != '' || fecha != undefined || fecha != null) && (tag == '' || tag == undefined || tag == null)){
+          console.log('fecha');
+          axios.get(`${API}/Transacciones/BusquedaTransacciones/${plaza}/${this.page}/${fecha}/null`)
+          .then((result)=>{
+            console.log(result);
+            if((result.data.status == "Ok") && (result.data.body.length > 0)){
+              this.modalLoading = false
+              this.totalPaginas = result.data.numberPages
+              this.currentPage = result.data.now
+              result.data.body.forEach((e)=>{
+                let obj = {
+                  tag: e.noTag,
+                  carril: e.carril,
+                  fecha: e.fecha,
+                  medioPago: e.nombrePago,
+                  tipo: e.tipoVehiculo,
+                  tarifa: e.tarifa
+                }
+                this.cruces.push(obj)
+              })
+            }else{
+              this.modalLoading = false
+              this.$notify({
+                title:'Sin Información',
+                text:'No se encontraron transacciones en la fecha indicada',
+                type: 'warn'
+              });
+            }
+          })
+        }else if((tag != '' || tag != undefined || tag != null) && (fecha != '' || fecha != undefined || fecha != null)){
+          axios.get(`${API}/Transacciones/BusquedaTransacciones/${plaza}/${this.page}/${fecha}/${tag}`)
+          .then((result)=>{
+            console.log(result);
+            if((result.data.status == "Ok") && (result.data.body.length > 0)){
+              this.modalLoading = false
+              this.totalPaginas = result.data.numberPages
+              this.currentPage = result.data.now
+              result.data.body.forEach((e)=>{
+                let obj = {
+                  tag: e.noTag,
+                  carril: e.carril,
+                  fecha: e.fecha,
+                  medioPago: e.nombrePago,
+                  tipo: e.tipoVehiculo,
+                  tarifa: e.tarifa
+                }
+                this.cruces.push(obj)
+              })
+            }else{
+              this.modalLoading = false
+              this.$notify({
+                title:'Sin Información',
+                text:'No se encontraron transacciones',
+                type: 'warn'
+              });
+            }
+          })
+        }
       }
     },
     showMore(page){
@@ -373,6 +488,13 @@ export default {
 }
 </style>
 <style scoped>
+.modal-container{
+    position: fixed;
+    width: 100%;
+    height: 100vh;
+    z-index: 1000;
+    background: rgba(0, 0, 0, 0.5);
+}
 .loading {
   text-align: center;
   padding: 20px;
