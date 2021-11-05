@@ -32,15 +32,16 @@
     </div>
     <!-- MODAL CARGANDO -->
     <div class="inset-0" :class="{'modal-container': modalLoading}">
-        <div v-if="modalLoading" class=" inset-0 font-titulo mt-66 mb-8">
-            <div class="rounded-lg w-66 justify-center absolute  inset-x-0 bg-none mx-auto px-12 py-10 ">          
+        <div v-if="modalLoading" class=" inset-0 font-titulo mt-56 mb-8">
+            <div class="rounded-lg w-66 justify-center absolute inset-x-0 bg-none mx-69 px-12 py-10 ">          
                 <div class="justify-center text-center block">            
-                    <img src="@/assets/load.gif"  class="h-48 w-48" />
+                    <!--<img src="@/assets/load.gif"  class="h-48 w-48" />-->
+                    <Spinner/>
                 </div>
             </div>
         </div>
     </div>
-    <Footer></Footer>
+<Footer></Footer>
 </template>
 <script>
 const API = process.env.VUE_APP_URL_API_PRODUCCION
@@ -51,9 +52,10 @@ import Footer from "@/components/Footer-login";
 import FilesDownload from '../../components/Files-descargar.vue'
 import axios from "axios";
 import Paginacion from "../../components/Paginacion.vue"
+import Spinner from '../../components/Spinner.vue'
 export default {
     name: "BitacoraAccesos",
-    components: { Navbar, Footer, FormTramoPlaza, TablaListas, FilesDownload, Paginacion },
+    components: { Navbar, Footer, FormTramoPlaza, TablaListas, FilesDownload, Paginacion,Spinner },
     data() {
         return {
             tramo: '',
@@ -178,7 +180,7 @@ export default {
     width: 100%;
     height: 100vh;
     z-index: 1000;
-    background: rgba(0, 0, 0, 0.5);
+    background: rgba(0, 0, 0, 0.2);
 }
 .button-pagination {
     padding: 2px;
