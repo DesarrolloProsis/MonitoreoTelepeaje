@@ -90,15 +90,23 @@ export default {
         axios.get(`${API}/Transacciones/Last20Transaccions/${plaza}/${carril}`)
         .then((result)=>{
           console.log(result);
-          result.data.body.forEach((e) =>{
-            let obj = {
-              carril: e.carril,
-              clase: e.claseCajero,
-              fecha: e.fechaDeCruce,
-              tag: e.idTag
-            }
-            this.cruces.push(obj)
-          })
+          if((result.data.status == 'Ok') && (result.data.body.length > 0)){
+            result.data.body.forEach((e) =>{
+              let obj = {
+                carril: e.carril,
+                clase: e.claseCajero,
+                fecha: e.fechaDeCruce,
+                tag: e.idTag
+              }
+              this.cruces.push(obj)
+            })
+          }else{
+            this.$notify({
+                title:'Sin Información',
+                text:'No se encontraron transacciones',
+                type: 'warn'
+              });
+          }
         })
       }
     },

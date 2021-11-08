@@ -14,6 +14,17 @@
 <div class="container mx-auto px-0 md:px-60 pb-24 pt-4">
   <TablaEstatusTag :datatag="tags"></TablaEstatusTag>
 </div>
+  <!-- MODAL CARGANDO -->
+  <div class="inset-0" :class="{'modal-container': modalLoading}">
+      <div v-if="modalLoading" class=" inset-0 font-titulo mt-56 mb-8">
+          <div class="rounded-lg w-66 justify-center absolute inset-x-0 bg-none mx-69 px-12 py-10 ">          
+              <div class="justify-center text-center block">            
+                  <!--<img src="@/assets/load.gif"  class="h-48 w-48" />-->
+                  <Spinner/>
+              </div>
+          </div>
+      </div>
+  </div>
 <Footer></Footer>
 </template>
 <script>
@@ -22,13 +33,15 @@ import TablaEstatusTag from "../../components/Tabla-estatustag";
 import Navbar from "../../components/Navbar.vue";
 import Footer from "../../components/Footer-login";
 import FormTramoPlaza from '../../components/Form-tramoplaza.vue'
+import Spinner from '../../components/Spinner.vue'
 import axios from "axios";
 export default {
   components: {
     TablaEstatusTag,
     Navbar,
     Footer,
-    FormTramoPlaza
+    FormTramoPlaza,
+    Spinner
   },  
   data() {
     return {
@@ -38,7 +51,8 @@ export default {
       isLoading: true,
       tramo: '',
       plaza: '',
-      tag: null
+      tag: null,
+      modalLoading: false
     };
   },
   /*mounted() {
@@ -76,21 +90,40 @@ export default {
   },*/
   methods: {
     buscar(plaza,tag){
+      this.modalLoading = true
       if(plaza != null && tag != null){
         console.log([plaza,tag]);
         axios.get(`${API}/Tags/BusquedaTag/${plaza}/${tag}`)
         .then((result)=>{
-          this.tags = []
-          let obj = {
-            tag: result.data.tag,
-            estatus: result.data.estado,
-            saldo: result.data.saldo,
-            tipo_tag: result.data.tipoTag,
-            ult_act: result.data.actualizacion,
+          this.modalLoading = false
+          if(result.statusText == 'OK'){
+            this.tags = []
+            let obj = {
+              tag: result.data.tag,
+              estatus: result.data.estado,
+              saldo: result.data.saldo,
+              tipo_tag: result.data.tipoTag,
+              ult_act: result.data.actualizacion,
+            }
+            this.tags.push(obj)
+          }else{
+            this.$notify({
+              title:'Sin Información',
+              text:'No se encontró el tag ingresado',
+              type: 'warn'
+            });    
           }
-          this.tags.push(obj)
+        })
+        .catch(()=>{
+          this.modalLoading = false
+          this.$notify({
+              title:'Sin Información',
+              text:'No se tiene conexión a la plaza seleccionada',
+              type: 'warn'
+            });
         })
       }else{
+        this.modalLoading = false
         this.$notify({
           title:'Sin Información',
           text:'Se debe de seleccionar la plaza e ingresar el tag para realizar una busqueda',
@@ -137,6 +170,13 @@ export default {
 };
 </script>
 <style scoped>
+.modal-container{
+    position: fixed;
+    width: 100%;
+    height: 100vh;
+    z-index: 1000;
+    background: rgba(0, 0, 0, 0.2);
+}
 .title {
   text-align: center;
   font-size: 25px;

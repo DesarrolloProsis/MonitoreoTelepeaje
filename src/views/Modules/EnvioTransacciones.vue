@@ -41,15 +41,16 @@
     </div>
   </div>
   <!-- MODAL CARGANDO -->
-  <div class="inset-0" :class="{'modal-container': modalLoading}">
-    <div v-if="modalLoading" class=" inset-0 font-titulo mt-66 mb-8">
-      <div class="rounded-lg w-66 justify-center absolute  inset-x-0 bg-none mx-auto px-12 py-10 ">          
-        <div class="justify-center text-center block">            
-          <img src="@/assets/load.gif"  class="h-48 w-48" />
+    <div class="inset-0" :class="{'modal-container': modalLoading}">
+      <div v-if="modalLoading" class=" inset-0 font-titulo mt-56 mb-8">
+        <div class="rounded-lg w-66 justify-center absolute inset-x-0 bg-none mx-69 px-12 py-10 ">          
+          <div class="justify-center text-center block">            
+            <!--<img src="@/assets/load.gif"  class="h-48 w-48" />-->
+            <Spinner/>
+          </div>
         </div>
       </div>
     </div>
-  </div>
   <Footer></Footer>
 </template>
 <script>
@@ -60,10 +61,11 @@ import Multiselect from '@vueform/multiselect';
 import Navbar from "../../components/Navbar.vue";
 import Footer from "../../components/Footer-login";
 import Paginacion from "../../components/Paginacion.vue"
+import Spinner from '../../components/Spinner.vue'
 import axios from "axios";
 export default {
   name: "EnvioTransacciones",
-  components: { TablaTransacciones, Navbar, Footer,FormTramoPlaza,Multiselect,Paginacion },
+  components: { TablaTransacciones, Navbar, Footer,FormTramoPlaza,Multiselect,Paginacion, Spinner },
   data() {
     return {
       transacciones: [],
@@ -109,8 +111,6 @@ export default {
   },*/
   methods:{
     todos (plaza) {
-      this.transacciones = []
-      this.carril = ''
       this.tag = ''
       this.fecha = ''
       let data = {
@@ -122,8 +122,9 @@ export default {
       }
       axios.post(`${API}/Transacciones/TransactionsFiltros`,data)
       .then((result)=>{
-        console.log(result);
+        console.log(result.data.body);
         if(result.data.status == 'Ok'){
+          this.transacciones = []
           this.modalLoading = false
           this.totalPaginas = result.data.numberPages
           this.currentPage = result.data.now
@@ -148,134 +149,34 @@ export default {
       })
     },
     buscar: function(plaza, fecha, carril, tag){
-      console.log([plaza,fecha,carril,tag]);
-      if(carril == undefined && tag == ''){
-        let datoCarril = 'null'
-        tag = 'null'
-        this.modalLoading = true
-        this.transacciones = []
-        let data = {
-          "plazaId": plaza,
-          "carril": datoCarril,
-          "fecha": fecha,
-          "tag": tag,
-          "skip": 1
-        }
-        axios.post(`${API}/Transacciones/TransactionsFiltros`,data)
-        .then((result)=>{
-          console.log(result);
-          if(result.data.status == 'Ok'){
-            this.modalLoading = false
-            this.totalPaginas = result.data.numberPages
-            this.currentPage = result.data.now
-            result.data.body.forEach((e) => {
-              let obj = {
-                tag: e.idTag,
-                fechaEnvio: e.fechaEnvioOperador,
-                carril: e.carril,
-                claseCajero: e.claseCajero,
-                tarifa: e.tarifa
-              };
-              this.transacciones.push(obj);
-            });
-          }else{
-            this.modalLoading = false
-            this.$notify({
-              title:'Sin Información',
-              text:'No se encontrtaron transacciones en esta plaza',
-              type: 'warn'
-            });
-          }
-        })
-      }else if(carril == undefined && tag != ''){
-        this.modalLoading = true
-        let datoCarril = 'null'
-        this.transacciones = []
-        let data = {
-          "plazaId": plaza,
-          "carril": datoCarril,
-          "fecha": fecha,
-          "tag": tag,
-          "skip": 1
-        }
-        axios.post(`${API}/Transacciones/TransactionsFiltros`,data)
-        .then((result)=>{
-          console.log(result);
-          if(result.data.status == 'Ok'){
-            this.modalLoading = false
-            this.totalPaginas = result.data.numberPages
-            this.currentPage = result.data.now
-            result.data.body.forEach((e) => {
-              let obj = {
-                tag: e.idTag,
-                fechaEnvio: e.fechaEnvioOperador,
-                carril: e.carril,
-                claseCajero: e.claseCajero,
-                tarifa: e.tarifa
-              };
-              this.transacciones.push(obj);
-            });
-          }else{
-            this.modalLoading = false
-            this.$notify({
-              title:'Sin Información',
-              text:'No se encontrtaron transacciones en esta plaza',
-              type: 'warn'
-            });
-          }
-        })
-      }else if((carril != undefined || carril != null) && (tag == '')){
-        this.modalLoading = true
-        let datoTag = 'null'
-        this.transacciones = []
-        let data = {
-          "plazaId": plaza,
-          "carril": carril,
-          "fecha": fecha,
-          "tag": datoTag,
-          "skip": 1
-        }
-        axios.post(`${API}/Transacciones/TransactionsFiltros`,data)
-        .then((result)=>{
-          console.log(result);
-          if(result.data.status == 'Ok'){
-            this.modalLoading = false
-            this.totalPaginas = result.data.numberPages
-            this.currentPage = result.data.now
-            result.data.body.forEach((e) => {
-              let obj = {
-                tag: e.idTag,
-                fechaEnvio: e.fechaEnvioOperador,
-                carril: e.carril,
-                claseCajero: e.claseCajero,
-                tarifa: e.tarifa
-              };
-              this.transacciones.push(obj);
-            });
-          }else{
-            this.modalLoading = false
-            this.$notify({
-              title:'Sin Información',
-              text:'No se encontrtaron transacciones en esta plaza',
-              type: 'warn'
-            });
-          }
-        })
+      this.modalLoading = true
+      if(plaza == undefined || plaza == null || plaza == ''){
+        this.modalLoading = false
+        this.$notify({
+          title:'Sin Información',
+          text:'Se debe de seleccionar la plaza para hacer una busqueda',
+          type: 'warn'
+        });
       }else{
-        console.log('else');
+        if((carril == undefined || carril == null || carril == '') && (tag == undefined || tag == null || tag == '')){
+        console.log('if');
+        let datoCarril = 'null'
+        let tag = 'null'
+        let fecha = 'null'
         this.modalLoading = true
         this.transacciones = []
         let data = {
           "plazaId": plaza,
-          "carril": carril,
+          "carril": datoCarril,
           "fecha": fecha,
           "tag": tag,
           "skip": 1
         }
+        console.log(data);
         axios.post(`${API}/Transacciones/TransactionsFiltros`,data)
         .then((result)=>{
-          console.log(result);
-          if(result.data.status == 'Ok'){
+          this.modalLoading = false
+          if((result.data.status == 'Ok') && (result.data.body.length > 0)){
             this.modalLoading = false
             this.totalPaginas = result.data.numberPages
             this.currentPage = result.data.now
@@ -298,8 +199,122 @@ export default {
             });
           }
         })
+        }else if(carril == undefined && tag != ''){
+          console.log('primer if');
+          this.modalLoading = true
+          let datoCarril = 'null'
+          this.transacciones = []
+          let data = {
+            "plazaId": plaza,
+            "carril": datoCarril,
+            "fecha": fecha,
+            "tag": tag,
+            "skip": 1
+          }
+          axios.post(`${API}/Transacciones/TransactionsFiltros`,data)
+          .then((result)=>{
+          console.log(result);
+          if((result.data.status == 'Ok') && (result.data.body.length > 0)){
+            this.modalLoading = false
+            this.totalPaginas = result.data.numberPages
+            this.currentPage = result.data.now
+            result.data.body.forEach((e) => {
+              let obj = {
+                tag: e.idTag,
+                fechaEnvio: e.fechaEnvioOperador,
+                carril: e.carril,
+                claseCajero: e.claseCajero,
+                tarifa: e.tarifa
+              };
+              this.transacciones.push(obj);
+            });
+          }else{
+            this.modalLoading = false
+            this.$notify({
+              title:'Sin Información',
+              text:'No se encontrtaron transacciones con el tag ingresado',
+              type: 'warn'
+            });
+          }
+        })
+        }else if((carril != undefined || carril != null || carril != '') && (tag == '')){
+          console.log('segundo if');
+          this.modalLoading = true
+          let datoTag = 'null'
+          let fech = 'null'
+          this.transacciones = []
+          let data = {
+            "plazaId": plaza,
+            "carril": carril,
+            "fecha": fech,
+            "tag": datoTag,
+            "skip": 1
+          }
+          axios.post(`${API}/Transacciones/TransactionsFiltros`,data)
+          .then((result)=>{
+            console.log(result);
+            if((result.data.status == 'Ok') && (result.data.body.length > 0)){
+              this.modalLoading = false
+              this.totalPaginas = result.data.numberPages
+              this.currentPage = result.data.now
+              result.data.body.forEach((e) => {
+                let obj = {
+                  tag: e.idTag,
+                  fechaEnvio: e.fechaEnvioOperador,
+                  carril: e.carril,
+                  claseCajero: e.claseCajero,
+                  tarifa: e.tarifa
+                };
+                this.transacciones.push(obj);
+              });
+            }else{
+              this.modalLoading = false
+              this.$notify({
+                title:'Sin Información',
+                text:'No se encontrtaron transacciones en el carril seleccionado',
+                type: 'warn'
+              });
+            }
+          })
+        }else{
+          console.log('else');
+          this.modalLoading = true
+          this.transacciones = []
+          let data = {
+            "plazaId": plaza,
+            "carril": carril,
+            "fecha": fecha,
+            "tag": tag,
+            "skip": 1
+          }
+          axios.post(`${API}/Transacciones/TransactionsFiltros`,data)
+          .then((result)=>{
+            console.log(result);
+            if((result.data.status == 'Ok') && (result.data.body.length > 0)){
+              this.modalLoading = false
+              this.totalPaginas = result.data.numberPages
+              this.currentPage = result.data.now
+              result.data.body.forEach((e) => {
+                let obj = {
+                  tag: e.idTag,
+                  fechaEnvio: e.fechaEnvioOperador,
+                  carril: e.carril,
+                  claseCajero: e.claseCajero,
+                  tarifa: e.tarifa
+                };
+                this.transacciones.push(obj);
+              });
+            }else{
+              this.modalLoading = false
+              this.$notify({
+                title:'Sin Información',
+                text:'No se encontrtaron transacciones',
+                type: 'warn'
+              });
+            }
+          })
+        }
       }
-      
     },
     showMore(page){
       this.transacciones = []
@@ -329,6 +344,7 @@ export default {
     })
     },
     recibir_tramo_plaza(value){
+      console.log(value);
       this.tramo = value.tramo
       this.plaza = value.plaza
       this.carril = value.carril
@@ -364,7 +380,7 @@ export default {
     width: 100%;
     height: 100vh;
     z-index: 1000;
-    background: rgba(0, 0, 0, 0.5);
+    background: rgba(0, 0, 0, 0.2);
 }
 .filter-style-2 {
   color: white;

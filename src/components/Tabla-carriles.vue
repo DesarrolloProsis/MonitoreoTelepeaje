@@ -10,7 +10,7 @@
 
           <div class="flex-2">
             <div class="my-2 p-1 bg-white flex border border-gray-200 rounded btn-search">
-              <button class="p-1 px-2 appearance-none outline-none w-full text-white">
+              <button @click="buscar_carriles_plaza" class="p-1 px-2 appearance-none outline-none w-full text-white">
                 Buscar
               </button>
             </div>
@@ -29,17 +29,17 @@
       <hr />
     </div>
     
-    <div class="flex ta-center overflow-x-auto pt-6">
+    <div v-for="(carrilTramo, key) in carrilesTramos" :key="key" class="flex ta-center overflow-x-auto pt-6">
       <div class="flex justify-center items-center flex-none bg-carriles-gray p-5">
-        <div>Plaza:<br />Tepozotlan<br />Cuerpo A</div>
+        <div>Plaza:<br />Tepozotlan<br />{{carrilTramo.nombreGare}}</div>
       </div>
       <div class="flex flex-col flex-none">
         <div class="flex-1 bg-carriles-gray mh-cuerpo lh-cuerpo">Carril</div>
         <div class="flex-1 bg-carriles-gray mh-other ">Último Cruce</div>
       </div>
-      <Carril :carrilesdata="carriles"></Carril>
+      <Carril :carrilesdata="carrilTramo.carriles" :tipo="'alarma'"></Carril>
     </div>
-    <div class="flex ta-center overflow-x-auto pt-6">
+    <!-- <div class="flex ta-center overflow-x-auto pt-6">
       <div class="flex justify-center items-center flex-none bg-carriles-gray p-5">
         <div>Plaza:<br />Tepozotlan<br />Cuerpo B</div>
       </div>
@@ -48,157 +48,87 @@
         <div class="flex-1 bg-carriles-gray mh-other ">Último Cruce</div>
       </div>
       <Carril :carrilesB="carrilesB"></Carril>
-    </div>
+    </div> -->
+  </div>
+  <!-- MODAL CARGANDO -->
+  <div class="inset-0" :class="{'modal-container': modalLoading}">
+      <div v-if="modalLoading" class=" inset-0 font-titulo mt-56 mb-8">
+          <div class="rounded-lg w-66 justify-center absolute inset-x-0 bg-none mx-69 px-12 py-10 ">          
+              <div class="justify-center text-center block">            
+                  <!--<img src="@/assets/load.gif"  class="h-48 w-48" />-->
+                  <Spinner/>
+              </div>
+          </div>
+      </div>
   </div>
 </template>
 <script>
 import Carril from "../components/Carril";
 import FormTramoPlaza from '../components/Form-tramoplaza.vue'
+import Spinner from '../components/Spinner.vue'
+import axios from "axios";
+const API = process.env.VUE_APP_URL_API_PRODUCCION
 
 export default {
   name: "TablaCarriles",
   components: {
     Carril,
-    FormTramoPlaza
+    FormTramoPlaza,
+    Spinner
   },
   data() {
     return {
       plaza: '',
       tramo: '',
-      carriles: [
-        {
-          cuerpo: "A09",
-          status: "Green",
-          lectura_valida: "1280",
-          lectura_invalida: "1180",
-          ultimo_cruce: "11:10",
-        },
-        {
-          cuerpo: "A10",
-          status: "Red",
-          lectura_valida: "1280",
-          lectura_invalida: "1180",
-          ultimo_cruce: "11:10",
-        },
-        {
-          cuerpo: "A11",
-          status: "Green",
-          lectura_valida: "1280",
-          lectura_invalida: "1180",
-          ultimo_cruce: "11:10",
-        },
-        {
-          cuerpo: "A12",
-          status: "Green",
-          lectura_valida: "1280",
-          lectura_invalida: "1180",
-          ultimo_cruce: "11:10",
-        },
-        {
-          cuerpo: "A13",
-          status: "Green",
-          lectura_valida: "1280",
-          lectura_invalida: "1180",
-          ultimo_cruce: "11:10",
-        },
-        {
-          cuerpo: "A14",
-          status: "Green",
-          lectura_valida: "1280",
-          lectura_invalida: "1180",
-          ultimo_cruce: "11:10",
-        },
-        {
-          cuerpo: "A15",
-          status: "Green",
-          lectura_valida: "1280",
-          lectura_invalida: "1180",
-          ultimo_cruce: "11:10",
-        },
-        {
-          cuerpo: "A19",
-          status: "Green",
-          lectura_valida: "1280",
-          lectura_invalida: "1180",
-          ultimo_cruce: "11:10",
-        },
-        {
-          cuerpo: "A20",
-          status: "Green",
-          lectura_valida: "1280",
-          lectura_invalida: "1180",
-          ultimo_cruce: "11:10",
-        },
-      ],
-      carrilesB: [
-        {
-          cuerpo: "B02",
-          status: "Green",
-          lectura_valida: "1280",
-          lectura_invalida: "1180",
-          ultimo_cruce: "11:10",
-        },
-        {
-          cuerpo: "B03",
-          status: "Green",
-          lectura_valida: "1280",
-          lectura_invalida: "1180",
-          ultimo_cruce: "11:10",
-        },
-        {
-          cuerpo: "B04",
-          status: "Green",
-          lectura_valida: "1280",
-          lectura_invalida: "1180",
-          ultimo_cruce: "11:10",
-        },
-        {
-          cuerpo: "B05",
-          status: "Green",
-          lectura_valida: "1280",
-          lectura_invalida: "1180",
-          ultimo_cruce: "11:10",
-        },
-        {
-          cuerpo: "B06",
-          status: "Green",
-          lectura_valida: "1280",
-          lectura_invalida: "1180",
-          ultimo_cruce: "11:10",
-        },
-        {
-          cuerpo: "B07",
-          status: "Green",
-          lectura_valida: "1280",
-          lectura_invalida: "1180",
-          ultimo_cruce: "11:10",
-        },
-        {
-          cuerpo: "B08",
-          status: "Green",
-          lectura_valida: "1280",
-          lectura_invalida: "1180",
-          ultimo_cruce: "11:10",
-        },
-        {
-          cuerpo: "B17",
-          status: "Green",
-          lectura_valida: "1280",
-          lectura_invalida: "1180",
-          ultimo_cruce: "11:10",
-        },
-        {
-          cuerpo: "B19",
-          status: "Green",
-          lectura_valida: "1280",
-          lectura_invalida: "1180",
-          ultimo_cruce: "11:10",
-        },
-      ]
+      carrilesTramos: [],
+      modalLoading: true
     };    
   },
-  methods: {
+  beforeMount(){
+    this.plaza = '184'
+    this.buscar_carriles_plaza()
+  },
+  methods: {  
+    buscar_carriles_plaza(){
+      this.carrilesTramos = []
+      axios.get(`${API}/CarrilesMonitoreo?PlazaId=${this.plaza}`)
+        .then((response) => {
+          console.log(response.data)
+          let tramos = []
+          response.data.forEach((item) => {
+            console.log(item.id_gare)
+            console.log(!tramos.some(tr => tr.id_gare == item.id_gare))
+            if(!tramos.some(tr => tr.id_gare == item.id_gare)){
+              tramos.push({id_gare: item.id_gare, nombre: item.gare})
+            }
+          });
+          console.log(tramos)
+          let tramosCarril = []
+          tramos.forEach((item2) => {
+            let carriles = response.data.filter(itemfilter => itemfilter.id_gare == item2.id_gare)
+            carriles.sort((a,b) => {          
+                console.log(parseInt(a.carril.substring(1,3)))      
+                return parseInt(a.carril.substring(1,3)) - parseInt(b.carril.substring(1,3))
+            })
+            tramosCarril.push({
+              nombreGare: item2.nombre,
+              idGare: item2.id_gare,
+              carriles: carriles            
+            })
+          })
+          console.log(tramosCarril)
+          this.carrilesTramos = tramosCarril
+          this.modalLoading = false
+          
+        })     
+        .catch((error) => {
+          console.log(error)
+          this.modalLoading = false
+        })      
+      
+    }, 
     recibir_tramo_plaza(value){
+      console.log(value)
       this.tramo = value.tramo
       this.plaza = value.plaza      
     }
@@ -206,6 +136,13 @@ export default {
 };
 </script>
 <style scoped>
+.modal-container{
+    position: fixed;
+    width: 100%;
+    height: 100vh;
+    z-index: 1000;
+    background: rgba(0, 0, 0, 0.2);
+}
 .color-black {
   color: black !important;
 }

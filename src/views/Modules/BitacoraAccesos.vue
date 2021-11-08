@@ -23,6 +23,17 @@
       <TablaAccesos :dataAccesos="accesos"></TablaAccesos>
     </div>
   </div>
+  <!-- MODAL CARGANDO -->
+  <div class="inset-0" :class="{'modal-container': modalLoading}">
+    <div v-if="modalLoading" class=" inset-0 font-titulo mt-56 mb-8">
+      <div class="rounded-lg w-66 justify-center absolute inset-x-0 bg-none mx-69 px-12 py-10 ">          
+        <div class="justify-center text-center block">            
+          <!--<img src="@/assets/load.gif"  class="h-48 w-48" />-->
+          <Spinner/>
+        </div>
+      </div>
+    </div>
+  </div>
   <Footer></Footer>
 </template>
 <script>
@@ -32,23 +43,26 @@ import Navbar from "../../components/Navbar.vue";
 import Footer from "../../components/Footer-login";
 import FilesDownload from '../../components/Files-descargar.vue'
 import ServiceFiles from '../../Servicios/Files-Service'
+import Spinner from '../../components/Spinner.vue'
 import axios from "axios";
 export default {
   name: "BitacoraAccesos",
-  components: { TablaAccesos, Navbar, Footer, FilesDownload },
+  components: { TablaAccesos, Navbar, Footer, FilesDownload, Spinner },
   data() {
     return {
       accesos:[],
       nombre:null,
       value: '',
       formato:'',
-      isLoading: false,
+      modalLoading: false,
       fecha:null
     };
   },
   beforeMount (){
+    this.modalLoading = true
     axios.get(`${API}/UsuarioMonitoreo/null/null`)
       .then((result)=>{
+        this.modalLoading = false
         result.data.body.forEach((e)=>{
           let obj = {
             usuarioId: e.usuarioId,
@@ -67,11 +81,13 @@ export default {
   },
   methods: {
     todos(){
+      this.modalLoading = true
       this.accesos = []
       this.nombre = null
       this.fecha = null
       axios.get(`${API}/UsuarioMonitoreo/null/null`)
       .then((result)=>{
+        this.modalLoading = false
         result.data.body.forEach((e)=>{
           let obj = {
             usuarioId: e.usuarioId,
@@ -98,8 +114,10 @@ export default {
       }
       if(nombre != null && fecha == null){
         this.accesos = []
+        this.modalLoading = true
         axios.get(`${API}/UsuarioMonitoreo/${nombre}/null`)
         .then((result)=>{
+          this.modalLoading = false
           result.data.body.forEach((e)=>{
             let obj = {
               usuarioId: e.usuarioId,
@@ -118,8 +136,10 @@ export default {
       }
       if(fecha != null && nombre == null){
         this.accesos = []
+        this.modalLoading = true
         axios.get(`${API}/UsuarioMonitoreo/null/${fecha}`)
         .then((result)=>{
+          this.modalLoading = false
           result.data.body.forEach((e)=>{
             let obj = {
               usuarioId: e.usuarioId,
@@ -138,8 +158,10 @@ export default {
       }
       if(fecha != null && nombre != null){
         this.accesos = []
+        this.modalLoading = true
         axios.get(`${API}/UsuarioMonitoreo/${nombre}/${fecha}`)
         .then((result)=>{
+          this.modalLoading = false
           result.data.body.forEach((e)=>{
             let obj = {
               usuarioId: e.usuarioId,
@@ -179,6 +201,13 @@ export default {
 };
 </script>
 <style scoped>
+.modal-container{
+    position: fixed;
+    width: 100%;
+    height: 100vh;
+    z-index: 1000;
+    background: rgba(0, 0, 0, 0.2);
+}
 .pb-100 {
   padding-bottom: 100px;
 }

@@ -100,6 +100,7 @@ export default {
     const buscar_roles = async () => {   
       axios.get(`${API}/CatalogoRoles/null/null`)
         .then((response) => {
+            console.log(response);
             roles.value = response.data.body 
             console.log(response.data.body );
           }
@@ -166,10 +167,15 @@ export default {
     } */
     function buscar (nombre,estatus){
       console.log(nombre);
+      roles.value = []
       axios.get(`${API}/CatalogoRoles/${nombre}/${estatus}`)
         .then((response) => {
-            roles.value = response.data.body 
-            console.log(response.data.body );
+            console.log(response);
+            if((response.data.status == 'Ok') && (response.data.body.length > 0)){
+              roles.value = response.data.body 
+            }else{
+              notify({ type: 'warn', title:'Rol no creado', text: `No se encontró el Rol`});
+            }
           }
         )
         .catch((error) => console.log(error))

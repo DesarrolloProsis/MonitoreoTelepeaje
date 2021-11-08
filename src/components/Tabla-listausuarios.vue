@@ -5,8 +5,8 @@
         <th>Nombre de Usuario</th>
         <th>Nombre</th>
         <th>Rol</th>
-        <th>Plazas</th>
-        <th>Acciones</th>
+        <th >Plazas</th>
+        <th class="w-56">Acciones</th>
       </tr>
       <tr v-for="(usuario, index) in dataUsuarios" :key="index">
         <td :class="{'text-gray-300': !usuario.estatus}">{{ usuario.usuario }}</td>
@@ -158,12 +158,13 @@
     </div>
   </div>
   <!-- FIN MODAL-->
-    <!-- MODAL CARGANDO -->
+  <!-- MODAL CARGANDO -->
   <div class="inset-0" :class="{'modal-container': modalLoading}">
-    <div v-if="modalLoading" class=" inset-0 font-titulo mt-66 mb-8">
-      <div class="rounded-lg w-66 justify-center absolute  inset-x-0 bg-none mx-auto px-12 py-10 ">          
+    <div v-if="modalLoading" class=" inset-0 font-titulo mt-56 mb-8">
+      <div class="rounded-lg w-66 justify-center absolute  inset-x-0 bg-none mx-89 px-12 py-10 ">          
         <div class="justify-center text-center block">            
-          <img src="@/assets/load.gif"  class="h-48 w-48" />
+          <!--<img src="@/assets/load.gif"  class="h-48 w-48" />-->
+          <Spinner/>
         </div>
       </div>
     </div>
@@ -171,6 +172,7 @@
 </template>
 <script>
 const API = process.env.VUE_APP_URL_API_PRODUCCION
+import Spinner from '../components/Spinner.vue'
 import Multiselect from '@vueform/multiselect'
 import Servicio from '../Servicios/Token-Services';
 import axios from "axios";
@@ -180,7 +182,7 @@ export default {
 name: "TablaListaUsuarios",
   props: ["dataUsuarios"],
   components:{
-    Multiselect,
+    Multiselect,Spinner
   },
   data() {
     return {
@@ -208,10 +210,11 @@ name: "TablaListaUsuarios",
       },
       roles: [],
       pass:'',
+      status:'',
     };
   },
   async beforeMount(){
-    let rol = await axios.get(`${API}/CatalogoRoles`)
+    let rol = await axios.get(`${API}/CatalogoRoles/null/null`)
     let rol_Filtrado = rol.data.body
     let proxy = new Proxy(rol_Filtrado,{
         get : function(target, property){
@@ -238,19 +241,35 @@ name: "TablaListaUsuarios",
           "UsuarioId": usuario.id,
           "Password": this.pass,
         } 
-        console.log(data);
         axios.patch(`${API}/Usuario`,data,config)
           .then((result)=>{
               console.log(result)
-              this.errorMessage = ""
-              this.modalPass = false
+              if(result.statusText == 'OK'){
+                this.errorMessage = ""
+                this.modalPass = false
+                this.$notify({
+                  title:'Plazas Asignadas',
+                  text:`Se Cambio la Contraseña al Usuario ${usuario.nombre + ' ' + usuario.apellido}`,
+                  type: 'success'
+                });
+              }else{
+                this.$notify({
+                  title:'Plazas Asignadas',
+                  text:`No Se Pudo Cambio la Contraseña al Usuario ${usuario.nombre + ' ' + usuario.apellido}`,
+                  type: 'success'
+                });
+              }
           })
           .catch(() =>{
             this.errorMessage = "Hubo un error al crear el usuario, intentalo nuevamente."
           })
         }
       }else{
-        alert('Campos obligatorios')
+        this.$notify({
+          title:'Falta llenar campos obligatorios',
+          text:'Todos los campos son obligatorios',
+          type: 'error'
+        });
         this.validacion = true
       }
     },
@@ -279,6 +298,7 @@ name: "TablaListaUsuarios",
       if(this.tramoSeleccionado != '' && this.plazasAsignar != ''){
         for(let i=0; i< this.plazasAsignar.length;i++){
           let nueva = this.plazasAsignar[i]
+          this.pla = nueva
           let data = {
             usuarioId: usuario.id,
             plazaAsignadaId: nueva
@@ -289,7 +309,8 @@ name: "TablaListaUsuarios",
             this.modalPlazas = false
             this.modalLoading = true
             this.tramoSeleccionado = ''
-            if(response.data.status == 'Error'){
+            this.status = response.statusText
+            if(response.statusText == 'Ok'){
               setTimeout(() => {
                 this.$router.push("/configuracion");
                 this.modalLoading = false
@@ -302,13 +323,23 @@ name: "TablaListaUsuarios",
             }
           })
         }
-        setTimeout(()=>{
-          this.$notify({
-          title:'Plazas Asignadas',
-          text:'Se Asignaron las plazas al Usuario',
-          type: 'success'
-          });
-        },1000)
+        if(this.status == 'Ok'){
+          setTimeout(()=>{
+            this.$notify({
+              title:'Plazas Asignadas',
+              text:`Se Asignaron las plazas al Usuario ${usuario.nombre + ' ' + usuario.apellido}`,
+              type: 'success'
+            });
+          },1000)
+        }else{
+          setTimeout(()=>{
+            this.$notify({
+              title:'Plazas Asignadas',
+              text:`No Se Asignaron las Plazas al Usuario ${usuario.nombre + ' ' + usuario.apellido}`,
+              type: 'success'
+            });
+          },1000)
+        }
       }else{
         this.$notify({
           title:'Falta llenar campos',
@@ -323,22 +354,32 @@ name: "TablaListaUsuarios",
       for(let i=0; i< this.plazasAsignar.length;i++){
           let quitar = this.plazasAsignar[i]
           let usuarioId = usuario.id
-          axios.delete(`${API}/PlazaAsignada/QuitarDeUsuario/${usuarioId}/${quitar}`)
+          axios.post(`${API}/PlazaAsignada/QuitarDeUsuario/${usuarioId}/${quitar}`)
           .then((response)=>{
-            console.log();
             this.modalPlazas = false
+            this.modalLoading = true
             this.tramoSeleccionado = ''
             if(response.data.status == 'Error'){
               /* Insertar notificacion */
+              this.modalPlazas = false
+              this.modalLoading = false
               this.$router.push("/configuracion");
             }else{
               setTimeout(() => {
-                this.$router.push("/configuracion");
+                this.modalPlazas = false
                 this.modalLoading = false
+                this.$router.push("/configuracion");
               }, 1000);
             }
           })
         }
+      setTimeout(()=>{
+        this.$notify({
+        title:'Plazas Eliminadas',
+        text:`Se Quitaron las Plazas al Usuario ${usuario.nombre + ' ' + usuario.apellido}`,
+        type: 'success'
+        });
+      },1000)
     },
     editarUsuario: function (usuario){
       this.seleccionado = usuario;
