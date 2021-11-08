@@ -253,40 +253,16 @@ export default {
       this.tramo = value.tramo
       this.plaza = value.plaza
       this.carril = value.carril
-    },
-    acciones_mapper(formato){
-      if(formato == 'excel'){
-        console.log('excel');
-      }if(formato == 'csv'){
-        console.log('csv');
-      }if(formato == 'txt'){
-        console.log('txt');
-      }
-      this.formato = ''
-    },
-    opticones_select_acciones(){
-      let options= [
-          {  value: 'excel', name: 'EXCEL'},//0
-          {  value: 'csv', name: 'CSV'},//1
-          {  value: 'txt', name: 'TXT'},//2
-      ]
-      let filtroOpciones = []
-        if(this.isLoading == false){
-          filtroOpciones.push(options[0])
-          filtroOpciones.push(options[1])
-          filtroOpciones.push(options[2])
-        }
-      return filtroOpciones
-    },
+    },  
     downloadApi(formato){
       if (formato == "csv") {
-        ServiceFiles.xml_hhtp_request(`${API}/ListaNegra/Download/Csv`, 'bitacoraAntifraudes.csv')
+        ServiceFiles.xml_hhtp_request(`${API}/ListaNegra/Download/Csv/${this.plaza}`, 'bitacoraAntifraudes.csv')
       } 
       else if (formato == "excel") {        
-        ServiceFiles.xml_hhtp_request(`${API}/ListaNegra/Download/Excel`, 'bitacoraAntifraudes.xlsx')    
+        ServiceFiles.xml_hhtp_request(`${API}/ListaNegra/Download/Excel/${this.plaza}`, 'bitacoraAntifraudes.xlsx')    
       } 
       else if (formato == "txt") {
-        ServiceFiles.xml_hhtp_request(`${API}/ListaNegra/Download/txt`, 'bitacoraAntifraudes.txt')
+        ServiceFiles.xml_hhtp_request(`${API}/ListaNegra/Download/txt/${this.plaza}`, 'bitacoraAntifraudes.txt')
       }      
     }, 
   },
