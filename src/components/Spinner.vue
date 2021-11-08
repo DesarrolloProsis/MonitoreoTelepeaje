@@ -1,11 +1,36 @@
 <template>
-<div class="loadingio-spinner-double-ring-t0xuu93cwm"><div class="ldio-20tj2v72mxrh">
-<div></div>
-<div></div>
-<div><div></div></div>
-<div><div></div></div>
-</div></div>
+<div class="inset-0 flex items-center" :class="{'modal-container': modalLoading}">
+    <div v-if="modalLoading" class="mx-auto">      
+        <div class="loadingio-spinner-double-ring-t0xuu93cwm">
+            <div class="ldio-20tj2v72mxrh">
+                <div></div>
+                <div></div>
+                <div>
+                    <div></div>
+                </div>
+                <div>
+                    <div></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 </template>
+<script>
+export default {
+    name: "TablaAccesos",
+    props: ["modalLoading"],
+}
+</script>
+<style scoped>
+.modal-container{
+    position: fixed;
+    width: 100%;
+    height: 100vh;
+    z-index: 1000;
+    background: rgba(0, 0, 0, 0.2);
+}
+</style>
 <style type="text/css">
 @keyframes ldio-20tj2v72mxrh {
     0% { transform: rotate(0) }

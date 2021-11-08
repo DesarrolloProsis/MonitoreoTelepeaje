@@ -1,5 +1,5 @@
 <template>
-  <Navbar></Navbar>
+  <Navbar/>
   <div class="container mx-auto px-0 pb-100">
     <h1 class="title-center font-titulo font-bold pb-4">Bitácora de Accesos</h1>
     <div class="flex flex-wrap bg-blue rounded-lg">
@@ -11,9 +11,12 @@
         Fecha:
         <input v-model="fecha" type="date" class="rounded"/>
       </div>
+      <div class="flex-none filter-style mt-2">
+        <FormTramoPlaza @cambiar-tramo-plaza="recibir_tramo_plaza" :tipo="'Antifraude'"></FormTramoPlaza>
+      </div>
       <div class="flex-none filter-style">
         <button @click="buscar(nombre, fecha )" class="btn-buscar mr-2">Buscar</button>
-        <button @click="todos()" class="btn-buscar mr-89">Todos</button>
+        <button @click="todos()" class="btn-buscar mr-44">Todos</button>
       </div>
       <div class="flex-1">
         <FilesDownload @download-api="downloadApi"></FilesDownload>   
@@ -33,20 +36,12 @@
     </div>
   </div>
   <!-- MODAL CARGANDO -->
-  <div class="inset-0" :class="{'modal-container': modalLoading}">
-    <div v-if="modalLoading" class=" inset-0 font-titulo mt-56 mb-8">
-      <div class="rounded-lg w-66 justify-center absolute inset-x-0 bg-none mx-69 px-12 py-10 ">          
-        <div class="justify-center text-center block">            
-          <!--<img src="@/assets/load.gif"  class="h-48 w-48" />-->
-          <Spinner/>
-        </div>
-      </div>
-    </div>
-  </div>
-  <Footer></Footer>
+  <Spinner :modalLoading="modalLoading"/>
+<Footer/>
 </template>
 <script>
 const API = process.env.VUE_APP_URL_API_PRODUCCION
+import FormTramoPlaza from '../../components/Form-tramoplaza.vue';
 import TablaAccesos from "../../components/Tabla-accesos.vue";
 import Navbar from "../../components/Navbar.vue";
 import Footer from "../../components/Footer-login";
@@ -57,19 +52,21 @@ import Spinner from '../../components/Spinner.vue'
 import axios from "axios";
 export default {
   name: "BitacoraAccesos",
-  components: { TablaAccesos, Navbar, Footer, FilesDownload, Spinner, Paginacion },
+  components: { TablaAccesos, Navbar, Footer, FilesDownload, Spinner, Paginacion, FormTramoPlaza },
   data() {
     return {
       accesos:[],
       nombre:null,
       value: '',
       formato:'',
-      modalLoading: false,
+      modalLoading: true,
       fecha:null,
       page:1,
       totalPaginas: 0,
       currentPage: 1,
       hasMorePages: true,
+      tramo:'',
+      plaza:''
     };
   },
   beforeMount (){
@@ -236,7 +233,11 @@ export default {
       else if (formato == "txt") {
         ServiceFiles.xml_hhtp_request(`${API}/UsuarioMonitoreo/Download/txt?userName=${nombrenew}&HoraInicio=${fechanew}`, 'bitacoraAcceso.txt')
       }      
-    },  
+    }, 
+    recibir_tramo_plaza(value){
+      this.tramo = value.tramo
+      this.plaza = value.plaza
+    },
   },
 };
 </script>

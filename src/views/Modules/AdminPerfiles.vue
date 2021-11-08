@@ -41,6 +41,9 @@
         </select>
       </div>
       <div class="flex-none filter-style">
+        <FormTramoPlaza @cambiar-tramo-plaza="recibir_tramo_plaza" :tipo="'Antifraude'"></FormTramoPlaza>
+      </div>
+      <div class="flex-none filter-style">
         <button @click="buscar(nombre,estatus)"  class="btn-buscar">Buscar</button>
         <button @click="todos()"  class="btn-buscar mx-3">Todos</button>
       </div>
@@ -67,6 +70,7 @@
 
 <script>
 import TablaListaPerfiles from "../../components/Tabla-listaperfiles";
+import FormTramoPlaza from '../../components/Form-tramoplaza.vue';
 import Navbar from "../../components/Navbar.vue";
 import Footer from "../../components/Footer-login";
 import axios from 'axios';
@@ -80,12 +84,15 @@ export default {
     Navbar,
     Multiselect,
     Footer,
+    FormTramoPlaza
   },
   setup(){
     
     const nombre = ref(null)
     const estatus = ref(null)
-    const roles = ref([])    
+    const roles = ref([])
+    const tramo = ref(null)
+    const plaza = ref(null)   
     const userModal = ref(false)
     const newRol = reactive({ nombre: "", vistas: [] })
     const optionRoles = [{text: 'Monitoreo Servicio', alias: 'monitoreoServicios'},
@@ -191,8 +198,12 @@ export default {
         )
         .catch((error) => console.log(error))
     }
+    function recibir_tramo_plaza(value){
+      tramo.value = value.tramo
+      plaza.value = value.plaza
+    }
     onMounted(buscar_roles)
-    return { roles, userModal, buscar_roles, abrir_modal_new_rol, newRol, optionRoles, craer_nuevo_rol,nombre,estatus,buscar,todos }
+    return { roles, userModal, buscar_roles, abrir_modal_new_rol, newRol, optionRoles, craer_nuevo_rol,nombre,estatus,buscar,todos, recibir_tramo_plaza }
 
   }, 
 };

@@ -3,17 +3,20 @@
   <h1 class="title font-titulo font-bold">Lista de Usuarios Registrados</h1>
   <div class="container mx-auto px-0 pb-24 pt-4">
     <div class="flex flex-wrap bg-blue rounded-lg">
-      <div class="flex-none filter-style mt-2">
+      <div class="flex-none filter-style mt-3">
         Nombre:
         <input v-model="nombre" type="text" class="rounded" />
       </div>
-      <div class="flex-none filter-style mt-2">
+      <div class="flex-none filter-style mt-3">
         Estatus:
         <select v-model="estatus" class="flex-none filter-style color-black rounded" name="select" placeholder="Selecciona">
           <option hidden selected>Seleccione</option>
           <option value="100">Inactivo</option>
           <option value="200">Activo</option>
         </select>
+      </div>
+      <div class="flex-none filter-style mt-2">
+        <FormTramoPlaza @cambiar-tramo-plaza="recibir_tramo_plaza" :tipo="'Antifraude'"></FormTramoPlaza>
       </div>
       <div class="flex-none filter-style">
         <button @click="buscar(nombre,estatus)" class="btn-buscar">Buscar</button>
@@ -78,6 +81,7 @@
 </template>
 <script>
 const API = process.env.VUE_APP_URL_API_PRODUCCION
+import FormTramoPlaza from '../../components/Form-tramoplaza.vue';
 import TablaListaUsuarios from "../../components/Tabla-listausuarios";
 import Navbar from "../../components/Navbar.vue";
 import Footer from "../../components/Footer-login";
@@ -95,6 +99,8 @@ export default {
     Multiselect,
     FilesDownload,
     Spinner,
+    FormTramoPlaza,
+    
   },
   data() {
     return {
@@ -122,7 +128,9 @@ export default {
       roles:[],
       modalLoading:false,
       //addEmi
-      formato: ''
+      formato: '',
+      tramo:'',
+      plaza:''
     };
   },
   async beforeMount() {
@@ -222,11 +230,7 @@ export default {
         },
       };
       this.paginaAct = this.paginaAct - 1;
-      axios
-        .get(
-          `${API}/Usuario?Page=${this.paginaAct}&Rows=10`,
-          config
-        )
+      axios.get(`${API}/Usuario?Page=${this.paginaAct}&Rows=10`,config)
         .then((res) => {
           this.perfiles = []
           this.maxPages = res.data.totalPages;
@@ -251,11 +255,7 @@ export default {
         },
       };
       this.paginaAct = this.paginaAct + 1;
-      axios
-        .get(
-          `${API}/Usuario?Page=${this.paginaAct}&Rows=10`,
-          config
-        )
+      axios.get(`${API}/Usuario?Page=${this.paginaAct}&Rows=10`,config)
         .then((res) => {
           this.perfiles = []
           this.maxPages = res.data.totalPages;
@@ -280,11 +280,7 @@ export default {
           Authorization: "Bearer " + this.token,
         },
       };
-      axios
-        .get(
-          `${API}/Usuario?Page=${this.paginaAct}&Rows=10`,
-          config
-        )
+      axios.get(`${API}/Usuario?Page=${this.paginaAct}&Rows=10`,config)
         .then((res) => {
           this.perfiles = []
           this.maxPages = res.data.totalPages;
@@ -393,7 +389,11 @@ export default {
       else if (formato == "txt") {
         ServiceFiles.xml_hhtp_request(`${API}/Usuario/Download/txt?NameFilter=${this.nombre}&EstatusFilter=${Boolean(this.estatus)}`, 'listaUsuarios.txt')
       }      
-    },      
+    },   
+    recibir_tramo_plaza(value){
+      this.tramo = value.tramo
+      this.plaza = value.plaza
+    },   
   },
 };
 </script>
