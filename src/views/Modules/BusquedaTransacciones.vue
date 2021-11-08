@@ -9,7 +9,7 @@
             <div class="flex-1 flex flex-col md:flex-row md:space-x-2">
               <div class="w-full flex-2">
                   <FormTramoPlaza @cambiar-tramo-plaza="recibir_tramo_plaza" :tipo="'Transacciones'"></FormTramoPlaza>
-                </div>
+              </div>
               <div class="w-full flex-2 ">
                     <div class="my-2 p-1 bg-white flex border border-gray-200 rounded">
                         <input v-model="tag" class="inp-icon p-1 px-2 appearance-none outline-none w-full text-gray-800 " placeholder="Buscar No. Tag" type="text" />
@@ -59,11 +59,6 @@
       </div>
     </div>
   </div>
-    <!--<button v-if="paginaActual > 1" class="button-pagination" @click="left()">Anterior</button>
-    <button v-if="paginaActual < paginas" class="button-pagination" @click="right()">Siguiente</button>
-    <p  class="desc-paginacion">
-      Página {{ paginaActual }} de {{ paginas }}
-    </p>-->
   </div>
 <Footer></Footer>
 </template>
@@ -438,14 +433,15 @@ export default {
         let carril = ''
         let fechaInicial = fecha
         let fechaFinal = ''
+        console.log(`${API}/Transacciones/Download/Csv/${plaza}?tag=${tag}&carril=${carril}&fechaInicial=${fechaInicial}&fechaFinal=${fechaFinal}`)
         if (tipo == "csv") {
-          ServiceFiles.xml_hhtp_request(`${API}/Transacciones/Download/Csv?tag=${tag}&carril=${carril}&plaza=${plaza}&fechaInicial=${fechaInicial}&fechaFinal=${fechaFinal}`, 'transacciones.csv')
+          ServiceFiles.xml_hhtp_request(`${API}/Transacciones/Download/Csv/${plaza}?tag=${tag}&carril=${carril}&fechaInicial=${fechaInicial}&fechaFinal=${fechaFinal}`, 'transacciones.csv')
         } 
         else if (tipo == "excel") {        
-          ServiceFiles.xml_hhtp_request(`${API}/Transacciones/Download/Excel?tag=${tag}&carril=${carril}&plaza=${plaza}&fechaInicial=${fechaInicial}&fechaFinal=${fechaFinal}`, 'transacciones.xlsx')            
+          ServiceFiles.xml_hhtp_request(`${API}/Transacciones/Download/Excel/${plaza}?tag=${tag}&carril=${carril}&fechaInicial=${fechaInicial}&fechaFinal=${fechaFinal}`, 'transacciones.xlsx')            
         } 
         else if (tipo == "txt") {
-          ServiceFiles.xml_hhtp_request(`${API}/Transacciones/Download/txt?tag=${tag}&carril=${carril}&plaza=${plaza}&fechaInicial=${fechaInicial}&fechaFinal=${fechaFinal}`, 'transacciones.txt')
+          ServiceFiles.xml_hhtp_request(`${API}/Transacciones/Download/txt/${plaza}?tag=${tag}&carril=${carril}&fechaInicial=${fechaInicial}&fechaFinal=${fechaFinal}`, 'transacciones.txt')
         }
       }else{
         let fecha = this.fecha
@@ -454,14 +450,15 @@ export default {
         let carril = ''
         let fechaInicial = fecha
         let fechaFinal = ''
+        console.log(`${API}/Transacciones/Download/Csv/${plaza}?tag=${tag}&carril=${carril}&fechaInicial=${fechaInicial}&fechaFinal=${fechaFinal}`)
         if (tipo == "csv") {
-          ServiceFiles.xml_hhtp_request(`${API}/Transacciones/Download/Csv?tag=${tag}&carril=${carril}&plaza=${plaza}&fechaInicial=${fechaInicial}&fechaFinal=${fechaFinal}`, 'transacciones.csv')
+          ServiceFiles.xml_hhtp_request(`${API}/Transacciones/Download/Csv/${plaza}?tag=${tag}&carril=${carril}&fechaInicial=${fechaInicial}&fechaFinal=${fechaFinal}`, 'transacciones.csv')
         } 
         else if (tipo == "excel") {        
-          ServiceFiles.xml_hhtp_request(`${API}/Transacciones/Download/Excel?tag=${tag}&carril=${carril}&plaza=${plaza}&fechaInicial=${fechaInicial}&fechaFinal=${fechaFinal}`, 'transacciones.xlsx')            
+          ServiceFiles.xml_hhtp_request(`${API}/Transacciones/Download/Excel/${plaza}?tag=${tag}&carril=${carril}&fechaInicial=${fechaInicial}&fechaFinal=${fechaFinal}`, 'transacciones.xlsx')            
         } 
         else if (tipo == "txt") {
-          ServiceFiles.xml_hhtp_request(`${API}/Transacciones/Download/txt?tag=${tag}&carril=${carril}&plaza=${plaza}&fechaInicial=${fechaInicial}&fechaFinal=${fechaFinal}`, 'transacciones.txt')
+          ServiceFiles.xml_hhtp_request(`${API}/Transacciones/Download/txt/${plaza}?tag=${tag}&carril=${carril}&fechaInicial=${fechaInicial}&fechaFinal=${fechaFinal}`, 'transacciones.txt')
         }
       }
     },
