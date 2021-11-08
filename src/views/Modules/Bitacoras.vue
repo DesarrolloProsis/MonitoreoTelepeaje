@@ -1,5 +1,5 @@
 <template>
-    <Navbar></Navbar>
+    <Navbar/>
     <h1 class="title font-bold font-titulo">Bitácoras</h1>
     <div class="container mx-auto px-auto pb-20 pt-0 md:px-48 md:pt-10 my-32">
         <div class="flex flex-wrap">
@@ -14,7 +14,7 @@
             ></ModuloBitacoras>
         </div>
     </div>
-    <Footer></Footer>
+    <Footer/>
 </template>
 <script>
 import Servicio from '../../Servicios/Token-Services';

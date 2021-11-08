@@ -1,10 +1,10 @@
 <template>
-    <Navbar></Navbar>
+    <Navbar/>
     <div class="container mx-auto px-0 pb-100">
         <h1 class="title-center font-titulo font-bold pb-4">Bitácora de Actualización de Listas</h1>
         <div class="flex flex-wrap bg-blue">
             <div class="flex-none filter-style mt-1">
-                <FormTramoPlaza @cambiar-tramo-plaza="recibir_tramo_plaza" :tipo="'Antifraude'"></FormTramoPlaza>
+                <FormTramoPlaza @cambiar-tramo-plaza="recibir_tramo_plaza" :tipo="'Antifraude'"/>
             </div>
             <div class="flex-none filter-style mt-2">
                 Fecha:<input v-model="fecha" type="date" class="rounded"/>
@@ -14,34 +14,19 @@
                 <button @click="limpiar(plaza)" class="btn-buscar ml-2 mr-1">Limpiar</button>
             </div>
             <div class="flex-1">
-                <FilesDownload @download-api="downloadApi"></FilesDownload>   
+                <FilesDownload @download-api="downloadApi"/>
             </div>
         </div>
         <div class="container mx-auto px-0 md:px-60">
-            <TablaListas :dataHistorico="listaHistorico"></TablaListas>
+            <TablaListas :dataHistorico="listaHistorico"/>
         </div>
         <div class="mt-20">
-            <Paginacion
-                :total-pages="totalPaginas" 
-                :total="100"
-                :current-page="currentPage"
-                :has-more-pages="hasMorePages" 
-                @pagechanged="showMore"
-            ></Paginacion>
+            <Paginacion :total-pages="totalPaginas" :total="100" :current-page="currentPage" :has-more-pages="hasMorePages" @pagechanged="showMore"/>
         </div>
     </div>
     <!-- MODAL CARGANDO -->
-    <div class="inset-0" :class="{'modal-container': modalLoading}">
-        <div v-if="modalLoading" class=" inset-0 font-titulo mt-56 mb-8">
-            <div class="rounded-lg w-66 justify-center absolute inset-x-0 bg-none mx-69 px-12 py-10 ">          
-                <div class="justify-center text-center block">            
-                    <!--<img src="@/assets/load.gif"  class="h-48 w-48" />-->
-                    <Spinner/>
-                </div>
-            </div>
-        </div>
-    </div>
-<Footer></Footer>
+    <Spinner :modalLoading="modalLoading"/>
+<Footer/>
 </template>
 <script>
 const API = process.env.VUE_APP_URL_API_PRODUCCION

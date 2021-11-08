@@ -67,16 +67,7 @@
     </div>
   </div>
   <!-- MODAL CARGANDO -->
-  <div class="inset-0" :class="{'modal-container': modalLoading}">
-    <div v-if="modalLoading" class=" inset-0 font-titulo mt-56 mb-8">
-      <div class="rounded-lg w-66 justify-center absolute  inset-x-0 bg-none mx-89 px-12 py-10 ">          
-        <div class="justify-center text-center block">            
-          <!--<img src="@/assets/load.gif"  class="h-48 w-48" />-->
-          <Spinner/>
-        </div>
-      </div>
-    </div>
-  </div>
+  <Spinner :modalLoading="modalLoading"/>
   <Footer></Footer>
 </template>
 <script>

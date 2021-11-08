@@ -18,7 +18,7 @@
 </template>
 <script>
 export default {
-    name: "TablaAccesos",
+    name: "Spinner",
     props: ["modalLoading"],
 }
 </script>
@@ -113,7 +113,7 @@ export default {
     height: 514px;
     display: inline-block;
     overflow: hidden;
-    background:;
+    background: transparent;
 }
 .ldio-20tj2v72mxrh {
     width: 100%;

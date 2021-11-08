@@ -1,66 +1,44 @@
 <template>
-  <Navbar></Navbar>
+  <Navbar/>
   <div class="container mx-auto px-0 pb-100">
     <h1 class="title-center font-titulo font-bold pb-4">Búsqueda de Transacciones en Plaza</h1>
   <div>
     <div class="-mt-4 mx-2 md:mx-0">
-      <p>Filtros de Búsqueda:</p>
-        <div class="flex flex-col md:flex-row border-gray-200 pb-0 mb-4">          
-            <div class="flex-1 flex flex-col md:flex-row md:space-x-2">
+        <div class="flex flex-col md:flex-row bg-blue rounded-lg border-gray-200 pb-0 mb-4">          
+            <div class="flex-1 flex flex-col md:flex-row md:space-x-2 -mb-2">
               <div class="w-full flex-2">
-                  <FormTramoPlaza @cambiar-tramo-plaza="recibir_tramo_plaza" :tipo="'Transacciones'"></FormTramoPlaza>
+                <FormTramoPlaza @cambiar-tramo-plaza="recibir_tramo_plaza" :tipo="'Antifraude'"/>
               </div>
-              <div class="w-full flex-2 ">
-                    <div class="my-2 p-1 bg-white flex border border-gray-200 rounded">
-                        <input v-model="tag" class="inp-icon p-1 px-2 appearance-none outline-none w-full text-gray-800 " placeholder="Buscar No. Tag" type="text" />
-                    </div>
+              <div class="w-full flex-2 -mt-2">
+                <div class="my-2 p-1 bg-white flex border border-gray-200 rounded">
+                  <input v-model="tag" class="inp-icon  w-full text-gray-800 " placeholder="Buscar No. Tag" type="text" />
                 </div>
-                <div class="w-full flex-2">
-                    <div class="my-2 p-1 bg-white flex border border-gray-200 rounded">
-                        <input v-model="fecha" type="date" class="p-1 px-2 appearance-none outline-none w-full text-gray-800 "> 
-                      </div>
+              </div>
+              <div class="w-full flex-2 -mt-2">
+                <div class="my-2 p-1 bg-white flex border border-gray-200 rounded">
+                  <input v-model="fecha" type="date" class=" w-full text-gray-800 "> 
                 </div>
-                <div class="w-full flex-1">
-                    <div class="my-2 p-1 bg-white flex border border-gray-200 rounded btn-search ">                      
-                        <button class="p-1 px-2 appearance-none outline-none w-full text-white " :disabled="modalLoading" :class="{'cursor-not-allowed': modalLoading}" @click="serch(plaza, tag, fecha)">Buscar</button>
-                    </div>
+              </div>
+              <div class="w-full flex-1 -mt-2">
+                <div class="my-2 p-1 bg-white flex border border-gray-200 rounded btn-search ">                      
+                  <button :disabled="modalLoading" :class="{'cursor-not-allowed': modalLoading}" @click="serch(plaza, tag, fecha)">Buscar</button>
                 </div>
-                <div class="w-full flex-1">
-                  <div class="my-2 p-1 bg-white flex border border-gray-200 rounded btn-search ">                      
-                    <button class="p-1 px-2 appearance-none outline-none w-full text-white " :disabled="modalLoading" :class="{'cursor-not-allowed': modalLoading}" @click="limpiar(plaza)">Limpiar</button>
-                  </div>
+              </div>
+              <div class="w-full flex-1 -mt-2">
+                <div class="my-2 p-1 bg-white flex border border-gray-200 rounded btn-search ">                      
+                  <button :disabled="modalLoading" :class="{'cursor-not-allowed': modalLoading}" @click="limpiar(plaza)">Limpiar</button>
                 </div>
-                <FilesDownload @download-api="downloadApi"></FilesDownload>
+              </div>
+              <FilesDownload @download-api="downloadApi" class="-mt-1"/>
             </div>
         </div>
-        <hr>
     </div>
   </div>
-    <TablaBusquedaTransacciones
-      :dataCruces="cruces"
-    ></TablaBusquedaTransacciones>
-    <div class="mt-16 -mb-44">
-      <Paginacion
-        :total-pages="totalPaginas" 
-        :total="100"
-        :current-page="currentPage"
-        :has-more-pages="hasMorePages" 
-        @pagechanged="showMore"
-      ></Paginacion>
-    </div>
-      <!-- MODAL CARGANDO -->
-  <div class="inset-0" :class="{'modal-container': modalLoading}">
-    <div v-if="modalLoading" class=" inset-0 font-titulo mt-56 mb-8">
-      <div class="rounded-lg w-66 justify-center absolute inset-x-0 bg-none mx-69 px-12 py-10 ">          
-        <div class="justify-center text-center block">            
-          <!--<img src="@/assets/load.gif"  class="h-48 w-48" />-->
-          <Spinner/>
-        </div>
-      </div>
-    </div>
+  <TablaBusquedaTransacciones :dataCruces="cruces"/>
   </div>
-  </div>
-<Footer></Footer>
+  <Paginacion :total-pages="totalPaginas" :total="100" :current-page="currentPage" :has-more-pages="hasMorePages" @pagechanged="showMore"/>  
+  <Spinner :modalLoading="modalLoading"/>
+<Footer/>
 </template>
 <script>
 const API = process.env.VUE_APP_URL_API_PRODUCCION
@@ -492,6 +470,7 @@ export default {
     z-index: 1000;
     background: rgba(0, 0, 0, 0.2);
 }
+
 .loading {
   text-align: center;
   padding: 20px;
@@ -581,6 +560,10 @@ export default {
 .btn-search {
   background-color: #017296;
   color: white;
+  height: 70%;
+  padding: 0px 10px;
+  border-radius: 5px;
+  border: 1px solid black;
   
 }
 
