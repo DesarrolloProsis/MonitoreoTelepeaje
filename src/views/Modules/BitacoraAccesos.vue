@@ -22,6 +22,15 @@
     <div class="container mx-auto px-0 md:px-60">
       <TablaAccesos :dataAccesos="accesos"></TablaAccesos>
     </div>
+    <div class="mt-20 -mb-36">
+      <Paginacion
+        :total-pages="totalPaginas" 
+        :total="100"
+        :current-page="currentPage"
+        :has-more-pages="hasMorePages" 
+        @pagechanged="showMore"
+      ></Paginacion>
+    </div>
   </div>
   <!-- MODAL CARGANDO -->
   <div class="inset-0" :class="{'modal-container': modalLoading}">
@@ -43,11 +52,12 @@ import Navbar from "../../components/Navbar.vue";
 import Footer from "../../components/Footer-login";
 import FilesDownload from '../../components/Files-descargar.vue'
 import ServiceFiles from '../../Servicios/Files-Service'
+import Paginacion from "../../components/Paginacion.vue"
 import Spinner from '../../components/Spinner.vue'
 import axios from "axios";
 export default {
   name: "BitacoraAccesos",
-  components: { TablaAccesos, Navbar, Footer, FilesDownload, Spinner },
+  components: { TablaAccesos, Navbar, Footer, FilesDownload, Spinner, Paginacion },
   data() {
     return {
       accesos:[],
@@ -55,13 +65,19 @@ export default {
       value: '',
       formato:'',
       modalLoading: false,
-      fecha:null
+      fecha:null,
+      page:1,
+      totalPaginas: 0,
+      currentPage: 1,
+      hasMorePages: true,
     };
   },
   beforeMount (){
     this.modalLoading = true
-    axios.get(`${API}/UsuarioMonitoreo/null/null`)
+    axios.get(`${API}/HistoricoSesion/1/null/null`)
       .then((result)=>{
+        this.totalPaginas = result.data.numberPages
+        this.currentPage = result.data.now
         this.modalLoading = false
         result.data.body.forEach((e)=>{
           let obj = {
@@ -85,7 +101,7 @@ export default {
       this.accesos = []
       this.nombre = null
       this.fecha = null
-      axios.get(`${API}/UsuarioMonitoreo/null/null`)
+      axios.get(`${API}/HistoricoSesion/1/null/null`)
       .then((result)=>{
         this.modalLoading = false
         result.data.body.forEach((e)=>{
@@ -115,7 +131,7 @@ export default {
       if(nombre != null && fecha == null){
         this.accesos = []
         this.modalLoading = true
-        axios.get(`${API}/UsuarioMonitoreo/${nombre}/null`)
+        axios.get(`${API}/HistoricoSesion/1/${nombre}/null`)
         .then((result)=>{
           this.modalLoading = false
           result.data.body.forEach((e)=>{
@@ -137,7 +153,7 @@ export default {
       if(fecha != null && nombre == null){
         this.accesos = []
         this.modalLoading = true
-        axios.get(`${API}/UsuarioMonitoreo/null/${fecha}`)
+        axios.get(`${API}/HistoricoSesion/1/null/${fecha}`)
         .then((result)=>{
           this.modalLoading = false
           result.data.body.forEach((e)=>{
@@ -159,7 +175,7 @@ export default {
       if(fecha != null && nombre != null){
         this.accesos = []
         this.modalLoading = true
-        axios.get(`${API}/UsuarioMonitoreo/${nombre}/${fecha}`)
+        axios.get(`${API}/HistoricoSesion/1/${nombre}/${fecha}`)
         .then((result)=>{
           this.modalLoading = false
           result.data.body.forEach((e)=>{
@@ -178,6 +194,30 @@ export default {
           })
         })
       }
+    },
+    showMore(page){
+      let name = this.nombre
+      let date = this.fecha
+      axios.get(`${API}/HistoricoSesion/${page}/${name}/${date}`)
+      .then((result)=>{
+        this.totalPaginas = result.data.numberPages
+        this.currentPage = result.data.now
+        this.modalLoading = false
+        result.data.body.forEach((e)=>{
+          let obj = {
+            usuarioId: e.usuarioId,
+            nombreUsuario: e.nombreUsuario,
+            nombre: e.nombre,
+            apellidoP: e.apellidoPaterno,
+            apellidoM: e.apellidoMaterno,
+            rolId: e.rolId,
+            fecha_inicio: e.horaLogIn,
+            fecha_fin: e.horaLogOut,
+            rol: e.nombreRol
+          }
+          this.accesos.push(obj)
+        })
+      })
     },
     downloadApi(formato){
       let nombrenew = 'null'
