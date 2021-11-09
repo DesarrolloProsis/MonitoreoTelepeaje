@@ -175,6 +175,7 @@ export default {
         console.log(data);
         axios.post(`${API}/Transacciones/TransactionsFiltros`,data)
         .then((result)=>{
+          console.log(result);
           this.modalLoading = false
           if((result.data.status == 'Ok') && (result.data.body.length > 0)){
             this.modalLoading = false
@@ -183,7 +184,7 @@ export default {
             result.data.body.forEach((e) => {
               let obj = {
                 tag: e.idTag,
-                fechaEnvio: e.fechaEnvioOperador,
+                fechaEnvio: e.fechaDeCruce,
                 carril: e.carril,
                 claseCajero: e.claseCajero,
                 tarifa: e.tarifa
