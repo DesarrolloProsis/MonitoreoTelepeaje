@@ -32,7 +32,7 @@ export default {
     const statusServices = ref([])
     const mexIra = ref(true)
     const mexAca = ref(false)
-    const delegacionSelect = ref(1)
+    const delegacionSelect = ref(2)
     const isLoading = ref(true)
 
     const cambiar_delegacion = (id) => {
@@ -77,7 +77,33 @@ export default {
           console.log(error)
         })
     }
-    onMounted(buscar_status_services)
+    const buscar_status = () => {
+      var decoded = jwt_decode(Service.getCookie("Token"));
+      console.log(decoded.UsuarioId)
+      axios.get(`${API}/PlazaAsignada/DelUsuario/${decoded.UsuarioId}`)
+        .then((response) => {          
+          console.log(response)
+          if(response.data.status == 'Ok'){
+            let plazasUser = response.data.body.filter(item => item.tramoAsignadoId == delegacionSelect.value) 
+            console.log(plazasUser)
+            //for iterar plazas
+            plazasUser.forEach(plaza => {
+              axios.get(`${API}/Transacciones/LastTransaction/${plaza.plazaAsignadaId}`)
+                .then((response) => {                
+                  if(response.data.status == 'Ok'){
+                    statusServices.value.push(response.data.body[0])
+                  }
+                })
+            })
+            isLoading.value = false  
+            console.log(statusServices.value)          
+          }
+        })
+        .catch((error) => {
+          console.log(error)
+        })
+    }
+    onMounted(buscar_status)
     return { statusServices, mexAca, mexIra, isLoading, cambiar_delegacion }
 
   },  
