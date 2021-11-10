@@ -1,10 +1,10 @@
 <template>
-  <Navbar></Navbar>
+  <Navbar/>
   <div class="container mx-auto px-0 pb-100">
     <h1 class="title-center font-titulo font-bold pb-4">Envió de Transacciones a Operador de Telepeaje</h1>
     <div class="flex flex-wrap bg-blue">
       <div class="flex-none filter-style">
-        <FormTramoPlaza @cambiar-tramo-plaza="recibir_tramo_plaza" :carrilesForm="true" :tipo="'Antifraude'"></FormTramoPlaza>
+        <FormTramoPlaza @cambiar-tramo-plaza="recibir_tramo_plaza" :carrilesForm="true" :tipo="'Antifraude'"/>
       </div>
       <div class="flex-none filter-style">
         Fecha:<input v-model="fecha" type="date" class="rounded" />
@@ -29,29 +29,14 @@
         </Multiselect>
       </div>
     </div>
-    <TablaTransacciones :dataTransacciones="transacciones"></TablaTransacciones>
+    <TablaTransacciones :dataTransacciones="transacciones"/>
     <div class="mt-20 -mb-32">
-      <Paginacion
-        :total-pages="totalPaginas" 
-        :total="100"
-        :current-page="currentPage"
-        :has-more-pages="hasMorePages" 
-        @pagechanged="showMore"
-      ></Paginacion>
+      <Paginacion :total-pages="totalPaginas" :total="100" :current-page="currentPage" :has-more-pages="hasMorePages" @pagechanged="showMore"/>
     </div>
   </div>
   <!-- MODAL CARGANDO -->
-    <div class="inset-0" :class="{'modal-container': modalLoading}">
-      <div v-if="modalLoading" class=" inset-0 font-titulo mt-56 mb-8">
-        <div class="rounded-lg w-66 justify-center absolute inset-x-0 bg-none mx-69 px-12 py-10 ">          
-          <div class="justify-center text-center block">            
-            <!--<img src="@/assets/load.gif"  class="h-48 w-48" />-->
-            <Spinner/>
-          </div>
-        </div>
-      </div>
-    </div>
-  <Footer></Footer>
+<Spinner :modalLoading="modalLoading"/>
+  <Footer/>
 </template>
 <script>
 const API = process.env.VUE_APP_URL_API_PRODUCCION
@@ -376,13 +361,6 @@ export default {
 };
 </script>
 <style scoped>
-.modal-container{
-    position: fixed;
-    width: 100%;
-    height: 100vh;
-    z-index: 1000;
-    background: rgba(0, 0, 0, 0.2);
-}
 .filter-style-2 {
   color: white;
   font-size: 16px;

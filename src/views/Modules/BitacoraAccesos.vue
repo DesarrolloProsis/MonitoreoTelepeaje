@@ -12,27 +12,21 @@
         <input v-model="fecha" type="date" class="rounded"/>
       </div>
       <div class="flex-none filter-style mt-2">
-        <FormTramoPlaza @cambiar-tramo-plaza="recibir_tramo_plaza" :tipo="'Antifraude'"></FormTramoPlaza>
+        <FormTramoPlaza @cambiar-tramo-plaza="recibir_tramo_plaza" :tipo="'Antifraude'"/>
       </div>
       <div class="flex-none filter-style">
         <button @click="buscar(nombre, fecha )" class="btn-buscar mr-2">Buscar</button>
         <button @click="todos()" class="btn-buscar mr-44">Todos</button>
       </div>
       <div class="flex-1">
-        <FilesDownload @download-api="downloadApi"></FilesDownload>   
+        <FilesDownload @download-api="downloadApi"/>   
       </div>
     </div>
     <div class="container mx-auto px-0 md:px-60">
-      <TablaAccesos :dataAccesos="accesos"></TablaAccesos>
+      <TablaAccesos :dataAccesos="accesos"/>
     </div>
     <div class="mt-20 -mb-36">
-      <Paginacion
-        :total-pages="totalPaginas" 
-        :total="100"
-        :current-page="currentPage"
-        :has-more-pages="hasMorePages" 
-        @pagechanged="showMore"
-      ></Paginacion>
+      <Paginacion :total-pages="totalPaginas" :total="100" :current-page="currentPage" :has-more-pages="hasMorePages" @pagechanged="showMore"/>
     </div>
   </div>
   <!-- MODAL CARGANDO -->

@@ -1,10 +1,10 @@
 <template>
-  <Navbar></Navbar>
+  <Navbar/>
   <div class="container mx-auto px-0 pb-100">
     <h1 class="title-center font-titulo font-bold pb-4">Transacciones de Telepeaje en Tiempo Real</h1>
     <div class="flex flex-wrap bg-blue">
       <div class="flex-none ">
-        <FormTramoPlaza @cambiar-tramo-plaza="recibir_tramo_plaza" :carrilesForm="true" :tipo="'Antifraude'"></FormTramoPlaza>
+        <FormTramoPlaza @cambiar-tramo-plaza="recibir_tramo_plaza" :carrilesForm="true" :tipo="'Antifraude'"/>
       </div>
       <div class="flex-none mt-1 filter-style">
         <button @click="buscar(plaza, carril)" class="btn-buscar">Buscar</button>
@@ -20,10 +20,10 @@
         </select>
       </div>
     </div>
-    <TablaCruces :dataCruces="cruces"></TablaCruces>
+    <TablaCruces :dataCruces="cruces"/>
     <p class="mt-10">Próxima actualización en {{ contador.slice(3)  }}</p>
   </div>
-  <Footer></Footer>
+  <Footer/>
 </template>
 <script>
 const API = process.env.VUE_APP_URL_API_PRODUCCION

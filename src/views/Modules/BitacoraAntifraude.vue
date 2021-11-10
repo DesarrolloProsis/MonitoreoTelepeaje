@@ -24,13 +24,7 @@
       <TablaAntifraude :dataAntifraude="listaNegra"/>
     </div>
     <div class="mt-20">
-      <Paginacion
-        :total-pages="totalPaginas" 
-        :total="100"
-        :current-page="currentPage"
-        :has-more-pages="hasMorePages" 
-        @pagechanged="showMore"
-      ></Paginacion>
+      <Paginacion :total-pages="totalPaginas" :total="100" :current-page="currentPage" :has-more-pages="hasMorePages" @pagechanged="showMore"/>
     </div>
   </div>
   <!-- MODAL CARGANDO -->

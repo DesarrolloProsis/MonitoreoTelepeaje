@@ -1,5 +1,5 @@
 <template>
-  <Navbar></Navbar>
+  <Navbar/>
   <h1 class="title font-titulo font-bold">Administración de Roles</h1>
     <!-- Modal Rol -->
   <div class="sticky inset-0 " :class="{'modal-container': userModal}">
@@ -41,7 +41,7 @@
         </select>
       </div>
       <div class="flex-none filter-style">
-        <FormTramoPlaza @cambiar-tramo-plaza="recibir_tramo_plaza" :tipo="'Antifraude'"></FormTramoPlaza>
+        <FormTramoPlaza @cambiar-tramo-plaza="recibir_tramo_plaza" :tipo="'Antifraude'"/>
       </div>
       <div class="flex-none filter-style">
         <button @click="buscar(nombre,estatus)"  class="btn-buscar">Buscar</button>
@@ -63,9 +63,9 @@
     <div class="mb-6">
       <button @click="abrir_modal_new_rol" class="w-full botonIconBuscar justify-center mt-3 -mb-8">Agregar Usuario</button>
     </div>
-    <TablaListaPerfiles @buscar-roles="buscar_roles" :dataPerfiles="roles"></TablaListaPerfiles>
+    <TablaListaPerfiles @buscar-roles="buscar_roles" :dataPerfiles="roles"/>
   </div>
-  <Footer></Footer>
+  <Footer/>
 </template>
 
 <script>

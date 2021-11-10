@@ -1,8 +1,8 @@
 <template>
-<Navbar></Navbar>
+<Navbar/>
 <h1 class="title">Estatus Tags</h1>
 <div class="flex justify-center pt-4 filter-style">
-  <FormTramoPlaza @cambiar-tramo-plaza="recibir_tramo_plaza" :tipo="''"></FormTramoPlaza>
+  <FormTramoPlaza @cambiar-tramo-plaza="recibir_tramo_plaza" :tipo="''"/>
 </div>
 <div class="flex justify-center">
   <div class="flex-auto text-center pt-4">
@@ -12,20 +12,11 @@
 </div>
 
 <div class="container mx-auto px-0 md:px-60 pb-24 pt-4">
-  <TablaEstatusTag :datatag="tags"></TablaEstatusTag>
+  <TablaEstatusTag :datatag="tags"/>
 </div>
   <!-- MODAL CARGANDO -->
-  <div class="inset-0" :class="{'modal-container': modalLoading}">
-      <div v-if="modalLoading" class=" inset-0 font-titulo mt-56 mb-8">
-          <div class="rounded-lg w-66 justify-center absolute inset-x-0 bg-none mx-69 px-12 py-10 ">          
-              <div class="justify-center text-center block">            
-                  <!--<img src="@/assets/load.gif"  class="h-48 w-48" />-->
-                  <Spinner/>
-              </div>
-          </div>
-      </div>
-  </div>
-<Footer></Footer>
+<Spinner :modalLoading="modalLoading"/>
+<Footer/>
 </template>
 <script>
 const API = process.env.VUE_APP_URL_API_PRODUCCION
@@ -170,13 +161,6 @@ export default {
 };
 </script>
 <style scoped>
-.modal-container{
-    position: fixed;
-    width: 100%;
-    height: 100vh;
-    z-index: 1000;
-    background: rgba(0, 0, 0, 0.2);
-}
 .title {
   text-align: center;
   font-size: 25px;

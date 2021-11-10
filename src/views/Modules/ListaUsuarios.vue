@@ -1,5 +1,5 @@
 <template>
-  <Navbar></Navbar>
+  <Navbar/>
   <h1 class="title font-titulo font-bold">Lista de Usuarios Registrados</h1>
   <div class="container mx-auto px-0 pb-24 pt-4">
     <div class="flex flex-wrap bg-blue rounded-lg">
@@ -16,20 +16,20 @@
         </select>
       </div>
       <div class="flex-none filter-style mt-2">
-        <FormTramoPlaza @cambiar-tramo-plaza="recibir_tramo_plaza" :tipo="'Antifraude'"></FormTramoPlaza>
+        <FormTramoPlaza @cambiar-tramo-plaza="recibir_tramo_plaza" :tipo="'Antifraude'"/>
       </div>
       <div class="flex-none filter-style">
         <button @click="buscar(nombre,estatus)" class="btn-buscar">Buscar</button>
         <button @click="todos()" class="btn-buscar ml-1">Todos</button>
       </div>
       <div class="flex-1 ml-64">
-        <FilesDownload @download-api="downloadApi"></FilesDownload>
+        <FilesDownload @download-api="downloadApi"/>
       </div>
     </div>
     <div class="mb-6">
       <button @click="modalAgregar=true" class="w-full botonIconBuscar justify-center mt-3 -mb-8">Agregar Usuario</button>
     </div>
-    <TablaListaUsuarios :dataUsuarios="perfiles"></TablaListaUsuarios>
+    <TablaListaUsuarios :dataUsuarios="perfiles"/>
     <div class="">
       <button class="button-pagination" v-if="paginaAct > 1" @click="anterior()">Anterior</button>
       <button class="button-pagination" v-if="paginaAct < maxPages" @click="siguiente()">Siguiente</button>
@@ -68,7 +68,7 @@
   </div>
   <!-- MODAL CARGANDO -->
   <Spinner :modalLoading="modalLoading"/>
-  <Footer></Footer>
+  <Footer/>
 </template>
 <script>
 const API = process.env.VUE_APP_URL_API_PRODUCCION
@@ -390,13 +390,6 @@ export default {
 </script>
 <style src="@vueform/multiselect/themes/default.css"></style>
 <style scoped>
-.modal-container{
-    position: fixed;
-    width: 100%;
-    height: 100vh;
-    z-index: 1000;
-    background: rgba(0, 0, 0, 0.5);
-}
 .title {
   text-align: center;
   font-size: 45px;

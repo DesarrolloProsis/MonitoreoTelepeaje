@@ -1,11 +1,10 @@
 <template>
-  <Navbar></Navbar>
+  <Navbar/>
   <div class="h-screen md:h-full md:mb-0 mb-9">
     <h1 class="title-center">Monitoreo de Carriles</h1>
-    <TablaCarriles></TablaCarriles>
+    <TablaCarriles/>
   </div>
-
-  <Footer></Footer>
+  <Footer/>
 </template>
 <script>
 import Navbar from "../../components/Navbar.vue";
