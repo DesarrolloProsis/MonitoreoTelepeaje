@@ -7,8 +7,12 @@
             </option>
         </select>        
         <span class="mt-1" :class="{'mt-0 text-white': tipo == 'Antifraude'}">Plaza:</span>
-        <select v-model="plazaSeleccionado" @change="obtener_carriles_por_plaza" class="p-1 px-2  outline-none w-full text-gray-800 ml-3 rounded" name="select" id="selectorTramo">                                    
-            <option v-if="plazas.length == 0" value="">Sin Plazas</option>
+        <select v-if="plazas.length == 0" :disabled="!habilitar" class="p-1 px-2  outline-none w-full text-gray-800 ml-3 rounded" name="select" id="selectorTramo" placeholder="Cargando...">
+            <option :class="{'hidden':plazas.length == 0}" value=""><span v-if="!habilitar">Cargando...</span><span v-else>Sin Conexiòn</span></option>
+            <option value="">Sin Conexión</option>
+        </select>
+        <select v-else v-model="plazaSeleccionado" :disabled="!habilitar" @change="obtener_carriles_por_plaza" class="p-1 px-2  outline-none w-full text-gray-800 ml-3 rounded" name="select" id="selectorTramo" placeholder="Cargando...">
+            <option v-if="plazas.length == 0" value="">Sin Conexión</option>
             <option v-else value="">Selecione Plaza</option>            
             <option v-for="(plaza, key) in plazas" :value="plaza" :key="key">{{ plaza.nombre }}</option>
         </select>
@@ -35,7 +39,8 @@ export default {
     setup(props, { emit }){
         const tramos = ref([])
         const plazas = ref([])
-        const carriles = ref([])        
+        const carriles = ref([])   
+        const habilitar = ref(false)  
         tramos.value.push({'id': 1, 'text': 'Mex-Acapulco'})
         tramos.value.push({'id': 2, 'text': 'Mex-Irapuato'})
 
@@ -43,8 +48,10 @@ export default {
         const plazaSeleccionado = ref('')  
         const carrilSeleccionado = ref('')      
 
-        const obtner_plazas_por_tramo = async () => {                  
-            axios.get(`${API}/PlazaAsignada/PorTramo/${tramoSeleccionado.value.id}`)
+        const obtner_plazas_por_tramo = async () => {      
+            plazas.value = []  
+            habilitar.value = false       
+            axios.get(`${API}/PlazaAsignada/PorTramoConnection/${tramoSeleccionado.value.id}`)
             .then((responseFullPlazas) => {  
                 console.log(responseFullPlazas)     
                 Servicio.getCookie("Token")
@@ -52,14 +59,15 @@ export default {
                 console.log(info.UsuarioId);             
                 axios.get(`${API}/PlazaAsignada/DelUsuario/${info.UsuarioId}`)
                 .then((responsePlazaUsuario) => {
-                    //console.log(responsePlazaUsuario)     
+                    console.log(responsePlazaUsuario)     
                     plazas.value = []      
                     responseFullPlazas.data.body.forEach(plaza => {
                         let objPlazaValida = responsePlazaUsuario.data.body
-                        .find(item => item.plazaAsignadaId == plaza.plazaAsignadaId)                        
+                        .find(item => item.plazaAsignadaId == plaza.plazaAsignadaId && plaza.connected)                        
                         if(objPlazaValida != undefined)
-                            plazas.value.push({ ...objPlazaValida, numeroPlazaCapufe: plaza.numeroPlazaCapufe})                        
-                    });                   
+                            plazas.value.push({ ...objPlazaValida, numeroPlazaCapufe: plaza.numeroPlazaCapufe})
+                            habilitar.value = true                        
+                    })                             
                     console.log(plazas.value)
                     if(props.carrilesForm)                    
                         emit_tramo_plaza()                                            
@@ -92,7 +100,7 @@ export default {
                 emit('cambiar-tramo-plaza', { 'tramo': tramoSeleccionado.value.id, plaza:plazaSeleccionado.value.plazaAsignadaId, carril: carrilSeleccionado.value.lineaCarril })
         }
         onMounted(obtner_plazas_por_tramo)  
-        return { tramos, plazas, obtner_plazas_por_tramo, obtener_carriles_por_plaza, tramoSeleccionado, plazaSeleccionado, carrilSeleccionado, emit_tramo_plaza, carriles }
+        return { tramos, plazas, obtner_plazas_por_tramo, obtener_carriles_por_plaza, tramoSeleccionado, plazaSeleccionado, carrilSeleccionado, emit_tramo_plaza, carriles, habilitar }
     }, 
 }
 </script>
