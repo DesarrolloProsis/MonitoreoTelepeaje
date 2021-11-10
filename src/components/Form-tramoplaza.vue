@@ -14,7 +14,7 @@
         <select v-else v-model="plazaSeleccionado" :disabled="!habilitar" @change="obtener_carriles_por_plaza" class="p-1 px-2  outline-none w-full text-gray-800 ml-3 rounded" name="select" id="selectorTramo" placeholder="Cargando...">
             <option v-if="plazas.length == 0" value="">Sin Conexión</option>
             <option v-else value="">Selecione Plaza</option>            
-            <option v-for="(plaza, key) in plazas" :value="plaza" :key="key">{{ plaza.nombre }}</option>
+            <option v-for="(plaza, key) in plazas" :value="plaza" :key="key" :disabled="!plaza.conexion" :class="{'text-gray-500':plaza.conexion == false}">{{ plaza.nombre }} <span v-if="!plaza.conexion">(Sin Conexión)</span> </option>
         </select>
         <template v-if="carrilesForm">
             <span class="mt-1 ml-3" :class="{'mt-0 text-white': tipo == 'Antifraude'}">Carriles:</span>
@@ -63,9 +63,9 @@ export default {
                     plazas.value = []      
                     responseFullPlazas.data.body.forEach(plaza => {
                         let objPlazaValida = responsePlazaUsuario.data.body
-                        .find(item => item.plazaAsignadaId == plaza.plazaAsignadaId && plaza.connected)                        
+                        .find(item => item.plazaAsignadaId == plaza.plazaAsignadaId)                        
                         if(objPlazaValida != undefined)
-                            plazas.value.push({ ...objPlazaValida, numeroPlazaCapufe: plaza.numeroPlazaCapufe})
+                            plazas.value.push({ ...objPlazaValida, numeroPlazaCapufe: plaza.numeroPlazaCapufe, conexion: plaza.connected})
                             habilitar.value = true                        
                     })                             
                     console.log(plazas.value)
