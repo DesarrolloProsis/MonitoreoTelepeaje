@@ -84,12 +84,12 @@ export default {
             ]
         }else{
             this.modulos= [
-                {
+                /*{
                     img_src: "Menu/bitacoras.png",
                     nombre: "Bitácora De Alarmas",
                     ruta: "/inicio/monitoreo-carriles/bitacora-alarmas",
                     color: "green"
-                },
+                },*/
                 {
                     img_src: "Menu/bitacoras.png",
                     nombre: "Bitácora De Antifraude",

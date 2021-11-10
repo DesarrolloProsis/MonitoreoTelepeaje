@@ -15,7 +15,7 @@
               </button>
             </div>
           </div>
-          <div class="flex-2">
+          <div class="flex-2 hidden">
             <div class="my-2 p-1 bg-white flex border border-gray-200 rounded">
               <router-link to="/inicio/monitoreo-carriles/bitacora-alarmas" tag="div">
                 <button class="p-1 px-2 appearance-none outline-none w-full text-gray-800 hidden">
