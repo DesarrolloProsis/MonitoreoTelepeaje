@@ -53,6 +53,7 @@ export default {
   font-weight: 400;
   text-align: center;
   margin: 3px;
+  border-radius: 15px;
 }
 
 .tftable td {

@@ -2,7 +2,7 @@
   <Navbar/>
   <div class="container mx-auto px-0 pb-100">
     <h1 class="title-center font-titulo font-bold pb-4">Transacciones de Telepeaje en Tiempo Real</h1>
-    <div class="flex flex-wrap bg-blue">
+    <div class="flex flex-wrap bg-blue rounded-lg">
       <div class="flex-none ">
         <FormTramoPlaza @cambiar-tramo-plaza="recibir_tramo_plaza" :carrilesForm="true" :tipo="'Antifraude'"/>
       </div>
