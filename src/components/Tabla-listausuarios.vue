@@ -164,6 +164,7 @@
 <script>
 const API = process.env.VUE_APP_URL_API_PRODUCCION
 import Spinner from '../components/Spinner.vue'
+import jwt_decode from "jwt-decode";
 import Multiselect from '@vueform/multiselect'
 import Servicio from '../Servicios/Token-Services';
 import axios from "axios";
@@ -490,6 +491,10 @@ name: "TablaListaUsuarios",
       this.value = ""
     },
     opticones_select_acciones(usuario){
+      console.log(usuario);
+      Servicio.getCookie("Token")
+      let info = jwt_decode(Servicio.getCookie("Token"))
+      console.log(info);
       let options= [
           {  value: 'Habilitar', name: 'Habilitar'},//0
           {  value: 'Deshabilitar', name: 'Deshabilitar'},//1
@@ -505,7 +510,9 @@ name: "TablaListaUsuarios",
           if(usuario.estatus ==  true){
             filtroOpciones.push(options[5])
             filtroOpciones.push(options[6])
-            filtroOpciones.push(options[1])
+            if(usuario.id != info.UsuarioId){
+              filtroOpciones.push(options[1])
+            }
             filtroOpciones.push(options[3])
             if(usuario.plazas != 'S/A')
               filtroOpciones.push(options[4])
