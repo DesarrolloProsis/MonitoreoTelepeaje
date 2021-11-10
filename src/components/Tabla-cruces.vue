@@ -8,7 +8,7 @@
       <th>Clase Cajero</th>
     </tr>
     <tr v-for="(cruce, index) in dataCruces" :key="index">
-      <td>{{ moment(cruce.fecha).format("YYYY-MM-DD  HH:mm a") }}</td>
+      <td>{{ moment(cruce.fecha).format("YYYY-MM-DD  HH:mm:ss a") }}</td>
       <td>{{ cruce.carril }}</td>
       <td>{{ cruce.tag }}</td>
       <td>{{ cruce.clase }}</td>

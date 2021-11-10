@@ -11,8 +11,8 @@
             <tr v-for="(tag, index) in dataAntifraude" :key="index">
                 <td>{{ tag.tag }}</td>
                 <td>{{ tag.carril }}</td>
-                <td>{{ moment(tag.fechaEntrada).format("YYYY-MM-DD  HH:mm a") }}</td>
-                <td>{{ moment(tag.fechaSalida).format("YYYY-MM-DD  HH:mm a") }}</td>
+                <td>{{ moment(tag.fechaEntrada).format("YYYY-MM-DD  HH:mm:ss a") }}</td>
+                <td>{{ moment(tag.fechaSalida).format("YYYY-MM-DD  HH:mm:ss a") }}</td>
                 <td>{{ tag.causa }}</td>
             </tr>
         </table>

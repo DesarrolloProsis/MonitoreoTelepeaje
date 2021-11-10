@@ -7,7 +7,7 @@
                 <th>Tiempo</th>
             </tr>
             <tr v-for="(historicos, index) in dataHistorico" :key="index">
-                <td>{{ moment(historicos.fechaCreacion).format("YYYY-MM-DD  HH:mm a") }}</td>
+                <td>{{ moment(historicos.fechaCreacion).format("YYYY-MM-DD  HH:mm:ss a") }}</td>
                 <td>{{ historicos.numeroDeTags }}</td>
                 <td>{{ historicos.timepoTotal/1000 }} segundos</td>
             </tr>

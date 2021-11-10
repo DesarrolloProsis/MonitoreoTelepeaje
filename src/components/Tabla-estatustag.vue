@@ -13,7 +13,7 @@
         <td>{{ tags.estatus }}</td>
         <td>{{ tags.saldo }}</td>
         <td>{{ tags.tipo_tag }}</td>
-        <td>{{ moment(tags.ult_act).format("YYYY-MM-DD  HH:mm a") }}</td>
+        <td>{{ moment(tags.ult_act).format("YYYY-MM-DD  HH:mm:ss a") }}</td>
       </tr>
     </table>
   </div>
