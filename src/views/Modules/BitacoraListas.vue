@@ -1,6 +1,6 @@
 <template>
     <Navbar/>
-    <div class="container mx-auto px-0 pb-100">
+    <div class="container mx-auto px-0">
         <h1 class="title-center font-titulo font-bold pb-4">Bitácora de Actualización de Listas</h1>
         <div class="flex flex-wrap bg-blue rounded-lg">
             <div class="flex-none filter-style mt-1">
@@ -17,10 +17,10 @@
                 <FilesDownload @download-api="downloadApi"/>
             </div>
         </div>
-        <div class="container mx-auto px-0 md:px-60">
+        <div class="h-89 mx-auto px-0 md:px-60">
             <TablaListas :dataHistorico="listaHistorico"/>
         </div>
-        <div class="mt-20">
+        <div class="mt-20 -mb-20">
             <Paginacion :total-pages="totalPaginas" :total="100" :current-page="currentPage" :has-more-pages="hasMorePages" @pagechanged="showMore"/>
         </div>
     </div>
@@ -37,7 +37,7 @@ import Footer from "@/components/Footer-login";
 import FilesDownload from '../../components/Files-descargar.vue'
 import axios from "axios";
 import Paginacion from "../../components/Paginacion.vue"
-import Spinner from '../../components/Spn.vue'
+import Spinner from '../../components/Spinner.vue'
 export default {
     name: "BitacoraAccesos",
     components: { Navbar, Footer, FormTramoPlaza, TablaListas, FilesDownload, Paginacion,Spinner },
@@ -98,6 +98,7 @@ export default {
             }else{
                 axios.get(`${API}/Historico/${plaza}/${fecha}/${this.page}`)
                 .then((result)=>{
+                    console.log(result.data);
                     if(result.data.status == 'Ok'){
                         this.modalLoading = false
                         this.totalPaginas = result.data.numberPages
