@@ -80,7 +80,7 @@ import Multiselect from '@vueform/multiselect';
 import Servicio from '../../Servicios/Token-Services';
 import FilesDownload from '../../components/Files-descargar.vue'
 import ServiceFiles from '../../Servicios/Files-Service'
-import Spinner from '../../components/Spinner.vue'
+import Spinner from '../../components/Spn.vue'
 import axios from "axios";
 export default {
   components: {

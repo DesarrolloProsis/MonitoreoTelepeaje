@@ -50,7 +50,7 @@ import axios from "axios";
 import FilesDownload from '../../components/Files-descargar.vue'
 import ServiceFiles from '../../Servicios/Files-Service'
 import Paginacion from "../../components/Paginacion.vue"
-import Spinner from '../../components/Spinner.vue'
+import Spinner from '../../components/Spn.vue'
 export default {
   name: "BusquedaCruces",
   components: {

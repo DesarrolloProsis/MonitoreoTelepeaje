@@ -41,7 +41,7 @@ import FilesDownload from '../../components/Files-descargar.vue'
 import ServiceFiles from '../../Servicios/Files-Service'
 import axios from "axios";
 import Paginacion from "../../components/Paginacion.vue"
-import Spinner from '../../components/Spinner.vue'
+import Spinner from '../../components/Spn.vue'
 export default {
   name: "BitacoraAccesos",
   components: { Navbar, Footer, FormTramoPlaza, TablaAntifraude, FilesDownload, Paginacion, Spinner },

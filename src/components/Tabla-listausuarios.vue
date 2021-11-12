@@ -163,7 +163,7 @@
 </template>
 <script>
 const API = process.env.VUE_APP_URL_API_PRODUCCION
-import Spinner from '../components/Spinner.vue'
+import Spinner from '../components/Spn.vue'
 import jwt_decode from "jwt-decode";
 import Multiselect from '@vueform/multiselect'
 import Servicio from '../Servicios/Token-Services';

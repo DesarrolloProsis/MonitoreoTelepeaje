@@ -73,7 +73,7 @@
 <script>
 import TablaListaPerfiles from "../../components/Tabla-listaperfiles";
 import FormTramoPlaza from '../../components/Form-tramoplaza.vue';
-import Spinner from '../../components/Spinner.vue'
+import Spinner from '../../components/Spn.vue'
 import Navbar from "../../components/Navbar.vue";
 import Footer from "../../components/Footer-login";
 import axios from 'axios';
