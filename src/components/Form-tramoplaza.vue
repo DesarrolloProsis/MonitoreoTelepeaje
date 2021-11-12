@@ -52,14 +52,11 @@ export default {
             plazas.value = []  
             habilitar.value = false       
             axios.get(`${API}/PlazaAsignada/PorTramoConnection/${tramoSeleccionado.value.id}`)
-            .then((responseFullPlazas) => {  
-                console.log(responseFullPlazas)     
+            .then((responseFullPlazas) => {       
                 Servicio.getCookie("Token")
-                let info = jwt_decode(Servicio.getCookie("Token"))
-                console.log(info.UsuarioId);             
+                let info = jwt_decode(Servicio.getCookie("Token"))             
                 axios.get(`${API}/PlazaAsignada/DelUsuario/${info.UsuarioId}`)
                 .then((responsePlazaUsuario) => {
-                    console.log(responsePlazaUsuario)     
                     plazas.value = []      
                     responseFullPlazas.data.body.forEach(plaza => {
                         let objPlazaValida = responsePlazaUsuario.data.body
@@ -68,7 +65,6 @@ export default {
                             plazas.value.push({ ...objPlazaValida, numeroPlazaCapufe: plaza.numeroPlazaCapufe, conexion: plaza.connected})
                             habilitar.value = true                        
                     })                             
-                    console.log(plazas.value)
                     if(props.carrilesForm)                    
                         emit_tramo_plaza()                                            
                 })                             
@@ -79,7 +75,6 @@ export default {
         const obtener_carriles_por_plaza = async () => {             
             axios.get(`${API}/Carriles/${plazaSeleccionado.value.plazaAsignadaId}`)
                 .then((response) => {                    
-                    console.log(response.data.body)
                     if(response.data.body.length == 0 || response.data.body == null){
                         notify({ type: 'warning', title:'Sin carriles en plaza', text: `No se pudo encontrar carriles`});
                     }
@@ -93,7 +88,6 @@ export default {
         }
 
         const emit_tramo_plaza = () => {
-            console.log(props)
             if(props.tipo == 'alarma')
                 emit('cambiar-tramo-plaza', { 'tramo': tramoSeleccionado.value.id, plaza:plazaSeleccionado.value.numeroPlazaCapufe, carril: carrilSeleccionado.value.lineaCarril })
             else

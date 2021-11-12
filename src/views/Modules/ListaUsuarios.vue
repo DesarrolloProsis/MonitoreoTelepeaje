@@ -19,7 +19,7 @@
         <FormTramoPlaza @cambiar-tramo-plaza="recibir_tramo_plaza" :tipo="'Antifraude'"/>
       </div>
       <div class="flex-none filter-style">
-        <button @click="buscar(nombre,estatus)" class="btn-buscar">Buscar</button>
+        <button @click="buscar(nombre,estatus, plaza)" class="btn-buscar">Buscar</button>
         <button @click="todos()" class="btn-buscar ml-1">Todos</button>
       </div>
       <div class="flex-1 ml-64">
@@ -124,7 +124,11 @@ export default {
       plaza:''
     };
   },
-  async beforeMount() {
+  beforeMount(){
+    console.log(this.nombre);
+    console.log(this.estatus);
+  },
+    /*async beforeMount() {
     let rol = await axios.get(`${API}/CatalogoRoles/null/null`)
     this.rol_Filtrado = rol.data.body
     let proxy = new Proxy(this.rol_Filtrado,{
@@ -144,7 +148,8 @@ export default {
         },
       };
       this.token =  Servicio.getCookie("Token");
-      axios.get(`${API}/Usuario?Page=${this.paginaAct}&Rows=10`,config)
+
+      /*axios.get(`${API}/Usuario?Page=${this.paginaAct}&Rows=10`,config)
         .then((result) => {
           console.log(result.data);
           this.maxPages = result.data.totalPages;
@@ -163,7 +168,7 @@ export default {
           });
         });
     }
-  },
+  },*/
   methods: {
     guardar: function (){
       if(Servicio.getCookie("Token")){
@@ -221,7 +226,7 @@ export default {
         },
       };
       this.paginaAct = this.paginaAct - 1;
-      axios.get(`${API}/Usuario?Page=${this.paginaAct}&Rows=10`,config)
+      axios.get(`${API}/Usuario?Page=${this.paginaAct}&Rows=10&plaza=${this.plaza}`,config)
         .then((res) => {
           this.perfiles = []
           this.maxPages = res.data.totalPages;
@@ -246,7 +251,7 @@ export default {
         },
       };
       this.paginaAct = this.paginaAct + 1;
-      axios.get(`${API}/Usuario?Page=${this.paginaAct}&Rows=10`,config)
+      axios.get(`${API}/Usuario?Page=${this.paginaAct}&Rows=10&plaza=${this.plaza}`,config)
         .then((res) => {
           this.perfiles = []
           this.maxPages = res.data.totalPages;
@@ -266,12 +271,13 @@ export default {
     },
     todos: function (){
       this.nombre = ''
+      this.estatus = 0
       let config = {
         headers: {
           Authorization: "Bearer " + this.token,
         },
       };
-      axios.get(`${API}/Usuario?Page=${this.paginaAct}&Rows=10`,config)
+      axios.get(`${API}/Usuario?Page=${this.paginaAct}&Rows=10&plaza=${this.plaza}`,config)
         .then((res) => {
           this.perfiles = []
           this.maxPages = res.data.totalPages;
@@ -289,38 +295,25 @@ export default {
           });
         });
     },
-    buscar: function (nombre,estatus){
-      if(nombre != ''){
-        let config = {
-          headers: {
-            Authorization: "Bearer " + this.token,
-          },
-        };
-        axios.get(`${API}/Usuario?Page=${this.paginaAct}&Rows=10&NameFilter=${this.nombre}`,config)
-        .then((res) => {
-          this.perfiles = []
-          this.maxPages = res.data.totalPages;
-          res.data.page.forEach((e) => {
-            let obj = {
-              id: e.usuarioId,
-              usuario: e.nombreUsuario,
-              nombre: e.nombre,
-              apellido: e.apellidoPaterno,
-              rol: e.rol,
-              plazas: e.plazas,
-              estatus: e.estatus,
-            };
-            this.perfiles.push(obj);
-          });
+    buscar: function (nombre,estatus, plaza){
+      if(plaza == '' || plaza == null || plaza == undefined){
+        this.$notify({
+          title:'Sin información',
+          text:`Se debe de seleccionar la plaza para hacer una busqueda`,
+          duration: 2000,
+          type: 'warn'
         });
-      }if(estatus != undefined){
-        if(this.estatus == 100){
+      }
+      else{
+        this.token =  Servicio.getCookie("Token");
+        if((nombre == '') && (estatus == 0) && (plaza != '' || plaza != null || plaza != undefined)){
+          console.log('plaza');
           let config = {
-          headers: {
-            Authorization: "Bearer " + this.token,
-          },
+            headers: {
+              Authorization: "Bearer " + this.token,
+            },
           };
-          axios.get(`${API}/Usuario?Page=${this.paginaAct}&Rows=10&EstatusFilter=false`,config)
+          axios.get(`${API}/Usuario?Page=${this.paginaAct}&Rows=10&plaza=${plaza}`,config)
           .then((res) => {
             this.perfiles = []
             this.maxPages = res.data.totalPages;
@@ -337,26 +330,83 @@ export default {
               this.perfiles.push(obj);
             });
           });
-        }if(this.estatus == 200){
+        }
+        if((nombre != '') && (plaza != '' || plaza != null || plaza != undefined)){
           let config = {
-          headers: {
-            Authorization: "Bearer " + this.token,
-          },
+            headers: {
+              Authorization: "Bearer " + this.token,
+            },
           };
-          axios.get(`${API}/Usuario?Page=${this.paginaAct}&Rows=10&EstatusFilter=true`,config)
+          axios.get(`${API}/Usuario?Page=${this.paginaAct}&Rows=10&NameFilter=${this.nombre}&plaza=${plaza}`,config)
           .then((res) => {
             this.perfiles = []
             this.maxPages = res.data.totalPages;
             res.data.page.forEach((e) => {
               let obj = {
+                id: e.usuarioId,
+                usuario: e.nombreUsuario,
                 nombre: e.nombre,
                 apellido: e.apellidoPaterno,
                 rol: e.rol,
+                plazas: e.plazas,
                 estatus: e.estatus,
               };
               this.perfiles.push(obj);
             });
           });
+        }if((estatus != 0) && (plaza != '' || plaza != null || plaza != undefined)){
+          console.log('estatus');
+          this.perfiles = []
+          if(this.estatus == 100){
+            let config = {
+            headers: {
+              Authorization: "Bearer " + this.token,
+            },
+            };
+            axios.get(`${API}/Usuario?Page=${this.paginaAct}&Rows=10&EstatusFilter=false&plaza=${plaza}`,config)
+            .then((res) => {
+              console.log(res);
+              if((res.data.page.lenght > 0) && (res.status == 200)){
+                this.maxPages = res.data.totalPages;
+                res.data.page.forEach((e) => {
+                  let obj = {
+                id: e.usuarioId,
+                usuario: e.nombreUsuario,
+                nombre: e.nombre,
+                apellido: e.apellidoPaterno,
+                rol: e.rol,
+                plazas: e.plazas,
+                estatus: e.estatus,
+                  };
+                  this.perfiles.push(obj);
+                });
+              }
+            });
+          }if(this.estatus == 200){
+            let config = {
+            headers: {
+              Authorization: "Bearer " + this.token,
+            },
+            };
+            axios.get(`${API}/Usuario?Page=${this.paginaAct}&Rows=10&EstatusFilter=true&plaza=${plaza}`,config)
+            .then((res) => {
+              console.log(res);
+              this.perfiles = []
+              this.maxPages = res.data.totalPages;
+              res.data.page.forEach((e) => {
+                let obj = {
+                id: e.usuarioId,
+                usuario: e.nombreUsuario,
+                nombre: e.nombre,
+                apellido: e.apellidoPaterno,
+                rol: e.rol,
+                plazas: e.plazas,
+                estatus: e.estatus,
+                };
+                this.perfiles.push(obj);
+              });
+            });
+          }
         }
       }
     },
