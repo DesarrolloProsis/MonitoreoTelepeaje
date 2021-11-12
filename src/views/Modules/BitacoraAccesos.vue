@@ -15,7 +15,7 @@
         <FormTramoPlaza @cambiar-tramo-plaza="recibir_tramo_plaza" :tipo="'Antifraude'"/>
       </div>
       <div class="flex-none filter-style">
-        <button @click="buscar(nombre, fecha )" class="btn-buscar mr-2">Buscar</button>
+        <button @click="buscar(nombre, fecha, plaza)" class="btn-buscar mr-2">Buscar</button>
         <button @click="todos()" class="btn-buscar mr-44">Todos</button>
       </div>
       <div class="flex-1">
@@ -53,7 +53,7 @@ export default {
       nombre:null,
       value: '',
       formato:'',
-      modalLoading: true,
+      modalLoading: false,
       fecha:null,
       page:1,
       totalPaginas: 0,
@@ -63,36 +63,13 @@ export default {
       plaza:''
     };
   },
-  beforeMount (){
-    this.modalLoading = true
-    axios.get(`${API}/HistoricoSesion/1/null/null`)
-      .then((result)=>{
-        this.totalPaginas = result.data.numberPages
-        this.currentPage = result.data.now
-        this.modalLoading = false
-        result.data.body.forEach((e)=>{
-          let obj = {
-            usuarioId: e.usuarioId,
-            nombreUsuario: e.nombreUsuario,
-            nombre: e.nombre,
-            apellidoP: e.apellidoPaterno,
-            apellidoM: e.apellidoMaterno,
-            rolId: e.rolId,
-            fecha_inicio: e.horaLogIn,
-            fecha_fin: e.horaLogOut,
-            rol: e.nombreRol
-          }
-          this.accesos.push(obj)
-        })
-      })
-  },
   methods: {
     todos(){
       this.modalLoading = true
       this.accesos = []
       this.nombre = null
       this.fecha = null
-      axios.get(`${API}/HistoricoSesion/1/null/null`)
+      axios.get(`${API}/HistoricoSesion/1/null/null/${this.plaza}`)
       .then((result)=>{
         this.modalLoading = false
         result.data.body.forEach((e)=>{
@@ -111,85 +88,109 @@ export default {
         })
       })
     },
-    buscar(nombre, fecha){
-      if(nombre == null && fecha == null){
+    buscar(nombre, fecha, plaza){
+      if(plaza == '' || plaza == null || plaza == undefined){
         this.$notify({
           title:'No Hay Datos',
-          text:'No se indico ningún dato para filtrar',
+          text:'Se debe de seleccionar la plaza para realizar una busqueda',
           type: 'warn'
         });
-      }
-      if(nombre != null && fecha == null){
-        this.accesos = []
-        this.modalLoading = true
-        axios.get(`${API}/HistoricoSesion/1/${nombre}/null`)
-        .then((result)=>{
-          this.modalLoading = false
-          result.data.body.forEach((e)=>{
-            let obj = {
-              usuarioId: e.usuarioId,
-              nombreUsuario: e.nombreUsuario,
-              nombre: e.nombre,
-              apellidoP: e.apellidoPaterno,
-              apellidoM: e.apellidoMaterno,
-              rolId: e.rolId,
-              fecha_inicio: e.horaLogIn,
-              fecha_fin: e.horaLogOut,
-              rol: e.nombreRol
-            }
-            this.accesos.push(obj)
+      }else{
+        if(nombre == null && fecha == null){
+          this.accesos = []
+          this.modalLoading = true
+          axios.get(`${API}/HistoricoSesion/1/null/null/${plaza}`)
+          .then((result)=>{
+            this.modalLoading = false
+            result.data.body.forEach((e)=>{
+              let obj = {
+                usuarioId: e.usuarioId,
+                nombreUsuario: e.nombreUsuario,
+                nombre: e.nombre,
+                apellidoP: e.apellidoPaterno,
+                apellidoM: e.apellidoMaterno,
+                rolId: e.rolId,
+                fecha_inicio: e.horaLogIn,
+                fecha_fin: e.horaLogOut,
+                rol: e.nombreRol
+              }
+              this.accesos.push(obj)
+            })
           })
-        })
-      }
-      if(fecha != null && nombre == null){
-        this.accesos = []
-        this.modalLoading = true
-        axios.get(`${API}/HistoricoSesion/1/null/${fecha}`)
-        .then((result)=>{
-          this.modalLoading = false
-          result.data.body.forEach((e)=>{
-            let obj = {
-              usuarioId: e.usuarioId,
-              nombreUsuario: e.nombreUsuario,
-              nombre: e.nombre,
-              apellidoP: e.apellidoPaterno,
-              apellidoM: e.apellidoMaterno,
-              rolId: e.rolId,
-              fecha_inicio: e.horaLogIn,
-              fecha_fin: e.horaLogOut,
-              rol: e.nombreRol
-            }
-            this.accesos.push(obj)
+        }
+        if(nombre != null && fecha == null){
+          this.accesos = []
+          this.modalLoading = true
+          axios.get(`${API}/HistoricoSesion/1/${nombre}/null/`)
+          .then((result)=>{
+            this.modalLoading = false
+            result.data.body.forEach((e)=>{
+              let obj = {
+                usuarioId: e.usuarioId,
+                nombreUsuario: e.nombreUsuario,
+                nombre: e.nombre,
+                apellidoP: e.apellidoPaterno,
+                apellidoM: e.apellidoMaterno,
+                rolId: e.rolId,
+                fecha_inicio: e.horaLogIn,
+                fecha_fin: e.horaLogOut,
+                rol: e.nombreRol
+              }
+              this.accesos.push(obj)
+            })
           })
-        })
-      }
-      if(fecha != null && nombre != null){
-        this.accesos = []
-        this.modalLoading = true
-        axios.get(`${API}/HistoricoSesion/1/${nombre}/${fecha}`)
-        .then((result)=>{
-          this.modalLoading = false
-          result.data.body.forEach((e)=>{
-            let obj = {
-              usuarioId: e.usuarioId,
-              nombreUsuario: e.nombreUsuario,
-              nombre: e.nombre,
-              apellidoP: e.apellidoPaterno,
-              apellidoM: e.apellidoMaterno,
-              rolId: e.rolId,
-              fecha_inicio: e.horaLogIn,
-              fecha_fin: e.horaLogOut,
-              rol: e.nombreRol
-            }
-            this.accesos.push(obj)
+        }
+        if(fecha != null && nombre == null){
+          this.accesos = []
+          this.modalLoading = true
+          axios.get(`${API}/HistoricoSesion/1/null/${fecha}`)
+          .then((result)=>{
+            this.modalLoading = false
+            result.data.body.forEach((e)=>{
+              let obj = {
+                usuarioId: e.usuarioId,
+                nombreUsuario: e.nombreUsuario,
+                nombre: e.nombre,
+                apellidoP: e.apellidoPaterno,
+                apellidoM: e.apellidoMaterno,
+                rolId: e.rolId,
+                fecha_inicio: e.horaLogIn,
+                fecha_fin: e.horaLogOut,
+                rol: e.nombreRol
+              }
+              this.accesos.push(obj)
+            })
           })
-        })
+        }
+        if(fecha != null && nombre != null){
+          this.accesos = []
+          this.modalLoading = true
+          axios.get(`${API}/HistoricoSesion/1/${nombre}/${fecha}`)
+          .then((result)=>{
+            this.modalLoading = false
+            result.data.body.forEach((e)=>{
+              let obj = {
+                usuarioId: e.usuarioId,
+                nombreUsuario: e.nombreUsuario,
+                nombre: e.nombre,
+                apellidoP: e.apellidoPaterno,
+                apellidoM: e.apellidoMaterno,
+                rolId: e.rolId,
+                fecha_inicio: e.horaLogIn,
+                fecha_fin: e.horaLogOut,
+                rol: e.nombreRol
+              }
+              this.accesos.push(obj)
+            })
+          })
+        }
       }
     },
     showMore(page){
       let name = this.nombre
       let date = this.fecha
-      axios.get(`${API}/HistoricoSesion/${page}/${name}/${date}`)
+      let plaza = this.plaza
+      axios.get(`${API}/HistoricoSesion/${page}/${name}/${date}/${plaza}`)
       .then((result)=>{
         this.totalPaginas = result.data.numberPages
         this.currentPage = result.data.now
@@ -236,13 +237,6 @@ export default {
 };
 </script>
 <style scoped>
-.modal-container{
-    position: fixed;
-    width: 100%;
-    height: 100vh;
-    z-index: 1000;
-    background: rgba(0, 0, 0, 0.2);
-}
 .pb-100 {
   padding-bottom: 100px;
 }
