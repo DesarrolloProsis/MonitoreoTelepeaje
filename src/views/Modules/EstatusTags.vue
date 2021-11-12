@@ -24,7 +24,7 @@ import TablaEstatusTag from "../../components/Tabla-estatustag";
 import Navbar from "../../components/Navbar.vue";
 import Footer from "../../components/Footer-login";
 import FormTramoPlaza from '../../components/Form-tramoplaza.vue'
-import Spinner from '../../components/Spinner.vue'
+import Spinner from '../../components/Spn.vue'
 import axios from "axios";
 export default {
   components: {

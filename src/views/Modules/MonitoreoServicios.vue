@@ -17,7 +17,7 @@
 </template>
 <script>
 const API = process.env.VUE_APP_URL_API_PRODUCCION
-import Spinner from '../../components/Spinner.vue'
+import Spinner from '../../components/Spn.vue'
 import Navbar from "../../components/Navbar";
 import Tabla from "../../components/Tabla-monitoreo";
 import Footer from "../../components/Footer-login";

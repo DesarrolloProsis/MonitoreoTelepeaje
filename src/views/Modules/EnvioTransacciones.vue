@@ -46,7 +46,7 @@ import Multiselect from '@vueform/multiselect';
 import Navbar from "../../components/Navbar.vue";
 import Footer from "../../components/Footer-login";
 import Paginacion from "../../components/Paginacion.vue"
-import Spinner from '../../components/Spinner.vue'
+import Spinner from '../../components/Spn.vue'
 import axios from "axios";
 export default {
   name: "EnvioTransacciones",

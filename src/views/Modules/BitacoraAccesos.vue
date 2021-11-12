@@ -42,7 +42,7 @@ import Footer from "../../components/Footer-login";
 import FilesDownload from '../../components/Files-descargar.vue'
 import ServiceFiles from '../../Servicios/Files-Service'
 import Paginacion from "../../components/Paginacion.vue"
-import Spinner from '../../components/Spinner.vue'
+import Spinner from '../../components/Spn.vue'
 import axios from "axios";
 export default {
   name: "BitacoraAccesos",
