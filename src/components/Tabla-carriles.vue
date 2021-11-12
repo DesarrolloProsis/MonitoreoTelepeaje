@@ -5,7 +5,7 @@
       <div class="flex flex-col md:flex-row border-gray-200 pb-0 mb-4">
         <div class="flex-1 flex flex-col md:flex-row md:space-x-2">
           <div class="w-full ">
-            <FormTramoPlaza @cambiar-tramo-plaza="recibir_tramo_plaza" :tipo="'Transacciones'"></FormTramoPlaza>
+            <FormTramoPlaza @cambiar-tramo-plaza="recibir_tramo_plaza" :tipo="'alarma'"></FormTramoPlaza>
           </div>
 
           <div class="flex-2">
@@ -72,15 +72,16 @@ export default {
       plaza: '',
       tramo: '',
       carrilesTramos: [],
-      modalLoading: true
+      modalLoading: false
     };    
   },
-  beforeMount(){
+  /* beforeMount(){
     this.plaza = '184'
     this.buscar_carriles_plaza()
-  },
+  }, */
   methods: {  
     buscar_carriles_plaza(){
+      this.modalLoading = true
       this.carrilesTramos = []
       axios.get(`${API}/CarrilesMonitoreo?PlazaId=${this.plaza}`)
         .then((response) => {

@@ -5,13 +5,13 @@
       <div v-if="carril.estado == 'NA' || carril.estado == 'NB'">
         <span class="circulo-green"></span>
       </div>
-      <div v-else-if="carril.status == 'XB' || carril.estado == 'XA'">
+      <div v-else>
         <span class="circulo-red"></span>
         <ModalCarriles :carril="carril.cuerpo" tipoalarma="ejemplotipoalarma"></ModalCarriles>
       </div>
-      <div v-else>
+      <!-- <div v-else>
         <span class="circulo-none"></span>
-      </div>
+      </div> -->
     </div>
     <!-- <div class="flex-1 bg-carriles-green mh-other">
       {{ carril.lectura_valida }}
@@ -20,7 +20,8 @@
       {{ carril.lectura_invalida }}
     </div> -->
     <div class="flex-1 bg-carriles-blue mh-other">
-      {{ carril.ultimoCruce.substring(0,8) }}
+      <span v-if="carril.ultimoCruce == null || carril.ultimoCruce == '' ">Sin Fecha de Cruce</span>
+      <span v-else>{{ carril.ultimoCruce }}</span>
     </div>
   </div>  
 </template>
