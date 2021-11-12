@@ -81,6 +81,7 @@ export default {
   }, */
   methods: {  
     buscar_carriles_plaza(){
+      this.modalLoading = true
       this.carrilesTramos = []
       axios.get(`${API}/CarrilesMonitoreo?PlazaId=${this.plaza}`)
         .then((response) => {
