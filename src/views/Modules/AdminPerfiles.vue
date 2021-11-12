@@ -61,16 +61,19 @@
       </div> -->
     </div>
     <div class="mb-6">
-      <button @click="abrir_modal_new_rol" class="w-full botonIconBuscar justify-center mt-3 -mb-8">Agregar Usuario</button>
+      <button @click="abrir_modal_new_rol" :class="{'hidden':!habilitar}" class="w-full botonIconBuscar justify-center mt-3 -mb-8">Agregar Rol</button>
     </div>
     <TablaListaPerfiles @buscar-roles="buscar_roles" :dataPerfiles="roles"/>
   </div>
+  <!-- MODAL CARGANDO -->
+  <Spinner :modalLoading="modalLoading"/>
   <Footer/>
 </template>
 
 <script>
 import TablaListaPerfiles from "../../components/Tabla-listaperfiles";
 import FormTramoPlaza from '../../components/Form-tramoplaza.vue';
+import Spinner from '../../components/Spinner.vue'
 import Navbar from "../../components/Navbar.vue";
 import Footer from "../../components/Footer-login";
 import axios from 'axios';
@@ -84,7 +87,8 @@ export default {
     Navbar,
     Multiselect,
     Footer,
-    FormTramoPlaza
+    FormTramoPlaza,
+    Spinner
   },
   setup(){
     
@@ -94,6 +98,8 @@ export default {
     const tramo = ref(null)
     const plaza = ref(null)   
     const userModal = ref(false)
+    const habilitar = ref(false)
+    const modalLoading = ref(false)
     const newRol = reactive({ nombre: "", vistas: [] })
     const optionRoles = [{text: 'Monitoreo Servicio', alias: 'monitoreoServicios'},
                          {text: 'Monitoreo Carriles', alias: 'monitoreoCarriles'},
@@ -104,12 +110,10 @@ export default {
                          {text: 'Estatus Tags', alias: 'estatusTags'},
                          {text: 'Configuracion', alias: 'configuracion'}]
     
-    const buscar_roles = async () => {   
-      axios.get(`${API}/CatalogoRoles/null/null`)
+    const buscar_roles = async () => { 
+      axios.get(`${API}/CatalogoRoles/null/null/${plaza.value}`)
         .then((response) => {
-            console.log(response);
             roles.value = response.data.body 
-            console.log(response.data.body );
           }
         )
         .catch((error) => console.log(error))        
@@ -117,6 +121,7 @@ export default {
     //Nuevo Rol
     const abrir_modal_new_rol = () => userModal.value = !userModal.value    
     const craer_nuevo_rol = async () => {
+      modalLoading.value = true
       //objeto para post api
       let objRol = {}
       objRol['nombreRol'] = newRol.nombre
@@ -136,7 +141,7 @@ export default {
       })
       axios.post(`${API}/CAtalogoRoles`, objRol)
         .then((response) => {
-          console.log(response)
+          modalLoading.value = false
           if(response.data.status == 'Ok'){
             notify({ type: 'success', title:'Rol creado', text: `Se creo correctamente el rol ${objRol.nombreRol}`});
             newRol.vistas = []; newRol.nombre = "";
@@ -173,12 +178,13 @@ export default {
       return filtroOpciones
     } */
     function buscar (nombre,estatus){
-      console.log(nombre);
       roles.value = []
-      axios.get(`${API}/CatalogoRoles/${nombre}/${estatus}`)
+      modalLoading.value = true
+      axios.get(`${API}/CatalogoRoles/${nombre}/${estatus}/${plaza.value}`)
         .then((response) => {
-            console.log(response);
             if((response.data.status == 'Ok') && (response.data.body.length > 0)){
+              habilitar.value = true
+              modalLoading.value = false
               roles.value = response.data.body 
             }else{
               notify({ type: 'warn', title:'Rol no creado', text: `No se encontró el Rol`});
@@ -188,12 +194,13 @@ export default {
         .catch((error) => console.log(error))
     }
     function todos (){
+      modalLoading.value = true
       nombre.value = null
       estatus.value = null
-      axios.get(`${API}/CatalogoRoles/null/null`)
+      axios.get(`${API}/CatalogoRoles/null/null/${plaza.value}`)
         .then((response) => {
             roles.value = response.data.body 
-            console.log(response.data.body );
+            modalLoading.value = false
           }
         )
         .catch((error) => console.log(error))
@@ -203,7 +210,7 @@ export default {
       plaza.value = value.plaza
     }
     onMounted(buscar_roles)
-    return { roles, userModal, buscar_roles, abrir_modal_new_rol, newRol, optionRoles, craer_nuevo_rol,nombre,estatus,buscar,todos, recibir_tramo_plaza }
+    return { roles, userModal, buscar_roles, abrir_modal_new_rol, newRol, optionRoles, craer_nuevo_rol, nombre, estatus, buscar, todos, recibir_tramo_plaza, habilitar, modalLoading }
 
   }, 
 };
