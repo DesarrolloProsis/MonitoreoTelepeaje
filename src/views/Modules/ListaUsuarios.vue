@@ -27,9 +27,9 @@
       </div>
     </div>
     <div class="mb-6">
-      <button @click="modalAgregar=true" :class="{'hidden':!habilitar}" class="w-full botonIconBuscar justify-center mt-3 -mb-8">Agregar Usuario</button>
+      <button @click="abrirModal(plaza)" :class="{'hidden':!habilitar}"  class="w-full botonIconBuscar justify-center mt-3 -mb-8">Agregar Usuario</button>
     </div>
-    <TablaListaUsuarios :dataUsuarios="perfiles"/>
+    <TablaListaUsuarios :dataUsuarios="perfiles" :plazaS="plaza" />
     <div class="">
       <button class="button-pagination" v-if="paginaAct > 1" @click="anterior()">Anterior</button>
       <button class="button-pagination" v-if="paginaAct < maxPages" @click="siguiente()">Siguiente</button>
@@ -125,10 +125,6 @@ export default {
       habilitar: false
     };
   },
-  beforeMount(){
-    console.log(this.nombre);
-    console.log(this.estatus);
-  },
     /*async beforeMount() {
     let rol = await axios.get(`${API}/CatalogoRoles/null/null`)
     this.rol_Filtrado = rol.data.body
@@ -171,6 +167,21 @@ export default {
     }
   },*/
   methods: {
+    abrirModal: async function (plaza){
+      this.modalAgregar = true
+      let rol = await axios.get(`${API}/CatalogoRoles/null/null/${plaza}`)
+      this.rol_Filtrado = rol.data.body
+      let proxy = new Proxy(this.rol_Filtrado,{
+          get : function(target, property){
+            return property === 'length' ?
+              target.length :
+              target[property];
+          }
+        });
+      for(let i= 0; i<proxy.length; i++){
+        this.roles.push({'value':proxy[i].rolId, 'label':proxy[i].nombreRol}) 
+      }
+    },
     guardar: function (){
       if(Servicio.getCookie("Token")){
         let config = {
@@ -368,7 +379,6 @@ export default {
             };
             axios.get(`${API}/Usuario?Page=${this.paginaAct}&Rows=10&EstatusFilter=false&plaza=${plaza}`,config)
             .then((res) => {
-              console.log(res);
               if((res.data.page.lenght > 0) && (res.status == 200)){
                 this.maxPages = res.data.totalPages;
                 res.data.page.forEach((e) => {
@@ -393,7 +403,6 @@ export default {
             };
             axios.get(`${API}/Usuario?Page=${this.paginaAct}&Rows=10&EstatusFilter=true&plaza=${plaza}`,config)
             .then((res) => {
-              console.log(res);
               this.perfiles = []
               this.maxPages = res.data.totalPages;
               res.data.page.forEach((e) => {
@@ -454,6 +463,13 @@ export default {
 </script>
 <style src="@vueform/multiselect/themes/default.css"></style>
 <style scoped>
+.modal-container{
+    position: fixed;
+    width: 100%;
+    height: 100vh;
+    z-index: 1000;
+    background: rgba(0, 0, 0, 0.2);
+}
 .title {
   text-align: center;
   font-size: 45px;
