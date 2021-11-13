@@ -34,9 +34,9 @@ export default {
   },
   setup(){
     const statusServices = ref([])
-    const mexIra = ref(true)
-    const mexAca = ref(false)
-    const delegacionSelect = ref(2)
+    const mexIra = ref(false)
+    const mexAca = ref(true)
+    const delegacionSelect = ref(1)
     const isLoading = ref(true)
     const modalLoading = ref (true)
     const cambiar_delegacion = (id) => {
