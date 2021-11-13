@@ -205,7 +205,7 @@ name: "TablaListaUsuarios",
       status:'',
     };
   },
-  async beforeMount(){
+/*   async beforeMount(){
     let rol = await axios.get(`${API}/CatalogoRoles/null/null`)
     let rol_Filtrado = rol.data.body
     let proxy = new Proxy(rol_Filtrado,{
@@ -218,7 +218,7 @@ name: "TablaListaUsuarios",
     for(let i= 0; i<proxy.length; i++){
       this.roles.push({'value':proxy[i].rolId, 'label':proxy[i].nombreRol}) 
     }
-  },
+  }, */
   methods: {
     cambiarPass: function (usuario) {
       if(this.pass != ''){
@@ -427,7 +427,19 @@ name: "TablaListaUsuarios",
       }
     },
     cambiarRol: function (usuario){
-      console.log(this.seleccionado.rolId);
+      let rol = axios.get(`${API}/CatalogoRoles/null/null/6`)
+      console.log(rol);
+      let rol_Filtrado = rol.data.body
+      let proxy = new Proxy(rol_Filtrado,{
+          get : function(target, property){
+            return property === 'length' ?
+              target.length :
+              target[property];
+          }
+        });
+      for(let i= 0; i<proxy.length; i++){
+        this.roles.push({'value':proxy[i].rolId, 'label':proxy[i].nombreRol}) 
+      }
       if(Servicio.getCookie("Token")){
         let config = {
           headers: {
@@ -491,10 +503,8 @@ name: "TablaListaUsuarios",
       this.value = ""
     },
     opticones_select_acciones(usuario){
-      console.log(usuario);
       Servicio.getCookie("Token")
       let info = jwt_decode(Servicio.getCookie("Token"))
-      console.log(info);
       let options= [
           {  value: 'Habilitar', name: 'Habilitar'},//0
           {  value: 'Deshabilitar', name: 'Deshabilitar'},//1
