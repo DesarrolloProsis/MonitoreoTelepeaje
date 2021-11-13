@@ -72,6 +72,8 @@ export default {
       axios.get(`${API}/HistoricoSesion/1/null/null/${this.plaza}`)
       .then((result)=>{
         this.modalLoading = false
+        this.totalPaginas = result.data.numberPages
+        this.currentPage = result.data.now
         result.data.body.forEach((e)=>{
           let obj = {
             usuarioId: e.usuarioId,
@@ -99,8 +101,10 @@ export default {
         if(nombre == null && fecha == null){
           this.accesos = []
           this.modalLoading = true
-          axios.get(`${API}/HistoricoSesion/1/null/null/${plaza}`)
+          axios.get(`${API}/HistoricoSesion/${this.page}/null/null/${plaza}`)
           .then((result)=>{
+            this.totalPaginas = result.data.numberPages
+            this.currentPage = result.data.now
             this.modalLoading = false
             result.data.body.forEach((e)=>{
               let obj = {
@@ -121,9 +125,11 @@ export default {
         if(nombre != null && fecha == null){
           this.accesos = []
           this.modalLoading = true
-          axios.get(`${API}/HistoricoSesion/1/${nombre}/null/`)
+          axios.get(`${API}/HistoricoSesion/${this.page}/${nombre}/null/${plaza}`)
           .then((result)=>{
             this.modalLoading = false
+            this.totalPaginas = result.data.numberPages
+            this.currentPage = result.data.now
             result.data.body.forEach((e)=>{
               let obj = {
                 usuarioId: e.usuarioId,
@@ -141,11 +147,15 @@ export default {
           })
         }
         if(fecha != null && nombre == null){
+          console.log('fecha');
           this.accesos = []
           this.modalLoading = true
-          axios.get(`${API}/HistoricoSesion/1/null/${fecha}`)
+          axios.get(`${API}/HistoricoSesion/${this.page}/null/${fecha}/${plaza}`)
           .then((result)=>{
+            console.log(result.data);
             this.modalLoading = false
+            this.totalPaginas = result.data.numberPages
+            this.currentPage = result.data.now
             result.data.body.forEach((e)=>{
               let obj = {
                 usuarioId: e.usuarioId,
@@ -165,9 +175,11 @@ export default {
         if(fecha != null && nombre != null){
           this.accesos = []
           this.modalLoading = true
-          axios.get(`${API}/HistoricoSesion/1/${nombre}/${fecha}`)
+          axios.get(`${API}/HistoricoSesion/${this.page}/${nombre}/${fecha}/${plaza}`)
           .then((result)=>{
             this.modalLoading = false
+            this.totalPaginas = result.data.numberPages
+            this.currentPage = result.data.now
             result.data.body.forEach((e)=>{
               let obj = {
                 usuarioId: e.usuarioId,
@@ -212,22 +224,45 @@ export default {
       })
     },
     downloadApi(formato){
-      let nombrenew = 'null'
-      let fechanew = 'null'
-      if(this.nombre != '')
-        nombrenew = this.nombre
-      if(this.fecha != '')
-        fechanew = this.fecha
-      
-      if (formato == "csv") {
-        ServiceFiles.xml_hhtp_request(`${API}/UsuarioMonitoreo/Download/Csv?userName=${nombrenew}&HoraInicio=${fechanew}`, 'bitacoraAcceso.csv')
-      } 
-      else if (formato == "excel") {        
-        ServiceFiles.xml_hhtp_request(`${API}/UsuarioMonitoreo/Download/Excel?userName=${nombrenew}&HoraInicio=${fechanew}`, 'bitacoraAcceso.xlsx')    
-      } 
-      else if (formato == "txt") {
-        ServiceFiles.xml_hhtp_request(`${API}/UsuarioMonitoreo/Download/txt?userName=${nombrenew}&HoraInicio=${fechanew}`, 'bitacoraAcceso.txt')
-      }      
+      if(this.plaza == '' || this.plaza == null || this.plaza == undefined){
+        this.$notify({
+          title:'No Hay Datos',
+          text:'Se debe de seleccionar la plaza para exportar algún archivo',
+          type: 'warn'
+        });
+      }else{
+        if(this.nombre != '' && (this.fehca == '' || this.fehca == null || this.fehca == undefined)){
+          if (formato == "csv") {
+            ServiceFiles.xml_hhtp_request(`${API}/UsuarioMonitoreo/Download/Csv/${this.plaza}/${this.nombre}/null`, 'bitacoraAcceso.csv')
+          } 
+          else if (formato == "excel") {        
+            ServiceFiles.xml_hhtp_request(`${API}/UsuarioMonitoreo/Download/Excel/${this.plaza}/${this.nombre}/null`, 'bitacoraAcceso.xlsx')    
+          } 
+          else if (formato == "txt") {
+            ServiceFiles.xml_hhtp_request(`${API}/UsuarioMonitoreo/Download/txt/${this.plaza}/${this.nombre}/null`, 'bitacoraAcceso.txt')
+          }
+        }else if(this.fecha != '' && (this.nombre == '' || this.nombre == null || this.nombre == undefined)){
+          if (formato == "csv") {
+            ServiceFiles.xml_hhtp_request(`${API}/UsuarioMonitoreo/Download/Csv/${this.plaza}/null/${this.fehca}`, 'bitacoraAcceso.csv')
+          } 
+          else if (formato == "excel") {        
+            ServiceFiles.xml_hhtp_request(`${API}/UsuarioMonitoreo/Download/Excel/${this.plaza}/null/${this.fehca}`, 'bitacoraAcceso.xlsx')    
+          } 
+          else if (formato == "txt") {
+            ServiceFiles.xml_hhtp_request(`${API}/UsuarioMonitoreo/Download/txt/${this.plaza}/null/${this.fehca}`, 'bitacoraAcceso.txt')
+          }
+        }else{
+          if (formato == "csv") {
+            ServiceFiles.xml_hhtp_request(`${API}/UsuarioMonitoreo/Download/Csv/${this.plaza}/${this.nombre}/${this.fehca}`, 'bitacoraAcceso.csv')
+          } 
+          else if (formato == "excel") {        
+            ServiceFiles.xml_hhtp_request(`${API}/UsuarioMonitoreo/Download/Excel/${this.plaza}/${this.nombre}/${this.fehca}`, 'bitacoraAcceso.xlsx')    
+          } 
+          else if (formato == "txt") {
+            ServiceFiles.xml_hhtp_request(`${API}/UsuarioMonitoreo/Download/txt/${this.plaza}/${this.nombre}/${this.fehca}`, 'bitacoraAcceso.txt')
+          }
+        }     
+      }
     }, 
     recibir_tramo_plaza(value){
       this.tramo = value.tramo

@@ -404,46 +404,72 @@ export default {
       var myHeaders = new Headers();
       myHeaders.append("Authorization", "Bearer " + this.token);
       myHeaders.append("Content-Type", "application/json");
-      if(this.fecha == null && this.tag == null){
-        let fecha = ''
-        let tag = ''
-        let plaza = this.plaza
-        let carril = ''
-        let fechaInicial = fecha
-        let fechaFinal = ''
-        console.log(`${API}/Transacciones/Download/Csv/${plaza}?tag=${tag}&carril=${carril}&fechaInicial=${fechaInicial}&fechaFinal=${fechaFinal}`)
-        if (tipo == "csv") {
-          ServiceFiles.xml_hhtp_request(`${API}/Transacciones/Download/Csv/${plaza}?tag=${tag}&carril=${carril}&fechaInicial=${fechaInicial}&fechaFinal=${fechaFinal}`, 'transacciones.csv')
-        } 
-        else if (tipo == "excel") {        
-          ServiceFiles.xml_hhtp_request(`${API}/Transacciones/Download/Excel/${plaza}?tag=${tag}&carril=${carril}&fechaInicial=${fechaInicial}&fechaFinal=${fechaFinal}`, 'transacciones.xlsx')            
-        } 
-        else if (tipo == "txt") {
-          ServiceFiles.xml_hhtp_request(`${API}/Transacciones/Download/txt/${plaza}?tag=${tag}&carril=${carril}&fechaInicial=${fechaInicial}&fechaFinal=${fechaFinal}`, 'transacciones.txt')
-        }
+      if(this.plaza == ''){
+        this.$notify({
+          title:'Sin Información',
+          text:'No se puede exportar sin antes hacer una busqueda',
+          type: 'warn'
+        });
       }else{
-        let fecha = this.fecha
-        let tag = this.tag
-        let plaza = this.plaza
-        let carril = ''
-        let fechaInicial = fecha
-        let fechaFinal = ''
-        console.log(`${API}/Transacciones/Download/Csv/${plaza}?tag=${tag}&carril=${carril}&fechaInicial=${fechaInicial}&fechaFinal=${fechaFinal}`)
-        if (tipo == "csv") {
-          ServiceFiles.xml_hhtp_request(`${API}/Transacciones/Download/Csv/${plaza}?tag=${tag}&carril=${carril}&fechaInicial=${fechaInicial}&fechaFinal=${fechaFinal}`, 'transacciones.csv')
-        } 
-        else if (tipo == "excel") {        
-          ServiceFiles.xml_hhtp_request(`${API}/Transacciones/Download/Excel/${plaza}?tag=${tag}&carril=${carril}&fechaInicial=${fechaInicial}&fechaFinal=${fechaFinal}`, 'transacciones.xlsx')            
-        } 
-        else if (tipo == "txt") {
-          ServiceFiles.xml_hhtp_request(`${API}/Transacciones/Download/txt/${plaza}?tag=${tag}&carril=${carril}&fechaInicial=${fechaInicial}&fechaFinal=${fechaFinal}`, 'transacciones.txt')
+        if(this.fecha == null && this.tag == null && this.plaza != ''){
+          //let fecha = ''
+          //let tag = ''
+          let plaza = this.plaza
+          //let carril = ''
+          //let fechaInicial = fecha
+          //let fechaFinal = ''
+          //console.log(`${API}/Transacciones/Download/Csv/${plaza}?tag=${tag}&carril=${carril}&fechaInicial=${fechaInicial}&fechaFinal=${fechaFinal}`)
+          if (tipo == "csv") {
+            //ServiceFiles.xml_hhtp_request(`${API}/Transacciones/Download/Csv/${plaza}?tag=${tag}&carril=${carril}&fechaInicial=${fechaInicial}&fechaFinal=${fechaFinal}`, 'transacciones.csv')
+
+            ServiceFiles.xml_hhtp_request(`${API}/Transacciones/Download/Csv/${plaza}/null/null`, 'transacciones.csv')
+          } 
+          else if (tipo == "excel") {        
+            ServiceFiles.xml_hhtp_request(`${API}/Transacciones/Download/Excel/${plaza}/null/null`, 'transacciones.xlsx')            
+          } 
+          else if (tipo == "txt") {
+            ServiceFiles.xml_hhtp_request(`${API}/Transacciones/Download/txt/${plaza}/null/null`, 'transacciones.txt')
+          }
+        }else if(this.tag != null && this.fecha == null &&  this.plaza != ''){
+          let plaza = this.plaza
+          let tag = this.tag
+          if (tipo == "csv") {
+            ServiceFiles.xml_hhtp_request(`${API}/Transacciones/Download/Csv/${plaza}/${tag}/null`, 'transacciones.csv')
+          } 
+          else if (tipo == "excel") {        
+            ServiceFiles.xml_hhtp_request(`${API}/Transacciones/Download/Excel/${plaza}/${tag}/null`, 'transacciones.xlsx')            
+          } 
+          else if (tipo == "txt") {
+            ServiceFiles.xml_hhtp_request(`${API}/Transacciones/Download/txt/${plaza}/${tag}/null`, 'transacciones.txt')
+          }
+        }else if(this.fecha != null && this.tag == null &&  this.plaza != ''){
+          let plaza = this.plaza
+          let fecha = this.fecha
+          if (tipo == "csv") {
+            ServiceFiles.xml_hhtp_request(`${API}/Transacciones/Download/Csv/${plaza}/null/${fecha}`, 'transacciones.csv')
+          } 
+          else if (tipo == "excel") {        
+            ServiceFiles.xml_hhtp_request(`${API}/Transacciones/Download/Excel/${plaza}/null/${fecha}`, 'transacciones.xlsx')            
+          } 
+          else if (tipo == "txt") {
+            ServiceFiles.xml_hhtp_request(`${API}/Transacciones/Download/txt/${plaza}/null/${fecha}`, 'transacciones.txt')
+          }
+        }else{
+          let fecha = this.fecha
+          let tag = this.tag
+          let plaza = this.plaza
+          if (tipo == "csv") {
+            ServiceFiles.xml_hhtp_request(`${API}/Transacciones/Download/Csv/${plaza}/${tag}/${fecha}`, 'transacciones.csv')
+          } 
+          else if (tipo == "excel") {        
+            ServiceFiles.xml_hhtp_request(`${API}/Transacciones/Download/Excel/${plaza}/${tag}/${fecha}`, 'transacciones.xlsx')            
+          } 
+          else if (tipo == "txt") {
+            ServiceFiles.xml_hhtp_request(`${API}/Transacciones/Download/txt/${plaza}/${tag}/${fecha}`, 'transacciones.txt')
+          }
         }
       }
     },
-    /*recibir_tramo_plaza(value){
-      this.plaza = value.plaza == undefined ? 0 : value.plaza
-      console.log(value);
-    },*/
     recibir_tramo_plaza(value){
       this.tramo = value.tramo
       this.plaza = value.plaza

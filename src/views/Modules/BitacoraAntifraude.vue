@@ -75,7 +75,6 @@ export default {
       this.tag = null
       axios.get(`${API}/ListaNegra/Paginacion/${plaza}/${this.page}/${this.carril}/${this.fecha}/${this.tag}`)
       .then((result)=>{
-        console.log(result.data);
         if((result.data.status == 'Ok') && (result.data.body.length > 0)){
           this.modalLoading = false
           this.totalPaginas = result.data.numberPages
@@ -101,7 +100,6 @@ export default {
       })
     },
     buscar(plaza,carril,fecha,tag){
-      console.log(carril);
       this.listaNegra = []
       if(plaza == '' || plaza == null || plaza == undefined){
         this.$notify({
@@ -110,17 +108,14 @@ export default {
               type: 'warn'
             });
       }else{
-        console.log(carril);
         this.page = 1
         this.modalLoading = true
         if((carril == '' || carril == undefined) && (tag == '' || tag == undefined)){
-          console.log('if');
           let carrilif = null
           let tag = null
           this.listaNegra = []
           axios.get(`${API}/ListaNegra/Paginacion/${plaza}/${this.page}/${carrilif}/${fecha}/${tag}`)
           .then((result)=>{
-            console.log(result.data);
             if((result.data.status == 'Ok') && (result.data.body.length > 0)){
               this.modalLoading = false
               this.totalPaginas = result.data.numberPages
@@ -137,6 +132,8 @@ export default {
               })
             }else{
               this.modalLoading = false
+              this.totalPaginas= 0
+              this.currentPage= 1
               this.$notify({
                 title:'Sin Información',
                 text:'No se encontraron Tags en la plaza seleccionada',
@@ -145,12 +142,10 @@ export default {
             }
           })
         }else if((tag != '' || tag != undefined) && (carril == '' || carril == undefined)){
-          console.log('primer else if');
           this.listaNegra = []
           let carrilelseif = null
           axios.get(`${API}/ListaNegra/Paginacion/${plaza}/${this.page}/${carrilelseif}/${fecha}/${tag}`)
           .then((result)=>{
-            console.log(result.data);
             if((result.data.status == 'Ok') && (result.data.body.length > 0)){
               this.modalLoading = false
               this.totalPaginas = result.data.numberPages
@@ -167,6 +162,8 @@ export default {
               })
             }else{
               this.modalLoading = false
+              this.totalPaginas= 0
+              this.currentPage= 1
               this.$notify({
                 title:'Sin Información',
                 text:'No se encontraron Tags',
@@ -196,6 +193,8 @@ export default {
               })
             }else{
               this.modalLoading = false
+              this.totalPaginas= 0
+              this.currentPage= 1
               this.$notify({
                 title:'Sin Información',
                 text:'No se encontraron Tags en el carril ingresado',
@@ -206,7 +205,6 @@ export default {
         }else{
           axios.get(`${API}/ListaNegra/Paginacion/${plaza}/${this.page}/${carril}/${fecha}/${tag}`)
           .then((result)=>{
-            console.log(result.data);
             if((result.data.status == 'Ok') && (result.data.body.length > 0)){
               this.modalLoading = false
               this.totalPaginas = result.data.numberPages
@@ -223,6 +221,8 @@ export default {
               })
             }else{
               this.modalLoading = false
+              this.totalPaginas= 0
+              this.currentPage= 1
               this.$notify({
                 title:'Sin Información',
                 text:'No se encontraron Tags',
@@ -240,9 +240,7 @@ export default {
       let tag = this.tag
       if(this.carril == '' || this.carril == undefined){
         var datoCarril = null
-      }
-      console.log([plaza,fecha,datoCarril,tag]);
-      axios.get(`${API}/ListaNegra/Paginacion/${plaza}/${page}/${datoCarril}/${fecha}/${tag}`)
+        axios.get(`${API}/ListaNegra/Paginacion/${plaza}/${page}/${datoCarril}/${fecha}/${tag}`)
         .then((result)=>{
           console.log(result.data);
           this.totalPaginas = result.data.numberPages
@@ -258,6 +256,24 @@ export default {
             this.listaNegra.push(obj)
           })
         })
+      }else{
+        axios.get(`${API}/ListaNegra/Paginacion/${plaza}/${page}/${this.carril}/${fecha}/${tag}`)
+        .then((result)=>{
+          console.log(result.data);
+          this.totalPaginas = result.data.numberPages
+          this.currentPage = result.data.now
+          result.data.body.forEach((e)=>{
+            let obj = {
+              tag: e.tag,
+              carril: e.carril,
+              fechaEntrada: e.fechaEntrada,
+              fechaSalida: e.fechaSalida,
+              causa: e.causaNombre
+            }
+            this.listaNegra.push(obj)
+          })
+        })
+      }
     },
     recibir_tramo_plaza(value){
       this.tramo = value.tramo
@@ -265,15 +281,55 @@ export default {
       this.carril = value.carril
     },  
     downloadApi(formato){
-      if (formato == "csv") {
-        ServiceFiles.xml_hhtp_request(`${API}/ListaNegra/Download/Csv/${this.plaza}`, 'bitacoraAntifraudes.csv')
-      } 
-      else if (formato == "excel") {        
-        ServiceFiles.xml_hhtp_request(`${API}/ListaNegra/Download/Excel/${this.plaza}`, 'bitacoraAntifraudes.xlsx')    
-      } 
-      else if (formato == "txt") {
-        ServiceFiles.xml_hhtp_request(`${API}/ListaNegra/Download/txt/${this.plaza}`, 'bitacoraAntifraudes.txt')
-      }      
+      if(this.plaza == null || this.plaza == undefined || this.plaza == ''){
+        this.$notify({
+          title:'Sin Información',
+          text:'No se puede exportar sin antes hacer una busqueda',
+          type: 'warn'
+        });
+      }else{
+        if((this.carril != null || this.carril != '' || this.carril != undefined) && (this.fecha == null || this.fecha == '' || this.fecha == undefined) && (this.tag == null || this.tag == '' || this.tag == undefined)){
+          if (formato == "csv") {
+          ServiceFiles.xml_hhtp_request(`${API}/ListaNegra/Download/Csv/${this.plaza}/${this.carril}/null/null`, 'bitacoraAntifraudes.csv')
+          } 
+          else if (formato == "excel") {        
+            ServiceFiles.xml_hhtp_request(`${API}/ListaNegra/Download/Excel/${this.plaza}/${this.carril}/null/null`, 'bitacoraAntifraudes.xlsx')    
+          } 
+          else if (formato == "txt") {
+            ServiceFiles.xml_hhtp_request(`${API}/ListaNegra/Download/txt/${this.plaza}/${this.carril}/null/null`, 'bitacoraAntifraudes.txt')
+          }      
+        }else if((this.fehca != null || this.fecha != '' || this.fecha != undefined) && (this.carril == null || this.carril == '' || this.carril == undefined) && (this.tag == null || this.tag == '' || this.tag == undefined)){
+          if (formato == "csv") {
+          ServiceFiles.xml_hhtp_request(`${API}/ListaNegra/Download/Csv/${this.plaza}/null/${this.fecha}/null`, 'bitacoraAntifraudes.csv')
+          } 
+          else if (formato == "excel") {        
+            ServiceFiles.xml_hhtp_request(`${API}/ListaNegra/Download/Excel/${this.plaza}/null/${this.fecha}/null`, 'bitacoraAntifraudes.xlsx')    
+          } 
+          else if (formato == "txt") {
+            ServiceFiles.xml_hhtp_request(`${API}/ListaNegra/Download/txt/${this.plaza}/null/${this.fecha}/null`, 'bitacoraAntifraudes.txt')
+          } 
+        }else if((this.tag != null || this.tag != '' || this.tag != undefined) && (this.carril == null || this.carril == '' || this.carril == undefined) && (this.fecha == null || this.fecha == '' || this.fecha == undefined)){
+          if (formato == "csv") {
+          ServiceFiles.xml_hhtp_request(`${API}/ListaNegra/Download/Csv/${this.plaza}/null/null/${this.tag}`, 'bitacoraAntifraudes.csv')
+          } 
+          else if (formato == "excel") {        
+            ServiceFiles.xml_hhtp_request(`${API}/ListaNegra/Download/Excel/${this.plaza}/null/null/${this.tag}`, 'bitacoraAntifraudes.xlsx')    
+          } 
+          else if (formato == "txt") {
+            ServiceFiles.xml_hhtp_request(`${API}/ListaNegra/Download/txt/${this.plaza}/null/null/${this.tag}`, 'bitacoraAntifraudes.txt')
+          }
+        }else{
+          if (formato == "csv") {
+          ServiceFiles.xml_hhtp_request(`${API}/ListaNegra/Download/Csv/${this.plaza}/${this.carril}/${this.fecha}/${this.tag}`, 'bitacoraAntifraudes.csv')
+          } 
+          else if (formato == "excel") {        
+            ServiceFiles.xml_hhtp_request(`${API}/ListaNegra/Download/Excel/${this.plaza}/${this.carril}/${this.fecha}/${this.tag}`, 'bitacoraAntifraudes.xlsx')    
+          } 
+          else if (formato == "txt") {
+            ServiceFiles.xml_hhtp_request(`${API}/ListaNegra/Download/txt/${this.plaza}/${this.carril}/${this.fecha}/${this.tag}`, 'bitacoraAntifraudes.txt')
+          }
+        }
+      }
     }, 
   },
 }

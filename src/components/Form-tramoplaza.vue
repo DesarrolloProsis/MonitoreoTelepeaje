@@ -1,7 +1,7 @@
 <template>
     <div class="inline-flex border" :class="{'w-69 mt-3 border-none': tipo == 'Transacciones', 'border-none': tipo == 'Antifraude'}">
         <span class="mt-1" :class="{'mt-0 text-white': tipo == 'Antifraude'}">Tramo:</span>
-        <select v-model="tramoSeleccionado" @change="obtner_plazas_por_tramo" class="p-1 px-2  outline-none w-full text-gray-800 mr-3 ml-3 rounded" name="select" id="selectorTramo">                                    
+        <select :disabled="!habilitar" v-model="tramoSeleccionado" @change="obtner_plazas_por_tramo" class="p-1 px-2  outline-none w-full text-gray-800 mr-3 ml-3 rounded" name="select" id="selectorTramo">                                    
             <option v-for="(tramo, key) in tramos" :value="tramo" :key="key">
                 {{ tramo.text }}
             </option>
@@ -18,7 +18,7 @@
         </select>
         <template v-if="carrilesForm">
             <span class="mt-1 ml-3" :class="{'mt-0 text-white': tipo == 'Antifraude'}">Carriles:</span>
-            <select v-model="carrilSeleccionado" @change="emit_tramo_plaza" class="p-1 px-2  outline-none w-full text-gray-800 ml-3 rounded" name="select" id="selectorTramo">                                    
+            <select :disabled="!habilitar" v-model="carrilSeleccionado" @change="emit_tramo_plaza" class="p-1 px-2  outline-none w-full text-gray-800 ml-3 rounded" name="select" id="selectorTramo">                                    
                 <option v-if="carriles.length == 0" value="">Sin Carriles</option>
                 <option v-else value="">Selecione Carril</option>            
                 <option v-for="(carril, key) in carriles" :value="carril" :key="key">{{ carril.lineaCarril }}</option>

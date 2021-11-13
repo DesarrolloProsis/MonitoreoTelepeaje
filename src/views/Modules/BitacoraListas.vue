@@ -9,7 +9,7 @@
             <div class="flex-none filter-style mt-2">
                 Fecha:<input v-model="fecha" type="date" class="rounded"/>
             </div>
-            <div class="flex-none filter-style mr-69">
+            <div class="flex-none filter-style mr-66">
                 <button @click="buscar(plaza,fecha)" class="btn-buscar">Buscar</button>
                 <button @click="limpiar(plaza)" class="btn-buscar ml-2 mr-1">Limpiar</button>
             </div>
@@ -31,6 +31,7 @@
 <script>
 const API = process.env.VUE_APP_URL_API_PRODUCCION
 import FormTramoPlaza from '../../components/Form-tramoplaza.vue';
+import ServiceFiles from '../../Servicios/Files-Service'
 import TablaListas from "../../components/Tabla-listas.vue";
 import Navbar from "@/components/Navbar.vue";
 import Footer from "@/components/Footer-login";
@@ -156,6 +157,37 @@ export default {
                     }, 1000)  
                 }
             })
+        },
+        downloadApi(formato){
+        if(this.plaza == null || this.plaza == undefined || this.plaza == ''){
+            this.$notify({
+                title:'Sin Información',
+                text:'No se puede exportar sin antes hacer una busqueda',
+                type: 'warn'
+            });
+        }else{
+            if(this.fecha == null || this.fecha == '' || this.fecha == undefined){
+                if (formato == "csv") {
+                    ServiceFiles.xml_hhtp_request(`${API}/Historico/Download/Csv/${this.plaza}/null`, 'bitacoraListas.csv')
+                } 
+                else if (formato == "excel") {        
+                    ServiceFiles.xml_hhtp_request(`${API}/Historico/Operador/Download/Excel/${this.plaza}/null`, 'bitacoraListas.xlsx')    
+                } 
+                else if (formato == "txt") {
+                    ServiceFiles.xml_hhtp_request(`${API}/Historico/Download/txt/${this.plaza}/null`, 'bitacoraListas.txt')
+                }      
+            }else{
+                if (formato == "csv") {
+                    ServiceFiles.xml_hhtp_request(`${API}/Historico/Download/Csv/${this.plaza}/${this.fecha}`, 'bitacoraListas.csv')
+                } 
+                else if (formato == "excel") {        
+                    ServiceFiles.xml_hhtp_request(`${API}/Historico/Operador/Download/Excel/${this.plaza}/${this.fecha}`, 'bitacoraListas.xlsx')    
+                } 
+                else if (formato == "txt") {
+                    ServiceFiles.xml_hhtp_request(`${API}/Historico/Download/txt/${this.plaza}/${this.fecha}`, 'bitacoraListas.txt')
+                }
+            }
+            }
         },
     },
 }

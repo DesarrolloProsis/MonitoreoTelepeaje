@@ -22,12 +22,12 @@
         <button @click="buscar(nombre,estatus, plaza)" class="btn-buscar">Buscar</button>
         <button @click="todos()" class="btn-buscar ml-1">Todos</button>
       </div>
-      <div class="flex-1 ml-64">
+      <div class="flex-1 ml-64 hidden">
         <FilesDownload @download-api="downloadApi"/>
       </div>
     </div>
     <div class="mb-6">
-      <button @click="modalAgregar=true" class="w-full botonIconBuscar justify-center mt-3 -mb-8">Agregar Usuario</button>
+      <button @click="modalAgregar=true" :class="{'hidden':!habilitar}" class="w-full botonIconBuscar justify-center mt-3 -mb-8">Agregar Usuario</button>
     </div>
     <TablaListaUsuarios :dataUsuarios="perfiles"/>
     <div class="">
@@ -121,7 +121,8 @@ export default {
       //addEmi
       formato: '',
       tramo:'',
-      plaza:''
+      plaza:'',
+      habilitar: false
     };
   },
   beforeMount(){
@@ -280,6 +281,7 @@ export default {
       axios.get(`${API}/Usuario?Page=${this.paginaAct}&Rows=10&plaza=${this.plaza}`,config)
         .then((res) => {
           this.perfiles = []
+          this.habilitar = true
           this.maxPages = res.data.totalPages;
           res.data.page.forEach((e) => {
             let obj = {
@@ -316,6 +318,7 @@ export default {
           axios.get(`${API}/Usuario?Page=${this.paginaAct}&Rows=10&plaza=${plaza}`,config)
           .then((res) => {
             this.perfiles = []
+            this.habilitar = true
             this.maxPages = res.data.totalPages;
             res.data.page.forEach((e) => {
               let obj = {
@@ -421,14 +424,25 @@ export default {
       this.plazas = []
     },
     downloadApi(formato){
-      if (formato == "csv") {
-        ServiceFiles.xml_hhtp_request(`${API}/Usuario/Download/Csv?NameFilter=${this.nombre}&EstatusFilter=${Boolean(this.estatus)}`, 'listaUsuarios.csv')
-      } 
-      else if (formato == "excel") {        
-        ServiceFiles.xml_hhtp_request(`${API}/Usuario/Download/Excel?NameFilter=${this.nombre}&EstatusFilter=${Boolean(this.estatus)}`, 'listaUsuarios.xlsx')    
-      } 
-      else if (formato == "txt") {
-        ServiceFiles.xml_hhtp_request(`${API}/Usuario/Download/txt?NameFilter=${this.nombre}&EstatusFilter=${Boolean(this.estatus)}`, 'listaUsuarios.txt')
+      if((this.plaza == '' || this.plaza == null || this.plaza == undefined) && ( this.estatus == '' || this.estatus == null || this.estatus == undefined)){
+        this.$notify({
+          title:'Sin información',
+          text:`Se debe de seleccionar la plaza para hacer una busqueda`,
+          duration: 2000,
+          type: 'warn'
+        });
+      }else{
+        if((this.plaza != '' || this.plaza != null || this.plaza != undefined) && (this.nombre == '' || this.nombre == null || this.nombre == undefined) && (this.estatus == '' || this.estatus == null || this.estatus == undefined)){
+          if (formato == "csv") {
+          ServiceFiles.xml_hhtp_request(`${API}/Usuario/Download/Csv/${this.plaza}/null/null`, 'listaUsuarios.csv')
+          } 
+          else if (formato == "excel") {        
+            ServiceFiles.xml_hhtp_request(`${API}/Usuario/Download/Excel/${this.plaza}/null/null`, 'listaUsuarios.xlsx')    
+          } 
+          else if (formato == "txt") {
+            ServiceFiles.xml_hhtp_request(`${API}/Usuario/Download/txt/${this.plaza}/null/null`, 'listaUsuarios.txt')
+          }
+        }
       }      
     },   
     recibir_tramo_plaza(value){
