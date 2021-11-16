@@ -14,7 +14,7 @@
         <td :class="`${lista.fechaActualizacionOperador == '' ? 'sinconexion' : ''}`">{{moment(lista.fechaActualizacionOperador == '' ? "Sin conexión":lista.fechaActualizacionOperadorn).format("YYYY-MM-DD  HH:mm:ss a")}}</td> 
           <td :class="`${lista.fechaEnvioOperador == '' ? 'sinconexion' : ''}`">{{moment(lista.fechaEnvioOperador == '' ? "Sin conexión":lista.fechaEnvioOperador).format("YYYY-MM-DD  HH:mm:ss a")}}</td>
           <td :class="`${lista.fechaDeCruce == '' ? 'sinconexion' : ''}`">{{moment(lista.fechaDeCruce == '' ? "Sin conexión":lista.fechaDeCruce).format("YYYY-MM-DD  HH:mm:ss a")}}</td>
-          <td :class="`${lista.idTag == '' ? 'sinconexion' : ''}`">{{lista.idTag == '' ? "Sin conexión":lista.idTag}}</td>
+          <td :class="`${lista.idTag == '' ? '--' : ''}`">{{lista.idTag == '' ? "Sin conexión":lista.idTag}}</td>
       </tr>
     </table>
   </div>
