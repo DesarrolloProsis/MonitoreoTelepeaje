@@ -1,6 +1,6 @@
 <template>
   <Navbar/>
-  <div class="container mx-auto px-0 resp-cont">
+  <div class="container mx-auto px-0">
     <h1 class="title">Monitoreo de Servicios</h1>
     <button @click="cambiar_delegacion(2)" class="btn-listas" :style="{ 'background-color': mexAca ? 'gray' : '#fcb32a' }">
       Mex-Ira
@@ -34,9 +34,9 @@ export default {
   },
   setup(){
     const statusServices = ref([])
-    const mexIra = ref(true)
-    const mexAca = ref(false)
-    const delegacionSelect = ref(2)
+    const mexIra = ref(false)
+    const mexAca = ref(true)
+    const delegacionSelect = ref(1)
     const isLoading = ref(true)
     const modalLoading = ref (true)
     const cambiar_delegacion = (id) => {
@@ -45,73 +45,88 @@ export default {
         mexIra.value = false
         delegacionSelect.value = 1
         statusServices.value = []
-        buscar_status_services()
+        buscar_status()
       }
       else{
         mexIra.value = !mexIra.value
         mexAca.value = false
         delegacionSelect.value = 2
         statusServices.value = []
-        buscar_status_services()
+        buscar_status()
       }      
     }
-    const buscar_status_services = () => {
+    // const buscar_status_services = () => {
+    //   modalLoading.value = true
+    //   var decoded = jwt_decode(Service.getCookie("Token"));
+    //   //console.log(decoded.UsuarioId)
+    //   axios.get(`${API}/PlazaAsignada/DelUsuario/${decoded.UsuarioId}`)
+    //     .then((response) => {          
+    //       console.log(response)
+    //       if(response.data.status == 'Ok'){
+    //         let plazasUser = response.data.body.filter(item => item.tramoAsignadoId == delegacionSelect.value) 
+    //         //console.log(plazasUser)
+    //         //for iterar plazas
+    //         plazasUser.forEach(plaza => {
+    //           axios.get(`${API}/Transacciones/LastTransaction/${plaza.plazaAsignadaId}`)
+    //             .then((response) => {    
+    //               console.log(response)            
+    //               if(response.data.status == 'Ok'){
+    //                 statusServices.value.push(response.data.body[0])
+    //               }
+    //             })
+    //         })
+    //         modalLoading.value = false
+    //         isLoading.value = false  
+    //         console.log(statusServices.value)          
+    //       }
+    //     })
+    //     .catch((error) => {
+    //       console.log(error)
+    //     })
+    // }
+    const buscar_status = async () => {
       modalLoading.value = true
-      var decoded = jwt_decode(Service.getCookie("Token"));
-      //console.log(decoded.UsuarioId)
-      axios.get(`${API}/PlazaAsignada/DelUsuario/${decoded.UsuarioId}`)
-        .then((response) => {          
-          //console.log(response)
+      var decoded = jwt_decode(Service.getCookie("Token"));      
+      await axios.get(`${API}/PlazaAsignada/DelUsuario/${decoded.UsuarioId}`)
+        .then((response) => {  
+          console.log(response)                  
           if(response.data.status == 'Ok'){
-            let plazasUser = response.data.body.filter(item => item.tramoAsignadoId == delegacionSelect.value) 
-            //console.log(plazasUser)
-            //for iterar plazas
-            plazasUser.forEach(plaza => {
-              axios.get(`${API}/Transacciones/LastTransaction/${plaza.plazaAsignadaId}`)
-                .then((response) => {                
-                  if(response.data.status == 'Ok'){
-                    statusServices.value.push(response.data.body[0])
-                  }
-                })
+            let plazasUser = response.data.body.filter(item => item.tramoAsignadoId == delegacionSelect.value)             
+            axios.get(`${API}/PlazaAsignada/PorTramoConnection/${delegacionSelect.value}`)
+            .then((responsetramoconnect) => {
+              console.log(responsetramoconnect)
+              //for iterar plazas
+              let contadorBug = 0
+              plazasUser.forEach(async (plaza) => {
+                contadorBug++                            
+                let isConnected = responsetramoconnect.data.body.find(item => item.plazaAsignadaId == plaza.plazaAsignadaId).connected
+                if(isConnected){
+                  await axios.get(`${API}/Transacciones/LastTransaction/${plaza.plazaAsignadaId}`)
+                    .then((response) => {                          
+                      console.log(response)            
+                      if(response.data.status == 'Ok'){
+                        statusServices.value.push(response.data.body[0])                  
+                      }                    
+                    })
+                }
+                if(contadorBug == plazasUser.length){
+                  modalLoading.value = false
+                  isLoading.value = false         
+                }
+              })
+              console.log('me adelante en el forEach')
             })
-            modalLoading.value = false
-            isLoading.value = false  
-            console.log(statusServices.value)          
+                
           }
         })
         .catch((error) => {
           console.log(error)
-        })
+        }) 
+        console.log('me adelante')                                     
     }
-    const buscar_status = () => {
-      modalLoading.value = true
-      var decoded = jwt_decode(Service.getCookie("Token"));
-      console.log(decoded.UsuarioId)
-      axios.get(`${API}/PlazaAsignada/DelUsuario/${decoded.UsuarioId}`)
-        .then((response) => {          
-          console.log(response)
-          if(response.data.status == 'Ok'){
-            let plazasUser = response.data.body.filter(item => item.tramoAsignadoId == delegacionSelect.value) 
-            console.log(plazasUser)
-            //for iterar plazas
-            plazasUser.forEach(plaza => {
-              axios.get(`${API}/Transacciones/LastTransaction/${plaza.plazaAsignadaId}`)
-                .then((response) => {                
-                  if(response.data.status == 'Ok'){
-                    statusServices.value.push(response.data.body[0])
-                  }
-                })
-            })
-            modalLoading.value = false
-            isLoading.value = false  
-            console.log(statusServices.value)          
-          }
-        })
-        .catch((error) => {
-          console.log(error)
-        })
-    }
-    onMounted(buscar_status)
+    onMounted(() => {
+      buscar_status()
+    })
     return { statusServices, mexAca, mexIra, isLoading, cambiar_delegacion, modalLoading }
 
   },  

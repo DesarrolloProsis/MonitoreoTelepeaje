@@ -32,13 +32,30 @@ export default{
   },
   methods:{
     logout: function(){
+      console.log(Servicio.getCookie("Token"))
       if(Servicio.getCookie("Token")){
-        let info = jwt_decode(Servicio.getCookie("Token"))
+        let info = jwt_decode(Servicio.getCookie("Token"))        
+        try
+        {
+        document.cookie = "TipoUser=; expires=Thu, 01 Jan 1970 00:00:00 UTC;" + "SameSite=None; Secure;";
+        document.cookie = "Token=; expires=Thu, 01 Jan 1970 00:00:00 UTC;" + "SameSite=None; Secure;";
+        this.$router.push('/')
         axios.patch(`${API}/Login?UsuarioId=${info.UsuarioId}`)
+        .then((response) => {
+            console.log(response)            
+            this.$router.push('/')
+        })
+        .catch((error) => console.log(error))
+        }
+        catch(error){
+          console.log(error)
+        }
       }
-      document.cookie = "TipoUser=; expires=Thu, 01 Jan 1970 00:00:00 UTC;" + "SameSite=None; Secure;";
-      document.cookie = "Token=; expires=Thu, 01 Jan 1970 00:00:00 UTC;" + "SameSite=None; Secure;";
-      this.$router.push('/')
+      else {        
+        document.cookie = "TipoUser=; expires=Thu, 01 Jan 1970 00:00:00 UTC;" + "SameSite=None; Secure;";
+        document.cookie = "Token=; expires=Thu, 01 Jan 1970 00:00:00 UTC;" + "SameSite=None; Secure;";
+        this.$router.push('/')
+      }
     },
   }
 }

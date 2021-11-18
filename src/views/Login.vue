@@ -81,7 +81,7 @@ export default {
           document.cookie = "TipoUser=" + result.data['rol'] + ";" + expires + "SameSite=None; Secure;";
           document.cookie = "Token=" + result.data['bearer'] + ";" + expires + "SameSite=None; Secure;";
           this.mensaje =""
-          this.$router.push('inicio')
+          this.$router.push('/inicio')
         })
         .catch(()=>{
           this.mensaje="Error, verifica tus datos o intentalo más tarde."

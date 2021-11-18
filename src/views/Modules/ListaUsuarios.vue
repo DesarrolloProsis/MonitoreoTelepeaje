@@ -328,6 +328,7 @@ export default {
           };
           axios.get(`${API}/Usuario?Page=${this.paginaAct}&Rows=10&plaza=${plaza}`,config)
           .then((res) => {
+            console.log(res);
             this.perfiles = []
             this.habilitar = true
             this.maxPages = res.data.totalPages;
