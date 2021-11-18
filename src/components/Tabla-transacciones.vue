@@ -3,14 +3,16 @@
     <table class="tftable">
       <tr>
         <th>No Tag</th>
-        <th>Fecha de Transaccion</th>
+        <th>Fecha de Transacción</th>
+        <th>Fecha de Envío</th>
         <th>Carril</th>
         <th>Clase Cajero</th>
         <th>Tarifa</th>
       </tr>
       <tr v-for="(transaccion, index) in dataTransacciones" :key="index">
         <td>{{transaccion.tag}}</td>
-        <td>{{ moment(transaccion.fechaEnvio).format("YYYY-MM-DD  HH:mm:ss a") }}</td>
+        <td>{{ moment(transaccion.fechaCruce).format("YYYY-MM-DD  HH:mm:ss a") }}</td>
+        <td>{{ moment(transaccion.fechaEnvio).format("YYYY-MM-DD HH:mm:ss a") }}</td>
         <td>{{transaccion.carril}}</td>
         <td>{{transaccion.claseCajero}} </td>
         <td>${{transaccion.tarifa}} </td>

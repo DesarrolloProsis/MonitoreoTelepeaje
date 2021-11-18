@@ -121,7 +121,8 @@ export default {
           result.data.body.forEach((e) => {
             let obj = {
               tag: e.idTag,
-              fechaEnvio: e.fechaDeCruce,
+              fechaCruce: e.fechaDeCruce,
+              fechaEnvio: e.FechaEnvio,
               carril: e.carril,
               claseCajero: e.claseCajero,
               tarifa: e.tarifa
@@ -175,7 +176,8 @@ export default {
             result.data.body.forEach((e) => {
               let obj = {
                 tag: e.idTag,
-                fechaEnvio: e.fechaDeCruce,
+                fechaCruce: e.fechaDeCruce,
+                fechaEnvio: e.fechaEnvio,
                 carril: e.carril,
                 claseCajero: e.claseCajero,
                 tarifa: e.tarifa
@@ -214,7 +216,8 @@ export default {
             result.data.body.forEach((e) => {
               let obj = {
                 tag: e.idTag,
-                fechaEnvio: e.fechaDeCruce,
+                fechaCruce: e.fechaDeCruce,
+                fechaEnvio: e.FechaEnvio,
                 carril: e.carril,
                 claseCajero: e.claseCajero,
                 tarifa: e.tarifa
@@ -253,7 +256,8 @@ export default {
               result.data.body.forEach((e) => {
                 let obj = {
                   tag: e.idTag,
-                  fechaEnvio: e.fechaDeCruce,
+                  fechaCruce: e.fechaDeCruce,
+                  fechaEnvio: e.FechaEnvio,
                   carril: e.carril,
                   claseCajero: e.claseCajero,
                   tarifa: e.tarifa
@@ -292,7 +296,8 @@ export default {
               result.data.body.forEach((e) => {
                 let obj = {
                   tag: e.idTag,
-                  fechaEnvio: e.fechaDeCruce,
+                  fechaCruce: e.fechaDeCruce,
+                  fechaEnvio: e.FechaEnvio,
                   carril: e.carril,
                   claseCajero: e.claseCajero,
                   tarifa: e.tarifa
@@ -329,7 +334,8 @@ export default {
               result.data.body.forEach((e) => {
                 let obj = {
                   tag: e.idTag,
-                  fechaEnvio: e.fechaDeCruce,
+                  fechaCruce: e.fechaDeCruce,
+                  fechaEnvio: e.FechaEnvio,
                   carril: e.carril,
                   claseCajero: e.claseCajero,
                   tarifa: e.tarifa
@@ -366,7 +372,8 @@ export default {
       result.data.body.forEach((e) => {
             let obj = {
               tag: e.idTag,
-              fechaEnvio: e.fechaEnvioOperador,
+              fechaCruce: e.fechaDeCruce,
+              fechaEnvio: e.FechaEnvio,
               carril: e.carril,
               claseCajero: e.claseCajero,
               tarifa: e.tarifa
