@@ -38,88 +38,54 @@ import TablaAntifraude from "../../components/Tabla-antifraude.vue";
 import Navbar from "@/components/Navbar.vue";
 import Footer from "@/components/Footer-login";
 import FilesDownload from '../../components/Files-descargar.vue'
+import { notify } from "@kyvg/vue3-notification";
 import ServiceFiles from '../../Servicios/Files-Service'
 import axios from "axios";
 import Paginacion from "../../components/Paginacion.vue"
+import { ref } from 'vue'
 import Spinner from '../../components/Spn.vue'
 export default {
   name: "BitacoraAccesos",
   components: { Navbar, Footer, FormTramoPlaza, TablaAntifraude, FilesDownload, Paginacion, Spinner },
-
-  data() {
-    return {
-      tags: [],      
-      token:"",      
-      tramo: '',
-      plaza: null,
-      carril: null,
-      fecha:null,
-      tag:null,
-      listaNegra: [],
-      value: '',
-      formato:'',
-      isLoading: false,
-      paginaAct: '',
-      page: 1,
-      totalPaginas: 0,
-      currentPage: 1,
-      hasMorePages: true,
-      modalLoading: false
-    };
-  },
-  methods: {
-    todo(plaza){
-      this.listaNegra = []
-      this.carril = null
-      this.fecha = null
-      this.tag = null
-      axios.get(`${API}/ListaNegra/Paginacion/${plaza}/${this.page}/${this.carril}/${this.fecha}/${this.tag}`)
-      .then((result)=>{
-        if((result.data.status == 'Ok') && (result.data.body.length > 0)){
-          this.modalLoading = false
-          this.totalPaginas = result.data.numberPages
-          this.currentPage = result.data.now
-          result.data.body.forEach((e)=>{
-            let obj = {
-              tag: e.tag,
-              carril: e.carril,
-              fechaEntrada: e.fechaEntrada,
-              fechaSalida: e.fechaSalida,
-              causa: e.causaNombre
-            }
-            this.listaNegra.push(obj)
-          })
-        }else{
-          this.modalLoading = false
-          this.$notify({
-            title:'Sin Información',
-            text:'No se encontraron Tags en la plaza seleccionada',
-            type: 'warn'
-          });
-        }
-      })
-    },
-    buscar(plaza,carril,fecha,tag){
-      this.listaNegra = []
+  setup() {
+    const tags = ref([])      
+    const token = ref("")      
+    const tramo = ref('')
+    const plaza = ref(null)
+    const carril = ref(null)
+    const fecha = ref(null)
+    const tag = ref(null)
+    const listaNegra = ref([])
+    const value = ref('')
+    const formato = ref('')
+    const paginaAct = ref('')
+    const page = ref(1)
+    const totalPaginas = ref(0)
+    const currentPage = ref(1)
+    const hasMorePages = ref(true)
+    const modalLoading = ref(false)
+    //Función para buscar los tag
+    function buscar(plaza,carril,fecha,tag){
+      listaNegra.value = []
       if(plaza == '' || plaza == null || plaza == undefined){
-        this.$notify({
-              title:'Sin Información',
-              text:'Se debe de seleccionar la plaza para realizar una busqueda',
-              type: 'warn'
-            });
+        notify({
+          title:'Sin Información',
+          text:'Se debe de seleccionar la plaza para realizar una busqueda',
+          type: 'warn'
+        });
       }else{
-        this.page = 1
-        this.modalLoading = true
+        page.value = 1
+        modalLoading.value = true
         if((carril == '' || carril == undefined) && (tag == '' || tag == undefined)){
           let carrilif = null
           let tag = null
-          this.listaNegra = []
-          axios.get(`${API}/ListaNegra/Paginacion/${plaza}/${this.page}/${carrilif}/${fecha}/${tag}`)
+          listaNegra.value = []
+          axios.get(`${API}/ListaNegra/Paginacion/${plaza}/${page.value}/${carrilif}/${fecha}/${tag}`)
           .then((result)=>{
             if((result.data.status == 'Ok') && (result.data.body.length > 0)){
-              this.modalLoading = false
-              this.totalPaginas = result.data.numberPages
-              this.currentPage = result.data.now
+              modalLoading.value = false
+              totalPaginas.value = result.data.numberPages
+              currentPage.value = result.data.now
               result.data.body.forEach((e)=>{
                 let obj = {
                   tag: e.tag,
@@ -128,13 +94,13 @@ export default {
                   fechaSalida: e.fechaSalida,
                   causa: e.causaNombre
                 }
-                this.listaNegra.push(obj)
+                listaNegra.value.push(obj)
               })
             }else{
-              this.modalLoading = false
-              this.totalPaginas= 0
-              this.currentPage= 1
-              this.$notify({
+              modalLoading.value = false
+              totalPaginas.value = 0
+              currentPage.value = 1
+              notify({
                 title:'Sin Información',
                 text:'No se encontraron Tags en la plaza seleccionada',
                 type: 'warn'
@@ -142,14 +108,14 @@ export default {
             }
           })
         }else if((tag != '' || tag != undefined) && (carril == '' || carril == undefined)){
-          this.listaNegra = []
+          listaNegra.value = []
           let carrilelseif = null
-          axios.get(`${API}/ListaNegra/Paginacion/${plaza}/${this.page}/${carrilelseif}/${fecha}/${tag}`)
+          axios.get(`${API}/ListaNegra/Paginacion/${plaza}/${page.value}/${carrilelseif}/${fecha}/${tag}`)
           .then((result)=>{
             if((result.data.status == 'Ok') && (result.data.body.length > 0)){
-              this.modalLoading = false
-              this.totalPaginas = result.data.numberPages
-              this.currentPage = result.data.now
+              modalLoading.value = false
+              totalPaginas.value = result.data.numberPages
+              currentPage.value = result.data.now
               result.data.body.forEach((e)=>{
                 let obj = {
                   tag: e.tag,
@@ -158,13 +124,13 @@ export default {
                   fechaSalida: e.fechaSalida,
                   causa: e.causaNombre
                 }
-                this.listaNegra.push(obj)
+                listaNegra.value.push(obj)
               })
             }else{
-              this.modalLoading = false
-              this.totalPaginas= 0
-              this.currentPage= 1
-              this.$notify({
+              modalLoading.value = false
+              totalPaginas.value = 0
+              currentPage.value = 1
+              notify({
                 title:'Sin Información',
                 text:'No se encontraron Tags',
                 type: 'warn'
@@ -172,15 +138,15 @@ export default {
             }
           })
         }else if((carril != '' || carril != undefined) && (tag == '' || tag == undefined)){
-          this.listaNegra = []
+          listaNegra.value = []
           let tag = null
-          axios.get(`${API}/ListaNegra/Paginacion/${plaza}/${this.page}/${carril}/${fecha}/${tag}`)
+          axios.get(`${API}/ListaNegra/Paginacion/${plaza}/${page.value}/${carril}/${fecha}/${tag}`)
           .then((result)=>{
             console.log(result.data);
             if((result.data.status == 'Ok') && (result.data.body.length > 0)){
-              this.modalLoading = false
-              this.totalPaginas = result.data.numberPages
-              this.currentPage = result.data.now
+              modalLoading.value = false
+              totalPaginas.value = result.data.numberPages
+              currentPage.value = result.data.now
               result.data.body.forEach((e)=>{
                 let obj = {
                   tag: e.tag,
@@ -189,13 +155,13 @@ export default {
                   fechaSalida: e.fechaSalida,
                   causa: e.causaNombre
                 }
-                this.listaNegra.push(obj)
+                listaNegra.value.push(obj)
               })
             }else{
-              this.modalLoading = false
-              this.totalPaginas= 0
-              this.currentPage= 1
-              this.$notify({
+              modalLoading.value = false
+              totalPaginas.value = 0
+              currentPage.value = 1
+              notify({
                 title:'Sin Información',
                 text:'No se encontraron Tags en el carril ingresado',
                 type: 'warn'
@@ -203,12 +169,12 @@ export default {
             }
           })
         }else{
-          axios.get(`${API}/ListaNegra/Paginacion/${plaza}/${this.page}/${carril}/${fecha}/${tag}`)
+          axios.get(`${API}/ListaNegra/Paginacion/${plaza}/${page.value}/${carril}/${fecha}/${tag}`)
           .then((result)=>{
             if((result.data.status == 'Ok') && (result.data.body.length > 0)){
-              this.modalLoading = false
-              this.totalPaginas = result.data.numberPages
-              this.currentPage = result.data.now
+              modalLoading.value = false
+              totalPaginas.value = result.data.numberPages
+              currentPage.value = result.data.now
               result.data.body.forEach((e)=>{
                 let obj = {
                   tag: e.tag,
@@ -217,13 +183,13 @@ export default {
                   fechaSalida: e.fechaSalida,
                   causa: e.causaNombre
                 }
-                this.listaNegra.push(obj)
+                listaNegra.value.push(obj)
               })
             }else{
-              this.modalLoading = false
-              this.totalPaginas= 0
-              this.currentPage= 1
-              this.$notify({
+              modalLoading.value = false
+              totalPaginas.value = 0
+              currentPage.value = 1
+              notify({
                 title:'Sin Información',
                 text:'No se encontraron Tags',
                 type: 'warn'
@@ -232,19 +198,19 @@ export default {
           })
         }
       }
-    },
-    showMore(page){
-      this.listaNegra = []
-      let plaza = this.plaza
-      let fecha = this.fecha;
-      let tag = this.tag
-      if(this.carril == '' || this.carril == undefined){
-        var datoCarril = null
-        axios.get(`${API}/ListaNegra/Paginacion/${plaza}/${page}/${datoCarril}/${fecha}/${tag}`)
-        .then((result)=>{
-          console.log(result.data);
-          this.totalPaginas = result.data.numberPages
-          this.currentPage = result.data.now
+    }
+    //Función que regresa todos los tag de la plaza seleccionada, sin filtros
+    function todo(plaza){
+      listaNegra.value = []
+      carril.value = null
+      fecha.value = null
+      tag.value = null
+      axios.get(`${API}/ListaNegra/Paginacion/${plaza}/${page.value}/${carril.value}/${fecha.value}/${tag.value}`)
+      .then((result)=>{
+        if((result.data.status == 'Ok') && (result.data.body.length > 0)){
+          modalLoading.value = false
+          totalPaginas.value = result.data.numberPages
+          currentPage.value = result.data.now
           result.data.body.forEach((e)=>{
             let obj = {
               tag: e.tag,
@@ -253,15 +219,54 @@ export default {
               fechaSalida: e.fechaSalida,
               causa: e.causaNombre
             }
-            this.listaNegra.push(obj)
+            listaNegra.value.push(obj)
+          })
+        }else{
+          modalLoading.value = false
+          notify({
+            title:'Sin Información',
+            text:'No se encontraron Tags en la plaza seleccionada',
+            type: 'warn'
+          });
+        }
+      })
+    }
+    //Función que regresa el id el tramo, la plaza y el carril
+    function recibir_tramo_plaza(value){
+      tramo.value = value.tramo
+      plaza.value = value.plaza
+      carril.value = value.carril
+    }
+    //Función para cambiar de página con o sin filtros
+    function showMore(page){
+      listaNegra.value = []
+      let plaza = plaza.value
+      let fecha = fecha.value;
+      let tag = tag.value
+      if(carril.value == '' || carril.value == undefined){
+        var datoCarril = null
+        axios.get(`${API}/ListaNegra/Paginacion/${plaza}/${page}/${datoCarril}/${fecha}/${tag}`)
+        .then((result)=>{
+          console.log(result.data);
+          totalPaginas.value = result.data.numberPages
+          currentPage.value = result.data.now
+          result.data.body.forEach((e)=>{
+            let obj = {
+              tag: e.tag,
+              carril: e.carril,
+              fechaEntrada: e.fechaEntrada,
+              fechaSalida: e.fechaSalida,
+              causa: e.causaNombre
+            }
+            listaNegra.value.push(obj)
           })
         })
       }else{
         axios.get(`${API}/ListaNegra/Paginacion/${plaza}/${page}/${this.carril}/${fecha}/${tag}`)
         .then((result)=>{
           console.log(result.data);
-          this.totalPaginas = result.data.numberPages
-          this.currentPage = result.data.now
+          totalPaginas.value = result.data.numberPages
+          currentPage.value = result.data.now
           result.data.body.forEach((e)=>{
             let obj = {
               tag: e.tag,
@@ -270,68 +275,82 @@ export default {
               fechaSalida: e.fechaSalida,
               causa: e.causaNombre
             }
-            this.listaNegra.push(obj)
+            listaNegra.value.push(obj)
           })
         })
       }
-    },
-    recibir_tramo_plaza(value){
-      this.tramo = value.tramo
-      this.plaza = value.plaza
-      this.carril = value.carril
-    },  
-    downloadApi(formato){
-      if(this.plaza == null || this.plaza == undefined || this.plaza == ''){
-        this.$notify({
+    }
+    function downloadApi(formato){
+      //Si no se selecciona la Plaza
+      if(plaza.value == null || plaza.value == undefined || plaza.value == ''){
+        notify({
           title:'Sin Información',
           text:'No se puede exportar sin antes hacer una busqueda',
           type: 'warn'
         });
       }else{
-        if((this.carril != null || this.carril != '' || this.carril != undefined) && (this.fecha == null || this.fecha == '' || this.fecha == undefined) && (this.tag == null || this.tag == '' || this.tag == undefined)){
+        //Se selecciona la plaza
+        if((carril.value == null || carril.value == '' || carril.value == undefined) && (fecha.value == null || fecha.value == '' || fecha.value == undefined) && (tag.value == null || tag.value == '' || tag.value == undefined)){
           if (formato == "csv") {
-          ServiceFiles.xml_hhtp_request(`${API}/ListaNegra/Download/Csv/${this.plaza}/${this.carril}/null/null`, 'bitacoraAntifraudes.csv')
+          ServiceFiles.xml_hhtp_request(`${API}/ListaNegra/Download/Csv/${plaza.value}/null/null/null`, 'bitacoraAntifraudes.csv')
           } 
           else if (formato == "excel") {        
-            ServiceFiles.xml_hhtp_request(`${API}/ListaNegra/Download/Excel/${this.plaza}/${this.carril}/null/null`, 'bitacoraAntifraudes.xlsx')    
+            ServiceFiles.xml_hhtp_request(`${API}/ListaNegra/Download/Excel/${plaza.value}/null/null/null`, 'bitacoraAntifraudes.xlsx')    
           } 
           else if (formato == "txt") {
-            ServiceFiles.xml_hhtp_request(`${API}/ListaNegra/Download/txt/${this.plaza}/${this.carril}/null/null`, 'bitacoraAntifraudes.txt')
+            ServiceFiles.xml_hhtp_request(`${API}/ListaNegra/Download/txt/${plaza.value}/null/null/null`, 'bitacoraAntifraudes.txt')
+          }   
+        }//Se selecciona el carril y la plaza
+        else if((carril.value != null || carril.value != '' || carril.value != undefined) && (fecha.value == null || fecha.value == '' || fecha.value == undefined) && (tag.value == null || tag.value == '' || tag.value == undefined)){
+          if (formato == "csv") {
+          ServiceFiles.xml_hhtp_request(`${API}/ListaNegra/Download/Csv/${plaza.value}/${carril.value}/null/null`, 'bitacoraAntifraudes.csv')
+          } 
+          else if (formato == "excel") {        
+            ServiceFiles.xml_hhtp_request(`${API}/ListaNegra/Download/Excel/${plaza.value}/${carril.value}/null/null`, 'bitacoraAntifraudes.xlsx')    
+          } 
+          else if (formato == "txt") {
+            ServiceFiles.xml_hhtp_request(`${API}/ListaNegra/Download/txt/${plaza.value}/${carril.value}/null/null`, 'bitacoraAntifraudes.txt')
           }      
-        }else if((this.fehca != null || this.fecha != '' || this.fecha != undefined) && (this.carril == null || this.carril == '' || this.carril == undefined) && (this.tag == null || this.tag == '' || this.tag == undefined)){
+        }//Se selecciona la fecha y la plaza
+        else if((fecha.value != null || fecha.value != '' || fecha.value != undefined) && (carril.value == null || carril.value == '' || carril.value == undefined) && (tag.value == null || tag.value == '' || tag.value == undefined)){
           if (formato == "csv") {
-          ServiceFiles.xml_hhtp_request(`${API}/ListaNegra/Download/Csv/${this.plaza}/null/${this.fecha}/null`, 'bitacoraAntifraudes.csv')
+          ServiceFiles.xml_hhtp_request(`${API}/ListaNegra/Download/Csv/${plaza.value}/null/${fecha.value}/null`, 'bitacoraAntifraudes.csv')
           } 
           else if (formato == "excel") {        
-            ServiceFiles.xml_hhtp_request(`${API}/ListaNegra/Download/Excel/${this.plaza}/null/${this.fecha}/null`, 'bitacoraAntifraudes.xlsx')    
+            ServiceFiles.xml_hhtp_request(`${API}/ListaNegra/Download/Excel/${plaza.value}/null/${fecha.value}/null`, 'bitacoraAntifraudes.xlsx')    
           } 
           else if (formato == "txt") {
-            ServiceFiles.xml_hhtp_request(`${API}/ListaNegra/Download/txt/${this.plaza}/null/${this.fecha}/null`, 'bitacoraAntifraudes.txt')
+            ServiceFiles.xml_hhtp_request(`${API}/ListaNegra/Download/txt/${plaza.value}/null/${fecha.value}/null`, 'bitacoraAntifraudes.txt')
           } 
-        }else if((this.tag != null || this.tag != '' || this.tag != undefined) && (this.carril == null || this.carril == '' || this.carril == undefined) && (this.fecha == null || this.fecha == '' || this.fecha == undefined)){
+        }//Se selecciona el tag y la plaza
+        else if((tag.value != null || tag.value != '' || tag.value != undefined) && (carril.value == null || carril.value == '' || carril.value == undefined) && (fecha.value == null || fecha.value == '' || fecha.value == undefined)){
           if (formato == "csv") {
-          ServiceFiles.xml_hhtp_request(`${API}/ListaNegra/Download/Csv/${this.plaza}/null/null/${this.tag}`, 'bitacoraAntifraudes.csv')
+          ServiceFiles.xml_hhtp_request(`${API}/ListaNegra/Download/Csv/${plaza.value}/null/null/${tag.value}`, 'bitacoraAntifraudes.csv')
           } 
           else if (formato == "excel") {        
-            ServiceFiles.xml_hhtp_request(`${API}/ListaNegra/Download/Excel/${this.plaza}/null/null/${this.tag}`, 'bitacoraAntifraudes.xlsx')    
+            ServiceFiles.xml_hhtp_request(`${API}/ListaNegra/Download/Excel/${plaza.value}/null/null/${tag.value}`, 'bitacoraAntifraudes.xlsx')    
           } 
           else if (formato == "txt") {
-            ServiceFiles.xml_hhtp_request(`${API}/ListaNegra/Download/txt/${this.plaza}/null/null/${this.tag}`, 'bitacoraAntifraudes.txt')
+            ServiceFiles.xml_hhtp_request(`${API}/ListaNegra/Download/txt/${plaza.value}/null/null/${tag.value}`, 'bitacoraAntifraudes.txt')
           }
-        }else{
+        }//Se seleccionan todos los filtros
+        else{
           if (formato == "csv") {
-          ServiceFiles.xml_hhtp_request(`${API}/ListaNegra/Download/Csv/${this.plaza}/${this.carril}/${this.fecha}/${this.tag}`, 'bitacoraAntifraudes.csv')
+          ServiceFiles.xml_hhtp_request(`${API}/ListaNegra/Download/Csv/${plaza.value}/${carril.value}/${fecha.value}/${tag.value}`, 'bitacoraAntifraudes.csv')
           } 
           else if (formato == "excel") {        
-            ServiceFiles.xml_hhtp_request(`${API}/ListaNegra/Download/Excel/${this.plaza}/${this.carril}/${this.fecha}/${this.tag}`, 'bitacoraAntifraudes.xlsx')    
+            ServiceFiles.xml_hhtp_request(`${API}/ListaNegra/Download/Excel/${plaza.value}/${carril.value}/${fecha.value}/${tag.value}`, 'bitacoraAntifraudes.xlsx')    
           } 
           else if (formato == "txt") {
-            ServiceFiles.xml_hhtp_request(`${API}/ListaNegra/Download/txt/${this.plaza}/${this.carril}/${this.fecha}/${this.tag}`, 'bitacoraAntifraudes.txt')
+            ServiceFiles.xml_hhtp_request(`${API}/ListaNegra/Download/txt/${plaza.value}/${carril.value}/${fecha.value}/${tag.value}`, 'bitacoraAntifraudes.txt')
           }
         }
       }
-    }, 
-  },
+    }
+
+    return { buscar, todo, recibir_tramo_plaza, showMore, downloadApi, tags, token, tramo, plaza, carril, fecha, tag, listaNegra, value, formato, paginaAct, page, totalPaginas, currentPage, hasMorePages, modalLoading, }
+  }
+
 }
 </script>
 <style scoped>
