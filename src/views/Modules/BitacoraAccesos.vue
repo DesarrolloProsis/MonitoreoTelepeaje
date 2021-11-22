@@ -39,73 +39,47 @@ import FormTramoPlaza from '../../components/Form-tramoplaza.vue';
 import TablaAccesos from "../../components/Tabla-accesos.vue";
 import Navbar from "../../components/Navbar.vue";
 import Footer from "../../components/Footer-login";
+import { notify } from "@kyvg/vue3-notification";
 import FilesDownload from '../../components/Files-descargar.vue'
 import ServiceFiles from '../../Servicios/Files-Service'
 import Paginacion from "../../components/Paginacion.vue"
 import Spinner from '../../components/Spn.vue'
+import { ref } from 'vue'
 import axios from "axios";
 export default {
   name: "BitacoraAccesos",
   components: { TablaAccesos, Navbar, Footer, FilesDownload, Spinner, Paginacion, FormTramoPlaza },
-  data() {
-    return {
-      accesos:[],
-      nombre:null,
-      value: '',
-      formato:'',
-      modalLoading: false,
-      fecha:null,
-      page:1,
-      totalPaginas: 0,
-      currentPage: 1,
-      hasMorePages: true,
-      tramo:'',
-      plaza:''
-    };
-  },
-  methods: {
-    todos(){
-      this.modalLoading = true
-      this.accesos = []
-      this.nombre = null
-      this.fecha = null
-      axios.get(`${API}/HistoricoSesion/1/null/null/${this.plaza}`)
-      .then((result)=>{
-        this.modalLoading = false
-        this.totalPaginas = result.data.numberPages
-        this.currentPage = result.data.now
-        result.data.body.forEach((e)=>{
-          let obj = {
-            usuarioId: e.usuarioId,
-            nombreUsuario: e.nombreUsuario,
-            nombre: e.nombre,
-            apellidoP: e.apellidoPaterno,
-            apellidoM: e.apellidoMaterno,
-            rolId: e.rolId,
-            fecha_inicio: e.horaLogIn,
-            fecha_fin: e.horaLogOut,
-            rol: e.nombreRol
-          }
-          this.accesos.push(obj)
-        })
-      })
-    },
-    buscar(nombre, fecha, plaza){
+  setup() {
+    const accesos = ref([])
+    const nombre = ref(null)
+    
+    const formato = ref('')
+    const modalLoading = ref(false)
+    const fecha = ref(null)
+    const page = ref(1)
+    const totalPaginas = ref(0)
+    const currentPage = ref(1)
+    const hasMorePages = ref(true)
+    const tramo = ref('')
+    const plaza = ref('')
+    //Función que regresa la lista de accesos con filtro forzoso de plaza y con o sin nombre y/o fecha
+    function buscar(nombre, fecha, plaza){
       if(plaza == '' || plaza == null || plaza == undefined){
-        this.$notify({
+        notify({
           title:'No Hay Datos',
           text:'Se debe de seleccionar la plaza para realizar una busqueda',
           type: 'warn'
         });
       }else{
+        //Si solo seleccionamos plaza
         if(nombre == null && fecha == null){
-          this.accesos = []
-          this.modalLoading = true
-          axios.get(`${API}/HistoricoSesion/${this.page}/null/null/${plaza}`)
+          accesos.value = []
+          modalLoading.value = true
+          axios.get(`${API}/HistoricoSesion/${page.value}/null/null/${plaza}`)
           .then((result)=>{
-            this.totalPaginas = result.data.numberPages
-            this.currentPage = result.data.now
-            this.modalLoading = false
+            totalPaginas.value = result.data.numberPages
+            currentPage.value = result.data.now
+            modalLoading.value = false
             result.data.body.forEach((e)=>{
               let obj = {
                 usuarioId: e.usuarioId,
@@ -118,18 +92,18 @@ export default {
                 fecha_fin: e.horaLogOut,
                 rol: e.nombreRol
               }
-              this.accesos.push(obj)
+              accesos.value.push(obj)
             })
           })
-        }
+        }//Si solo seleccionamos el nombre
         if(nombre != null && fecha == null){
-          this.accesos = []
-          this.modalLoading = true
-          axios.get(`${API}/HistoricoSesion/${this.page}/${nombre}/null/${plaza}`)
+          accesos.value = []
+          modalLoading.value = true
+          axios.get(`${API}/HistoricoSesion/${page.value}/${nombre}/null/${plaza}`)
           .then((result)=>{
-            this.modalLoading = false
-            this.totalPaginas = result.data.numberPages
-            this.currentPage = result.data.now
+            modalLoading.value = false
+            totalPaginas.value = result.data.numberPages
+            currentPage.value = result.data.now
             result.data.body.forEach((e)=>{
               let obj = {
                 usuarioId: e.usuarioId,
@@ -142,20 +116,20 @@ export default {
                 fecha_fin: e.horaLogOut,
                 rol: e.nombreRol
               }
-              this.accesos.push(obj)
+              accesos.value.push(obj)
             })
           })
-        }
+        }//Si solo seleccionamos la fecha
         if(fecha != null && nombre == null){
           console.log('fecha');
-          this.accesos = []
-          this.modalLoading = true
-          axios.get(`${API}/HistoricoSesion/${this.page}/null/${fecha}/${plaza}`)
+          accesos.value = []
+          modalLoading.value = true
+          axios.get(`${API}/HistoricoSesion/${page.value}/null/${fecha}/${plaza}`)
           .then((result)=>{
             console.log(result.data);
-            this.modalLoading = false
-            this.totalPaginas = result.data.numberPages
-            this.currentPage = result.data.now
+            modalLoading.value = false
+            totalPaginas.value = result.data.numberPages
+            currentPage.value = result.data.now
             result.data.body.forEach((e)=>{
               let obj = {
                 usuarioId: e.usuarioId,
@@ -168,18 +142,18 @@ export default {
                 fecha_fin: e.horaLogOut,
                 rol: e.nombreRol
               }
-              this.accesos.push(obj)
+              accesos.value.push(obj)
             })
           })
-        }
+        }//Si seleccionamos fecha y nombre
         if(fecha != null && nombre != null){
-          this.accesos = []
-          this.modalLoading = true
-          axios.get(`${API}/HistoricoSesion/${this.page}/${nombre}/${fecha}/${plaza}`)
+          accesos.value = []
+          modalLoading.value = true
+          axios.get(`${API}/HistoricoSesion/${page.value}/${nombre}/${fecha}/${plaza}`)
           .then((result)=>{
-            this.modalLoading = false
-            this.totalPaginas = result.data.numberPages
-            this.currentPage = result.data.now
+            modalLoading.value = false
+            totalPaginas.value = result.data.numberPages
+            currentPage.value = result.data.now
             result.data.body.forEach((e)=>{
               let obj = {
                 usuarioId: e.usuarioId,
@@ -192,21 +166,22 @@ export default {
                 fecha_fin: e.horaLogOut,
                 rol: e.nombreRol
               }
-              this.accesos.push(obj)
+              accesos.value.push(obj)
             })
           })
         }
       }
-    },
-    showMore(page){
-      let name = this.nombre
-      let date = this.fecha
-      let plaza = this.plaza
-      axios.get(`${API}/HistoricoSesion/${page}/${name}/${date}/${plaza}`)
+    }//Funcion que regresa la lista de accesos de la plaza seleccionada y limpia los caomos de nombre y fecha
+    function todos(){
+      modalLoading.value = true
+      accesos.value = []
+      nombre.value = null
+      fecha.value = null
+      axios.get(`${API}/HistoricoSesion/1/null/null/${plaza.value}`)
       .then((result)=>{
-        this.totalPaginas = result.data.numberPages
-        this.currentPage = result.data.now
-        this.modalLoading = false
+        modalLoading.value = false
+        totalPaginas.value = result.data.numberPages
+        currentPage.value = result.data.now
         result.data.body.forEach((e)=>{
           let obj = {
             usuarioId: e.usuarioId,
@@ -219,57 +194,98 @@ export default {
             fecha_fin: e.horaLogOut,
             rol: e.nombreRol
           }
-          this.accesos.push(obj)
+          accesos.value.push(obj)
         })
       })
-    },
-    downloadApi(formato){
-      if(this.plaza == '' || this.plaza == null || this.plaza == undefined){
-        this.$notify({
+    }//Funcion para cambiar de página 
+    function showMore(page){
+      let name = nombre.value
+      let date = fecha.value
+      let plaza = plaza.value
+      axios.get(`${API}/HistoricoSesion/${page}/${name}/${date}/${plaza}`)
+      .then((result)=>{
+        totalPaginas.value = result.data.numberPages
+        currentPage.value = result.data.now
+        modalLoading.value = false
+        result.data.body.forEach((e)=>{
+          let obj = {
+            usuarioId: e.usuarioId,
+            nombreUsuario: e.nombreUsuario,
+            nombre: e.nombre,
+            apellidoP: e.apellidoPaterno,
+            apellidoM: e.apellidoMaterno,
+            rolId: e.rolId,
+            fecha_inicio: e.horaLogIn,
+            fecha_fin: e.horaLogOut,
+            rol: e.nombreRol
+          }
+          accesos.value.push(obj)
+        })
+      })
+    }//Función para descargar la lista filtrada en los 3 formatos
+    function downloadApi(formato){
+      if(plaza.value == '' || plaza.value == null || plaza.value == undefined){
+        notify({
           title:'No Hay Datos',
           text:'Se debe de seleccionar la plaza para exportar algún archivo',
           type: 'warn'
         });
       }else{
-        if(this.nombre != '' && (this.fehca == '' || this.fehca == null || this.fehca == undefined)){
+        //Si seleccionas nombre
+        if((nombre.value != '' || nombre.value != null || nombre.value != undefined) && (fecha.value == '' || fecha.value == null || fecha.value == undefined)){
+          console.log('nombre');
           if (formato == "csv") {
-            ServiceFiles.xml_hhtp_request(`${API}/UsuarioMonitoreo/Download/Csv/${this.plaza}/${this.nombre}/null`, 'bitacoraAcceso.csv')
+            ServiceFiles.xml_hhtp_request(`${API}/UsuarioMonitoreo/Download/Csv/${plaza.value}/${nombre.value}/null`, 'bitacoraAcceso.csv')
           } 
           else if (formato == "excel") {        
-            ServiceFiles.xml_hhtp_request(`${API}/UsuarioMonitoreo/Download/Excel/${this.plaza}/${this.nombre}/null`, 'bitacoraAcceso.xlsx')    
+            ServiceFiles.xml_hhtp_request(`${API}/UsuarioMonitoreo/Download/Excel/${plaza.value}/${nombre.value}/null`, 'bitacoraAcceso.xlsx')    
           } 
           else if (formato == "txt") {
-            ServiceFiles.xml_hhtp_request(`${API}/UsuarioMonitoreo/Download/txt/${this.plaza}/${this.nombre}/null`, 'bitacoraAcceso.txt')
+            ServiceFiles.xml_hhtp_request(`${API}/UsuarioMonitoreo/Download/txt/${plaza.value}/${nombre.value}/null`, 'bitacoraAcceso.txt')
           }
-        }else if(this.fecha != '' && (this.nombre == '' || this.nombre == null || this.nombre == undefined)){
+        }//Si seleccionamos fecha
+        else if((fecha.value != '' || fecha.value != null || fecha.value != undefined) && (nombre.value == '' || nombre.value == null || nombre.value == undefined)){
+          console.log('fecha');
           if (formato == "csv") {
-            ServiceFiles.xml_hhtp_request(`${API}/UsuarioMonitoreo/Download/Csv/${this.plaza}/null/${this.fehca}`, 'bitacoraAcceso.csv')
+            ServiceFiles.xml_hhtp_request(`${API}/UsuarioMonitoreo/Download/Csv/${plaza.value}/null/${fecha.value}`, 'bitacoraAcceso.csv')
           } 
           else if (formato == "excel") {        
-            ServiceFiles.xml_hhtp_request(`${API}/UsuarioMonitoreo/Download/Excel/${this.plaza}/null/${this.fehca}`, 'bitacoraAcceso.xlsx')    
+            ServiceFiles.xml_hhtp_request(`${API}/UsuarioMonitoreo/Download/Excel/${plaza.value}/null/${fecha.value}`, 'bitacoraAcceso.xlsx')    
           } 
           else if (formato == "txt") {
-            ServiceFiles.xml_hhtp_request(`${API}/UsuarioMonitoreo/Download/txt/${this.plaza}/null/${this.fehca}`, 'bitacoraAcceso.txt')
+            ServiceFiles.xml_hhtp_request(`${API}/UsuarioMonitoreo/Download/txt/${plaza.value}/null/${fecha.value}`, 'bitacoraAcceso.txt')
           }
-        }else{
+        }//Si seleccionamos todos los filtros
+        else{
+          console.log('else');
           if (formato == "csv") {
-            ServiceFiles.xml_hhtp_request(`${API}/UsuarioMonitoreo/Download/Csv/${this.plaza}/${this.nombre}/${this.fehca}`, 'bitacoraAcceso.csv')
+            ServiceFiles.xml_hhtp_request(`${API}/UsuarioMonitoreo/Download/Csv/${plaza.value}/${nombre.value}/${fecha.value}`, 'bitacoraAcceso.csv')
           } 
           else if (formato == "excel") {        
-            ServiceFiles.xml_hhtp_request(`${API}/UsuarioMonitoreo/Download/Excel/${this.plaza}/${this.nombre}/${this.fehca}`, 'bitacoraAcceso.xlsx')    
+            ServiceFiles.xml_hhtp_request(`${API}/UsuarioMonitoreo/Download/Excel/${plaza.value}/${nombre.value}/${fecha.value}`, 'bitacoraAcceso.xlsx')    
           } 
           else if (formato == "txt") {
-            ServiceFiles.xml_hhtp_request(`${API}/UsuarioMonitoreo/Download/txt/${this.plaza}/${this.nombre}/${this.fehca}`, 'bitacoraAcceso.txt')
+            ServiceFiles.xml_hhtp_request(`${API}/UsuarioMonitoreo/Download/txt/${plaza.value}/${nombre.value}/${fecha.value}`, 'bitacoraAcceso.txt')
           }
         }     
       }
-    }, 
-    recibir_tramo_plaza(value){
-      this.tramo = value.tramo
-      this.plaza = value.plaza
-    },
+    }//Funcion que regresa el id de la plaza y el tramo
+    function recibir_tramo_plaza(value){
+      tramo.value = value.tramo
+      plaza.value = value.plaza
+    }
+
+    return { buscar, todos, showMore, downloadApi, recibir_tramo_plaza, accesos, nombre, formato, modalLoading, fecha, page, totalPaginas, currentPage, hasMorePages, tramo, plaza}
+  }
+}
+/*
+  methods: {
+    ,
+    ,
+    , 
+    
   },
-};
+}; */
 </script>
 <style scoped>
 .pb-100 {
