@@ -27,7 +27,7 @@
       </div>
     </div>
     <div class="mb-6">
-      <button @click="abrirModal(plaza)" :class="{'hidden':!habilitar}"  class="w-full botonIconBuscar justify-center mt-3 -mb-8">Agregar Usuario</button>
+      <button @click="abrirModal" class="w-full botonIconBuscar justify-center mt-3 -mb-8">Agregar Usuario</button>
     </div>
     <TablaListaUsuarios :dataUsuarios="perfiles" :plazaS="plaza" />
     <div class="">
@@ -79,9 +79,11 @@ import Footer from "../../components/Footer-login";
 import Multiselect from '@vueform/multiselect';
 import Servicio from '../../Servicios/Token-Services';
 import FilesDownload from '../../components/Files-descargar.vue'
+import { notify } from "@kyvg/vue3-notification";
 import ServiceFiles from '../../Servicios/Files-Service'
 import Spinner from '../../components/Spn.vue'
 import axios from "axios";
+import { reactive, ref } from 'vue'
 export default {
   components: {
     TablaListaUsuarios,
@@ -93,85 +95,39 @@ export default {
     FormTramoPlaza,
     
   },
-  data() {
-    return {
-      perfiles: [],
-      token: "",
-      paginaAct: 1,
-      maxPages: 1,
-      nombre: '',
-      estatus:0,
-      modalAgregar: false,
-      usuario:{
-        nombre: '',
-        apellidoP:'',
-        apellidoM:'',
-        pass:'',
-        plazas:[],
-        rol:'',
-        correo:''
-      },
-      listaPlazas:[],
-      plazas:[{ value: '', label: '' }],
-      verdad:false,
-      tramoSeleccionado: '',
-      rol_Filtrado:[],
-      roles:[],
-      modalLoading:false,
-      //addEmi
-      formato: '',
-      tramo:'',
-      plaza:'',
-      habilitar: false
-    };
-  },
-    /*async beforeMount() {
-    let rol = await axios.get(`${API}/CatalogoRoles/null/null`)
-    this.rol_Filtrado = rol.data.body
-    let proxy = new Proxy(this.rol_Filtrado,{
-        get : function(target, property){
-          return property === 'length' ?
-            target.length :
-            target[property];
-        }
-      });
-    for(let i= 0; i<proxy.length; i++){
-      this.roles.push({'value':proxy[i].rolId, 'label':proxy[i].nombreRol}) 
+  setup() {
+    const  perfiles = ref([])
+    const  token = ref('')
+    const  paginaAct = ref(1)
+    const  maxPages = ref(1)
+    const  nombre = ref('')
+    const  estatus = ref(0)
+    const  modalAgregar = ref(false)
+    const  listaPlazas = ref([])
+    const  plazas = ref([{ value: '', label: '' }])
+    const  verdad = ref (false)
+    const  tramoSeleccionado = ref('')
+    const  rol_Filtrado = ref([])
+    const  roles = ref ([])
+    const  modalLoading = ref(false)
+    const errorMessage = ref('')
+    //addEmi
+    const  formato = ref('')
+    const  tramo = ref('')
+    const  plaza = ref('')
+    const  habilitar = ref(false)
+    
+    const usuario = reactive ({})
+    
+    function recibir_tramo_plaza(value){
+      tramo.value = value.tramo
+      plaza.value = value.plaza
     }
-    if (Servicio.getCookie("Token")) {
-      let config = {
-        headers: {
-          Authorization: "Bearer " + Servicio.getCookie("Token"),
-        },
-      };
-      this.token =  Servicio.getCookie("Token");
-
-      /*axios.get(`${API}/Usuario?Page=${this.paginaAct}&Rows=10`,config)
-        .then((result) => {
-          console.log(result.data);
-          this.maxPages = result.data.totalPages;
-          result.data.page.forEach((e) => {
-            let obj = {
-              id: e.usuarioId,
-              usuario: e.nombreUsuario,
-              nombre: e.nombre,
-              apellido: e.apellidoPaterno,
-              rol: e.rol,
-              rolId: e.idRol,
-              plazas: e.plazas,
-              estatus: e.estatus,
-            };
-            this.perfiles.push(obj);
-          });
-        });
-    }
-  },*/
-  methods: {
-    abrirModal: async function (plaza){
-      this.modalAgregar = true
-      let rol = await axios.get(`${API}/CatalogoRoles/null/null/${plaza}`)
-      this.rol_Filtrado = rol.data.body
-      let proxy = new Proxy(this.rol_Filtrado,{
+    const abrirModal = async () => {
+      modalAgregar.value = true
+      let rol = await axios.get(`${API}/CatalogoRoles/null/null/${plaza.value}`)
+      rol_Filtrado.value = rol.data.body
+      let proxy = new Proxy(rol_Filtrado.value,{
           get : function(target, property){
             return property === 'length' ?
               target.length :
@@ -179,69 +135,31 @@ export default {
           }
         });
       for(let i= 0; i<proxy.length; i++){
-        this.roles.push({'value':proxy[i].rolId, 'label':proxy[i].nombreRol}) 
-      }
-    },
-    guardar: function (){
-      if(Servicio.getCookie("Token")){
-        let config = {
-          headers: {
-            'Authorization': 'Bearer ' + Servicio.getCookie("Token")
-          }
-        } 
-        const data = {
-          "password": this.usuario.pass,
-          "nombre": this.usuario.nombre,
-          "apellidoPaterno": this.usuario.apellidoP,
-          "apellidoMaterno": this.usuario.apellidoM,
-          "idrol": this.usuario.rol,
-        } 
-        console.log(data);
-        if(this.usuario.nombre != '' && this.usuario.apellidoP != '' && this.usuario.apellidoM != '' && this.usuario.pass != '' ){
-          let userName = this.usuario.nombre.slice(0,3)+this.usuario.apellidoP
-          this.modalLoading = true
-          this.modalAgregar = false
-          axios.post(`${API}/Usuario`,data,config)
-            .then((result)=>{
-              console.log(result);
-              setTimeout(() => {
-                //this.$router.push("/configuracion");
-                this.modalLoading = false
-                this.$notify({
-                  title:'Nuevo Usuario',
-                  text:`Se creo correctamente el nuevo usuario ${userName}`,
-                  duration: 20000,
-                  closeonclick:true,
-                  type: 'success'
-                });
-              }, 1000);
-              this.errorMessage = ""
-            })
-            .catch(() =>{
-              this.errorMessage = "Hubo un error al crear el usuario, intentalo nuevamente."
-            })
-        }else{
-          this.$notify({
-                  title:'Nuevo Usuario',
-                  text:`Todos los campos son obligatorios`,
-                  duration: 20000,
-                  closeonclick:true,
-                  type: 'warn'
-                });
-        }
-      }
-    },
-    anterior: function () {
+        roles.value.push({'value':proxy[i].rolId, 'label':proxy[i].nombreRol}) 
+      } 
+    }
+    function cancelar (){
+      usuario.pass = '',
+      usuario.nombre = '',
+      usuario.apellidoP = '',
+      usuario.apellidoM = '',
+      tramoSeleccionado.value = ''
+      plazas.value = []
+    }
+    function todos (){
+      token.value =  Servicio.getCookie("Token");
+      nombre.value = ''
+      estatus.value = 0
       let config = {
         headers: {
-          Authorization: "Bearer " + this.token,
+          Authorization: "Bearer " + token.value,
         },
       };
-      this.paginaAct = this.paginaAct - 1;
-      axios.get(`${API}/Usuario?Page=${this.paginaAct}&Rows=10&plaza=${this.plaza}`,config)
+      axios.get(`${API}/Usuario?Page=${paginaAct.value}&Rows=10&plaza=${plaza.value}`,config)
         .then((res) => {
-          this.perfiles = []
-          this.maxPages = res.data.totalPages;
+          perfiles.value = []
+          habilitar.value = true
+          maxPages.value = res.data.totalPages;
           res.data.page.forEach((e) => {
             let obj = {
               id: e.usuarioId,
@@ -252,65 +170,13 @@ export default {
               plazas: e.plazas,
               estatus: e.estatus,
             };
-            this.perfiles.push(obj);
+            perfiles.value.push(obj);
           });
         });
-    },
-    siguiente: function () {
-      let config = {
-        headers: {
-          Authorization: "Bearer " + this.token,
-        },
-      };
-      this.paginaAct = this.paginaAct + 1;
-      axios.get(`${API}/Usuario?Page=${this.paginaAct}&Rows=10&plaza=${this.plaza}`,config)
-        .then((res) => {
-          this.perfiles = []
-          this.maxPages = res.data.totalPages;
-          res.data.page.forEach((e) => {
-            let obj = {
-              id: e.usuarioId,
-              usuario: e.nombreUsuario,
-              nombre: e.nombre,
-              apellido: e.apellidoPaterno,
-              rol: e.rol,
-              plazas: e.plazas,
-              estatus: e.estatus,
-            };
-            this.perfiles.push(obj);
-          });
-        });
-    },
-    todos: function (){
-      this.nombre = ''
-      this.estatus = 0
-      let config = {
-        headers: {
-          Authorization: "Bearer " + this.token,
-        },
-      };
-      axios.get(`${API}/Usuario?Page=${this.paginaAct}&Rows=10&plaza=${this.plaza}`,config)
-        .then((res) => {
-          this.perfiles = []
-          this.habilitar = true
-          this.maxPages = res.data.totalPages;
-          res.data.page.forEach((e) => {
-            let obj = {
-              id: e.usuarioId,
-              usuario: e.nombreUsuario,
-              nombre: e.nombre,
-              apellido: e.apellidoPaterno,
-              rol: e.rol,
-              plazas: e.plazas,
-              estatus: e.estatus,
-            };
-            this.perfiles.push(obj);
-          });
-        });
-    },
-    buscar: function (nombre,estatus, plaza){
+    }
+    function buscar (nombre,estatus, plaza){
       if(plaza == '' || plaza == null || plaza == undefined){
-        this.$notify({
+        notify({
           title:'Sin información',
           text:`Se debe de seleccionar la plaza para hacer una busqueda`,
           duration: 2000,
@@ -318,20 +184,21 @@ export default {
         });
       }
       else{
-        this.token =  Servicio.getCookie("Token");
+        token.value =  Servicio.getCookie("Token");
         if((nombre == '') && (estatus == 0) && (plaza != '' || plaza != null || plaza != undefined)){
           console.log('plaza');
           let config = {
             headers: {
-              Authorization: "Bearer " + this.token,
+              Authorization: "Bearer " + token.value,
             },
           };
-          axios.get(`${API}/Usuario?Page=${this.paginaAct}&Rows=10&plaza=${plaza}`,config)
+          console.log(config);
+          axios.get(`${API}/Usuario?Page=${paginaAct.value}&Rows=10&plaza=${plaza}`,config)
           .then((res) => {
             console.log(res);
-            this.perfiles = []
-            this.habilitar = true
-            this.maxPages = res.data.totalPages;
+            perfiles.value = []
+            habilitar.value = true
+            maxPages.value = res.data.totalPages;
             res.data.page.forEach((e) => {
               let obj = {
                 id: e.usuarioId,
@@ -342,20 +209,19 @@ export default {
                 plazas: e.plazas,
                 estatus: e.estatus,
               };
-              this.perfiles.push(obj);
+              perfiles.value.push(obj);
             });
           });
-        }
-        if((nombre != '') && (plaza != '' || plaza != null || plaza != undefined)){
+        }if((nombre != '') && (plaza != '' || plaza != null || plaza != undefined)){
           let config = {
             headers: {
-              Authorization: "Bearer " + this.token,
+              Authorization: "Bearer " + token.value,
             },
           };
-          axios.get(`${API}/Usuario?Page=${this.paginaAct}&Rows=10&NameFilter=${this.nombre}&plaza=${plaza}`,config)
+          axios.get(`${API}/Usuario?Page=${paginaAct.value}&Rows=10&NameFilter=${nombre.value}&plaza=${plaza}`,config)
           .then((res) => {
-            this.perfiles = []
-            this.maxPages = res.data.totalPages;
+            perfiles.value = []
+            maxPages.value = res.data.totalPages;
             res.data.page.forEach((e) => {
               let obj = {
                 id: e.usuarioId,
@@ -366,22 +232,22 @@ export default {
                 plazas: e.plazas,
                 estatus: e.estatus,
               };
-              this.perfiles.push(obj);
+              perfiles.value.push(obj);
             });
           });
         }if((estatus != 0) && (plaza != '' || plaza != null || plaza != undefined)){
           console.log('estatus');
-          this.perfiles = []
-          if(this.estatus == 100){
+          perfiles.value = []
+          if(estatus.value == 100){
             let config = {
             headers: {
-              Authorization: "Bearer " + this.token,
+              Authorization: "Bearer " + token.value,
             },
             };
-            axios.get(`${API}/Usuario?Page=${this.paginaAct}&Rows=10&EstatusFilter=false&plaza=${plaza}`,config)
+            axios.get(`${API}/Usuario?Page=${paginaAct.value}&Rows=10&EstatusFilter=false&plaza=${plaza}`,config)
             .then((res) => {
               if((res.data.page.lenght > 0) && (res.status == 200)){
-                this.maxPages = res.data.totalPages;
+                maxPages.value = res.data.totalPages;
                 res.data.page.forEach((e) => {
                   let obj = {
                 id: e.usuarioId,
@@ -392,20 +258,20 @@ export default {
                 plazas: e.plazas,
                 estatus: e.estatus,
                   };
-                  this.perfiles.push(obj);
+                  perfiles.value.push(obj);
                 });
               }
             });
-          }if(this.estatus == 200){
+          }if(estatus.value == 200){
             let config = {
             headers: {
-              Authorization: "Bearer " + this.token,
+              Authorization: "Bearer " + token.value,
             },
             };
-            axios.get(`${API}/Usuario?Page=${this.paginaAct}&Rows=10&EstatusFilter=true&plaza=${plaza}`,config)
+            axios.get(`${API}/Usuario?Page=${paginaAct.value}&Rows=10&EstatusFilter=true&plaza=${plaza}`,config)
             .then((res) => {
-              this.perfiles = []
-              this.maxPages = res.data.totalPages;
+              perfiles.value = []
+              maxPages.value = res.data.totalPages;
               res.data.page.forEach((e) => {
                 let obj = {
                 id: e.usuarioId,
@@ -416,25 +282,115 @@ export default {
                 plazas: e.plazas,
                 estatus: e.estatus,
                 };
-                this.perfiles.push(obj);
+                perfiles.value.push(obj);
               });
             });
           }
         }
       }
-    },
-    cancelar: function (){
-      this.usuario.nombre = '' 
-      this.usuario.apellidoP = '' 
-      this.usuario.apellidoM = ''
-      this.usuario.pass = '' 
-      this.usuario.rol = ''
-      this.usuario.correo = ''  
-      this.tramoSeleccionado = ''
-      this.plazas = []
-    },
-    downloadApi(formato){
-      if((this.plaza == '' || this.plaza == null || this.plaza == undefined) && ( this.estatus == '' || this.estatus == null || this.estatus == undefined)){
+    }
+    function guardar (){
+      if(Servicio.getCookie("Token")){
+        let config = {
+          headers: {
+            'Authorization': 'Bearer ' + Servicio.getCookie("Token")
+          }
+        }
+        const data = {
+          "password": usuario.pass,
+          "nombre": usuario.nombre,
+          "apellidoPaterno": usuario.apellidoP,
+          "apellidoMaterno": usuario.apellidoM,
+          "idrol": usuario.rol,
+        } 
+        console.log(data);
+        if(usuario.nombre != '' && usuario.apellidoP != '' && usuario.apellidoM != '' && usuario.pass != '' ){
+          let userName = usuario.nombre.slice(0,3)+usuario.apellidoP
+          console.log(userName);
+          modalLoading.value = true
+          modalAgregar.value = false
+          axios.post(`${API}/Usuario`,data,config)
+            .then((result)=>{
+              console.log(result);
+              setTimeout(() => {
+                //this.$router.push("/configuracion");
+                modalLoading.value = false
+                notify({
+                  title:'Nuevo Usuario',
+                  text:`Se creo correctamente el nuevo usuario ${userName}`,
+                  duration: 20000,
+                  closeonclick:true,
+                  type: 'success'
+                });
+              }, 1000);
+              errorMessage.value = ""
+            })
+            .catch(() =>{
+              errorMessage.value = "Hubo un error al crear el usuario, intentalo nuevamente."
+            })
+        }else{
+          notify({
+            title:'Nuevo Usuario',
+            text:`Todos los campos son obligatorios`,
+            duration: 20000,
+            closeonclick:true,
+            type: 'warn'
+          });
+        }
+      }
+    }
+    function anterior () {
+      let config = {
+        headers: {
+          Authorization: "Bearer " + token.value,
+        },
+      };
+      paginaAct.value = paginaAct.value - 1;
+      axios.get(`${API}/Usuario?Page=${paginaAct.value}&Rows=10&plaza=${plaza.value}`,config)
+        .then((res) => {
+          perfiles.value = []
+          maxPages.value = res.data.totalPages;
+          res.data.page.forEach((e) => {
+            let obj = {
+              id: e.usuarioId,
+              usuario: e.nombreUsuario,
+              nombre: e.nombre,
+              apellido: e.apellidoPaterno,
+              rol: e.rol,
+              plazas: e.plazas,
+              estatus: e.estatus,
+            };
+            perfiles.value.push(obj);
+          });
+        });
+    }
+    function siguiente () {
+      let config = {
+        headers: {
+          Authorization: "Bearer " + token.value,
+        },
+      };
+      paginaAct.value = paginaAct.value + 1;
+      axios.get(`${API}/Usuario?Page=${paginaAct.value}&Rows=10&plaza=${plaza.value}`,config)
+        .then((res) => {
+          perfiles.value = []
+          maxPages.value = res.data.totalPages;
+          res.data.page.forEach((e) => {
+            let obj = {
+              id: e.usuarioId,
+              usuario: e.nombreUsuario,
+              nombre: e.nombre,
+              apellido: e.apellidoPaterno,
+              rol: e.rol,
+              plazas: e.plazas,
+              estatus: e.estatus,
+            };
+            perfiles.value.push(obj);
+          });
+        });
+    }
+    function downloadApi (formato){
+      if((plaza.value == '' || plaza.value == null || plaza.value == undefined) && ( estatus.value == '' || estatus.value == null || estatus.value == undefined)){
         this.$notify({
           title:'Sin información',
           text:`Se debe de seleccionar la plaza para hacer una busqueda`,
@@ -442,25 +398,23 @@ export default {
           type: 'warn'
         });
       }else{
-        if((this.plaza != '' || this.plaza != null || this.plaza != undefined) && (this.nombre == '' || this.nombre == null || this.nombre == undefined) && (this.estatus == '' || this.estatus == null || this.estatus == undefined)){
+        if((plaza.value != '' || plaza.value != null || plaza.value != undefined) && (nombre.value == '' || nombre.value == null || nombre.value == undefined) && (estatus.value == '' || estatus.value == null || estatus.value == undefined)){
           if (formato == "csv") {
-          ServiceFiles.xml_hhtp_request(`${API}/Usuario/Download/Csv/${this.plaza}/null/null`, 'listaUsuarios.csv')
+          ServiceFiles.xml_hhtp_request(`${API}/Usuario/Download/Csv/${plaza.value}/null/null`, 'listaUsuarios.csv')
           } 
           else if (formato == "excel") {        
-            ServiceFiles.xml_hhtp_request(`${API}/Usuario/Download/Excel/${this.plaza}/null/null`, 'listaUsuarios.xlsx')    
+            ServiceFiles.xml_hhtp_request(`${API}/Usuario/Download/Excel/${plaza.value}/null/null`, 'listaUsuarios.xlsx')    
           } 
           else if (formato == "txt") {
-            ServiceFiles.xml_hhtp_request(`${API}/Usuario/Download/txt/${this.plaza}/null/null`, 'listaUsuarios.txt')
+            ServiceFiles.xml_hhtp_request(`${API}/Usuario/Download/txt/${plaza.value}/null/null`, 'listaUsuarios.txt')
           }
         }
       }      
-    },   
-    recibir_tramo_plaza(value){
-      this.tramo = value.tramo
-      this.plaza = value.plaza
-    },   
+    }
+  
+  return {recibir_tramo_plaza, abrirModal, cancelar, todos, buscar, guardar, anterior, siguiente, downloadApi, usuario, perfiles, token, paginaAct, maxPages, nombre, estatus, modalAgregar, listaPlazas, plazas, verdad, tramoSeleccionado, rol_Filtrado, roles, modalLoading, formato, tramo, plaza, habilitar}
   },
-};
+}
 </script>
 <style src="@vueform/multiselect/themes/default.css"></style>
 <style scoped>
