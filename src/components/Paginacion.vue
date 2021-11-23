@@ -100,10 +100,10 @@ export default {
         required: true
     },
 
-    total: {
+/*     total: {
         type: Number,
         required: true
-    },
+    }, */
 
     currentPage: {
         type: Number,

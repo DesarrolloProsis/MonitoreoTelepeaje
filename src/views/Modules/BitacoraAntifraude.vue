@@ -1,20 +1,22 @@
 <template>
   <Navbar/>
-  <div class="container mx-auto px-0 pb-100">
+  <div class="container mx-auto px-0 -mb-24">
     <h1 class="title-center font-titulo font-bold pb-4">Bitácora de Tags en Antifraude</h1>
-    <div class="flex flex-wrap bg-blue rounded-lg">
-      <div class="flex-none filter-style mt-1">
-        <FormTramoPlaza @cambiar-tramo-plaza="recibir_tramo_plaza" :carrilesForm="true" :tipo="'Antifraude'"/>
-      </div>
-      <div class="flex-none filter-style mt-1 -mx-1">
-        Fecha:<input v-model="fecha" type="date" class="rounded"/>
-      </div>
-      <div class="flex-none filter-style mt-1 mx-1">
-        Tag: <input v-model="tag" class="rounded text-center  text-white" placeholder="IMDM000000" type="text" />
-      </div>
-      <div class="flex-none filter-style">
-        <button @click="buscar(plaza,carril,fecha,tag)" class="btn-buscar">Buscar</button>
-        <button @click="todo(plaza)" class="btn-buscar ml-2 mr-1">Limpiar</button>
+    <div class="flex flex-wrap -mt-4 bg-blue rounded-lg">
+      <div class="flex">
+        <div class="flex-none filter-style mt-1">
+          <FormTramoPlaza @cambiar-tramo-plaza="recibir_tramo_plaza" :carrilesForm="true" :tipo="'Antifraude'"/>
+        </div>
+        <div class="flex-none filter-style mt-1 -mx-1">
+          Fecha:<input v-model="fecha" type="date" class="rounded"/>
+        </div>
+        <div class="flex-none filter-style mt-1 mx-1">
+          Tag: <input v-model="tag" class="rounded text-center  text-white" placeholder="IMDM000000" type="text" />
+        </div>
+        <div class="flex-none filter-style">
+          <button @click="buscar(plaza,carril,fecha,tag)" class="btn-buscar">Buscar</button>
+          <button @click="todo(plaza)" class="btn-buscar ml-2 mr-1">Todos</button>
+        </div>
       </div>
       <div class="flex-1 -mt-2">
         <FilesDownload @download-api="downloadApi"/>
@@ -24,7 +26,7 @@
       <TablaAntifraude :dataAntifraude="listaNegra"/>
     </div>
     <div class="mt-20">
-      <Paginacion :total-pages="totalPaginas" :total="100" :current-page="currentPage" :has-more-pages="hasMorePages" @pagechanged="showMore"/>
+      <Paginacion :total-pages="totalPaginas" :current-page="currentPage" :has-more-pages="hasMorePages" @pagechanged="showMore"/>
     </div>
   </div>
   <!-- MODAL CARGANDO -->
@@ -64,6 +66,7 @@ export default {
     const currentPage = ref(1)
     const hasMorePages = ref(true)
     const modalLoading = ref(false)
+    const numberResponse = ref(10)
     //Función para buscar los tag
     function buscar(plaza,carril,fecha,tag){
       listaNegra.value = []
@@ -76,12 +79,14 @@ export default {
       }else{
         page.value = 1
         modalLoading.value = true
-        if((carril == '' || carril == undefined) && (tag == '' || tag == undefined)){
+        if((carril == '' || carril == undefined || carril == null) && (tag == '' || tag == undefined || tag == null) && (fecha == '' || fecha == undefined || fecha == null)){
           let carrilif = null
           let tag = null
           listaNegra.value = []
-          axios.get(`${API}/ListaNegra/Paginacion/${plaza}/${page.value}/${carrilif}/${fecha}/${tag}`)
+          //axios.get(`${API}/ListaNegra/Paginacion/${plaza}/${page.value}/${carrilif}/${fecha}/${tag}`)
+          axios.get(`${API}/ListaNegra/PaginacionCompleta/${plaza}/${carrilif}/${fecha}/${tag}/${page.value}/${numberResponse.value}`)
           .then((result)=>{
+            console.log(result);
             if((result.data.status == 'Ok') && (result.data.body.length > 0)){
               modalLoading.value = false
               totalPaginas.value = result.data.numberPages
@@ -107,10 +112,11 @@ export default {
               });
             }
           })
-        }else if((tag != '' || tag != undefined) && (carril == '' || carril == undefined)){
+        }else if((tag != '' || tag != undefined) && (carril == '' || carril == undefined || carril == null) && (fecha == '' || fecha == undefined || fecha == null)){
           listaNegra.value = []
           let carrilelseif = null
-          axios.get(`${API}/ListaNegra/Paginacion/${plaza}/${page.value}/${carrilelseif}/${fecha}/${tag}`)
+          //axios.get(`${API}/ListaNegra/Paginacion/${plaza}/${page.value}/${carrilelseif}/${fecha}/${tag}`)
+          axios.get(`${API}/ListaNegra/PaginacionCompleta/${plaza}/${carrilelseif}/${fecha}/${tag}/${page.value}/${numberResponse.value}`)
           .then((result)=>{
             if((result.data.status == 'Ok') && (result.data.body.length > 0)){
               modalLoading.value = false
@@ -137,10 +143,12 @@ export default {
               });
             }
           })
-        }else if((carril != '' || carril != undefined) && (tag == '' || tag == undefined)){
+        }else if((carril != '' || carril != undefined) && (tag == '' || tag == undefined || tag == null) && (fecha == '' || fecha == undefined || fecha == null)){
+          console.log('carril');
           listaNegra.value = []
           let tag = null
-          axios.get(`${API}/ListaNegra/Paginacion/${plaza}/${page.value}/${carril}/${fecha}/${tag}`)
+          //axios.get(`${API}/ListaNegra/Paginacion/${plaza}/${page.value}/${carril}/${fecha}/${tag}`)
+          axios.get(`${API}/ListaNegra/PaginacionCompleta/${plaza}/${carril}/${fecha}/${tag}/${page.value}/${numberResponse.value}`)
           .then((result)=>{
             console.log(result.data);
             if((result.data.status == 'Ok') && (result.data.body.length > 0)){
@@ -169,7 +177,8 @@ export default {
             }
           })
         }else{
-          axios.get(`${API}/ListaNegra/Paginacion/${plaza}/${page.value}/${carril}/${fecha}/${tag}`)
+          //axios.get(`${API}/ListaNegra/Paginacion/${plaza}/${page.value}/${carril}/${fecha}/${tag}`)
+          axios.get(`${API}/ListaNegra/PaginacionCompleta/${plaza}/${carril}/${fecha}/${tag}/${page.value}/${numberResponse.value}`)
           .then((result)=>{
             if((result.data.status == 'Ok') && (result.data.body.length > 0)){
               modalLoading.value = false
@@ -240,14 +249,11 @@ export default {
     //Función para cambiar de página con o sin filtros
     function showMore(page){
       listaNegra.value = []
-      let plaza = plaza.value
-      let fecha = fecha.value;
-      let tag = tag.value
-      if(carril.value == '' || carril.value == undefined){
-        var datoCarril = null
-        axios.get(`${API}/ListaNegra/Paginacion/${plaza}/${page}/${datoCarril}/${fecha}/${tag}`)
+      if((carril.value == '' || carril.value == undefined || carril.value == null) && (fecha.value == '' || fecha.value == undefined || fecha.value == null) && (tag.value == '' || tag.value == undefined || tag.value ==  null)){
+        //var datoCarril = null
+        //axios.get(`${API}/ListaNegra/Paginacion/${plaza}/${page}/${datoCarril}/${fecha}/${tag}`)
+        axios.get(`${API}/ListaNegra/PaginacionCompleta/${plaza.value}/null/null/null/${page}/${numberResponse.value}`)
         .then((result)=>{
-          console.log(result.data);
           totalPaginas.value = result.data.numberPages
           currentPage.value = result.data.now
           result.data.body.forEach((e)=>{
@@ -261,8 +267,11 @@ export default {
             listaNegra.value.push(obj)
           })
         })
-      }else{
-        axios.get(`${API}/ListaNegra/Paginacion/${plaza}/${page}/${this.carril}/${fecha}/${tag}`)
+      }
+      else{
+        console.log('else');
+        //axios.get(`${API}/ListaNegra/Paginacion/${plaza}/${page}/${this.carril}/${fecha}/${tag}`)
+        axios.get(`${API}/ListaNegra/PaginacionCompleta/${plaza.value}/${carril.value}/${fecha.value}/${tag.value}/${page}/${numberResponse.value}`)
         .then((result)=>{
           console.log(result.data);
           totalPaginas.value = result.data.numberPages
@@ -348,7 +357,7 @@ export default {
       }
     }
 
-    return { buscar, todo, recibir_tramo_plaza, showMore, downloadApi, tags, token, tramo, plaza, carril, fecha, tag, listaNegra, value, formato, paginaAct, page, totalPaginas, currentPage, hasMorePages, modalLoading, }
+    return { buscar, todo, recibir_tramo_plaza, showMore, downloadApi, tags, token, tramo, plaza, carril, fecha, tag, listaNegra, value, formato, paginaAct, page, totalPaginas, currentPage, hasMorePages, modalLoading, numberResponse }
   }
 
 }
