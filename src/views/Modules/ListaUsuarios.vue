@@ -27,7 +27,7 @@
       </div>
     </div>
     <div class="mb-6">
-      <button @click="abrirModal" class="w-full botonIconBuscar justify-center mt-3 -mb-8">Agregar Usuario</button>
+      <button @click="abrirModal" :class="{'hidden':!habilitar}" class="w-full botonIconBuscar justify-center mt-3 -mb-8">Agregar Usuario</button>
     </div>
     <TablaListaUsuarios :dataUsuarios="perfiles" :plazaS="plaza" />
     <div class="">
