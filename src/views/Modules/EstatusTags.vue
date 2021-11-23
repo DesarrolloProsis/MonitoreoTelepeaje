@@ -25,6 +25,8 @@ import Navbar from "../../components/Navbar.vue";
 import Footer from "../../components/Footer-login";
 import FormTramoPlaza from '../../components/Form-tramoplaza.vue'
 import Spinner from '../../components/Spn.vue'
+import { notify } from "@kyvg/vue3-notification";
+import { ref } from 'vue'
 import axios from "axios";
 export default {
   components: {
@@ -33,62 +35,25 @@ export default {
     Footer,
     FormTramoPlaza,
     Spinner
-  },  
-  data() {
-    return {
-      plazas: [],      
-      token:"",      
-      tags: [],
-      isLoading: true,
-      tramo: '',
-      plaza: '',
-      tag: null,
-      modalLoading: false
-    };
   },
-  /*mounted() {
-    function getCookie(cname) {
-      var name = cname + "=";
-      var decodedCookie = decodeURIComponent(document.cookie);
-      var ca = decodedCookie.split(';');
-      for (var i = 0; i < ca.length; i++) {
-        var c = ca[i];
-        while (c.charAt(0) == ' ') {
-          c = c.substring(1);
-        }
-        if (c.indexOf(name) == 0) {
-          return c.substring(name.length, c.length);
-        }
-      }
-      return "";
-    }
-
-    if (getCookie("TipoUser") != "" && getCookie("Token")) {
-      this.token = getCookie("Token")
-      let config = {
-        headers: {
-          'Authorization': 'Bearer ' + getCookie("Token")
-        }
-      }
-      axios.get(`${API}/Plazas`, config)
-
-      .then((res) =>{
-        console.log("plazas cargadas...")
-        this.plazas = res.data;
-        this.isLoading = false;
-      })
-    }
-  },*/
-  methods: {
-    buscar(plaza,tag){
-      this.modalLoading = true
+  setup() {
+    const plazas = ref([])
+    const token = ref('')     
+    const tags = ref([])
+    const isLoading = ref(true)
+    const tramo = ref('')
+    const plaza = ref('')
+    const tag = ref(null)
+    const modalLoading = ref(false)
+    
+    function buscar(plaza,tag){
+      modalLoading.value = true
       if(plaza != null && tag != null){
-        console.log([plaza,tag]);
         axios.get(`${API}/Tags/BusquedaTag/${plaza}/${tag}`)
         .then((result)=>{
-          this.modalLoading = false
+          modalLoading.value = false
           if(result.statusText == 'OK'){
-            this.tags = []
+            tags.value = []
             let obj = {
               tag: result.data.tag,
               estatus: result.data.estado,
@@ -96,9 +61,9 @@ export default {
               tipo_tag: result.data.tipoTag,
               ult_act: result.data.actualizacion,
             }
-            this.tags.push(obj)
+            tags.value.push(obj)
           }else{
-            this.$notify({
+            notify({
               title:'Sin Información',
               text:'No se encontró el tag ingresado',
               type: 'warn'
@@ -106,59 +71,30 @@ export default {
           }
         })
         .catch(()=>{
-          this.modalLoading = false
-          this.$notify({
+          modalLoading.value = false
+          notify({
               title:'Sin Información',
               text:'No se tiene conexión a la plaza seleccionada',
               type: 'warn'
             });
         })
       }else{
-        this.modalLoading = false
-        this.$notify({
+        modalLoading.value = false
+        notify({
           title:'Sin Información',
           text:'Se debe de seleccionar la plaza e ingresar el tag para realizar una busqueda',
           type: 'warn'
         });
       }
-    },
-    /*buscarTag: function(){
-      //let config = { headers: { 'Authorization': 'Bearer ' + this.token } }
-      var tag = document.getElementById("tag").value;         
-      if(tag != ""){
-        console.log("Buscando...")                
-        //TODO: eliminar esta y sustituir por palza_select        
-        let urlQuery = ''
-        console.log(this.plaza);
-        if(this.plaza != '' && this.plaza != undefined)          
-          urlQuery = `Tags?PlazaId=${this.plaza}&Tag=${tag}`        
-        else
-            urlQuery = `Tags?Tag=${tag}`
-        
-        axios.get(`${API}/${urlQuery}`)      
-          .then((res) =>{
-            console.log(res)
-            this.tags = []
-            
-              let obj = {
-                tag: res.data.tag,
-                plaza: res.data.plaza,
-                estatus: res.data.estado,
-                saldo: res.data.saldo,
-                tipo_tag: res.data.tipoTag,
-                ult_act: res.data.actualizacion,
-              }
-              this.tags.push(obj)
-            
-          })
-      }
-    },*/
-    recibir_tramo_plaza(value){
-      this.tramo = value.tramo
-      this.plaza = value.plaza
     }
+    function recibir_tramo_plaza(value){
+      tramo.value = value.tramo
+      plaza.value = value.plaza
+    }
+
+    return { buscar, recibir_tramo_plaza, plazas, token, tags, isLoading, tramo, plaza, tag, modalLoading }
   }
-};
+}
 </script>
 <style scoped>
 .title {
