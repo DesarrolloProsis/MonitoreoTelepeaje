@@ -17,6 +17,7 @@
 <script>
 import Navbar from "../../components/Navbar.vue";
 import Footer from "../../components/Footer-login";
+import { ref } from 'vue'
 import ModuloConfiguracion from "../../components/Modulo-configuracion";
 export default {
   components: {
@@ -24,33 +25,23 @@ export default {
     Footer,
     ModuloConfiguracion,
   },
-  data() {
-    return {
-      modulos: [
-/*         {
-          img_src: "Configuracion/creacion-perfiles.png",
-          nombre: "Creación de Perfiles",
-          ruta: "/configuracion/perfil-usuario",
-        }, */
+  setup() {
+    const modulos = ref([
         {
           img_src: "Configuracion/lista-roles.png",
           nombre: "Administración de Roles",
           ruta: "/configuracion/administracion-perfiles",
         },
-/*         {
-          img_src: "Configuracion/registro-usuarios.png",
-          nombre: "Registro de Usuarios",
-          ruta: "/configuracion/registro-usuarios",
-        }, */
         {
           img_src: "Configuracion/lista-usuarios.png",
           nombre: "Lista de Usuarios",
           ruta: "/configuracion/lista-usuarios",
         },
-      ],
-    };
-  },
-};
+      ])
+    
+    return {modulos}
+  }
+}
 </script>
 <style scoped>
 .title {
