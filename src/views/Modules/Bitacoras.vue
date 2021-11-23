@@ -19,8 +19,10 @@
 <script>
 import Servicio from '../../Servicios/Token-Services';
 import jwt_decode from "jwt-decode";
+import { ref } from 'vue'
 import Navbar from "../../components/Navbar.vue";
 import Footer from "../../components/Footer-login";
+
 import ModuloBitacoras from "../../components/Modulo-bitacoras";
 export default {
     components: {
@@ -28,41 +30,16 @@ export default {
         Footer,
         ModuloBitacoras,
     },
-    data() {
-        return {
-            modulos: [
-                /*{
-                    img_src: "Menu/bitacora-accesos.png",
-                    nombre: "Bitácora De Alarmas",
-                    ruta: "/inicio/monitoreo-carriles/bitacora-alarmas",
-                },
-                {
-                    img_src: "Menu/bitacora-accesos.png",
-                    nombre: "Bitácora De Antifraude",
-                    ruta: "/inicio/bitacora-antifraude",
-                },
-                {
-                    img_src: "Menu/bitacora-accesos.png",
-                    nombre: "Bitácora De Listas",
-                    ruta: "/inicio/bitacora-listas",
-                },
-                {
-                    img_src: "Menu/bitacora-accesos.png",
-                    nombre: "Bitácora De Accesos",
-                    ruta: "/inicio/bitacora-accesos",
-                },*/
-            ],
-            carriles:true,
-        };
-    },
-    beforeMount(){
+    setup() {
+        const modulos = ref([])
+        const carriles = ref(true)
+
         if(Servicio.getCookie("Token")){
             let info = jwt_decode(Servicio.getCookie("Token"))
-            this.carriles = info['Monitoreo Carriles']
-            console.log(this.carriles);
+            carriles.value = info['Monitoreo Carriles']
         }
-        if(this.carriles == 'false'){
-            this.modulos = [
+        if(carriles.value == 'false'){
+            modulos.value = [
                 {
                     img_src: "Menu/bitacoras.png",
                     nombre: "Bitácora De Antifraude",
@@ -83,13 +60,13 @@ export default {
                 },
             ]
         }else{
-            this.modulos= [
-                /*{
+            modulos.value = [
+                /* {
                     img_src: "Menu/bitacoras.png",
                     nombre: "Bitácora De Alarmas",
                     ruta: "/inicio/monitoreo-carriles/bitacora-alarmas",
                     color: "green"
-                },*/
+                }, */
                 {
                     img_src: "Menu/bitacoras.png",
                     nombre: "Bitácora De Antifraude",
@@ -110,8 +87,10 @@ export default {
                 }
             ]    
         }
+
+        return {modulos, carriles}
     }
-};
+}
 </script>
 <style scoped>
 .title {
