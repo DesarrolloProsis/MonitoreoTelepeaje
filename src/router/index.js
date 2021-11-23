@@ -11,10 +11,8 @@ import BusquedaTransacciones from "@/views/Modules/BusquedaTransacciones.vue";
 import BitacoraAccesos from "@/views/Modules/BitacoraAccesos.vue";
 import EstatusTags from "@/views/Modules/EstatusTags.vue";
 import Configuracion from "@/views/Modules/Configuracion.vue";
-import PerfilUsuario from "@/views/Modules/PerfilUsuario.vue";
 import AdminPerfiles from "@/views/Modules/AdminPerfiles.vue";
 import ListaUsuarios from "@/views/Modules/ListaUsuarios.vue";
-import RegistroUsuarios from "@/views/Modules/RegistroUsuarios.vue";
 import Bitacoras from "@/views/Modules/Bitacoras.vue";
 import BitacoraAntifraude from "@/views/Modules/BitacoraAntifraude.vue";
 import BitacoraListas from "@/views/Modules/BitacoraListas.vue"
@@ -195,14 +193,6 @@ const routes = [{
     }
   },
   {
-    path: "/configuracion/perfil-usuario",
-    name: "PerfilUsuario",
-    component: PerfilUsuario,
-    meta: {
-      requiresCookie: true
-    }
-  },
-  {
     path: "/configuracion/administracion-perfiles",
     name: "AdministracionPerfilUsuario",
     component: AdminPerfiles,
@@ -214,14 +204,6 @@ const routes = [{
     path: "/configuracion/lista-usuarios",
     name: "ListaUsuarios",
     component: ListaUsuarios,
-    meta: {
-      requiresCookie: true
-    }
-  },
-  {
-    path: "/configuracion/registro-usuarios",
-    name: "RegistroUsuarios",
-    component: RegistroUsuarios,
     meta: {
       requiresCookie: true
     }
