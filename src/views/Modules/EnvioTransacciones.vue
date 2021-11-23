@@ -16,18 +16,6 @@
         <button @click="buscar(plaza,fecha,carril,tag)" class="btn-buscar">Buscar</button>
         <button @click="todos(plaza)" class="btn-buscar ml-4 -mr-8">Limpiar</button>
       </div>
-      <!-- <div class="flex-1">
-        <Multiselect v-model="formato" placeholder="Sleccione un Formato" @close="acciones_mapper(formato)" label="name" trackBy="name" :options="opticones_select_acciones()" :searchable="true">
-          <template v-slot:singleLabel="{ value }">
-            <div class="multiselect-single-label">
-              <img height="26" style="margin: 0 6px 0 0;" :src="value.icon"> {{ value.name }}
-            </div>
-          </template>
-          <template v-slot:option="{ option }">
-            <img height="22" style="margin: 0 6px 0 0;" :src="option.icon">{{ option.name }}
-          </template>
-        </Multiselect>
-      </div> -->
       <div class="flex-1">
         <FilesDownload @download-api="downloadApi"/>   
       </div>
@@ -47,116 +35,46 @@ import TablaTransacciones from "../../components/Tabla-transacciones.vue";
 import FormTramoPlaza from '../../components/Form-tramoplaza.vue';
 import FilesDownload from '../../components/Files-descargar.vue'
 import ServiceFiles from '../../Servicios/Files-Service'
-//import Multiselect from '@vueform/multiselect';
 import Navbar from "../../components/Navbar.vue";
 import Footer from "../../components/Footer-login";
 import Paginacion from "../../components/Paginacion.vue"
+import { notify } from "@kyvg/vue3-notification";
+import { ref } from 'vue'
 import Spinner from '../../components/Spn.vue'
 import axios from "axios";
 export default {
   name: "EnvioTransacciones",
-  components: { TablaTransacciones, Navbar, Footer,FormTramoPlaza,Paginacion, Spinner, FilesDownload },
-  data() {
-    return {
-      transacciones: [],
-      tramo: '',
-      plaza: '',
-      carril: '',
-      fecha: '',
-      tag: '',
-      formato: '',
-      page: 0,
-      totalPaginas: 0,
-      currentPage: 1,
-      hasMorePages: true,
-      modalLoading: false
-    };
-  },
-  /*beforeMount (){
-    this.transacciones = []
-      let data = {
-      "plazaId": 'null',
-      "carril": 'null',
-      "fecha": 'null',
-      "tag": 'null',
-      "skip": 1
-    }
-    console.log(data);
-    axios.post(`${API}/Transacciones/TransactionsFiltros`,data)
-    .then((result)=>{
-      console.log(result);
-      this.totalPaginas = result.data.numberPages
-      this.currentPage = result.data.now 
-      result.data.body.forEach((e) => {
-            let obj = {
-              tag: e.idTag,
-              fechaEnvio: e.fechaEnvioOperador,
-              carril: e.carril,
-              claseCajero: e.claseCajero,
-              tarifa: e.tarifa
-            };
-            this.transacciones.push(obj);
-          });
-    })
-  },*/
-  methods:{
-    todos (plaza) {
-      this.tag = ''
-      this.fecha = ''
-      let data = {
-        "plazaId": plaza,
-        "carril": 'null',
-        "fecha": 'null',
-        "tag": 'null',
-        "skip": 1
-      }
-      axios.post(`${API}/Transacciones/TransactionsFiltros`,data)
-      .then((result)=>{
-        console.log(result.data.body);
-        if(result.data.status == 'Ok'){
-          this.transacciones = []
-          this.modalLoading = false
-          this.totalPaginas = result.data.numberPages
-          this.currentPage = result.data.now
-          result.data.body.forEach((e) => {
-            let obj = {
-              tag: e.idTag,
-              fechaCruce: e.fechaDeCruce,
-              fechaEnvio: e.FechaEnvio,
-              carril: e.carril,
-              claseCajero: e.claseCajero,
-              tarifa: e.tarifa
-            };
-            this.transacciones.push(obj);
-          });
-        }else{
-          this.modalLoading = false
-          this.$notify({
-            title:'Sin Información',
-            text:'No se encontrtaron transacciones en esta plaza',
-            type: 'warn'
-          });
-        }
-      })
-    },
-    buscar: function(plaza, fecha, carril, tag){
-      this.modalLoading = true
-      console.log(fecha);
+  components: { TablaTransacciones, Navbar, Footer,FormTramoPlaza,Paginacion, Spinner, FilesDownload }, 
+  setup() {
+    const transacciones = ref([])
+    const tramo = ref('')
+    const plaza = ref('')
+    const carril = ref('')
+    const fecha = ref('')
+    const tag = ref('')
+    const formato = ref('')
+    const page = ref(0)
+    const totalPaginas = ref(0)
+    const currentPage = ref(1)
+    const hasMorePages = ref(true)
+    const modalLoading = ref(false)
+    //Función que regresa las transacciones con o sin filtro, pero la plaza es obligatoria
+    function buscar(plaza, fecha, carril, tag){
+      modalLoading.value = true
       if(plaza == undefined || plaza == null || plaza == ''){
-        this.modalLoading = false
-        this.$notify({
+        modalLoading.value = false
+        notify({
           title:'Sin Información',
           text:'Se debe de seleccionar la plaza para hacer una busqueda',
           type: 'warn'
         });
       }else{
         if((carril == undefined || carril == null || carril == '') && (tag == undefined || tag == null || tag == '') && (fecha == undefined || fecha == null || fecha == '')){
-        console.log('if');
         let datoCarril = 'null'
         let tag = 'null'
         let fecha = 'null'
-        this.modalLoading = true
-        this.transacciones = []
+        modalLoading.value = true
+        transacciones.value = []
         let data = {
           "plazaId": plaza,
           "carril": datoCarril,
@@ -164,15 +82,14 @@ export default {
           "tag": tag,
           "skip": 1
         }
-        console.log(data);
         axios.post(`${API}/Transacciones/TransactionsFiltros`,data)
         .then((result)=>{
           console.log(result);
-          this.modalLoading = false
+          modalLoading.value = false
           if((result.data.status == 'Ok') && (result.data.body.length > 0)){
-            this.modalLoading = false
-            this.totalPaginas = result.data.numberPages
-            this.currentPage = result.data.now
+            modalLoading.value = false
+            totalPaginas.value = result.data.numberPages
+            currentPage.value = result.data.now
             result.data.body.forEach((e) => {
               let obj = {
                 tag: e.idTag,
@@ -182,11 +99,11 @@ export default {
                 claseCajero: e.claseCajero,
                 tarifa: e.tarifa
               };
-              this.transacciones.push(obj);
+              transacciones.value.push(obj);
             });
           }else{
-            this.modalLoading = false
-            this.$notify({
+            modalLoading.value = false
+            notify({
               title:'Sin Información',
               text:'No se encontrtaron transacciones en esta plaza',
               type: 'warn'
@@ -194,11 +111,10 @@ export default {
           }
         })
         }else if(carril == undefined && fecha == '' && tag != ''){
-          console.log('primer if');
           this.modalLoading = true
           let datoCarril = 'null'
           let datofecha = 'null'
-          this.transacciones = []
+          transacciones.value = []
           let data = {
             "plazaId": plaza,
             "carril": datoCarril,
@@ -208,11 +124,10 @@ export default {
           }
           axios.post(`${API}/Transacciones/TransactionsFiltros`,data)
           .then((result)=>{
-          console.log(result);
           if((result.data.status == 'Ok') && (result.data.body.length > 0)){
-            this.modalLoading = false
-            this.totalPaginas = result.data.numberPages
-            this.currentPage = result.data.now
+            modalLoading.value = false
+            totalPaginas.value = result.data.numberPages
+            currentPage.value = result.data.now
             result.data.body.forEach((e) => {
               let obj = {
                 tag: e.idTag,
@@ -222,11 +137,11 @@ export default {
                 claseCajero: e.claseCajero,
                 tarifa: e.tarifa
               };
-              this.transacciones.push(obj);
+              transacciones.value.push(obj);
             });
           }else{
-            this.modalLoading = false
-            this.$notify({
+            modalLoading.value = false
+            notify({
               title:'Sin Información',
               text:'No se encontrtaron transacciones con el tag ingresado',
               type: 'warn'
@@ -234,11 +149,10 @@ export default {
           }
         })
         }else if((carril != undefined || carril != null || carril != '') && (tag == '') && (fecha == '')){
-          console.log('segundo if');
-          this.modalLoading = true
+          modalLoading.value = true
           let datoTag = 'null'
           let fech = 'null'
-          this.transacciones = []
+          transacciones.value = []
           let data = {
             "plazaId": plaza,
             "carril": carril,
@@ -248,11 +162,10 @@ export default {
           }
           axios.post(`${API}/Transacciones/TransactionsFiltros`,data)
           .then((result)=>{
-            console.log(result);
             if((result.data.status == 'Ok') && (result.data.body.length > 0)){
-              this.modalLoading = false
-              this.totalPaginas = result.data.numberPages
-              this.currentPage = result.data.now
+              modalLoading.value = false
+              totalPaginas.value = result.data.numberPages
+              currentPage.value = result.data.now
               result.data.body.forEach((e) => {
                 let obj = {
                   tag: e.idTag,
@@ -265,8 +178,8 @@ export default {
                 this.transacciones.push(obj);
               });
             }else{
-              this.modalLoading = false
-              this.$notify({
+              modalLoading.value = false
+              notify({
                 title:'Sin Información',
                 text:'No se encontrtaron transacciones en el carril seleccionado',
                 type: 'warn'
@@ -274,11 +187,10 @@ export default {
             }
           })
         }else if ((fecha != undefined || fecha != null || fecha != '') && (tag == undefined || tag == null || tag == '') && (carril == undefined || carril == null || carril == '')){
-          console.log('tercer if');
-          this.modalLoading = true
+          modalLoading.value = true
           let datoTag = 'null'
           let datoCarril = 'null'
-          this.transacciones = []
+          transacciones.value = []
           let data = {
             "plazaId": plaza,
             "carril": datoCarril,
@@ -288,11 +200,10 @@ export default {
           }
           axios.post(`${API}/Transacciones/TransactionsFiltros`,data)
           .then((result)=>{
-            console.log(result);
             if((result.data.status == 'Ok') && (result.data.body.length > 0)){
-              this.modalLoading = false
-              this.totalPaginas = result.data.numberPages
-              this.currentPage = result.data.now
+              modalLoading.value = false
+              totalPaginas.value = result.data.numberPages
+              currentPage.value = result.data.now
               result.data.body.forEach((e) => {
                 let obj = {
                   tag: e.idTag,
@@ -302,11 +213,11 @@ export default {
                   claseCajero: e.claseCajero,
                   tarifa: e.tarifa
                 };
-                this.transacciones.push(obj);
+                transacciones.value.push(obj);
               });
             }else{
-              this.modalLoading = false
-              this.$notify({
+              modalLoading.value = false
+              notify({
                 title:'Sin Información',
                 text:'No se encontrtaron transacciones en el carril seleccionado',
                 type: 'warn'
@@ -314,9 +225,8 @@ export default {
             }
           })
         }else{
-          console.log('else');
-          this.modalLoading = true
-          this.transacciones = []
+          modalLoading.value = true
+          transacciones.value = []
           let data = {
             "plazaId": plaza,
             "carril": carril,
@@ -326,11 +236,10 @@ export default {
           }
           axios.post(`${API}/Transacciones/TransactionsFiltros`,data)
           .then((result)=>{
-            console.log(result);
             if((result.data.status == 'Ok') && (result.data.body.length > 0)){
-              this.modalLoading = false
-              this.totalPaginas = result.data.numberPages
-              this.currentPage = result.data.now
+              modalLoading.value = false
+              totalPaginas.value = result.data.numberPages
+              currentPage.value = result.data.now
               result.data.body.forEach((e) => {
                 let obj = {
                   tag: e.idTag,
@@ -340,11 +249,11 @@ export default {
                   claseCajero: e.claseCajero,
                   tarifa: e.tarifa
                 };
-                this.transacciones.push(obj);
+                transacciones.value.push(obj);
               });
             }else{
-              this.modalLoading = false
-              this.$notify({
+              modalLoading.value = false
+              notify({
                 title:'Sin Información',
                 text:'No se encontrtaron transacciones',
                 type: 'warn'
@@ -353,23 +262,25 @@ export default {
           })
         }
       }
-    },
-    showMore(page){
-      this.transacciones = []
+    }//Función que regresa las transacciones de la plaza asignada, sin filtros
+    function todos(plaza) {
+      tag.value = ''
+      fecha.value = ''
       let data = {
-      "plazaId": this.plaza,
-      "carril": 'null',
-      "fecha": 'null',
-      "tag": 'null',
-      "skip": page
-    }
-    console.log(data);
-    axios.post(`${API}/Transacciones/TransactionsFiltros`,data)
-    .then((result)=>{
-      console.log(result);
-      this.totalPaginas = result.data.numberPages
-      this.currentPage = result.data.now
-      result.data.body.forEach((e) => {
+        "plazaId": plaza,
+        "carril": 'null',
+        "fecha": 'null',
+        "tag": 'null',
+        "skip": 1
+      }
+      axios.post(`${API}/Transacciones/TransactionsFiltros`,data)
+      .then((result)=>{
+        if(result.data.status == 'Ok'){
+          transacciones.value = []
+          modalLoading.value = false
+          totalPaginas.value = result.data.numberPages
+          currentPage.value = result.data.now
+          result.data.body.forEach((e) => {
             let obj = {
               tag: e.idTag,
               fechaCruce: e.fechaDeCruce,
@@ -378,69 +289,108 @@ export default {
               claseCajero: e.claseCajero,
               tarifa: e.tarifa
             };
-            this.transacciones.push(obj);
+            transacciones.value.push(obj);
           });
-    })
-    },
-    recibir_tramo_plaza(value){
-      console.log(value);
-      this.tramo = value.tramo
-      this.plaza = value.plaza
-      this.carril = value.carril
-    },
-    downloadApi(formato){
-      if(this.plaza == '' || this.plaza == null || this.plaza == undefined){
-        this.$notify({
+        }else{
+          modalLoading.value = false
+          notify({
+            title:'Sin Información',
+            text:'No se encontrtaron transacciones en esta plaza',
+            type: 'warn'
+          });
+        }
+      })
+    }//Función para cambiar de página sin filtros
+    function showMore(page){
+      transacciones.value = []
+      let data = {
+        "plazaId": plaza.value,
+        "carril": 'null',
+        "fecha": 'null',
+        "tag": 'null',
+        "skip": page
+      }
+      axios.post(`${API}/Transacciones/TransactionsFiltros`,data)
+      .then((result)=>{
+        totalPaginas.value = result.data.numberPages
+        currentPage.value = result.data.now
+        result.data.body.forEach((e) => {
+          let obj = {
+            tag: e.idTag,
+            fechaCruce: e.fechaDeCruce,
+            fechaEnvio: e.FechaEnvio,
+            carril: e.carril,
+            claseCajero: e.claseCajero,
+            tarifa: e.tarifa
+          };
+          transacciones.value.push(obj);
+        });
+      })
+    }//Función que regresa el id de la plaza, el tramo y el carril
+    function  recibir_tramo_plaza(value){
+      tramo.value = value.tramo
+      plaza.value = value.plaza
+      carril.value = value.carril
+    }//Función para exportar la lista filtrada a alguno de los 3 formatos
+    function downloadApi(formato){
+      if(plaza.value == '' || plaza.value == null || plaza.value == undefined){
+        notify({
           title:'No Hay Datos',
           text:'Se debe de seleccionar la plaza para realizar una busqueda',
           type: 'warn'
         });
       }else{
-        if((this.plaza != '' || this.plaza != null || this.plaza != undefined) && (this.carril == '' || this.carril == null || this.carril == undefined) && (this.fecha == '' || this.fecha == null || this.fecha == undefined)  && (this.tag == '' || this.tag == null || this.tag == undefined)){
+        //Si solo seleccionamos la plaza
+        if((plaza.value != '' || plaza.value != null || plaza.value != undefined) && (carril.value == '' || carril.value == null || carril.value == undefined) && (fecha.value == '' || fecha.value == null || fecha.value == undefined)  && (tag.value == '' || tag.value == null || tag.value == undefined)){
           if (formato == "csv") {
-            ServiceFiles.xml_hhtp_request(`${API}/Transacciones/Operador/Download/Csv/${this.plaza}/null/null/null`, 'EnvioTransacciones.csv')
+            ServiceFiles.xml_hhtp_request(`${API}/Transacciones/Operador/Download/Csv/${plaza.value}/null/null/null`, 'EnvioTransacciones.csv')
           } 
           else if (formato == "excel") {        
-            ServiceFiles.xml_hhtp_request(`${API}/Transacciones/Operador/Download/Excel/${this.plaza}/null/null/null`, 'EnvioTransacciones.xlsx')    
+            ServiceFiles.xml_hhtp_request(`${API}/Transacciones/Operador/Download/Excel/${plaza.value}/null/null/null`, 'EnvioTransacciones.xlsx')    
           } 
           else if (formato == "txt") {
-            ServiceFiles.xml_hhtp_request(`${API}/Transacciones/Operador/Download/txt/${this.plaza}/null/null/null`, 'EnvioTransacciones.txt')
+            ServiceFiles.xml_hhtp_request(`${API}/Transacciones/Operador/Download/txt/${plaza.value}/null/null/null`, 'EnvioTransacciones.txt')
           }
-        }else if((this.carril != '' || this.carril != null || this.carril != undefined) && (this.fecha == '' || this.fecha == null || this.fecha == undefined)  && (this.tag == '' || this.tag == null || this.tag == undefined)){
+        }//Si solo seleccionamos el Carril
+        else if((carril.value != '' || carril.value != null || carril.value != undefined) && (fecha.value == '' || fecha.value == null || fecha.value == undefined)  && (tag.value == '' || tag.value == null || tag.value == undefined)){
           if (formato == "csv") {
-            ServiceFiles.xml_hhtp_request(`${API}/Transacciones/Operador/Download/Csv/${this.plaza}/${this.carril}/null/null`, 'EnvioTransacciones.csv')
+            ServiceFiles.xml_hhtp_request(`${API}/Transacciones/Operador/Download/Csv/${plaza.value}/${carril.value}/null/null`, 'EnvioTransacciones.csv')
           } 
           else if (formato == "excel") {        
-            ServiceFiles.xml_hhtp_request(`${API}/Transacciones/Operador/Download/Excel/${this.plaza}/${this.carril}/null/null`, 'EnvioTransacciones.xlsx')    
+            ServiceFiles.xml_hhtp_request(`${API}/Transacciones/Operador/Download/Excel/${plaza.value}/${carril.value}/null/null`, 'EnvioTransacciones.xlsx')    
           } 
           else if (formato == "txt") {
-            ServiceFiles.xml_hhtp_request(`${API}/Transacciones/Operador/Download/txt/${this.plaza}/${this.carril}/null/null`, 'EnvioTransacciones.txt')
+            ServiceFiles.xml_hhtp_request(`${API}/Transacciones/Operador/Download/txt/${plaza.value}/${carril.value}/null/null`, 'EnvioTransacciones.txt')
           }
-        }else if((this.carril == '' || this.carril == null || this.carril == undefined) && (this.fecha != '' || this.fecha != null || this.fecha != undefined)  && (this.tag == '' || this.tag == null || this.tag == undefined)){
+        }//Si solo seleccionamos fecha
+        else if((carril.value == '' || carril.value == null || carril.value == undefined) && (fecha.value != '' || fecha.value != null || fecha.value != undefined)  && (tag.value == '' || tag.value == null || tag.value == undefined)){
           if (formato == "csv") {
-            ServiceFiles.xml_hhtp_request(`${API}/Transacciones/Operador/Download/Csv/${this.plaza}/null/${this.fecha}/null`, 'EnvioTransacciones.csv')
+            ServiceFiles.xml_hhtp_request(`${API}/Transacciones/Operador/Download/Csv/${plaza.value}/null/${fecha.value}/null`, 'EnvioTransacciones.csv')
           } 
           else if (formato == "excel") {        
-            ServiceFiles.xml_hhtp_request(`${API}/Transacciones/Operador/Download/Excel/${this.plaza}/null/${this.fecha}/null`, 'EnvioTransacciones.xlsx')    
+            ServiceFiles.xml_hhtp_request(`${API}/Transacciones/Operador/Download/Excel/${plaza.value}/null/${fecha.value}/null`, 'EnvioTransacciones.xlsx')    
           } 
           else if (formato == "txt") {
-            ServiceFiles.xml_hhtp_request(`${API}/Transacciones/Operador/Download/txt/${this.plaza}/null/${this.fecha}/null`, 'EnvioTransacciones.txt')
+            ServiceFiles.xml_hhtp_request(`${API}/Transacciones/Operador/Download/txt/${plaza.value}/null/${fecha.value}/null`, 'EnvioTransacciones.txt')
           }
-        }else if((this.carril == '' || this.carril == null || this.carril == undefined) && (this.fecha == '' || this.fecha == null || this.fecha == undefined)  && (this.tag != '' || this.tag != null || this.tag != undefined)){
+        }//Si solo seleccionamos tag
+        else if((carril.value == '' || carril.value == null || carril.value == undefined) && (fecha.value == '' || fecha.value == null || fecha.value == undefined)  && (tag.value != '' || tag.value != null || tag.value != undefined)){
           if (formato == "csv") {
-            ServiceFiles.xml_hhtp_request(`${API}/Transacciones/Operador/Download/Csv/${this.plaza}/null/null/${this.tag}`, 'EnvioTransacciones.csv')
+            ServiceFiles.xml_hhtp_request(`${API}/Transacciones/Operador/Download/Csv/${plaza.value}/null/null/${tag.value}`, 'EnvioTransacciones.csv')
           } 
           else if (formato == "excel") {        
-            ServiceFiles.xml_hhtp_request(`${API}/Transacciones/Operador/Download/Excel/${this.plaza}/null/null/${this.tag}`, 'EnvioTransacciones.xlsx')    
+            ServiceFiles.xml_hhtp_request(`${API}/Transacciones/Operador/Download/Excel/${plaza.value}/null/null/${tag.value}`, 'EnvioTransacciones.xlsx')    
           } 
           else if (formato == "txt") {
-            ServiceFiles.xml_hhtp_request(`${API}/Transacciones/Operador/Download/txt/${this.plaza}/null/null/${this.tag}`, 'EnvioTransacciones.txt')
+            ServiceFiles.xml_hhtp_request(`${API}/Transacciones/Operador/Download/txt/${plaza.value}/null/null/${tag.value}`, 'EnvioTransacciones.txt')
           }
         }
       }
-    },
-  },
-};
+    }
+
+    return { buscar, todos, showMore, recibir_tramo_plaza, downloadApi, transacciones, tramo, plaza, carril, fecha, tag, formato, page, totalPaginas, currentPage, hasMorePages, modalLoading}
+  }
+}
 </script>
 <style scoped>
 .filter-style-2 {
