@@ -38,16 +38,6 @@
       </div>
       <Carril :carrilesdata="carrilTramo.carriles" :tipo="'alarma'"></Carril>
     </div>
-    <!-- <div class="flex ta-center overflow-x-auto pt-6">
-      <div class="flex justify-center items-center flex-none bg-carriles-gray p-5">
-        <div>Plaza:<br />Tepozotlan<br />Cuerpo B</div>
-      </div>
-      <div class="flex flex-col flex-none">
-        <div class="flex-1 bg-carriles-gray mh-cuerpo lh-cuerpo">Cuerpo</div>
-        <div class="flex-1 bg-carriles-gray mh-other ">Último Cruce</div>
-      </div>
-      <Carril :carrilesB="carrilesB"></Carril>
-    </div> -->
   </div>
   <!-- MODAL CARGANDO -->
 <Spinner :modalLoading="modalLoading"/>
@@ -56,9 +46,9 @@
 import Carril from "../components/Carril";
 import FormTramoPlaza from '../components/Form-tramoplaza.vue'
 import Spinner from '../components/Spn.vue'
+import { ref } from 'vue'
 import axios from "axios";
 const API = process.env.VUE_APP_URL_API_PRODUCCION
-
 export default {
   name: "TablaCarriles",
   components: {
@@ -66,39 +56,27 @@ export default {
     FormTramoPlaza,
     Spinner
   },
-  data() {
-    return {
-      plaza: '',
-      tramo: '',
-      carrilesTramos: [],
-      modalLoading: false
-    };    
-  },
-  /* beforeMount(){
-    this.plaza = '184'
-    this.buscar_carriles_plaza()
-  }, */
-  methods: {  
-    buscar_carriles_plaza(){
-      this.modalLoading = true
-      this.carrilesTramos = []
-      axios.get(`${API}/CarrilesMonitoreo?PlazaId=${this.plaza}`)
+  setup() {
+    const plaza = ref('')
+    const tramo = ref('')
+    const carrilesTramos = ref([])
+    const modalLoading = ref(false)
+    //Finción que busca los carriles con la plaza seleccionada
+    function buscar_carriles_plaza(){
+      modalLoading.value = true
+      carrilesTramos.value = []
+      axios.get(`${API}/CarrilesMonitoreo?PlazaId=${plaza.value}`)
         .then((response) => {
-          console.log(response.data)
           let tramos = []
           response.data.forEach((item) => {
-            console.log(item.id_gare)
-            console.log(!tramos.some(tr => tr.id_gare == item.id_gare))
             if(!tramos.some(tr => tr.id_gare == item.id_gare)){
               tramos.push({id_gare: item.id_gare, nombre: item.gare})
             }
           });
-          console.log(tramos)
           let tramosCarril = []
           tramos.forEach((item2) => {
             let carriles = response.data.filter(itemfilter => itemfilter.id_gare == item2.id_gare)
             carriles.sort((a,b) => {          
-                console.log(parseInt(a.carril.substring(1,3)))      
                 return parseInt(a.carril.substring(1,3)) - parseInt(b.carril.substring(1,3))
             })
             tramosCarril.push({
@@ -107,24 +85,23 @@ export default {
               carriles: carriles            
             })
           })
-          console.log(tramosCarril)
-          this.carrilesTramos = tramosCarril
-          this.modalLoading = false
+          carrilesTramos.value = tramosCarril
+          modalLoading.value = false
           
         })     
         .catch((error) => {
           console.log(error)
-          this.modalLoading = false
+          modalLoading.value = false
         })      
-      
-    }, 
-    recibir_tramo_plaza(value){
-      console.log(value)
-      this.tramo = value.tramo
-      this.plaza = value.plaza      
     }
+    //Función que recibe el id de la plaza y del tramo
+    function recibir_tramo_plaza(value){
+      tramo.value = value.tramo
+      plaza.value = value.plaza      
+    }
+    return { plaza, tramo, carrilesTramos, modalLoading, buscar_carriles_plaza, recibir_tramo_plaza}
   }
-};
+}
 </script>
 <style scoped>
 .modal-container{
@@ -143,7 +120,10 @@ export default {
 .ta-center {
   text-align: center;
 }
-
+.bg-blue {
+  background-color: #2c5282;
+  padding: 10px 5px;
+}
 .bg-carriles-gray {
   background-color: #d6e8eb;
   border: 1px solid black;

@@ -50,7 +50,9 @@ import axios from "axios";
 import FilesDownload from '../../components/Files-descargar.vue'
 import ServiceFiles from '../../Servicios/Files-Service'
 import Paginacion from "../../components/Paginacion.vue"
+import { notify } from "@kyvg/vue3-notification";
 import Spinner from '../../components/Spn.vue'
+import { ref } from 'vue'
 export default {
   name: "BusquedaCruces",
   components: {
@@ -62,96 +64,162 @@ export default {
     Paginacion,
     Spinner
   },
-  data() {
-    return {
-      //isLoading: false,
-      cruces: [],
-      //paginas: 1,
-      //paginaActual: 1,
-      token: "",
-      //plazas: [],
-      /*data: {
-        pagenumber: 1,
-        rowsofpage: 5,
-        tagfilter: null,
-        plaza: null,
-        fechainicial: null,
-      },*/
-      tag:null,
-      fecha:null,
-      //value: '',
-      formato:'',
-      tramo:'',
-      plaza:'',
-      page: 1,
-      totalPaginas: 0,
-      currentPage: 1,
-      hasMorePages: true,
-      modalLoading: false
-    };
-  },
-/* mounted() {
-    function getCookie(cname) {
-      var name = cname + "=";
-      var decodedCookie = decodeURIComponent(document.cookie);
-      var ca = decodedCookie.split(";");
-      for (var i = 0; i < ca.length; i++) {
-        var c = ca[i];
-        while (c.charAt(0) == " ") {
-          c = c.substring(1);
-        }
-        if (c.indexOf(name) == 0) {
-          return c.substring(name.length, c.length);
+  setup() {
+    const cruces = ref([])
+    const token = ref("")
+    const tag = ref(null)
+    const fecha = ref(null)
+    const formato = ref('')
+    const tramo = ref('')
+    const plaza = ref('')
+    const page = ref(1)
+    const totalPaginas = ref(0)
+    const currentPage = ref(1)
+    const hasMorePages = ref(true)
+    const modalLoading = ref(false)
+    //Función que busca las transacciones en la plaza, con o sin filtros
+    function serch(plaza,tag, fecha){
+      modalLoading.value = true
+      cruces.value = []
+      console.log([plaza,tag,fecha]);
+      if(plaza == '' || plaza == undefined || plaza == null){
+        modalLoading.value = false
+        notify({
+          title:'Sin Información',
+          text:'Se debe de seleccionar la plaza para realizar una busqueda',
+          type: 'warn'
+        });
+      }else{
+        if((tag == '' || tag == undefined || tag == null) && (fecha == '' || fecha == undefined || fecha == null)){
+          axios.get(`${API}/Transacciones/BusquedaTransacciones/${plaza}/${page.value}/null/null`)
+          .then((result)=>{
+            console.log(result);
+            if(result.data.status == "Ok"){
+              modalLoading.value = false
+              totalPaginas.value = result.data.numberPages
+              currentPage.value = result.data.now
+              result.data.body.forEach((e)=>{
+                let obj = {
+                  tag: e.noTag,
+                  carril: e.carril,
+                  fecha: e.fecha,
+                  medioPago: e.nombrePago,
+                  tipo: e.tipoVehiculo,
+                  tarifa: e.tarifa
+                }
+                cruces.value.push(obj)
+              })
+            }else{
+              modalLoading.value = false
+              notify({
+                title:'Sin Información',
+                text:'No sé tiene conexión hacia la plaza seleccionada',
+                type: 'warn'
+              });
+            }
+          })
+        }else if ((tag != '' || tag != undefined || tag != null) && (fecha == '' || fecha == undefined || fecha == null)){
+          console.log(tag);
+          axios.get(`${API}/Transacciones/BusquedaTransacciones/${plaza}/${page.value}/null/${tag}`)
+          .then((result)=>{
+            console.log(result);
+            if((result.data.status == "Ok") && (result.data.body.length > 0)){
+              modalLoading.value = false
+              totalPaginas.value = result.data.numberPages
+              currentPage.value = result.data.now
+              result.data.body.forEach((e)=>{
+                let obj = {
+                  tag: e.noTag,
+                  carril: e.carril,
+                  fecha: e.fecha,
+                  medioPago: e.nombrePago,
+                  tipo: e.tipoVehiculo,
+                  tarifa: e.tarifa
+                }
+                cruces.value.push(obj)
+              })
+            }else{
+              modalLoading.value = false
+              notify({
+                title:'Sin Información',
+                text:'No se encontró el tag ingresado',
+                type: 'warn'
+              });
+            }
+          })
+        }else if ((fecha != '' || fecha != undefined || fecha != null) && (tag == '' || tag == undefined || tag == null)){
+          console.log('fecha');
+          axios.get(`${API}/Transacciones/BusquedaTransacciones/${plaza}/${page.value}/${fecha}/null`)
+          .then((result)=>{
+            console.log(result);
+            if((result.data.status == "Ok") && (result.data.body.length > 0)){
+              modalLoading.value = false
+              totalPaginas.value = result.data.numberPages
+              currentPage.value = result.data.now
+              result.data.body.forEach((e)=>{
+                let obj = {
+                  tag: e.noTag,
+                  carril: e.carril,
+                  fecha: e.fecha,
+                  medioPago: e.nombrePago,
+                  tipo: e.tipoVehiculo,
+                  tarifa: e.tarifa
+                }
+                cruces.value.push(obj)
+              })
+            }else{
+              modalLoading.value = false
+              notify({
+                title:'Sin Información',
+                text:'No se encontraron transacciones en la fecha indicada',
+                type: 'warn'
+              });
+            }
+          })
+        }else if((tag != '' || tag != undefined || tag != null) && (fecha != '' || fecha != undefined || fecha != null)){
+          axios.get(`${API}/Transacciones/BusquedaTransacciones/${plaza}/${page.value}/${fecha}/${tag}`)
+          .then((result)=>{
+            console.log(result);
+            if((result.data.status == "Ok") && (result.data.body.length > 0)){
+              modalLoading.value = false
+              totalPaginas.value = result.data.numberPages
+              currentPage.value = result.data.now
+              result.data.body.forEach((e)=>{
+                let obj = {
+                  tag: e.noTag,
+                  carril: e.carril,
+                  fecha: e.fecha,
+                  medioPago: e.nombrePago,
+                  tipo: e.tipoVehiculo,
+                  tarifa: e.tarifa
+                }
+                cruces.value.push(obj)
+              })
+            }else{
+              modalLoading.value = false
+              notify({
+                title:'Sin Información',
+                text:'No se encontraron transacciones',
+                type: 'warn'
+              });
+            }
+          })
         }
       }
-      return "";
     }
-    if (getCookie("TipoUser") != "" && getCookie("Token")) {
-      this.token = getCookie("Token");
-      let config = {
-        headers: {
-          Authorization: "Bearer " + getCookie("Token"),
-        },
-      };
-      axios.get(`${API}/Plazas`, config)
-        .then((res) => {
-          this.isLoading = false;
-          this.plazas = res.data;
-
-          return axios.post(`${API}/Transacciones`,this.data,config)
-            .then((res) => {
-              console.log(res.data);
-              this.paginas = res.data.numberOfPages;
-              res.data.transacciones.forEach((e) => {
-                let obj = {
-                  plaza: e.plaza,
-                  num_tag: e.noTag,
-                  fecha: e.fecha,
-                  carril: e.carril,
-                  tipo_vehiculo: e.tipoVehiculo,
-                  tarifa: e.tarifa,
-                  clase: e.descripcion,
-                  pago: e.nombrePago
-                };
-                this.cruces.push(obj);
-              });
-            });
-        });
-    }
-  },*/
-  methods: {
-    limpiar(plaza){
-      this.modalLoading = true
-      this.cruces = []
-      this.fecha = null
-      this.tag = null
-      axios.get(`${API}/Transacciones/BusquedaTransacciones/${plaza}/${this.page}/null/null`)
+    //Función que limpia los input de busqueda y regresa las transacciones de la plaza sin filtros
+    function limpiar(plaza){
+      modalLoading.value = true
+      cruces.value = []
+      fecha.value = null
+      tag.value = null
+      axios.get(`${API}/Transacciones/BusquedaTransacciones/${plaza}/${page.value}/null/null`)
       .then((result)=>{
         console.log(result);
         if(result.data.status == "Ok"){
-          this.modalLoading = false
-          this.totalPaginas = result.data.numberPages
-          this.currentPage = result.data.now
+          modalLoading.value = false
+          totalPaginas.value = result.data.numberPages
+          currentPage.value = result.data.now
           result.data.body.forEach((e)=>{
             let obj = {
               tag: e.noTag,
@@ -161,159 +229,31 @@ export default {
               tipo: e.tipoVehiculo,
               tarifa: e.tarifa
             }
-            this.cruces.push(obj)
+            cruces.value.push(obj)
           })
         }else{
-          this.modalLoading = false
-          this.$notify({
+          modalLoading.value = false
+          notify({
             title:'Sin Información',
             text:'No sé tiene conexión hacia la plaza seleccionada',
             type: 'warn'
           });
         }
       })
-    },
-    serch(plaza,tag, fecha){
-      this.modalLoading = true
-      this.cruces=[]
-      console.log([plaza,tag,fecha]);
-      if(plaza == '' || plaza == undefined || plaza == null){
-        this.modalLoading = false
-        this.$notify({
-          title:'Sin Información',
-          text:'Se debe de seleccionar la plaza para realizar una busqueda',
-          type: 'warn'
-        });
-      }else{
-        if((tag == '' || tag == undefined || tag == null) && (fecha == '' || fecha == undefined || fecha == null)){
-          axios.get(`${API}/Transacciones/BusquedaTransacciones/${plaza}/${this.page}/null/null`)
-          .then((result)=>{
-            console.log(result);
-            if(result.data.status == "Ok"){
-              this.modalLoading = false
-              this.totalPaginas = result.data.numberPages
-              this.currentPage = result.data.now
-              result.data.body.forEach((e)=>{
-                let obj = {
-                  tag: e.noTag,
-                  carril: e.carril,
-                  fecha: e.fecha,
-                  medioPago: e.nombrePago,
-                  tipo: e.tipoVehiculo,
-                  tarifa: e.tarifa
-                }
-                this.cruces.push(obj)
-              })
-            }else{
-              this.modalLoading = false
-              this.$notify({
-                title:'Sin Información',
-                text:'No sé tiene conexión hacia la plaza seleccionada',
-                type: 'warn'
-              });
-            }
-          })
-        }else if ((tag != '' || tag != undefined || tag != null) && (fecha == '' || fecha == undefined || fecha == null)){
-          console.log(tag);
-          axios.get(`${API}/Transacciones/BusquedaTransacciones/${plaza}/${this.page}/null/${tag}`)
-          .then((result)=>{
-            console.log(result);
-            if((result.data.status == "Ok") && (result.data.body.length > 0)){
-              this.modalLoading = false
-              this.totalPaginas = result.data.numberPages
-              this.currentPage = result.data.now
-              result.data.body.forEach((e)=>{
-                let obj = {
-                  tag: e.noTag,
-                  carril: e.carril,
-                  fecha: e.fecha,
-                  medioPago: e.nombrePago,
-                  tipo: e.tipoVehiculo,
-                  tarifa: e.tarifa
-                }
-                this.cruces.push(obj)
-              })
-            }else{
-              this.modalLoading = false
-              this.$notify({
-                title:'Sin Información',
-                text:'No se encontró el tag ingresado',
-                type: 'warn'
-              });
-            }
-          })
-        }else if ((fecha != '' || fecha != undefined || fecha != null) && (tag == '' || tag == undefined || tag == null)){
-          console.log('fecha');
-          axios.get(`${API}/Transacciones/BusquedaTransacciones/${plaza}/${this.page}/${fecha}/null`)
-          .then((result)=>{
-            console.log(result);
-            if((result.data.status == "Ok") && (result.data.body.length > 0)){
-              this.modalLoading = false
-              this.totalPaginas = result.data.numberPages
-              this.currentPage = result.data.now
-              result.data.body.forEach((e)=>{
-                let obj = {
-                  tag: e.noTag,
-                  carril: e.carril,
-                  fecha: e.fecha,
-                  medioPago: e.nombrePago,
-                  tipo: e.tipoVehiculo,
-                  tarifa: e.tarifa
-                }
-                this.cruces.push(obj)
-              })
-            }else{
-              this.modalLoading = false
-              this.$notify({
-                title:'Sin Información',
-                text:'No se encontraron transacciones en la fecha indicada',
-                type: 'warn'
-              });
-            }
-          })
-        }else if((tag != '' || tag != undefined || tag != null) && (fecha != '' || fecha != undefined || fecha != null)){
-          axios.get(`${API}/Transacciones/BusquedaTransacciones/${plaza}/${this.page}/${fecha}/${tag}`)
-          .then((result)=>{
-            console.log(result);
-            if((result.data.status == "Ok") && (result.data.body.length > 0)){
-              this.modalLoading = false
-              this.totalPaginas = result.data.numberPages
-              this.currentPage = result.data.now
-              result.data.body.forEach((e)=>{
-                let obj = {
-                  tag: e.noTag,
-                  carril: e.carril,
-                  fecha: e.fecha,
-                  medioPago: e.nombrePago,
-                  tipo: e.tipoVehiculo,
-                  tarifa: e.tarifa
-                }
-                this.cruces.push(obj)
-              })
-            }else{
-              this.modalLoading = false
-              this.$notify({
-                title:'Sin Información',
-                text:'No se encontraron transacciones',
-                type: 'warn'
-              });
-            }
-          })
-        }
-      }
-    },
-    showMore(page){
-      this.cruces = []
-      let plaza = this.plaza
-      let fecha = this.fecha;
-      let tag = this.tag
+    }
+    //Función para cambiar de página
+    function showMore(page){
+      cruces.value = []
+      let plaza = plaza.value
+      let fecha = fecha.value;
+      let tag = tag.value
       axios.get(`${API}/Transacciones/BusquedaTransacciones/${plaza}/${page}/${fecha}/${tag}`)
         .then((result)=>{
           console.log(result);
           if(result.data.status == "Ok"){
-            this.modalLoading = false
-            this.totalPaginas = result.data.numberPages
-            this.currentPage = result.data.now
+            modalLoading.value = false
+            totalPaginas.value = result.data.numberPages
+            currentPage.value = result.data.now
             result.data.body.forEach((e)=>{
               let obj = {
                 tag: e.noTag,
@@ -323,160 +263,79 @@ export default {
                 tipo: e.tipoVehiculo,
                 tarifa: e.tarifa
               }
-              this.cruces.push(obj)
+              cruces.value.push(obj)
             })
           }
         })
-    },
-    /*pedirDatos: function (pagina, tag, plazas, fecha) {
-      let config = {
-        headers: {
-          Authorization: "Bearer " + this.token,
-        },
-      };
-      if (tag === "") {
-        tag = null;
-      }
-      if (fecha === "") {
-        fecha = null;
-      }
-      this.data["pagenumber"] = pagina;
-      this.data["tagfilter"] = tag;
-      this.data["idplaza"] = plazas;
-      this.data["fechainicial"] = fecha;
-      axios.post(`${API}/Transacciones`,this.data,config)
-        .then((res) => {
-          this.cruces = [];
-          this.paginas = res.data.numberOfPages;
-          this.paginas = res.data.numberOfPages;
-          res.data.transacciones.forEach((e) => {
-            let obj = {
-                  plaza: e.plaza,
-                  num_tag: e.noTag,
-                  fecha: e.fecha,
-                  carril: e.carril,
-                  tipo_vehiculo: e.tipoVehiculo,
-                  tarifa: e.tarifa,
-                  clase: e.descripcion,
-                  pago: e.nombrePago
-            };
-            this.cruces.push(obj);
-          });
-        });
-    },*/
-    /*left: function () {
-      if (this.paginaActual <= this.paginas) {
-        this.paginaActual = this.paginaActual - 1;
-        this.pedirDatos(
-          this.paginaActual,
-          this.data.tagfilter,
-          this.data.plazas,
-          this.data.fechainicial
-        );
-      } else {
-        console.log("No se puede regresar la pagina");
-      }
-    },*/
-    /*right: function () {
-      if (this.paginaActual < this.paginas) {
-        this.paginaActual = this.paginaActual + 1;
-        this.pedirDatos(
-          this.paginaActual,
-          this.data.tagfilter,
-          this.data.plazas,
-          this.data.fechainicial
-        );
-      } else {
-        console.log("No se puede cambiar la pagina");
-      }
-    },*/
-    /*buscar: function () {
-        let fecha = document.getElementById("fecha").value;
-        let tag = document.getElementById("tag").value;
-        this.paginaActual = 1;
-        let plaza = this.plaza
-        this.pedirDatos(this.paginaActual, tag, plaza , fecha);
-        document.getElementById("fecha").value = "";
-        document.getElementById("tag").value = ""; 
-    },*/
-    downloadApi (tipo) {
-      console.log(tipo)
+    }
+    //Función que regresa el id del tramo y la plaza
+    function recibir_tramo_plaza(value){
+      tramo.value = value.tramo
+      plaza.value = value.plaza
+    }
+    //Función que manda a llamar al servicio para descargar el archivo en el formato seleccionado
+    function downloadApi(tipo) {
       var myHeaders = new Headers();
-      myHeaders.append("Authorization", "Bearer " + this.token);
+      myHeaders.append("Authorization", "Bearer " + token.value);
       myHeaders.append("Content-Type", "application/json");
-      if(this.plaza == ''){
-        this.$notify({
+      if(plaza.value == ''){
+        notify({
           title:'Sin Información',
           text:'No se puede exportar sin antes hacer una busqueda',
           type: 'warn'
         });
       }else{
-        if(this.fecha == null && this.tag == null && this.plaza != ''){
-          //let fecha = ''
-          //let tag = ''
-          let plaza = this.plaza
-          //let carril = ''
-          //let fechaInicial = fecha
-          //let fechaFinal = ''
-          //console.log(`${API}/Transacciones/Download/Csv/${plaza}?tag=${tag}&carril=${carril}&fechaInicial=${fechaInicial}&fechaFinal=${fechaFinal}`)
+        //Sin filtros solo Plaza
+        if(fecha.value == null && tag.value == null && plaza.value != ''){
           if (tipo == "csv") {
-            //ServiceFiles.xml_hhtp_request(`${API}/Transacciones/Download/Csv/${plaza}?tag=${tag}&carril=${carril}&fechaInicial=${fechaInicial}&fechaFinal=${fechaFinal}`, 'transacciones.csv')
-
-            ServiceFiles.xml_hhtp_request(`${API}/Transacciones/Download/Csv/${plaza}/null/null`, 'transacciones.csv')
+            ServiceFiles.xml_hhtp_request(`${API}/Transacciones/Download/Csv/${plaza.value}/null/null`, 'transacciones.csv')
           } 
           else if (tipo == "excel") {        
-            ServiceFiles.xml_hhtp_request(`${API}/Transacciones/Download/Excel/${plaza}/null/null`, 'transacciones.xlsx')            
+            ServiceFiles.xml_hhtp_request(`${API}/Transacciones/Download/Excel/${plaza.value}/null/null`, 'transacciones.xlsx')            
           } 
           else if (tipo == "txt") {
-            ServiceFiles.xml_hhtp_request(`${API}/Transacciones/Download/txt/${plaza}/null/null`, 'transacciones.txt')
+            ServiceFiles.xml_hhtp_request(`${API}/Transacciones/Download/txt/${plaza.value}/null/null`, 'transacciones.txt')
           }
-        }else if(this.tag != null && this.fecha == null &&  this.plaza != ''){
-          let plaza = this.plaza
-          let tag = this.tag
+        }//Filtro de Tag y Plaza
+        else if(tag.value != null && fecha.value == null && plaza.value != ''){
           if (tipo == "csv") {
-            ServiceFiles.xml_hhtp_request(`${API}/Transacciones/Download/Csv/${plaza}/${tag}/null`, 'transacciones.csv')
+            ServiceFiles.xml_hhtp_request(`${API}/Transacciones/Download/Csv/${plaza.value}/${tag.value}/null`, 'transacciones.csv')
           } 
           else if (tipo == "excel") {        
-            ServiceFiles.xml_hhtp_request(`${API}/Transacciones/Download/Excel/${plaza}/${tag}/null`, 'transacciones.xlsx')            
+            ServiceFiles.xml_hhtp_request(`${API}/Transacciones/Download/Excel/${plaza.value}/${tag.value}/null`, 'transacciones.xlsx')            
           } 
           else if (tipo == "txt") {
-            ServiceFiles.xml_hhtp_request(`${API}/Transacciones/Download/txt/${plaza}/${tag}/null`, 'transacciones.txt')
+            ServiceFiles.xml_hhtp_request(`${API}/Transacciones/Download/txt/${plaza.value}/${tag.value}/null`, 'transacciones.txt')
           }
-        }else if(this.fecha != null && this.tag == null &&  this.plaza != ''){
-          let plaza = this.plaza
-          let fecha = this.fecha
+        }//Filtro de Fecha y Plaza
+        else if(fecha.value != null && tag.value == null && plaza.value != ''){
           if (tipo == "csv") {
-            ServiceFiles.xml_hhtp_request(`${API}/Transacciones/Download/Csv/${plaza}/null/${fecha}`, 'transacciones.csv')
+            ServiceFiles.xml_hhtp_request(`${API}/Transacciones/Download/Csv/${plaza.value}/null/${fecha.value}`, 'transacciones.csv')
           } 
           else if (tipo == "excel") {        
-            ServiceFiles.xml_hhtp_request(`${API}/Transacciones/Download/Excel/${plaza}/null/${fecha}`, 'transacciones.xlsx')            
+            ServiceFiles.xml_hhtp_request(`${API}/Transacciones/Download/Excel/${plaza.value}/null/${fecha.value}`, 'transacciones.xlsx')            
           } 
           else if (tipo == "txt") {
-            ServiceFiles.xml_hhtp_request(`${API}/Transacciones/Download/txt/${plaza}/null/${fecha}`, 'transacciones.txt')
+            ServiceFiles.xml_hhtp_request(`${API}/Transacciones/Download/txt/${plaza.value}/null/${fecha.value}`, 'transacciones.txt')
           }
-        }else{
-          let fecha = this.fecha
-          let tag = this.tag
-          let plaza = this.plaza
+        }//Todos los filtros
+        else{
           if (tipo == "csv") {
-            ServiceFiles.xml_hhtp_request(`${API}/Transacciones/Download/Csv/${plaza}/${tag}/${fecha}`, 'transacciones.csv')
+            ServiceFiles.xml_hhtp_request(`${API}/Transacciones/Download/Csv/${plaza.value}/${tag.value}/${fecha.value}`, 'transacciones.csv')
           } 
           else if (tipo == "excel") {        
-            ServiceFiles.xml_hhtp_request(`${API}/Transacciones/Download/Excel/${plaza}/${tag}/${fecha}`, 'transacciones.xlsx')            
+            ServiceFiles.xml_hhtp_request(`${API}/Transacciones/Download/Excel/${plaza.value}/${tag.value}/${fecha.value}`, 'transacciones.xlsx')            
           } 
           else if (tipo == "txt") {
-            ServiceFiles.xml_hhtp_request(`${API}/Transacciones/Download/txt/${plaza}/${tag}/${fecha}`, 'transacciones.txt')
+            ServiceFiles.xml_hhtp_request(`${API}/Transacciones/Download/txt/${plaza.value}/${tag.value}/${fecha.value}`, 'transacciones.txt')
           }
         }
       }
-    },
-    recibir_tramo_plaza(value){
-      this.tramo = value.tramo
-      this.plaza = value.plaza
-    },
-  
-  },
-};
+    }
+
+    return{ serch, limpiar, showMore, recibir_tramo_plaza, downloadApi, cruces, token, tag, fecha, formato, tramo, plaza, page, totalPaginas, currentPage, hasMorePages, modalLoading}
+  }
+}
 </script>
 <style global>
 @keyframes example {
@@ -489,51 +348,6 @@ export default {
 }
 </style>
 <style scoped>
-.modal-container{
-    position: fixed;
-    width: 100%;
-    height: 100vh;
-    z-index: 1000;
-    background: rgba(0, 0, 0, 0.2);
-}
-
-.loading {
-  text-align: center;
-  padding: 20px;
-  font-size: 17px;
-  font-weight: bold;
-  animation-name: example;
-  animation-duration: 1s;
-  animation-iteration-count: infinite;
-}
-
-.desc-paginacion {
-  padding-top: 5px;
-  font-size: 12px;
-}
-
-.button-pagination {
-  padding: 2px;
-  border: 1px solid black;
-  margin-right: 5px;
-  font-size: 12px;
-  margin-top: 20px;
-}
-
-.filter-style-2 {
-  color: white;
-  font-size: 16px;
-  margin-left: 10px;
-}
-
-.filter-style-2 input {
-  margin-left: 20px;
-  color: black;
-  border-bottom: 1px solid black;
-  padding: 0px 5px;
-  color: white;
-}
-
 .inp-icon {
   background: url("~@/assets/search.png") no-repeat 100%;
   background-size: 16px;
@@ -559,20 +373,6 @@ export default {
   margin-left: auto;
   margin-right: 10px;
 }
-
-.filter-style {
-  color: white;
-  font-size: 16px;
-  margin-left: 10px;
-}
-
-.filter-style input {
-  margin-left: 20px;
-  color: black;
-  border: 1px solid black;
-  padding: 0px 5px;
-}
-
 .btn-carriles {
   background-color: #017296;
   color: white;
@@ -610,11 +410,6 @@ export default {
 }
 
 @media (max-width: 769px) {
-  .filter-style {
-    padding-top: 5px;
-    padding-bottom: 15px;
-  }
-
   .btn-carriles {
     background-color: #017296;
     color: white;

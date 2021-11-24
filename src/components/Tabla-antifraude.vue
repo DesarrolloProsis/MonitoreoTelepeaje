@@ -51,7 +51,7 @@ export default {
     padding-top: 20px;
     overflow-x: auto;
     overflow-y: auto;
-    max-height: 500px;
+    max-height: 667px;
     width: 110%; 
 }
 .tftable {

@@ -39,117 +39,108 @@ import FilesDownload from '../../components/Files-descargar.vue'
 import axios from "axios";
 import Paginacion from "../../components/Paginacion.vue"
 import Spinner from '../../components/Spinner.vue'
+import { notify } from "@kyvg/vue3-notification";
+import { ref } from 'vue'
 export default {
     name: "BitacoraAccesos",
     components: { Navbar, Footer, FormTramoPlaza, TablaListas, FilesDownload, Paginacion,Spinner },
-    data() {
-        return {
-            tramo: '',
-            plaza: null,
-            fecha:null,
-            tag:null,
-            listaHistorico: [],
-            formato:'',
-            modalLoading: false,
-            page: 1,
-            totalPaginas: 0,
-            currentPage: 1,
-            hasMorePages: true,
-        };
-    },
-    beforeMount(){},
-    methods: {
-        limpiar(plaza){
-            this.listaHistorico = []
-            this.fecha = null
-            axios.get(`${API}/Historico/${plaza}/${this.fecha}/${this.page}`)
-            .then((result)=>{
-                if(result.data.status == 'Ok'){
-                    this.modalLoading = false
-                    this.totalPaginas = result.data.numberPages
-                    this.currentPage = result.data.now
-                    result.data.body.forEach((e)=>{
-                        let obj = {
-                            fechaCreacion: e.fechaCreacion,
-                            numeroDeTags: e.numeroDeTags,
-                            timepoTotal: e.timepoTotal
-                        }
-                        this.listaHistorico.push(obj)
-                    })
-                }else{
-                    this.modalLoading = false
-                    this.$notify({
-                        title:'Sin Información',
-                        text:'No se encontraron listas',
-                        type: 'warn'
-                    });
-                }
-            })
-        },
-        buscar(plaza, fecha){
-            this.listaHistorico = []
-            this.modalLoading= true
+    setup() {
+        const tramo = ref('')
+        const plaza = ref(null)
+        const fecha = ref(null)
+        const tag = ref(null)
+        const listaHistorico= ref([])
+        const formato = ref('')
+        const modalLoading = ref(false)
+        const page = ref(1)
+        const totalPaginas = ref(0)
+        const currentPage = ref(1)
+        const hasMorePages = ref(true)
+        //Función que busca las listas por plaza y con o sin filtro de fecha
+        function buscar(plaza, fecha){
+            listaHistorico.value = []
+            modalLoading.value = true
             if(plaza == '' || plaza == undefined){
-                this.modalLoading= false
-                this.$notify({
+                modalLoading.value = false
+                notify({
                     title:'Sin Información',
                     text:'Se debe de seleccionar la plaza para realizar una busqueda',
                     type: 'warn'
                 });
             }else{
-                axios.get(`${API}/Historico/${plaza}/${fecha}/${this.page}`)
+                axios.get(`${API}/Historico/${plaza}/${fecha}/${page.value}`)
                 .then((result)=>{
                     console.log(result.data);
                     if(result.data.status == 'Ok'){
-                        this.modalLoading = false
-                        this.totalPaginas = result.data.numberPages
-                        this.currentPage = result.data.now
+                        modalLoading.value = false
+                        totalPaginas.value = result.data.numberPages
+                        currentPage.value = result.data.now
                         result.data.body.forEach((e)=>{
                             let obj = {
                                 fechaCreacion: e.fechaCreacion,
                                 numeroDeTags: e.numeroDeTags,
                                 timepoTotal: e.timepoTotal
                             }
-                            this.listaHistorico.push(obj)
+                            listaHistorico.value.push(obj)
                         })
                     }else{
                         setTimeout(() => {
-                            this.modalLoading = false
-                            this.$notify({
+                            modalLoading.value = false
+                            notify({
                                 title:'Sin Información',
                                 text:'No se encontraron listas',
                                 type: 'warn'
                             });
-                        }, 1000)
-                        
+                        }, 1000) 
                     }
                 })
             }
-        },
-        recibir_tramo_plaza(value){
-            this.tramo = value.tramo
-            this.plaza = value.plaza
-        },
-        showMore(page){
-            this.listaHistorico = []
-            let plaza = this.plaza
-            let fecha = this.fecha;
-            axios.get(`${API}/Historico/${plaza}/${fecha}/${page}`)
+        }//Función que trae las listas de la plaza seleccionada, sin filtros
+        function limpiar(plaza){
+            listaHistorico.value = []
+            fecha.value = null
+            axios.get(`${API}/Historico/${plaza}/${fecha.value}/${page.value}`)
             .then((result)=>{
                 if(result.data.status == 'Ok'){
-                    this.modalLoading = false
+                    modalLoading.value = false
+                    totalPaginas.value = result.data.numberPages
+                    currentPage.value = result.data.now
                     result.data.body.forEach((e)=>{
                         let obj = {
                             fechaCreacion: e.fechaCreacion,
                             numeroDeTags: e.numeroDeTags,
                             timepoTotal: e.timepoTotal
                         }
-                        this.listaHistorico.push(obj)
+                        listaHistorico.value.push(obj)
+                    })
+                }else{
+                    modalLoading.value = false
+                    notify({
+                        title:'Sin Información',
+                        text:'No se encontraron listas',
+                        type: 'warn'
+                    });
+                }
+            })
+        }//Función para cambiar de página
+        function showMore(page){
+            listaHistorico.value = []
+            axios.get(`${API}/Historico/${plaza.value}/${fecha.value}/${page}`)
+            .then((result)=>{
+                if(result.data.status == 'Ok'){
+                    modalLoading.value = false
+                    result.data.body.forEach((e)=>{
+                        let obj = {
+                            fechaCreacion: e.fechaCreacion,
+                            numeroDeTags: e.numeroDeTags,
+                            timepoTotal: e.timepoTotal
+                        }
+                        listaHistorico.value.push(obj)
                     })
                 }else{
                     setTimeout(() => {
-                        this.modalLoading = false
-                        this.$notify({
+                        modalLoading.value = false
+                        notify({
                             title:'Sin Información',
                             text:'No se encontraron listas',
                             type: 'warn'
@@ -157,39 +148,45 @@ export default {
                     }, 1000)  
                 }
             })
-        },
-        downloadApi(formato){
-        if(this.plaza == null || this.plaza == undefined || this.plaza == ''){
-            this.$notify({
+        }//Función que regresa el id de la plaza y el tramo
+        function recibir_tramo_plaza(value){
+            tramo.value = value.tramo
+            plaza.value = value.plaza
+        }//Función para la descarga de los archivos en 3 formatos
+        function downloadApi(formato){
+        if(plaza.value == null || plaza.value == undefined || plaza.value == ''){
+            notify({
                 title:'Sin Información',
                 text:'No se puede exportar sin antes hacer una busqueda',
                 type: 'warn'
             });
         }else{
-            if(this.fecha == null || this.fecha == '' || this.fecha == undefined){
+            if(fecha.value == null || fecha.value == '' || fecha.value == undefined){
                 if (formato == "csv") {
-                    ServiceFiles.xml_hhtp_request(`${API}/Historico/Download/Csv/${this.plaza}/null`, 'bitacoraListas.csv')
+                    ServiceFiles.xml_hhtp_request(`${API}/Historico/Download/Csv/${plaza.value}/null`, 'bitacoraListas.csv')
                 } 
                 else if (formato == "excel") {        
-                    ServiceFiles.xml_hhtp_request(`${API}/Historico/Operador/Download/Excel/${this.plaza}/null`, 'bitacoraListas.xlsx')    
+                    ServiceFiles.xml_hhtp_request(`${API}/Historico/Operador/Download/Excel/${plaza.value}/null`, 'bitacoraListas.xlsx')    
                 } 
                 else if (formato == "txt") {
-                    ServiceFiles.xml_hhtp_request(`${API}/Historico/Download/txt/${this.plaza}/null`, 'bitacoraListas.txt')
+                    ServiceFiles.xml_hhtp_request(`${API}/Historico/Download/txt/${plaza.value}/null`, 'bitacoraListas.txt')
                 }      
             }else{
                 if (formato == "csv") {
-                    ServiceFiles.xml_hhtp_request(`${API}/Historico/Download/Csv/${this.plaza}/${this.fecha}`, 'bitacoraListas.csv')
+                    ServiceFiles.xml_hhtp_request(`${API}/Historico/Download/Csv/${plaza.value}/${fecha.value}`, 'bitacoraListas.csv')
                 } 
                 else if (formato == "excel") {        
-                    ServiceFiles.xml_hhtp_request(`${API}/Historico/Operador/Download/Excel/${this.plaza}/${this.fecha}`, 'bitacoraListas.xlsx')    
+                    ServiceFiles.xml_hhtp_request(`${API}/Historico/Operador/Download/Excel/${plaza.value}/${fecha.value}`, 'bitacoraListas.xlsx')    
                 } 
                 else if (formato == "txt") {
-                    ServiceFiles.xml_hhtp_request(`${API}/Historico/Download/txt/${this.plaza}/${this.fecha}`, 'bitacoraListas.txt')
+                    ServiceFiles.xml_hhtp_request(`${API}/Historico/Download/txt/${plaza.value}/${fecha.value}`, 'bitacoraListas.txt')
                 }
             }
             }
-        },
-    },
+        }
+
+        return{ buscar, limpiar, showMore, recibir_tramo_plaza, downloadApi, tramo, plaza, fecha, tag, listaHistorico, formato, modalLoading, page, totalPaginas, currentPage, hasMorePages,}
+    }
 }
 </script>
 <style scoped>

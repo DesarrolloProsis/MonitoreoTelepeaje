@@ -1,7 +1,7 @@
 <template>
   <Navbar/>
   <div class="h-screen md:h-full md:mb-0 mb-9">
-    <h1 class="title-center">Monitoreo de Carriles</h1>
+    <h1 class="title-center font-titulo font-bold pb-1">Monitoreo de Carriles</h1>
     <TablaCarriles/>
   </div>
   <Footer/>
