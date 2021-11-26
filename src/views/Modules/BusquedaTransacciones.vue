@@ -77,6 +77,7 @@ export default {
     const currentPage = ref(1)
     const hasMorePages = ref(true)
     const modalLoading = ref(false)
+    const numRespuesta = ref(10)
     //Función que busca las transacciones en la plaza, con o sin filtros
     function serch(plaza,tag, fecha){
       modalLoading.value = true
@@ -91,7 +92,8 @@ export default {
         });
       }else{
         if((tag == '' || tag == undefined || tag == null) && (fecha == '' || fecha == undefined || fecha == null)){
-          axios.get(`${API}/Transacciones/BusquedaTransacciones/${plaza}/${page.value}/null/null`)
+          //axios.get(`${API}/Transacciones/BusquedaTransacciones/${plaza}/${page.value}/null/null`)
+          axios.get(`${API}/Transacciones/BusquedaTransacciones/PaginacionCompleta/${plaza}/null/null/${page.value}/${numRespuesta.value}`)
           .then((result)=>{
             console.log(result);
             if(result.data.status == "Ok"){
@@ -120,7 +122,8 @@ export default {
           })
         }else if ((tag != '' || tag != undefined || tag != null) && (fecha == '' || fecha == undefined || fecha == null)){
           console.log(tag);
-          axios.get(`${API}/Transacciones/BusquedaTransacciones/${plaza}/${page.value}/null/${tag}`)
+          //axios.get(`${API}/Transacciones/BusquedaTransacciones/${plaza}/${page.value}/null/${tag}`)
+          axios.get(`${API}/Transacciones/BusquedaTransacciones/PaginacionCompleta/${plaza}/null/${tag}/${page.value}/${numRespuesta.value}`)
           .then((result)=>{
             console.log(result);
             if((result.data.status == "Ok") && (result.data.body.length > 0)){
@@ -149,7 +152,8 @@ export default {
           })
         }else if ((fecha != '' || fecha != undefined || fecha != null) && (tag == '' || tag == undefined || tag == null)){
           console.log('fecha');
-          axios.get(`${API}/Transacciones/BusquedaTransacciones/${plaza}/${page.value}/${fecha}/null`)
+          //axios.get(`${API}/Transacciones/BusquedaTransacciones/${plaza}/${page.value}/${fecha}/null`)
+          axios.get(`${API}/Transacciones/BusquedaTransacciones/PaginacionCompleta/${plaza}/${fecha}/null/${page.value}/${numRespuesta.value}`)
           .then((result)=>{
             console.log(result);
             if((result.data.status == "Ok") && (result.data.body.length > 0)){
@@ -177,7 +181,8 @@ export default {
             }
           })
         }else if((tag != '' || tag != undefined || tag != null) && (fecha != '' || fecha != undefined || fecha != null)){
-          axios.get(`${API}/Transacciones/BusquedaTransacciones/${plaza}/${page.value}/${fecha}/${tag}`)
+          //axios.get(`${API}/Transacciones/BusquedaTransacciones/${plaza}/${page.value}/${fecha}/${tag}`)
+          axios.get(`${API}/Transacciones/BusquedaTransacciones/PaginacionCompleta/${plaza}/${fecha}/${tag}/${page.value}/${numRespuesta.value}`)
           .then((result)=>{
             console.log(result);
             if((result.data.status == "Ok") && (result.data.body.length > 0)){
@@ -213,7 +218,8 @@ export default {
       cruces.value = []
       fecha.value = null
       tag.value = null
-      axios.get(`${API}/Transacciones/BusquedaTransacciones/${plaza}/${page.value}/null/null`)
+      //axios.get(`${API}/Transacciones/BusquedaTransacciones/${plaza}/${page.value}/null/null`)
+      axios.get(`${API}/Transacciones/BusquedaTransacciones/PaginacionCompleta/${plaza}/null/null/${page.value}/${numRespuesta.value}`)
       .then((result)=>{
         console.log(result);
         if(result.data.status == "Ok"){
@@ -243,11 +249,10 @@ export default {
     }
     //Función para cambiar de página
     function showMore(page){
-      cruces.value = []
-      let plaza = plaza.value
-      let fecha = fecha.value;
-      let tag = tag.value
-      axios.get(`${API}/Transacciones/BusquedaTransacciones/${plaza}/${page}/${fecha}/${tag}`)
+      if((fecha.value == '' || fecha.value == null || fecha.value == undefined) && (tag.value == '' || tag.value == null || tag.value == undefined)){
+        cruces.value = []
+        //axios.get(`${API}/Transacciones/BusquedaTransacciones/${plaza}/${page}/${fecha}/${tag}`)
+        axios.get(`${API}/Transacciones/BusquedaTransacciones/PaginacionCompleta/${plaza.value}/null/null/${page}/${numRespuesta.value}`)
         .then((result)=>{
           console.log(result);
           if(result.data.status == "Ok"){
@@ -267,6 +272,30 @@ export default {
             })
           }
         })
+      }else{
+        cruces.value = []
+        //axios.get(`${API}/Transacciones/BusquedaTransacciones/${plaza}/${page}/${fecha}/${tag}`)
+        axios.get(`${API}/Transacciones/BusquedaTransacciones/PaginacionCompleta/${plaza.value}/${fecha.value}/${tag.value}/${page}/${numRespuesta.value}`)
+        .then((result)=>{
+          console.log(result);
+          if(result.data.status == "Ok"){
+            modalLoading.value = false
+            totalPaginas.value = result.data.numberPages
+            currentPage.value = result.data.now
+            result.data.body.forEach((e)=>{
+              let obj = {
+                tag: e.noTag,
+                carril: e.carril,
+                fecha: e.fecha,
+                medioPago: e.nombrePago,
+                tipo: e.tipoVehiculo,
+                tarifa: e.tarifa
+              }
+              cruces.value.push(obj)
+            })
+          }
+        })
+      }
     }
     //Función que regresa el id del tramo y la plaza
     function recibir_tramo_plaza(value){
