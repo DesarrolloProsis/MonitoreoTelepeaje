@@ -155,28 +155,6 @@ export default {
           notify({ type: 'warning', title:'Rol no creado', text: `No se pudo crear el rol ${objRol.nombreRol}`});
         })
     }
-    /* function  acciones_mapper (formato){
-      if(formato == 'excel'){
-        console.log('excel');
-      }if(formato == 'csv'){
-        console.log('csv');
-      }if(formato == 'txt'){
-        console.log('txt');
-      }
-      this.formato = ''
-    }
-    function opticones_select_acciones(){
-      let options= [
-          {  value: 'excel', name: 'EXCEL'},//0
-          {  value: 'csv', name: 'CSV'},//1
-          {  value: 'txt', name: 'TXT'},//2
-      ]
-      let filtroOpciones = []
-          filtroOpciones.push(options[0])
-          filtroOpciones.push(options[1])
-          filtroOpciones.push(options[2])
-      return filtroOpciones
-    } */
     function buscar (nombre,estatus){
       roles.value = []
       modalLoading.value = true
