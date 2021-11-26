@@ -186,16 +186,13 @@ export default {
       else{
         token.value =  Servicio.getCookie("Token");
         if((nombre == '') && (estatus == 0) && (plaza != '' || plaza != null || plaza != undefined)){
-          console.log('plaza');
           let config = {
             headers: {
               Authorization: "Bearer " + token.value,
             },
           };
-          console.log(config);
           axios.get(`${API}/Usuario?Page=${paginaAct.value}&Rows=10&plaza=${plaza}`,config)
           .then((res) => {
-            console.log(res);
             perfiles.value = []
             habilitar.value = true
             maxPages.value = res.data.totalPages;
@@ -236,7 +233,6 @@ export default {
             });
           });
         }if((estatus != 0) && (plaza != '' || plaza != null || plaza != undefined)){
-          console.log('estatus');
           perfiles.value = []
           if(estatus.value == 100){
             let config = {
@@ -302,11 +298,9 @@ export default {
           "apellidoPaterno": usuario.apellidoP,
           "apellidoMaterno": usuario.apellidoM,
           "idrol": usuario.rol,
-        } 
-        console.log(data);
+        }
         if(usuario.nombre != '' && usuario.apellidoP != '' && usuario.apellidoM != '' && usuario.pass != '' ){
           let userName = usuario.nombre.slice(0,3)+usuario.apellidoP
-          console.log(userName);
           modalLoading.value = true
           modalAgregar.value = false
           axios.post(`${API}/Usuario`,data,config)
