@@ -14,7 +14,7 @@
       </div>
       <div class="flex-none filter-style mx-16">
         <button @click="buscar(plaza,fecha,carril,tag)" class="btn-buscar">Buscar</button>
-        <button @click="todos(plaza)" class="btn-buscar ml-4 -mr-8">Limpiar</button>
+        <button @click="todos(plaza)" class="btn-buscar ml-4 -mr-8">Todas</button>
       </div>
       <div class="flex-1">
         <FilesDownload @download-api="downloadApi"/>   
@@ -49,15 +49,16 @@ export default {
     const transacciones = ref([])
     const tramo = ref('')
     const plaza = ref('')
-    const carril = ref('')
-    const fecha = ref('')
-    const tag = ref('')
+    const carril = ref(null)
+    const fecha = ref(null)
+    const tag = ref(null)
     const formato = ref('')
     const page = ref(0)
     const totalPaginas = ref(0)
     const currentPage = ref(1)
     const hasMorePages = ref(true)
     const modalLoading = ref(false)
+    const numRespuesta = ref(10)
     //Función que regresa las transacciones con o sin filtro, pero la plaza es obligatoria
     function buscar(plaza, fecha, carril, tag){
       modalLoading.value = true
@@ -69,20 +70,21 @@ export default {
           type: 'warn'
         });
       }else{
-        if((carril == undefined || carril == null || carril == '') && (tag == undefined || tag == null || tag == '') && (fecha == undefined || fecha == null || fecha == '')){
-        let datoCarril = 'null'
+        if((tag == undefined || tag == null || tag == '') && (carril == undefined || carril == null || carril == '') && (fecha == undefined || fecha == null || fecha == '')){
+        /* let datoCarril = 'null'
         let tag = 'null'
-        let fecha = 'null'
+        let fecha = 'null' */
         modalLoading.value = true
         transacciones.value = []
-        let data = {
+        /* let data = {
           "plazaId": plaza,
           "carril": datoCarril,
           "fecha": fecha,
           "tag": tag,
           "skip": 1
-        }
-        axios.post(`${API}/Transacciones/TransactionsFiltros`,data)
+        } */
+        //axios.post(`${API}/Transacciones/TransactionsFiltros`,data)
+        axios.post(`${API}/Transacciones/TransactionsFiltrosR/${plaza}/null/null/null/${currentPage.value}/${numRespuesta.value}`)
         .then((result)=>{
           console.log(result);
           modalLoading.value = false
@@ -94,7 +96,7 @@ export default {
               let obj = {
                 tag: e.idTag,
                 fechaCruce: e.fechaDeCruce,
-                fechaEnvio: e.fechaEnvio,
+                fechaEnvio: e.FechaEnvio,
                 carril: e.carril,
                 claseCajero: e.claseCajero,
                 tarifa: e.tarifa
@@ -110,19 +112,10 @@ export default {
             });
           }
         })
-        }else if(carril == undefined && fecha == '' && tag != ''){
+        }else if((tag != undefined || tag != null || tag != '') && (carril == undefined || carril == null || carril == '') && (fecha == undefined || fecha == null || fecha == '')){
           this.modalLoading = true
-          let datoCarril = 'null'
-          let datofecha = 'null'
           transacciones.value = []
-          let data = {
-            "plazaId": plaza,
-            "carril": datoCarril,
-            "fecha": datofecha,
-            "tag": tag,
-            "skip": 1
-          }
-          axios.post(`${API}/Transacciones/TransactionsFiltros`,data)
+          axios.post(`${API}/Transacciones/TransactionsFiltrosR/${plaza}/null/null/${tag}/1/${numRespuesta.value}`)
           .then((result)=>{
           if((result.data.status == 'Ok') && (result.data.body.length > 0)){
             modalLoading.value = false
@@ -148,19 +141,10 @@ export default {
             });
           }
         })
-        }else if((carril != undefined || carril != null || carril != '') && (tag == '') && (fecha == '')){
+        }else if((tag == undefined || tag == null || tag == '') && (carril != undefined || carril != null || carril != '') && (fecha == undefined || fecha == null || fecha == '')){
           modalLoading.value = true
-          let datoTag = 'null'
-          let fech = 'null'
           transacciones.value = []
-          let data = {
-            "plazaId": plaza,
-            "carril": carril,
-            "fecha": fech,
-            "tag": datoTag,
-            "skip": 1
-          }
-          axios.post(`${API}/Transacciones/TransactionsFiltros`,data)
+          axios.post(`${API}/Transacciones/TransactionsFiltrosR/${plaza}/${carril}/null/null/1/${numRespuesta.value}`)
           .then((result)=>{
             if((result.data.status == 'Ok') && (result.data.body.length > 0)){
               modalLoading.value = false
@@ -188,17 +172,8 @@ export default {
           })
         }else if ((fecha != undefined || fecha != null || fecha != '') && (tag == undefined || tag == null || tag == '') && (carril == undefined || carril == null || carril == '')){
           modalLoading.value = true
-          let datoTag = 'null'
-          let datoCarril = 'null'
           transacciones.value = []
-          let data = {
-            "plazaId": plaza,
-            "carril": datoCarril,
-            "fecha": fecha,
-            "tag": datoTag,
-            "skip": 1
-          }
-          axios.post(`${API}/Transacciones/TransactionsFiltros`,data)
+          axios.post(`${API}/Transacciones/TransactionsFiltrosR/${plaza}/null/${fecha}/null/1/${numRespuesta.value}`)
           .then((result)=>{
             if((result.data.status == 'Ok') && (result.data.body.length > 0)){
               modalLoading.value = false
@@ -227,14 +202,7 @@ export default {
         }else{
           modalLoading.value = true
           transacciones.value = []
-          let data = {
-            "plazaId": plaza,
-            "carril": carril,
-            "fecha": fecha,
-            "tag": tag,
-            "skip": 1
-          }
-          axios.post(`${API}/Transacciones/TransactionsFiltros`,data)
+          axios.post(`${API}/Transacciones/TransactionsFiltrosR/${plaza}/${carril}/${fecha}/${tag}/1/${numRespuesta.value}`)
           .then((result)=>{
             if((result.data.status == 'Ok') && (result.data.body.length > 0)){
               modalLoading.value = false
@@ -264,16 +232,7 @@ export default {
       }
     }//Función que regresa las transacciones de la plaza asignada, sin filtros
     function todos(plaza) {
-      tag.value = ''
-      fecha.value = ''
-      let data = {
-        "plazaId": plaza,
-        "carril": 'null',
-        "fecha": 'null',
-        "tag": 'null',
-        "skip": 1
-      }
-      axios.post(`${API}/Transacciones/TransactionsFiltros`,data)
+      axios.post(`${API}/Transacciones/TransactionsFiltrosR/${plaza}/null/null/null/${currentPage.value}/${numRespuesta.value}`)
       .then((result)=>{
         if(result.data.status == 'Ok'){
           transacciones.value = []
@@ -303,29 +262,41 @@ export default {
     }//Función para cambiar de página sin filtros
     function showMore(page){
       transacciones.value = []
-      let data = {
-        "plazaId": plaza.value,
-        "carril": 'null',
-        "fecha": 'null',
-        "tag": 'null',
-        "skip": page
+      if((tag.value == undefined || tag.value == null || tag.value == '') && (carril.value == undefined || carril.value == null || carril.value == '') && (fecha.value == undefined || fecha.value == null || fecha.value == '')){
+        axios.post(`${API}/Transacciones/TransactionsFiltrosR/${plaza.value}/null/null/null/${page}/${numRespuesta.value}`)
+        .then((result)=>{
+          totalPaginas.value = result.data.numberPages
+          currentPage.value = result.data.now
+          result.data.body.forEach((e) => {
+            let obj = {
+              tag: e.idTag,
+              fechaCruce: e.fechaDeCruce,
+              fechaEnvio: e.FechaEnvio,
+              carril: e.carril,
+              claseCajero: e.claseCajero,
+              tarifa: e.tarifa
+            };
+            transacciones.value.push(obj);
+          });
+        })
+      }else{
+        axios.post(`${API}/Transacciones/TransactionsFiltrosR/${plaza.value}/${carril.value}/${fecha.value}/${tag.value}/${page}/${numRespuesta.value}`)
+        .then((result)=>{
+          totalPaginas.value = result.data.numberPages
+          currentPage.value = result.data.now
+          result.data.body.forEach((e) => {
+            let obj = {
+              tag: e.idTag,
+              fechaCruce: e.fechaDeCruce,
+              fechaEnvio: e.FechaEnvio,
+              carril: e.carril,
+              claseCajero: e.claseCajero,
+              tarifa: e.tarifa
+            };
+            transacciones.value.push(obj);
+          });
+        })
       }
-      axios.post(`${API}/Transacciones/TransactionsFiltros`,data)
-      .then((result)=>{
-        totalPaginas.value = result.data.numberPages
-        currentPage.value = result.data.now
-        result.data.body.forEach((e) => {
-          let obj = {
-            tag: e.idTag,
-            fechaCruce: e.fechaDeCruce,
-            fechaEnvio: e.FechaEnvio,
-            carril: e.carril,
-            claseCajero: e.claseCajero,
-            tarifa: e.tarifa
-          };
-          transacciones.value.push(obj);
-        });
-      })
     }//Función que regresa el id de la plaza, el tramo y el carril
     function  recibir_tramo_plaza(value){
       tramo.value = value.tramo
