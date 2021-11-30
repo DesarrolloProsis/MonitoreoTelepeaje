@@ -56,6 +56,7 @@ export default {
         const totalPaginas = ref(0)
         const currentPage = ref(1)
         const hasMorePages = ref(true)
+        const numRespuesta = ref(10)
         //Función que busca las listas por plaza y con o sin filtro de fecha
         function buscar(plaza, fecha){
             listaHistorico.value = []
@@ -68,7 +69,8 @@ export default {
                     type: 'warn'
                 });
             }else{
-                axios.get(`${API}/Historico/${plaza}/${fecha}/${page.value}`)
+                //axios.get(`${API}/Historico/${plaza}/${fecha}/${page.value}`)
+                axios.get(`${API}/Historico/ListaHistorico/PaginacionCompleta/${plaza}/${fecha}/${currentPage.value}/${numRespuesta.value}`)
                 .then((result)=>{
                     console.log(result.data);
                     if(result.data.status == 'Ok'){
@@ -99,7 +101,8 @@ export default {
         function limpiar(plaza){
             listaHistorico.value = []
             fecha.value = null
-            axios.get(`${API}/Historico/${plaza}/${fecha.value}/${page.value}`)
+            //axios.get(`${API}/Historico/${plaza}/${fecha.value}/${page.value}`)
+            axios.get(`${API}/Historico/ListaHistorico/PaginacionCompleta/${plaza}/${fecha.value}/${currentPage.value}/${numRespuesta.value}`)
             .then((result)=>{
                 if(result.data.status == 'Ok'){
                     modalLoading.value = false
@@ -124,30 +127,64 @@ export default {
             })
         }//Función para cambiar de página
         function showMore(page){
+            console.log(page);
             listaHistorico.value = []
-            axios.get(`${API}/Historico/${plaza.value}/${fecha.value}/${page}`)
-            .then((result)=>{
-                if(result.data.status == 'Ok'){
-                    modalLoading.value = false
-                    result.data.body.forEach((e)=>{
-                        let obj = {
-                            fechaCreacion: e.fechaCreacion,
-                            numeroDeTags: e.numeroDeTags,
-                            timepoTotal: e.timepoTotal
-                        }
-                        listaHistorico.value.push(obj)
-                    })
-                }else{
-                    setTimeout(() => {
+            //axios.get(`${API}/Historico/${plaza.value}/${fecha.value}/${page}`)
+            if(fecha.value == '' || fecha.value == null || fecha.value == undefined){
+                axios.get(`${API}/Historico/ListaHistorico/PaginacionCompleta/${plaza.value}/null/${page}/${numRespuesta.value}`)
+                .then((result)=>{
+                    console.log(result);
+                    if(result.data.status == 'Ok'){
+                        totalPaginas.value = result.data.numberPages
+                        currentPage.value = result.data.now
                         modalLoading.value = false
-                        notify({
-                            title:'Sin Información',
-                            text:'No se encontraron listas',
-                            type: 'warn'
-                        });
-                    }, 1000)  
-                }
-            })
+                        result.data.body.forEach((e)=>{
+                            let obj = {
+                                fechaCreacion: e.fechaCreacion,
+                                numeroDeTags: e.numeroDeTags,
+                                timepoTotal: e.timepoTotal
+                            }
+                            listaHistorico.value.push(obj)
+                        })
+                    }else{
+                        setTimeout(() => {
+                            modalLoading.value = false
+                            notify({
+                                title:'Sin Información',
+                                text:'No se encontraron listas',
+                                type: 'warn'
+                            });
+                        }, 1000)  
+                    }
+                })
+            }else{
+                axios.get(`${API}/Historico/ListaHistorico/PaginacionCompleta/${plaza.value}/${fecha.value}/${page}/${numRespuesta.value}`)
+                .then((result)=>{
+                    console.log(result);
+                    if(result.data.status == 'Ok'){
+                        modalLoading.value = false
+                        totalPaginas.value = result.data.numberPages
+                        currentPage.value = result.data.now<
+                        result.data.body.forEach((e)=>{
+                            let obj = {
+                                fechaCreacion: e.fechaCreacion,
+                                numeroDeTags: e.numeroDeTags,
+                                timepoTotal: e.timepoTotal
+                            }
+                            listaHistorico.value.push(obj)
+                        })
+                    }else{
+                        setTimeout(() => {
+                            modalLoading.value = false
+                            notify({
+                                title:'Sin Información',
+                                text:'No se encontraron listas',
+                                type: 'warn'
+                            });
+                        }, 1000)  
+                    }
+                })
+            }
         }//Función que regresa el id de la plaza y el tramo
         function recibir_tramo_plaza(value){
             tramo.value = value.tramo
