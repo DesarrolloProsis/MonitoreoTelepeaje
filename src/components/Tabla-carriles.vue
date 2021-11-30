@@ -1,14 +1,14 @@
 <template>
   <div class="container mx-auto px-0 pt-4 py-8">
-    <div class="mt-2 mx-2 md:mx-0">
-      <!-- <p>Filtros de Búsqueda:</p> -->
-      <div class="flex flex-col rounded-lg md:flex-row bg-blue mb-4">
-        <div class="flex-1 flex flex-col md:flex-row md:space-x-2">
-          <div class="w-full my-auto">
-            <FormTramoPlaza @cambiar-tramo-plaza="recibir_tramo_plaza" :tipo="'Antifraude'"></FormTramoPlaza>
+    <div class="mt-2 mx-2 p-10 md:mx-0">
+      <p class="hidden">Filtros de Búsqueda:</p>
+      <div class="flex flex-col bg-blue md:flex-row pb-0 mb-4 rounded-lg">
+        <div class="flex-1 flex flex-col  md:flex-row md:space-x-2">
+          <div class="mx-auto ">
+            <FormTramoPlaza @cambiar-tramo-plaza="recibir_tramo_plaza" :tipo="'alarma'"></FormTramoPlaza>
           </div>
-          <div class="flex-2">
-            <div class="my-2 p-1 bg-white flex border border-gray-200 rounded btn-search">
+          <div class="flex-2 mx-20">
+            <div class=" p-1 bg-white flex border border-gray-200 rounded btn-search">
               <button @click="buscar_carriles_plaza" class="p-1 px-2 appearance-none outline-none w-full text-white">
                 Buscar
               </button>
@@ -27,9 +27,10 @@
       </div>
       <hr />
     </div>
-    <div v-for="(carrilTramo, key) in carrilesTramos" :key="key" class="flex ta-center overflow-x-auto pt-6">
+    
+    <div v-for="(carrilTramo, key) in carrilesTramos" :key="key" class="flex ta-center overflow-x-auto pt-6 p-10 mr-10">
       <div class="flex justify-center items-center flex-none bg-carriles-gray p-5">
-        <div>Plaza:<br />Tepozotlan<br />{{carrilTramo.nombreGare}}</div>
+        <div>Plaza:<br /><br />{{carrilTramo.nombreGare}}</div>
       </div>
       <div class="flex flex-col flex-none">
         <div class="flex-1 bg-carriles-gray mh-cuerpo lh-cuerpo">Carril</div>
@@ -139,6 +140,11 @@ export default {
   min-height: 20px;
   line-height: 20px;
   padding: 10px;
+}
+.bg-blue {
+  background-color: #2c5282;
+;
+  padding: 10px 5px;
 }
 .ml-right {
   display: block;
