@@ -11,7 +11,7 @@
             </div>
             <div class="flex-none filter-style mr-66">
                 <button @click="buscar(plaza,fecha)" class="btn-buscar">Buscar</button>
-                <button @click="limpiar(plaza)" class="btn-buscar ml-2 mr-1">Limpiar</button>
+                <button @click="limpiar(plaza)" class="btn-buscar ml-2 mr-1">Todos</button>
             </div>
             <div class="flex-1">
                 <FilesDownload @download-api="downloadApi"/>

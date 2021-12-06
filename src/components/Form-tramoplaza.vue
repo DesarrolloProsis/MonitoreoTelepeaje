@@ -1,5 +1,5 @@
 <template>
-    <div class="inline-flex border" :class="{'w-69 mt-3 border-none': tipo == 'Transacciones', 'border-none': tipo == 'Antifraude', 'border-none text-white':tipo == 'alarma'}">
+    <div class="inline-flex" :class="{'w-69 mt-3 border-none': tipo == 'Transacciones', 'border-none': tipo == 'Antifraude', 'border-none text-white':tipo == 'alarma'}">
         <span class="mt-1" :class="{'mt-0 text-white': tipo == 'Antifraude'}">Tramo:</span>
         <select :disabled="!habilitar" v-model="tramoSeleccionado" @change="obtner_plazas_por_tramo" class="p-1 px-2  outline-none w-full text-gray-800 mr-3 ml-3 rounded" name="select" id="selectorTramo">                                    
             <option v-for="(tramo, key) in tramos" :value="tramo" :key="key">
@@ -26,7 +26,6 @@
         </template>
     </div>
 </template>
-
 <script>
 import Servicio from '../Servicios/Token-Services';
 import jwt_decode from "jwt-decode";
@@ -98,5 +97,3 @@ export default {
     }, 
 }
 </script>
-
-

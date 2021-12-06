@@ -63,7 +63,8 @@
     <div class="mb-6">
       <button @click="abrir_modal_new_rol" :class="{'hidden':!habilitar}" class="w-full botonIconBuscar justify-center mt-3 -mb-8">Agregar Rol</button>
     </div>
-    <TablaListaPerfiles @buscar-roles="buscar_roles" :dataPerfiles="roles"/>
+    <!-- <TablaListaPerfiles @buscar-roles="buscar_roles" :dataPerfiles="roles"/> -->
+    <TablaListaPerfiles :dataPerfiles="roles"/>
   </div>
   <!-- MODAL CARGANDO -->
   <Spinner :modalLoading="modalLoading"/>
