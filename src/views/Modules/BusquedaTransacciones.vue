@@ -109,6 +109,7 @@ export default {
                   tipo: e.tipoVehiculo,
                   tarifa: e.tarifa
                 }
+                console.log(obj);
                 cruces.value.push(obj)
               })
             }else{
