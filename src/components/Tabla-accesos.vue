@@ -5,8 +5,8 @@
         <th>Usuario</th>
         <th>Nombre</th>
         <th>Rol</th>
-        <th>Fecha Inicio</th>
-        <th>Fecha Fin</th>
+        <th>Inicio de Sesión</th>
+        <th>Cierre de Sesión</th>
       </tr>
       <tr v-for="(accesos, index) in dataAccesos" :key="index">
         <td>{{ accesos.nombreUsuario }}</td>
