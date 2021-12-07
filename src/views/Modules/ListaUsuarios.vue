@@ -1,7 +1,7 @@
 <template>
   <Navbar/>
   <h1 class="title font-titulo font-bold">Lista de Usuarios Registrados</h1>
-  <div class="container mx-auto px-0 pb-24 pt-4">
+  <div class="container mx-auto px-0 pt-4">
     <div class="flex flex-wrap bg-blue rounded-lg">
       <div class="flex-none filter-style mt-3">
         Nombre:
@@ -11,8 +11,8 @@
         Estatus:
         <select v-model="estatus" class="flex-none filter-style color-black rounded" name="select" placeholder="Selecciona">
           <option hidden selected>Seleccione</option>
-          <option value="100">Inactivo</option>
-          <option value="200">Activo</option>
+          <option value="true">Activo</option>
+          <option value="false">Inactivo</option>
         </select>
       </div>
       <div class="flex-none filter-style mt-2">
@@ -30,12 +30,8 @@
       <button @click="abrirModal" :class="{'hidden':!habilitar}" class="w-full botonIconBuscar justify-center mt-3 -mb-8">Agregar Usuario</button>
     </div>
     <TablaListaUsuarios :dataUsuarios="perfiles" :plazaS="plaza" />
-    <div class="">
-      <button class="button-pagination" v-if="paginaAct > 1" @click="anterior()">Anterior</button>
-      <button class="button-pagination" v-if="paginaAct < maxPages" @click="siguiente()">Siguiente</button>
-      <p  class="desc-paginacion">
-        Página {{ paginaAct }} de {{ maxPages }}
-      </p>
+    <div class="mt-20 -mb-14">
+      <Paginacion :total-pages="totalPaginas" :total="100" :current-page="currentPage" :has-more-pages="hasMorePages" @pagechanged="showMore"/>
     </div>
   </div>
   <!-- MODAL CREAR USUARIO -->
@@ -82,6 +78,7 @@ import FilesDownload from '../../components/Files-descargar.vue'
 import { notify } from "@kyvg/vue3-notification";
 import ServiceFiles from '../../Servicios/Files-Service'
 import Spinner from '../../components/Spn.vue'
+import Paginacion from "../../components/Paginacion.vue"
 import axios from "axios";
 import { reactive, ref } from 'vue'
 export default {
@@ -93,6 +90,7 @@ export default {
     FilesDownload,
     Spinner,
     FormTramoPlaza,
+    Paginacion,
     
   },
   setup() {
@@ -100,8 +98,8 @@ export default {
     const  token = ref('')
     const  paginaAct = ref(1)
     const  maxPages = ref(1)
-    const  nombre = ref('')
-    const  estatus = ref(0)
+    const  nombre = ref(null)
+    const  estatus = ref(true)
     const  modalAgregar = ref(false)
     const  listaPlazas = ref([])
     const  plazas = ref([{ value: '', label: '' }])
@@ -111,6 +109,11 @@ export default {
     const  roles = ref ([])
     const  modalLoading = ref(false)
     const errorMessage = ref('')
+    //Paginacion
+    const totalPaginas = ref(0)
+    const currentPage = ref(1)
+    const hasMorePages = ref(true)
+    const numRespuesta = ref(7)
     //addEmi
     const  formato = ref('')
     const  tramo = ref('')
@@ -147,20 +150,71 @@ export default {
       plazas.value = []
     }
     function todos (){
-      token.value =  Servicio.getCookie("Token");
-      nombre.value = ''
-      estatus.value = 0
-      let config = {
-        headers: {
-          Authorization: "Bearer " + token.value,
-        },
-      };
-      axios.get(`${API}/Usuario?Page=${paginaAct.value}&Rows=10&plaza=${plaza.value}`,config)
+      nombre.value = null
+      estatus.value = true
+      axios.get(`${API}/Usuario/${plaza.value}/${currentPage.value}/${numRespuesta.value}/${nombre.value}/${estatus.value}`)
+      .then((res) => {
+        console.log(res);
+        perfiles.value = []
+        habilitar.value = true
+        totalPaginas.value = res.data.numberPages
+        currentPage.value = res.data.now
+        res.data.body.forEach((e) => {
+          let obj = {
+            id: e.usuarioId,
+            usuario: e.nombreUsuario,
+            nombre: e.nombre,
+            apellido: e.apellidoPaterno,
+            rol: e.rol,
+            plazas: e.plazas,
+            estatus: e.estatus,
+          };
+          perfiles.value.push(obj);
+        });
+      });
+    }
+    function buscar (nombre,estatus, plaza){
+      if(plaza == '' || plaza == null || plaza == undefined){
+        notify({
+          title:'Sin información',
+          text:`Se debe de seleccionar la plaza para hacer una busqueda`,
+          duration: 2000,
+          type: 'warn'
+        });
+      }
+      else{
+        axios.get(`${API}/Usuario/${plaza}/${currentPage.value}/${numRespuesta.value}/${nombre}/${estatus}`)
+          .then((res) => {
+            console.log(res);
+            perfiles.value = []
+            habilitar.value = true
+            totalPaginas.value = res.data.numberPages
+            currentPage.value = res.data.now
+            res.data.body.forEach((e) => {
+              let obj = {
+                id: e.usuarioId,
+                usuario: e.nombreUsuario,
+                nombre: e.nombre,
+                apellido: e.apellidoPaterno,
+                rol: e.rol,
+                plazas: e.plazas,
+                estatus: e.estatus,
+              };
+              perfiles.value.push(obj);
+            });
+          });
+      }
+    }
+    function showMore(page){
+      if((nombre.value == '' || nombre.value == undefined || nombre.value == null) && (nombre.value == '' || nombre.value == null || nombre.value == undefined)){
+        axios.get(`${API}/Usuario/${plaza.value}/${page}/${numRespuesta.value}/null/true`)
         .then((res) => {
+          console.log(res);
           perfiles.value = []
           habilitar.value = true
-          maxPages.value = res.data.totalPages;
-          res.data.page.forEach((e) => {
+          totalPaginas.value = res.data.numberPages
+          currentPage.value = res.data.now
+          res.data.body.forEach((e) => {
             let obj = {
               id: e.usuarioId,
               usuario: e.nombreUsuario,
@@ -173,116 +227,27 @@ export default {
             perfiles.value.push(obj);
           });
         });
-    }
-    function buscar (nombre,estatus, plaza){
-      if(plaza == '' || plaza == null || plaza == undefined){
-        notify({
-          title:'Sin información',
-          text:`Se debe de seleccionar la plaza para hacer una busqueda`,
-          duration: 2000,
-          type: 'warn'
-        });
-      }
-      else{
-        token.value =  Servicio.getCookie("Token");
-        if((nombre == '') && (estatus == 0) && (plaza != '' || plaza != null || plaza != undefined)){
-          let config = {
-            headers: {
-              Authorization: "Bearer " + token.value,
-            },
-          };
-          axios.get(`${API}/Usuario?Page=${paginaAct.value}&Rows=10&plaza=${plaza}`,config)
-          .then((res) => {
-            perfiles.value = []
-            habilitar.value = true
-            maxPages.value = res.data.totalPages;
-            res.data.page.forEach((e) => {
-              let obj = {
-                id: e.usuarioId,
-                usuario: e.nombreUsuario,
-                nombre: e.nombre,
-                apellido: e.apellidoPaterno,
-                rol: e.rol,
-                plazas: e.plazas,
-                estatus: e.estatus,
-              };
-              perfiles.value.push(obj);
-            });
-          });
-        }if((nombre != '') && (plaza != '' || plaza != null || plaza != undefined)){
-          let config = {
-            headers: {
-              Authorization: "Bearer " + token.value,
-            },
-          };
-          axios.get(`${API}/Usuario?Page=${paginaAct.value}&Rows=10&NameFilter=${nombre.value}&plaza=${plaza}`,config)
-          .then((res) => {
-            perfiles.value = []
-            maxPages.value = res.data.totalPages;
-            res.data.page.forEach((e) => {
-              let obj = {
-                id: e.usuarioId,
-                usuario: e.nombreUsuario,
-                nombre: e.nombre,
-                apellido: e.apellidoPaterno,
-                rol: e.rol,
-                plazas: e.plazas,
-                estatus: e.estatus,
-              };
-              perfiles.value.push(obj);
-            });
-          });
-        }if((estatus != 0) && (plaza != '' || plaza != null || plaza != undefined)){
+      }else{
+        axios.get(`${API}/Usuario/${plaza.value}/${page}/${numRespuesta.value}/${nombre.value}/${estatus.value}`)
+        .then((res) => {
+          console.log(res);
           perfiles.value = []
-          if(estatus.value == 100){
-            let config = {
-            headers: {
-              Authorization: "Bearer " + token.value,
-            },
+          habilitar.value = true
+          totalPaginas.value = res.data.numberPages
+          currentPage.value = res.data.now
+          res.data.body.forEach((e) => {
+            let obj = {
+              id: e.usuarioId,
+              usuario: e.nombreUsuario,
+              nombre: e.nombre,
+              apellido: e.apellidoPaterno,
+              rol: e.rol,
+              plazas: e.plazas,
+              estatus: e.estatus,
             };
-            axios.get(`${API}/Usuario?Page=${paginaAct.value}&Rows=10&EstatusFilter=false&plaza=${plaza}`,config)
-            .then((res) => {
-              if((res.data.page.lenght > 0) && (res.status == 200)){
-                maxPages.value = res.data.totalPages;
-                res.data.page.forEach((e) => {
-                  let obj = {
-                id: e.usuarioId,
-                usuario: e.nombreUsuario,
-                nombre: e.nombre,
-                apellido: e.apellidoPaterno,
-                rol: e.rol,
-                plazas: e.plazas,
-                estatus: e.estatus,
-                  };
-                  perfiles.value.push(obj);
-                });
-              }
-            });
-          }if(estatus.value == 200){
-            let config = {
-            headers: {
-              Authorization: "Bearer " + token.value,
-            },
-            };
-            axios.get(`${API}/Usuario?Page=${paginaAct.value}&Rows=10&EstatusFilter=true&plaza=${plaza}`,config)
-            .then((res) => {
-              perfiles.value = []
-              maxPages.value = res.data.totalPages;
-              res.data.page.forEach((e) => {
-                let obj = {
-                id: e.usuarioId,
-                usuario: e.nombreUsuario,
-                nombre: e.nombre,
-                apellido: e.apellidoPaterno,
-                rol: e.rol,
-                plazas: e.plazas,
-                estatus: e.estatus,
-                };
-                perfiles.value.push(obj);
-              });
-            });
-          }
-        }
+            perfiles.value.push(obj);
+          });
+        });
       }
     }
     function guardar (){
@@ -333,56 +298,6 @@ export default {
         }
       }
     }
-    function anterior () {
-      let config = {
-        headers: {
-          Authorization: "Bearer " + token.value,
-        },
-      };
-      paginaAct.value = paginaAct.value - 1;
-      axios.get(`${API}/Usuario?Page=${paginaAct.value}&Rows=10&plaza=${plaza.value}`,config)
-        .then((res) => {
-          perfiles.value = []
-          maxPages.value = res.data.totalPages;
-          res.data.page.forEach((e) => {
-            let obj = {
-              id: e.usuarioId,
-              usuario: e.nombreUsuario,
-              nombre: e.nombre,
-              apellido: e.apellidoPaterno,
-              rol: e.rol,
-              plazas: e.plazas,
-              estatus: e.estatus,
-            };
-            perfiles.value.push(obj);
-          });
-        });
-    }
-    function siguiente () {
-      let config = {
-        headers: {
-          Authorization: "Bearer " + token.value,
-        },
-      };
-      paginaAct.value = paginaAct.value + 1;
-      axios.get(`${API}/Usuario?Page=${paginaAct.value}&Rows=10&plaza=${plaza.value}`,config)
-        .then((res) => {
-          perfiles.value = []
-          maxPages.value = res.data.totalPages;
-          res.data.page.forEach((e) => {
-            let obj = {
-              id: e.usuarioId,
-              usuario: e.nombreUsuario,
-              nombre: e.nombre,
-              apellido: e.apellidoPaterno,
-              rol: e.rol,
-              plazas: e.plazas,
-              estatus: e.estatus,
-            };
-            perfiles.value.push(obj);
-          });
-        });
-    }
     function downloadApi (formato){
       if((plaza.value == '' || plaza.value == null || plaza.value == undefined) && ( estatus.value == '' || estatus.value == null || estatus.value == undefined)){
         this.$notify({
@@ -406,7 +321,7 @@ export default {
       }      
     }
   
-  return {recibir_tramo_plaza, abrirModal, cancelar, todos, buscar, guardar, anterior, siguiente, downloadApi, usuario, perfiles, token, paginaAct, maxPages, nombre, estatus, modalAgregar, listaPlazas, plazas, verdad, tramoSeleccionado, rol_Filtrado, roles, modalLoading, formato, tramo, plaza, habilitar}
+  return {recibir_tramo_plaza, abrirModal, cancelar, todos, buscar, showMore, guardar, downloadApi, usuario, perfiles, token, paginaAct, maxPages, nombre, estatus, modalAgregar, listaPlazas, plazas, verdad, tramoSeleccionado, rol_Filtrado, roles, modalLoading, formato, tramo, plaza, habilitar, currentPage, hasMorePages, numRespuesta, totalPaginas }
   },
 }
 </script>
