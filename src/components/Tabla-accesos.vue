@@ -13,7 +13,10 @@
         <td>{{ accesos.nombre + ' ' + accesos.apellidoP + ' ' + accesos.apellidoM}}</td>
         <td>{{ accesos.rol }}</td>
         <td>{{ moment(accesos.fecha_inicio).format("YYYY-MM-DD  HH:mm:ss a") }}</td>
-        <td>{{ moment(accesos.fecha_fin).format("YYYY-MM-DD  HH:mm:ss a") }}</td>
+        <td>
+          <span v-if="accesos.fecha_fin == null">En uso</span>
+          <span v-else>{{ moment(accesos.fecha_fin).format("YYYY-MM-DD  HH:mm:ss a") }}</span>
+        </td>
       </tr>
     </table>
   </div>
@@ -28,6 +31,7 @@ export default {
   created: function () {
     this.moment = moment;
   },
+  
 };
 </script>
 <style scoped>
