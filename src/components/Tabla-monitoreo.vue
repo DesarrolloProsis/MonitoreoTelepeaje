@@ -11,7 +11,7 @@
       </tr>
       <tr v-for="(lista, index) in dataListas" :key="index">
         <td>{{lista.nombrePlaza}}</td>
-        <td :class="`${lista.fechaActualizacionOperador == '' ? 'sinconexion' : ''}`">{{moment(lista.fechaActualizacionOperador == '' ? "Sin conexión":lista.fechaActualizacionOperadorn).format("YYYY-MM-DD  HH:mm:ss a")}}</td> 
+        <td :class="`${lista.fechaActualizacionOperador == '' ? 'sinconexion' : ''}`">{{moment(lista.fechaActualizacionOperador == '' ? "Sin conexión":lista.fechaActualizacionOperador).format("YYYY-MM-DD  HH:mm:ss a")}}</td> 
           <td :class="`${lista.fechaEnvioOperador == '' ? 'sinconexion' : ''}`">{{moment(lista.fechaEnvioOperador == '' ? "Sin conexión":lista.fechaEnvioOperador).format("YYYY-MM-DD  HH:mm:ss a")}}</td>
           <td :class="`${lista.fechaDeCruce == '' ? 'sinconexion' : ''}`">{{moment(lista.fechaDeCruce == '' ? "Sin conexión":lista.fechaDeCruce).format("YYYY-MM-DD  HH:mm:ss a")}}</td>
           <td :class="`${lista.idTag == '' ? '--' : ''}`">{{lista.idTag == '' ? "Sin conexión":lista.idTag}}</td>
