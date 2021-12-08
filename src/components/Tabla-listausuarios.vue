@@ -420,15 +420,12 @@ name: "TablaListaUsuarios",
             'Authorization': 'Bearer ' + Servicio.getCookie("Token")
           }
         }
-        console.log(config);
         const data = {
           "UsuarioId": this.seleccionado.id,
           "Estatus": this.seleccionado.estatus = !this.seleccionado.estatus,
         } 
-        console.log(data);
-        axios.patch(`${API}/Usuario`,data,config)
-          .then((result)=>{
-              console.log(result)
+        axios.post(`${API}/Usuario`,data,config)
+          .then(()=>{
               this.errorMessage = ""
           })
           .catch(() =>{

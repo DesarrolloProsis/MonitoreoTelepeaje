@@ -247,7 +247,6 @@ export default {
       if((nombre.value == '' || nombre.value == undefined || nombre.value == null) && (nombre.value == '' || nombre.value == null || nombre.value == undefined)){
         axios.get(`${API}/Usuario/${plaza.value}/${page}/${numRespuesta.value}/null/${estatus.value}`)
         .then((res) => {
-          console.log(res);
           perfiles.value = []
           habilitar.value = true
           totalPaginas.value = res.data.numberPages
