@@ -210,7 +210,9 @@ export default {
       });
     }
     function buscar (nombre,estatus, plaza){
+      modalLoading.value = true
       if(plaza == '' || plaza == null || plaza == undefined){
+        modalLoading.value = false
         notify({
           title:'Sin información',
           text:`Se debe de seleccionar la plaza para hacer una busqueda`,
@@ -221,7 +223,7 @@ export default {
       else{
         axios.get(`${API}/Usuario/${plaza}/${currentPage.value}/${numRespuesta.value}/${nombre}/${estatus}`)
           .then((res) => {
-            console.log(res);
+            modalLoading.value = false
             perfiles.value = []
             habilitar.value = true
             totalPaginas.value = res.data.numberPages
@@ -243,7 +245,7 @@ export default {
     }
     function showMore(page){
       if((nombre.value == '' || nombre.value == undefined || nombre.value == null) && (nombre.value == '' || nombre.value == null || nombre.value == undefined)){
-        axios.get(`${API}/Usuario/${plaza.value}/${page}/${numRespuesta.value}/null/true`)
+        axios.get(`${API}/Usuario/${plaza.value}/${page}/${numRespuesta.value}/null/${estatus.value}`)
         .then((res) => {
           console.log(res);
           perfiles.value = []
@@ -300,29 +302,34 @@ export default {
           "apellidoMaterno": usuario.apellidoM,
           "idrol": usuario.rol,
         }
-        console.log({data, "plaza":plaza.value});
         if(usuario.nombre != '' && usuario.apellidoP != '' && usuario.apellidoM != '' && usuario.pass != '' ){
-          let userName = usuario.nombre.slice(0,3)+usuario.apellidoP
+          //let userName = usuario.nombre.slice(0,3)+usuario.apellidoP
           modalLoading.value = true
           modalAgregar.value = false
           axios.post(`${API}/Usuario/${plaza.value}`,data,config)
             .then((result)=>{
-              console.log(result);
               setTimeout(() => {
                 //this.$router.push("/configuracion");
                 //modalLoading.value = false
                 if(result.data.status == 'Ok'){
                   modalPlazas.value = true
                   seleccionado.value = result.data.body
+                  usuario.pass = '',
+                  usuario.nombre = '',
+                  usuario.apellidoP = '',
+                  usuario.apellidoM = '',
+                  tramoSeleccionado.value = ''
+                  plazas.value = []
+                  roles.value = []
                 }
                 modalLoading.value = false
-                notify({
+                /* notify({
                   title:'Nuevo Usuario',
                   text:`Se creo correctamente el nuevo usuario ${userName}`,
                   duration: 20000,
                   closeonclick:true,
                   type: 'success'
-                });
+                }); */
               }, 1000);
               errorMessage.value = ""
             })
@@ -342,6 +349,7 @@ export default {
     }
     function agregarPlaza (usuario){      
       if(tramoSeleccionadoModal.value != '' && plazasAsignar.value != ''){
+        let userName = usuario.nombre.slice(0,3)+usuario.apellidoPaterno
         this.modalLoading = true
         for(let i=0; i< plazasAsignar.value.length;i++){
           console.log(plazasAsignar.value)
@@ -354,11 +362,20 @@ export default {
           axios.post(`${API}/PlazaAsignada`,data)
           .then((response)=>{
             console.log(response);                   
-            this.tramoSeleccionadoModal = ''      
+            tramoSeleccionadoModal.value = ''      
           })          
         }   
-        modalPlazas.value = false     
-        modalLoading.value = false     
+        modalPlazas.value = false
+        setTimeout(() =>{
+          notify({
+            title:'Nuevo Usuario',
+            text:`Se creo correctamente el nuevo usuario ${userName}`,
+            duration: 20000,
+            closeonclick:true,
+            type: 'success'
+          });     
+          modalLoading.value = false     
+        }, 1000)
       }
       else{
         this.$notify({
