@@ -62,6 +62,35 @@
       </div>
     </div>
   </div>
+  <!-- MODAL AGREGAR PLAZAS -->
+  <div class="sticky inset-0 " :class="{'modal-container': modalPlazas}">
+    <div v-if="modalPlazas" class="rounded-lg  justify-center border absolute inset-x-0 bg-white border-gray-400 w-69  mx-auto px-12 py-10 shadow-2xl mt-60">
+      <p class="text-gray-900 font-bold text-2xl -mt-8 mb-8 text-center">Agregar Plazas a {{ seleccionado.nombre + ' ' + seleccionado.apellidoPaterno }}</p>
+      <div class="grid grid-cols-2 mt-2">
+        <p class="text-sm mb-1 font-semibold text-gray-700 mt-2 sm:-ml-6">Tramo </p>
+        <p>
+        <select v-model="tramoSeleccionadoModal" @change="plazasfil()" class="w-full border-b-2 rounded-lg">
+          <option disabled value>Selecionar...</option>     
+          <option value="1">México Acapulco</option>     
+          <option value="2">México Irapuato</option>
+        </select>
+        <span v-if="validacion" class="text-xs text-red-600">Este dato es Obligatorio</span>
+        </p>
+        <p class="text-sm mb-1 font-semibold text-gray-700 mt-2 sm:-ml-6">Plazas </p>
+        <p>
+          <label class="border-b-2 rounded-md" :class="{'border-red-400':validacion}">
+            <Multiselect v-model="plazasAsignar" mode="multiple" placeholder="Seleccione las Plazas" :searchable="true" :options="plazasM" :close-on-select="false"/>
+          </label>
+          <span v-if="validacion" class="text-xs text-red-600">Este dato es Obligatorio</span>
+        </p> 
+        
+      </div>
+      <div class="mt-5 text-center ml-6">
+        <button @click="agregarPlaza(seleccionado)" class="botonIconBuscar">Agregar</button>
+        <button @click="modalPlazas = false, tramoSeleccionado = '', validacion = false" class="botonIconCancelar">Cancelar</button>
+      </div>
+    </div>
+  </div>
   <!-- MODAL CARGANDO -->
   <Spinner :modalLoading="modalLoading"/>
   <Footer/>
@@ -99,7 +128,7 @@ export default {
     const  paginaAct = ref(1)
     const  maxPages = ref(1)
     const  nombre = ref(null)
-    const  estatus = ref(true)
+    const  estatus = ref(null)
     const  modalAgregar = ref(false)
     const  listaPlazas = ref([])
     const  plazas = ref([{ value: '', label: '' }])
@@ -109,6 +138,13 @@ export default {
     const  roles = ref ([])
     const  modalLoading = ref(false)
     const errorMessage = ref('')
+    const modalPlazas = ref (false)
+    const seleccionado = ref({})
+    const tramoSeleccionadoModal = ref('')
+    const plazasModal = ref([])
+    const plazasAsignar = ref([])
+    const validacion = ref(true)
+    const plazasM = ref([{ value: '', label: '' }])
     //Paginacion
     const totalPaginas = ref(0)
     const currentPage = ref(1)
@@ -151,7 +187,7 @@ export default {
     }
     function todos (){
       nombre.value = null
-      estatus.value = true
+      estatus.value = null
       axios.get(`${API}/Usuario/${plaza.value}/${currentPage.value}/${numRespuesta.value}/${nombre.value}/${estatus.value}`)
       .then((res) => {
         console.log(res);
@@ -264,15 +300,21 @@ export default {
           "apellidoMaterno": usuario.apellidoM,
           "idrol": usuario.rol,
         }
+        console.log({data, "plaza":plaza.value});
         if(usuario.nombre != '' && usuario.apellidoP != '' && usuario.apellidoM != '' && usuario.pass != '' ){
           let userName = usuario.nombre.slice(0,3)+usuario.apellidoP
           modalLoading.value = true
           modalAgregar.value = false
-          axios.post(`${API}/Usuario`,data,config)
+          axios.post(`${API}/Usuario/${plaza.value}`,data,config)
             .then((result)=>{
               console.log(result);
               setTimeout(() => {
                 //this.$router.push("/configuracion");
+                //modalLoading.value = false
+                if(result.data.status == 'Ok'){
+                  modalPlazas.value = true
+                  seleccionado.value = result.data.body
+                }
                 modalLoading.value = false
                 notify({
                   title:'Nuevo Usuario',
@@ -295,6 +337,60 @@ export default {
             closeonclick:true,
             type: 'warn'
           });
+        }
+      }
+    }
+    function agregarPlaza (usuario){      
+      if(tramoSeleccionadoModal.value != '' && plazasAsignar.value != ''){
+        this.modalLoading = true
+        for(let i=0; i< plazasAsignar.value.length;i++){
+          console.log(plazasAsignar.value)
+          let nueva = plazasAsignar.value[i]
+          //this.pla = nueva
+          let data = {
+            usuarioId: usuario.usuarioId,
+            plazaAsignadaId: nueva
+          }
+          axios.post(`${API}/PlazaAsignada`,data)
+          .then((response)=>{
+            console.log(response);                   
+            this.tramoSeleccionadoModal = ''      
+          })          
+        }   
+        modalPlazas.value = false     
+        modalLoading.value = false     
+      }
+      else{
+        this.$notify({
+          title:'Falta llenar campos',
+          text:'Todos los campos son obligatorios',
+          type: 'error'
+        });
+        validacion.value = true
+      }
+    }
+    const plazasfil = async () => {
+      let porTramo = await axios.get(`${API}/PlazaAsignada/PorTramo/${tramoSeleccionadoModal.value}`)
+      let listaPlazas = porTramo.data.body
+      let proxy = new Proxy(listaPlazas,{
+        get : function(target, property){
+          return property === 'length' ?
+            target.length :
+            target[property];
+        }
+      });
+      console.log(proxy);
+      if(tramoSeleccionadoModal.value == ''){
+        console.log('if');
+        for(let i= 0; i<proxy.length; i++){
+          plazas.value.push({'value':proxy[i].plazaAsignadaId, 'label':proxy[i].nombre}) 
+        }
+      }else{
+        console.log('else');
+        plazasM.value = []
+        for(let i= 0; i<proxy.length; i++){
+          plazasM.value.push({'value':proxy[i].plazaAsignadaId, 'label':proxy[i].nombre}) 
+          console.log(plazasModal.value);
         }
       }
     }
@@ -321,7 +417,7 @@ export default {
       }      
     }
   
-  return {recibir_tramo_plaza, abrirModal, cancelar, todos, buscar, showMore, guardar, downloadApi, usuario, perfiles, token, paginaAct, maxPages, nombre, estatus, modalAgregar, listaPlazas, plazas, verdad, tramoSeleccionado, rol_Filtrado, roles, modalLoading, formato, tramo, plaza, habilitar, currentPage, hasMorePages, numRespuesta, totalPaginas }
+  return {recibir_tramo_plaza, abrirModal, cancelar, todos, buscar, showMore, guardar, agregarPlaza, plazasfil, downloadApi, usuario, perfiles, plazasM, token, paginaAct, maxPages, nombre, estatus, modalAgregar, listaPlazas, plazas, verdad, tramoSeleccionado, rol_Filtrado, roles, modalLoading, formato, tramo, plaza, habilitar, currentPage, hasMorePages, numRespuesta, totalPaginas, modalPlazas, seleccionado, tramoSeleccionadoModal, plazasModal, plazasAsignar }
   },
 }
 </script>

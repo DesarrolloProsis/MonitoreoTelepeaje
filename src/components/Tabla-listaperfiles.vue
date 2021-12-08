@@ -1,6 +1,6 @@
 <template>
   <div class="responsive-table">
-    <table class="tftable" style="height:350px;">
+    <table class="tftable">
       <tr class="">
         <th>Perfil</th>             
         <!-- <th>Estatus</th>
