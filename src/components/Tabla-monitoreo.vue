@@ -1,13 +1,13 @@
 <template>
 <div style="padding-bottom:80px">
- <div class="responsive-table">
+  <div class="responsive-table">
     <table class="tftable">
       <tr>        
         <th id="left-border">Plaza</th>
         <th>Última Actualización Proveedor</th>        
         <th id="right-border">Último Transaccion Enviada al Operador</th>
         <th>Última Transaccion en Plaza de Telepeaje</th>
-        <th>#Tag</th>
+        <th>No Tag</th>
       </tr>
       <tr v-for="(lista, index) in dataListas" :key="index">
         <td>{{lista.nombrePlaza}}</td>
@@ -19,7 +19,7 @@
     </table>
   </div>
 </div>
- 
+
 </template>
 
 
