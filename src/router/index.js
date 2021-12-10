@@ -218,39 +218,7 @@ const router = createRouter({
 router.beforeEach((to, _from, next) => {
   if (to.matched.some(record => record.meta.requiresCookie)) {    
     if (getCookie("TipoUser") != "" && getCookie("Token") != "") {
-      // let config = {
-      //   headers: {
-      //     'Authorization': 'Bearer ' + getCookie("Token")
-      //   }
-      // }
         next()
-      // axios.get(`${API}/Test`, config)
-      //   .then(() => {
-        
-      //     if(to.matched.some(m=>m.meta.nombre)){
-      //       let json_token = jwt_decode(getCookie("Token"))
-      //         console.log(json_token[to.meta.nombre])
-      //       if( json_token[to.meta.nombre] !== "false"){
-      //         console.log(json_token)            
-      //         console.log("Esta vista esta en el token")
-      //         next()
-      //       }else{
-      //         console.log("Esta no esta en el token")
-      //         next('/')              
-      //       }   
-      //     }else{
-      //       next();
-      //     }
-        
-      //   })
-      //   .catch((error) => {
-      //     //TODO: Borrar las cookies para redirigir al login
-      //     document.cookie = "TipoUser=; expires=Thu, 01 Jan 1970 00:00:00 UTC;" + "SameSite=None; Secure;";
-      //     document.cookie = "Token=; expires=Thu, 01 Jan 1970 00:00:00 UTC;" + "SameSite=None; Secure;";
-      //     console.log("Error Validando Token...")
-      //     console.log(error)
-      //     next('/')          
-      //   })
     } else {        
       document.cookie = "TipoUser=; expires=Thu, 01 Jan 1970 00:00:00 UTC;" + "SameSite=None; Secure;";
       document.cookie = "Token=; expires=Thu, 01 Jan 1970 00:00:00 UTC;" + "SameSite=None; Secure;";

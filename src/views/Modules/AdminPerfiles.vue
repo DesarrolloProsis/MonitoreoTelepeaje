@@ -47,23 +47,10 @@
         <button @click="buscar(nombre,estatus)"  class="btn-buscar">Buscar</button>
         <button @click="todos()"  class="btn-buscar mx-3">Todos</button>
       </div>
-      <!-- <div class="flex-1 ml-89 hidden">
-        <Multiselect v-model="formato" placeholder="Sleccione una Acción" @close="acciones_mapper(formato)" label="name" trackBy="name" :options="opticones_select_acciones()" :searchable="true">
-          <template v-slot:singleLabel="{ value }">
-            <div class="multiselect-single-label">
-              <img height="26" style="margin: 0 6px 0 0;" :src="value.icon"> {{ value.name }}
-            </div>
-          </template>
-          <template v-slot:option="{ option }">
-            <img height="22" style="margin: 0 6px 0 0;" :src="option.icon">{{ option.name }}
-          </template>
-        </Multiselect>
-      </div> -->
     </div>
     <div class="mb-6">
       <button @click="abrir_modal_new_rol" :class="{'hidden':!habilitar}" class="w-full botonIconBuscar justify-center mt-3 -mb-8">Agregar Rol</button>
-    </div>
-    <!-- <TablaListaPerfiles @buscar-roles="buscar_roles" :dataPerfiles="roles"/> -->
+    </div>    
     <TablaListaPerfiles :dataPerfiles="roles"/>
   </div>
   <!-- MODAL CARGANDO -->
@@ -108,12 +95,14 @@ export default {
                          {text: 'Envio Transacciones', alias: 'envioTransacciones'},
                          {text: 'Busqueda Cruces', alias: 'busquedaCruces'},
                          {text: 'Bitacora Accesos', alias: 'bitacoraAccesos'},
+                         {text: 'Bitacoras', alias: 'bitacoras'},
                          {text: 'Estatus Tags', alias: 'estatusTags'},
                          {text: 'Configuracion', alias: 'configuracion'}]
     
     const buscar_roles = async () => { 
       axios.get(`${API}/CatalogoRoles/null/null/${plaza.value}`)
         .then((response) => {
+            console.log(response.data);
             roles.value = response.data.body 
           }
         )
@@ -132,6 +121,7 @@ export default {
       objRol['envioTransacciones'] = false,
       objRol['busquedaCruces'] = false,
       objRol['bitacoraAccesos'] = false,
+      objRol['bitacoras'] = false,
       objRol['estatusTags'] = false,
       objRol['configuracion'] = false,
       objRol['dateStamp'] = new Date(),

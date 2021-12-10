@@ -73,7 +73,7 @@ export default {
           titulo: "Bitácoras",
           imagen: "Menu/bitacoras.png",
           ruta: "/bitacoras",
-          nombre:"Bitacora",
+          nombre:"Bitacoras",
           isInactive:false
         },
         {

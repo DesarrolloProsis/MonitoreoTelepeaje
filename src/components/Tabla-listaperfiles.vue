@@ -22,56 +22,11 @@
               </template>
             </Multiselect>
           </div>
-        </td>
-        <!-- <td>{{ perfiles.nombreRol }}</td>  
-        <td v-if="perfiles.activo == true || perfiles.activo == null">
-          <button class="button btn-activo" @click="changeStatus(perfiles)">Activo</button>
-        </td>
-        <td v-else-if="perfiles.activo == false">
-          <button class="button btn-inactivo" @click="changeStatus(perfiles)">Inactivo</button>
-        </td>
-        <td>
-          <button class="button btn-actualizar" @click="showModulos(perfiles)">Actualizar</button>
-        </td> -->   
+        </td> 
       </tr>
     </table>
   </div>
   <br />
-
-  <!--Modal Actualizar-->
-  <!-- <div v-if="isModulosActive == true">
-    <div class="fixed z-10 inset-0 overflow-y-auto">
-      <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
-        <div class="fixed inset-0 transition-opacity" aria-hidden="true">
-          <div class="absolute inset-0 bg-gray-900 opacity-10"></div>
-        </div>
-        <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
-        <div class="inline-block align-bottom bg-white text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full" role="dialog" aria-modal="true" aria-labelledby="modal-headline">
-          <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex">
-            <h2 class="text-lg leading-6 font-bold text-gray-900" id="modal-headline">Actualizar Módulos {{ perfilSelected.perfil }}</h2>
-          </div>
-          <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
-            <div class="sm:flex sm:items-start">
-              <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
-                <div>                  
-                  <p v-for="(modulos, index) in perfilSelected.modulos" :key="index">
-                    {{ modulos.nombre }}:
-                    <button v-if="modulos.seleccionado == true" @click="cambiarModulos(index, modulos.seleccionado)" class="btn btn-active">Activo</button>
-                    <button v-if="modulos.seleccionado == false" @click="cambiarModulos(index, modulos.seleccionado)" class="btn btn-inactive">Inactivo</button>
-                  </p>                                                                        
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
-            <button @click="hideModulos()" class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-blue-600 text-base font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:ml-3 sm:w-auto sm:text-sm" type="button">
-              Guardar
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div> -->
   <div class="sticky inset-0 " :class="{'modal-container': isModulosActive}">
     <div v-if="isModulosActive" class="rounded-lg  justify-center border absolute inset-x-0 bg-white border-gray-400 w-69  mx-auto px-12 py-10 shadow-2xl mt-60">
       <p class="text-gray-900 font-bold text-2xl -mt-8 mb-8 text-center">Actualizar Módulos {{ perfilSelected.perfil }}</p>
@@ -119,6 +74,7 @@ export default {
     // !MODULOS
     showModulos: function (perfil) {
       this.isModulosActive = true; let modulos = [];
+      console.log(perfil)
       //Array auxiliar para modal de modulos
       const novalidProp = ['rolId', 'dateStamp', 'nombreRol', 'activo']    
       Object.entries(perfil).map(item => {                                

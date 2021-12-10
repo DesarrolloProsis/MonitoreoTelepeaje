@@ -35,6 +35,9 @@ export default {
     mostrar: function (nombre) {
       let token = this.token("Token")
       var decoded = jwt_decode(token);
+      console.log(nombre);
+      console.log(decoded)
+      console.log(decoded[nombre])
       if(decoded[nombre] !== "false"){
         return true;
       }else{
