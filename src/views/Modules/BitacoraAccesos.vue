@@ -235,37 +235,37 @@ export default {
         if((nombre.value != '' || nombre.value != null || nombre.value != undefined) && (fecha.value == '' || fecha.value == null || fecha.value == undefined)){
           console.log('nombre');
           if (formato == "csv") {
-            ServiceFiles.xml_hhtp_request(`${API}/UsuarioMonitoreo/Download/Csv/${plaza.value}/${nombre.value}/null`, 'bitacoraAcceso.csv')
+            ServiceFiles.xml_hhtp_request(`${API}/UsuarioMonitoreo/Download/Csv/${plaza.value}/null/${nombre.value}`, 'bitacoraAcceso.csv')
           } 
           else if (formato == "excel") {        
-            ServiceFiles.xml_hhtp_request(`${API}/UsuarioMonitoreo/Download/Excel/${plaza.value}/${nombre.value}/null`, 'bitacoraAcceso.xlsx')    
+            ServiceFiles.xml_hhtp_request(`${API}/UsuarioMonitoreo/Download/Excel/${plaza.value}/null/${nombre.value}`, 'bitacoraAcceso.xlsx')    
           } 
           else if (formato == "txt") {
-            ServiceFiles.xml_hhtp_request(`${API}/UsuarioMonitoreo/Download/txt/${plaza.value}/${nombre.value}/null`, 'bitacoraAcceso.txt')
+            ServiceFiles.xml_hhtp_request(`${API}/UsuarioMonitoreo/Download/txt/${plaza.value}/null/${nombre.value}`, 'bitacoraAcceso.txt')
           }
         }//Si seleccionamos fecha
         else if((fecha.value != '' || fecha.value != null || fecha.value != undefined) && (nombre.value == '' || nombre.value == null || nombre.value == undefined)){
           console.log('fecha');
           if (formato == "csv") {
-            ServiceFiles.xml_hhtp_request(`${API}/UsuarioMonitoreo/Download/Csv/${plaza.value}/null/${fecha.value}`, 'bitacoraAcceso.csv')
+            ServiceFiles.xml_hhtp_request(`${API}/UsuarioMonitoreo/Download/Csv/${plaza.value}/${fecha.value}/null`, 'bitacoraAcceso.csv')
           } 
           else if (formato == "excel") {        
-            ServiceFiles.xml_hhtp_request(`${API}/UsuarioMonitoreo/Download/Excel/${plaza.value}/null/${fecha.value}`, 'bitacoraAcceso.xlsx')    
+            ServiceFiles.xml_hhtp_request(`${API}/UsuarioMonitoreo/Download/Excel/${plaza.value}/${fecha.value}/null`, 'bitacoraAcceso.xlsx')    
           } 
           else if (formato == "txt") {
-            ServiceFiles.xml_hhtp_request(`${API}/UsuarioMonitoreo/Download/txt/${plaza.value}/null/${fecha.value}`, 'bitacoraAcceso.txt')
+            ServiceFiles.xml_hhtp_request(`${API}/UsuarioMonitoreo/Download/txt/${plaza.value}/${fecha.value}/null`, 'bitacoraAcceso.txt')
           }
         }//Si seleccionamos todos los filtros
         else{
           console.log('else');
           if (formato == "csv") {
-            ServiceFiles.xml_hhtp_request(`${API}/UsuarioMonitoreo/Download/Csv/${plaza.value}/${nombre.value}/${fecha.value}`, 'bitacoraAcceso.csv')
+            ServiceFiles.xml_hhtp_request(`${API}/UsuarioMonitoreo/Download/Csv/${plaza.value}/${fecha.value}/${nombre.value}`, 'bitacoraAcceso.csv')
           } 
           else if (formato == "excel") {        
-            ServiceFiles.xml_hhtp_request(`${API}/UsuarioMonitoreo/Download/Excel/${plaza.value}/${nombre.value}/${fecha.value}`, 'bitacoraAcceso.xlsx')    
+            ServiceFiles.xml_hhtp_request(`${API}/UsuarioMonitoreo/Download/Excel/${plaza.value}/${fecha.value}/${nombre.value}`, 'bitacoraAcceso.xlsx')    
           } 
           else if (formato == "txt") {
-            ServiceFiles.xml_hhtp_request(`${API}/UsuarioMonitoreo/Download/txt/${plaza.value}/${nombre.value}/${fecha.value}`, 'bitacoraAcceso.txt')
+            ServiceFiles.xml_hhtp_request(`${API}/UsuarioMonitoreo/Download/txt/${plaza.value}/${fecha.value}/${nombre.value}`, 'bitacoraAcceso.txt')
           }
         }     
       }

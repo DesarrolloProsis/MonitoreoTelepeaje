@@ -1,17 +1,17 @@
 <template>
 <div style="padding-bottom:80px">
- <div class="responsive-table">
+  <div class="responsive-table">
     <table class="tftable">
       <tr>        
         <th id="left-border">Plaza</th>
         <th>Última Actualización Proveedor</th>        
         <th id="right-border">Último Transaccion Enviada al Operador</th>
         <th>Última Transaccion en Plaza de Telepeaje</th>
-        <th>#Tag</th>
+        <th>No Tag</th>
       </tr>
       <tr v-for="(lista, index) in dataListas" :key="index">
         <td>{{lista.nombrePlaza}}</td>
-        <td :class="`${lista.fechaActualizacionOperador == '' ? 'sinconexion' : ''}`">{{moment(lista.fechaActualizacionOperador == '' ? "Sin conexión":lista.fechaActualizacionOperadorn).format("YYYY-MM-DD  HH:mm:ss a")}}</td> 
+        <td :class="`${lista.fechaActualizacionOperador == '' ? 'sinconexion' : ''}`">{{moment(lista.fechaActualizacionOperador == '' ? "Sin conexión":lista.fechaActualizacionOperador).format("YYYY-MM-DD  HH:mm:ss a")}}</td> 
           <td :class="`${lista.fechaEnvioOperador == '' ? 'sinconexion' : ''}`">{{moment(lista.fechaEnvioOperador == '' ? "Sin conexión":lista.fechaEnvioOperador).format("YYYY-MM-DD  HH:mm:ss a")}}</td>
           <td :class="`${lista.fechaDeCruce == '' ? 'sinconexion' : ''}`">{{moment(lista.fechaDeCruce == '' ? "Sin conexión":lista.fechaDeCruce).format("YYYY-MM-DD  HH:mm:ss a")}}</td>
           <td :class="`${lista.idTag == '' ? '--' : ''}`">{{lista.idTag == '' ? "Sin conexión":lista.idTag}}</td>
@@ -19,7 +19,7 @@
     </table>
   </div>
 </div>
- 
+
 </template>
 
 

@@ -122,7 +122,8 @@ export default {
         .catch((error) => {
           console.log(error)
         }) 
-        console.log('me adelante')                                     
+        console.log('me adelante') 
+        console.log(statusServices.value);                                    
     }
     onMounted(() => {
       buscar_status()

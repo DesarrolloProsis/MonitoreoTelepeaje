@@ -26,7 +26,7 @@
               </div>
               <div class="w-full flex-1 -mt-2">
                 <div class="my-2 p-1 bg-white flex border border-gray-200 rounded btn-search ">                      
-                  <button :disabled="modalLoading" :class="{'cursor-not-allowed': modalLoading}" @click="limpiar(plaza)">Limpiar</button>
+                  <button :disabled="modalLoading" :class="{'cursor-not-allowed': modalLoading}" @click="limpiar(plaza)">Todos</button>
                 </div>
               </div>
               <FilesDownload @download-api="downloadApi" class="-mt-1"/>
