@@ -12,32 +12,30 @@
 
 
 <script>
-import jwt_decode from "jwt-decode";
+//import jwt_decode from "jwt-decode";
+import Servicio from '../Servicios/Token-Services';
 export default {
   name: "ModulosComp",
   props: ["titulo", "imagen", "ruta", "nombre", "isInactive"],
   methods: {
-    token: function (cname) {
-      var name = cname + "=";
-      var decodedCookie = decodeURIComponent(document.cookie);
-      var ca = decodedCookie.split(";");
-      for (var i = 0; i < ca.length; i++) {
-        var c = ca[i];
-        while (c.charAt(0) == " ") {
-          c = c.substring(1);
-        }
-        if (c.indexOf(name) == 0) {
-          return c.substring(name.length, c.length);
-        }
-      }
-      return "";
-    },
+    // token: function (cname) {
+    //   var name = cname + "=";
+    //   var decodedCookie = decodeURIComponent(document.cookie);
+    //   var ca = decodedCookie.split(";");
+    //   for (var i = 0; i < ca.length; i++) {
+    //     var c = ca[i];
+    //     while (c.charAt(0) == " ") {
+    //       c = c.substring(1);
+    //     }
+    //     if (c.indexOf(name) == 0) {
+    //       return c.substring(name.length, c.length);
+    //     }
+    //   }
+    //   return "";
+    // },
     mostrar: function (nombre) {
-      let token = this.token("Token")
-      var decoded = jwt_decode(token);
-      console.log(nombre);
-      console.log(decoded)
-      console.log(decoded[nombre])
+      //let token = this.token("Token")
+      var decoded = Servicio.obtenerInfoUser()//jwt_decode(token);
       if(decoded[nombre] !== "false"){
         return true;
       }else{

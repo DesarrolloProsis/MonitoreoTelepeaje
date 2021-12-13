@@ -1,3 +1,5 @@
+import jwt_decode from "jwt-decode";
+
 function getCookie(cname) {
     var name = cname + "=";
     var decodedCookie = decodeURIComponent(document.cookie);
@@ -14,6 +16,24 @@ function getCookie(cname) {
     return "";
 }
 
+function guardarToken(token){
+    if(localStorage.getItem("token") != null || localStorage.getItem("userInfo") != null)
+        localStorage.clear()
+    
+    let userInfo = jwt_decode(token);
+    let barerToken = token
+    localStorage.setItem("token", JSON.stringify(barerToken))
+    localStorage.setItem("userInfo", JSON.stringify(userInfo))
+}
+function obtenerToken(){
+    return JSON.parse(localStorage.getItem("token"))
+}
+function obtenerInfoUser(){
+    return JSON.parse(localStorage.getItem("userInfo"))
+}
 export default{
     getCookie,
+    guardarToken,
+    obtenerToken,
+    obtenerInfoUser
 }

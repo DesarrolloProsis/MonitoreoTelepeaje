@@ -48,7 +48,7 @@
 <script>
 import Servicio from '../Servicios/Token-Services';
 import Multiselect from '@vueform/multiselect'
-import jwt_decode from "jwt-decode";
+//import jwt_decode from "jwt-decode";
 import axios from 'axios';
 import { notify } from "@kyvg/vue3-notification";
 const API = process.env.VUE_APP_URL_API_PRODUCCION
@@ -152,8 +152,9 @@ export default {
           {  value: 'Deshabilitar', name: 'Deshabilitar'},//1
           {  value: 'Editar Modulos', name: 'Editar Modulos'},//2
       ]
-      Servicio.getCookie("Token")
-      let info = jwt_decode(Servicio.getCookie("Token"))
+      //Servicio.getCookie("Token")
+      //let info = jwt_decode(Servicio.getCookie("Token"))
+      let info = Servicio.obtenerInfoUser()
       let filtroOpciones = []
           if(perfil.activo == false){
             filtroOpciones.push(options[0])    

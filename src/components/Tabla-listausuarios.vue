@@ -164,7 +164,7 @@
 <script>
 const API = process.env.VUE_APP_URL_API_PRODUCCION
 import Spinner from '../components/Spn.vue'
-import jwt_decode from "jwt-decode";
+//import jwt_decode from "jwt-decode";
 import Multiselect from '@vueform/multiselect'
 import Servicio from '../Servicios/Token-Services';
 import axios from "axios";
@@ -232,10 +232,11 @@ name: "TablaListaUsuarios",
   methods: {
     cambiarPass: function (usuario) {
       if(this.pass != ''){
-        if(Servicio.getCookie("Token")){
+        //if(Servicio.getCookie("Token")){
+        if(Servicio.obtenerToken()){
         let config = {
           headers: {
-            'Authorization': 'Bearer ' + Servicio.getCookie("Token")
+            'Authorization': 'Bearer ' + Servicio.obtenerToken()//Servicio.getCookie("Token")
           }
         }
         console.log(config);
@@ -385,10 +386,11 @@ name: "TablaListaUsuarios",
     },
     editarUsuario: function (usuario){
       this.seleccionado = usuario;
-      if(Servicio.getCookie("Token")){
+      //if(Servicio.getCookie("Token")){
+      if(Servicio.obtenerToken()){
       let config = {
           headers: {
-            'Authorization': 'Bearer ' + Servicio.getCookie("Token")
+            'Authorization': 'Bearer ' + Servicio.obtenerToken()//Servicio.getCookie("Token")
           }
         }
         const data = {
@@ -414,10 +416,11 @@ name: "TablaListaUsuarios",
     },
     changeStatus: function (usuario) {
       this.seleccionado = usuario;
-      if(Servicio.getCookie("Token")){
+      //if(Servicio.getCookie("Token")){
+      if(Servicio.obtenerToken()){
         let config = {
           headers: {
-            'Authorization': 'Bearer ' + Servicio.getCookie("Token")
+            'Authorization': 'Bearer ' + Servicio.obtenerToken()//Servicio.getCookie("Token")
           }
         }
         const data = {
@@ -434,10 +437,11 @@ name: "TablaListaUsuarios",
       }
     },
     cambiarRol: function (usuario){
-      if(Servicio.getCookie("Token")){
+      //if(Servicio.getCookie("Token")){
+      if(Servicio.obtenerToken()){
         let config = {
           headers: {
-            'Authorization': 'Bearer ' + Servicio.getCookie("Token")
+            'Authorization': 'Bearer ' + Servicio.obtenerToken()//Servicio.getCookie("Token")
           }
         }
         const data = {
@@ -517,9 +521,11 @@ name: "TablaListaUsuarios",
       this.value = ""
     },
     opticones_select_acciones(usuario){
-      Servicio.getCookie("Token")
-      let info = jwt_decode(Servicio.getCookie("Token"))
-      let options= [
+      //Servicio.getCookie("Token")
+      //let info = jwt_decode(Servicio.getCookie("Token"))
+      let info = Servicio.obtenerToken()
+
+      let options = [
           {  value: 'Habilitar', name: 'Habilitar'},//0
           {  value: 'Deshabilitar', name: 'Deshabilitar'},//1
           {  value: 'Cambiar Contraseña', name: 'Cambiar Contraseña'},//2

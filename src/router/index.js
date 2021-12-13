@@ -16,24 +16,25 @@ import ListaUsuarios from "@/views/Modules/ListaUsuarios.vue";
 import Bitacoras from "@/views/Modules/Bitacoras.vue";
 import BitacoraAntifraude from "@/views/Modules/BitacoraAntifraude.vue";
 import BitacoraListas from "@/views/Modules/BitacoraListas.vue"
+import Servicio from '../Servicios/Token-Services'
 //import jwt_decode from "jwt-decode";
 //const API = process.env.VUE_APP_URL_API_PRODUCCION
 
-function getCookie(cname) {
-  var name = cname + "=";
-  var decodedCookie = decodeURIComponent(document.cookie);
-  var ca = decodedCookie.split(';');
-  for (var i = 0; i < ca.length; i++) {
-    var c = ca[i];
-    while (c.charAt(0) == ' ') {
-      c = c.substring(1);
-    }
-    if (c.indexOf(name) == 0) {
-      return c.substring(name.length, c.length);
-    }
-  }
-  return "";
-}
+// function getCookie(cname) {
+//   var name = cname + "=";
+//   var decodedCookie = decodeURIComponent(document.cookie);
+//   var ca = decodedCookie.split(';');
+//   for (var i = 0; i < ca.length; i++) {
+//     var c = ca[i];
+//     while (c.charAt(0) == ' ') {
+//       c = c.substring(1);
+//     }
+//     if (c.indexOf(name) == 0) {
+//       return c.substring(name.length, c.length);
+//     }
+//   }
+//   return "";
+// }
 
 
 
@@ -50,7 +51,8 @@ const routes = [{
       // if(from.name == "MonitoreoServicios"){
       //   next()
       // }
-      if (getCookie("TipoUser") != "" && getCookie("Token")) {
+      //if (getCookie("TipoUser") != "" && getCookie("Token")) {
+      if (Servicio.obtenerToken()) {
         // let config = {
         //   headers: {
         //     'Authorization': 'Bearer ' + getCookie("Token")
@@ -217,11 +219,12 @@ const router = createRouter({
 
 router.beforeEach((to, _from, next) => {
   if (to.matched.some(record => record.meta.requiresCookie)) {    
-    if (getCookie("TipoUser") != "" && getCookie("Token") != "") {
+    //if (getCookie("TipoUser") != "" && getCookie("Token") != "") {
+    if (Servicio.obtenerToken()) {
         next()
     } else {        
-      document.cookie = "TipoUser=; expires=Thu, 01 Jan 1970 00:00:00 UTC;" + "SameSite=None; Secure;";
-      document.cookie = "Token=; expires=Thu, 01 Jan 1970 00:00:00 UTC;" + "SameSite=None; Secure;";
+      //document.cookie = "TipoUser=; expires=Thu, 01 Jan 1970 00:00:00 UTC;" + "SameSite=None; Secure;";
+      //document.cookie = "Token=; expires=Thu, 01 Jan 1970 00:00:00 UTC;" + "SameSite=None; Secure;";
       next('/')      
     }
   } else {    
