@@ -177,10 +177,10 @@ name: "TablaListaUsuarios",
       type: Array,
       
     },
-    plazaS:{
+    /* plazaS:{
       type: Number,
       default: 0
-    }
+    } */
   },
   components:{
     Multiselect,Spinner
