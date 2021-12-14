@@ -123,27 +123,27 @@ export default {
     
   },
   setup() {
-    const  perfiles = ref([])
-    const  token = ref('')
-    const  paginaAct = ref(1)
-    const  maxPages = ref(1)
-    const  nombre = ref(null)
-    const  estatus = ref(null)
-    const  modalAgregar = ref(false)
-    const  listaPlazas = ref([])
-    const  plazas = ref([{ value: '', label: '' }])
-    const  verdad = ref (false)
-    const  tramoSeleccionado = ref('')
-    const  rol_Filtrado = ref([])
-    const  roles = ref ([])
-    const  modalLoading = ref(false)
+    const perfiles = ref([])
+    const token = ref('')
+    const paginaAct = ref(1)
+    const maxPages = ref(1)
+    const nombre = ref(null)
+    const estatus = ref(null)
+    const modalAgregar = ref(false)
+    const listaPlazas = ref([])
+    const plazas = ref([{ value: '', label: '' }])
+    const verdad = ref (false)
+    const tramoSeleccionado = ref('')
+    const rol_Filtrado = ref([])
+    const roles = ref ([])
+    const modalLoading = ref(false)
     const errorMessage = ref('')
     const modalPlazas = ref (false)
     const seleccionado = ref({})
     const tramoSeleccionadoModal = ref('')
     const plazasModal = ref([])
     const plazasAsignar = ref([])
-    const validacion = ref(true)
+    const validacion = ref(false)
     const plazasM = ref([{ value: '', label: '' }])
     //Paginacion
     const totalPaginas = ref(0)
@@ -151,10 +151,10 @@ export default {
     const hasMorePages = ref(true)
     const numRespuesta = ref(7)
     //addEmi
-    const  formato = ref('')
-    const  tramo = ref('')
-    const  plaza = ref('')
-    const  habilitar = ref(false)
+    const formato = ref('')
+    const tramo = ref('')
+    const plaza = ref(null)
+    const habilitar = ref(false)
     
     const usuario = reactive ({})
     
@@ -188,7 +188,7 @@ export default {
     function todos (){
       nombre.value = null
       estatus.value = null
-      axios.get(`${API}/Usuario/${plaza.value}/${currentPage.value}/${numRespuesta.value}/${nombre.value}/${estatus.value}`)
+      axios.get(`${API}/UsuarioMonitoreo/${plaza.value}/${currentPage.value}/${numRespuesta.value}/${nombre.value}/${estatus.value}`)
       .then((res) => {
         perfiles.value = []
         habilitar.value = true
@@ -220,7 +220,7 @@ export default {
         });
       }
       else{
-        axios.get(`${API}/Usuario/${plaza}/${currentPage.value}/${numRespuesta.value}/${nombre}/${estatus}`)
+        axios.get(`${API}/UsuarioMonitoreo/${plaza}/${currentPage.value}/${numRespuesta.value}/${nombre}/${estatus}`)
           .then((res) => {
             modalLoading.value = false
             perfiles.value = []
@@ -243,8 +243,8 @@ export default {
       }
     }
     function showMore(page){
-      if((nombre.value == '' || nombre.value == undefined || nombre.value == null) && (nombre.value == '' || nombre.value == null || nombre.value == undefined)){
-        axios.get(`${API}/Usuario/${plaza.value}/${page}/${numRespuesta.value}/null/${estatus.value}`)
+      //if((nombre.value == '' || nombre.value == undefined || nombre.value == null) && (nombre.value == '' || nombre.value == null || nombre.value == undefined)){
+        axios.get(`${API}/UsuarioMonitoreo/${plaza.value}/${page}/${numRespuesta.value}/${nombre.value}/${estatus.value}`)
         .then((res) => {
           perfiles.value = []
           habilitar.value = true
@@ -263,7 +263,7 @@ export default {
             perfiles.value.push(obj);
           });
         });
-      }else{
+      /*}else{
         axios.get(`${API}/Usuario/${plaza.value}/${page}/${numRespuesta.value}/${nombre.value}/${estatus.value}`)
         .then((res) => {
           perfiles.value = []
@@ -283,7 +283,7 @@ export default {
             perfiles.value.push(obj);
           });
         });
-      }
+      }*/
     }
     function guardar (){
       //if(Servicio.getCookie("Token")){
@@ -294,17 +294,18 @@ export default {
           }
         }
         const data = {
-          "password": usuario.pass,
           "nombre": usuario.nombre,
           "apellidoPaterno": usuario.apellidoP,
           "apellidoMaterno": usuario.apellidoM,
           "idrol": usuario.rol,
+          "pass": usuario.pass
         }
-        if(usuario.nombre != '' && usuario.apellidoP != '' && usuario.apellidoM != '' && usuario.pass != '' ){
+        console.log(data);
+        if(data.nombre != undefined && data.apellidoPaterno != undefined && data.apellidoMaterno != undefined && data.pass != undefined && data.idrol != undefined){
           //let userName = usuario.nombre.slice(0,3)+usuario.apellidoP
           modalLoading.value = true
           modalAgregar.value = false
-          axios.post(`${API}/Usuario/${plaza.value}`,data,config)
+          axios.post(`${API}/UsuarioMonitoreo/${plaza.value}`,data,config)
             .then((result)=>{
               setTimeout(() => {
                 //this.$router.push("/configuracion");
@@ -327,7 +328,7 @@ export default {
                   duration: 20000,
                   closeonclick:true,
                   type: 'success'
-                }); */
+                });*/ 
               }, 1000);
               errorMessage.value = ""
             })
@@ -374,7 +375,7 @@ export default {
         }, 1000)
       }
       else{
-        this.$notify({
+        notify({
           title:'Falta llenar campos',
           text:'Todos los campos son obligatorios',
           type: 'error'
@@ -426,7 +427,7 @@ export default {
       }      
     }
   
-  return {recibir_tramo_plaza, abrirModal, cancelar, todos, buscar, showMore, guardar, agregarPlaza, plazasfil, downloadApi, usuario, perfiles, plazasM, token, paginaAct, maxPages, nombre, estatus, modalAgregar, listaPlazas, plazas, verdad, tramoSeleccionado, rol_Filtrado, roles, modalLoading, formato, tramo, plaza, habilitar, currentPage, hasMorePages, numRespuesta, totalPaginas, modalPlazas, seleccionado, tramoSeleccionadoModal, plazasModal, plazasAsignar }
+  return {recibir_tramo_plaza, abrirModal, cancelar, todos, buscar, showMore, guardar, agregarPlaza, plazasfil, downloadApi, usuario, perfiles, plazasM, token, paginaAct, maxPages, nombre, estatus, modalAgregar, listaPlazas, plazas, verdad, tramoSeleccionado, rol_Filtrado, roles, modalLoading, formato, tramo, plaza, habilitar, currentPage, hasMorePages, numRespuesta, totalPaginas, modalPlazas, seleccionado, tramoSeleccionadoModal, plazasModal, plazasAsignar, validacion }
   },
 }
 </script>

@@ -67,7 +67,8 @@ import Footer from "../../components/Footer-login";
 import axios from 'axios';
 import Multiselect from '@vueform/multiselect'
 import { notify } from "@kyvg/vue3-notification";
-import { onMounted, reactive, ref } from 'vue'
+//import { onMounted, reactive, ref } from 'vue'
+import { reactive, ref } from 'vue'
 const API = process.env.VUE_APP_URL_API_PRODUCCION
 export default {
   components: {
@@ -177,7 +178,7 @@ export default {
       tramo.value = value.tramo
       plaza.value = value.plaza
     }
-    onMounted(buscar_roles)
+    //onMounted(buscar_roles)
     return { roles, userModal, buscar_roles, abrir_modal_new_rol, newRol, optionRoles, craer_nuevo_rol, nombre, estatus, buscar, todos, recibir_tramo_plaza, habilitar, modalLoading }
 
   }, 
