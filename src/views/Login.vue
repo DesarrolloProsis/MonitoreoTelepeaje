@@ -67,19 +67,8 @@ export default {
         "Password": this.pass
       }
       if(data["Usuario"] != "" &&  data["Password"] != ""){
-        console.log("Cargando...")
         axios.post(`${API}/Login`, data)
         .then((result) => {
-          console.log(result.data);
-          // let userInfo = jwt_decode(result.data.bearer);
-          // console.log(userInfo['Bitacora Accesos'])
-          // // Set Cookie
-          // let d = new Date();
-          // let dias = 365;
-          // d.setTime(d.getTime() + dias * 24 * 60 * 60 * 1000);
-          // let expires = "expires=" + d.toUTCString();
-          // document.cookie = "TipoUser=" + result.data['rol'] + ";" + expires + "SameSite=None; Secure;";
-          // document.cookie = "Token=" + result.data['bearer'] + ";" + expires + "SameSite=None; Secure;";
           this.mensaje =""
           serviceToken.guardarToken(result.data.bearer)
           this.$router.push('/inicio')
@@ -89,13 +78,11 @@ export default {
         })
       }else{
         this.mensaje = "Escribe tu Usuario y Contraseña."
-        console.log("NO hay datos para iniciar sesion")
       }
     },
   }
 };
 </script>
-
 <style scoped>
 .figura {
   

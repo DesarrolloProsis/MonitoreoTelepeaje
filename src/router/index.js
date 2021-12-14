@@ -17,27 +17,6 @@ import Bitacoras from "@/views/Modules/Bitacoras.vue";
 import BitacoraAntifraude from "@/views/Modules/BitacoraAntifraude.vue";
 import BitacoraListas from "@/views/Modules/BitacoraListas.vue"
 import Servicio from '../Servicios/Token-Services'
-//import jwt_decode from "jwt-decode";
-//const API = process.env.VUE_APP_URL_API_PRODUCCION
-
-// function getCookie(cname) {
-//   var name = cname + "=";
-//   var decodedCookie = decodeURIComponent(document.cookie);
-//   var ca = decodedCookie.split(';');
-//   for (var i = 0; i < ca.length; i++) {
-//     var c = ca[i];
-//     while (c.charAt(0) == ' ') {
-//       c = c.substring(1);
-//     }
-//     if (c.indexOf(name) == 0) {
-//       return c.substring(name.length, c.length);
-//     }
-//   }
-//   return "";
-// }
-
-
-
 const routes = [{
     path: "/",
     name: "Login",
@@ -46,30 +25,7 @@ const routes = [{
       requiresCookie: false
     },
     beforeEnter: (to, from, next) => {
-      // console.log(to)
-      // console.log(from)
-      // if(from.name == "MonitoreoServicios"){
-      //   next()
-      // }
-      //if (getCookie("TipoUser") != "" && getCookie("Token")) {
       if (Servicio.obtenerToken()) {
-        // let config = {
-        //   headers: {
-        //     'Authorization': 'Bearer ' + getCookie("Token")
-        //   }
-        // }
-        // axios.get(`${API}/Test`, config)
-        //   .then(() => {
-        //     next("/inicio")
-        //   })
-        //   .catch((error) => {
-        //     //TODO: Borrar las cookies para redirigir al login
-        //     document.cookie = "TipoUser=; expires=Thu, 01 Jan 1970 00:00:00 UTC;" + "SameSite=None; Secure;";
-        //     document.cookie = "Token=; expires=Thu, 01 Jan 1970 00:00:00 UTC;" + "SameSite=None; Secure;";
-        //     console.log("Error Validando Token...")
-        //     console.log(error)
-        //     next()
-        //   })
         next()
       } else {        
         document.cookie = "TipoUser=; expires=Thu, 01 Jan 1970 00:00:00 UTC;" + "SameSite=None; Secure;";

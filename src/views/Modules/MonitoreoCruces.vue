@@ -103,7 +103,6 @@ export default {
         let carril = null
         axios.get(`${API}/Transacciones/Last20Transaccions/${plaza}/${carril}`)
         .then((result)=>{
-          console.log(result);
           result.data.body.forEach((e) =>{
             let obj = {
               carril: e.carril,

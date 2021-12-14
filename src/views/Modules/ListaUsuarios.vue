@@ -190,7 +190,6 @@ export default {
       estatus.value = null
       axios.get(`${API}/Usuario/${plaza.value}/${currentPage.value}/${numRespuesta.value}/${nombre.value}/${estatus.value}`)
       .then((res) => {
-        console.log(res);
         perfiles.value = []
         habilitar.value = true
         totalPaginas.value = res.data.numberPages
@@ -267,7 +266,6 @@ export default {
       }else{
         axios.get(`${API}/Usuario/${plaza.value}/${page}/${numRespuesta.value}/${nombre.value}/${estatus.value}`)
         .then((res) => {
-          console.log(res);
           perfiles.value = []
           habilitar.value = true
           totalPaginas.value = res.data.numberPages
@@ -352,7 +350,6 @@ export default {
         let userName = usuario.nombre.slice(0,3)+usuario.apellidoPaterno
         this.modalLoading = true
         for(let i=0; i< plazasAsignar.value.length;i++){
-          console.log(plazasAsignar.value)
           let nueva = plazasAsignar.value[i]
           //this.pla = nueva
           let data = {
@@ -360,8 +357,7 @@ export default {
             plazaAsignadaId: nueva
           }
           axios.post(`${API}/PlazaAsignada`,data)
-          .then((response)=>{
-            console.log(response);                   
+          .then(()=>{                   
             tramoSeleccionadoModal.value = ''      
           })          
         }   
@@ -396,18 +392,14 @@ export default {
             target[property];
         }
       });
-      console.log(proxy);
       if(tramoSeleccionadoModal.value == ''){
-        console.log('if');
         for(let i= 0; i<proxy.length; i++){
           plazas.value.push({'value':proxy[i].plazaAsignadaId, 'label':proxy[i].nombre}) 
         }
       }else{
-        console.log('else');
         plazasM.value = []
         for(let i= 0; i<proxy.length; i++){
           plazasM.value.push({'value':proxy[i].plazaAsignadaId, 'label':proxy[i].nombre}) 
-          console.log(plazasModal.value);
         }
       }
     }

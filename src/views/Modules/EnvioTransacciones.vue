@@ -86,7 +86,6 @@ export default {
         //axios.post(`${API}/Transacciones/TransactionsFiltros`,data)
         axios.post(`${API}/Transacciones/TransactionsFiltrosR/${plaza}/null/null/null/${currentPage.value}/${numRespuesta.value}`)
         .then((result)=>{
-          console.log(result);
           modalLoading.value = false
           if((result.data.status == 'Ok') && (result.data.body.length > 0)){
             modalLoading.value = false

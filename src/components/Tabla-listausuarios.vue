@@ -239,14 +239,12 @@ name: "TablaListaUsuarios",
             'Authorization': 'Bearer ' + Servicio.obtenerToken()//Servicio.getCookie("Token")
           }
         }
-        console.log(config);
         const data = {
           "UsuarioId": usuario.id,
           "Password": this.pass,
         } 
         axios.patch(`${API}/Usuario`,data,config)
           .then((result)=>{
-              console.log(result)
               if(result.statusText == 'OK'){
                 this.errorMessage = ""
                 this.modalPass = false
@@ -308,7 +306,6 @@ name: "TablaListaUsuarios",
           }
           axios.post(`${API}/PlazaAsignada`,data)
           .then((response)=>{
-            console.log(response);
             this.modalPlazas = false
             this.modalLoading = true
             this.tramoSeleccionado = ''
@@ -353,7 +350,6 @@ name: "TablaListaUsuarios",
       }
     },
     quitarPlazas: function (usuario){
-      console.log(usuario);
       for(let i=0; i< this.plazasAsignar.length;i++){
           let quitar = this.plazasAsignar[i]
           let usuarioId = usuario.id
@@ -493,14 +489,11 @@ name: "TablaListaUsuarios",
         this.changeStatus(usuario)
       }if(this.value == 'Deshabilitar'){
         this.changeStatus(usuario)
-      }if(this.value == 'Agregar Plazas'){
-        console.log('Agregar Plazas');
       }if(this.value == 'Cambiar Contraseña'){
         this.seleccionado = usuario;
         this.modalPass = true;
       }if(this.value == 'Agregar Plazas'){
         this.seleccionado = usuario;
-        console.log(this.seleccionado);
         this.modalPlazas = true;
       }if(this.value == 'Quitar Plazas'){
         this.seleccionado = usuario

@@ -102,7 +102,6 @@ export default {
     const buscar_roles = async () => { 
       axios.get(`${API}/CatalogoRoles/null/null/${plaza.value}`)
         .then((response) => {
-            console.log(response.data);
             roles.value = response.data.body 
           }
         )

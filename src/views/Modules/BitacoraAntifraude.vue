@@ -86,7 +86,6 @@ export default {
           //axios.get(`${API}/ListaNegra/Paginacion/${plaza}/${page.value}/${carrilif}/${fecha}/${tag}`)
           axios.get(`${API}/ListaNegra/PaginacionCompleta/${plaza}/${carrilif}/${fecha}/${tag}/${page.value}/${numberResponse.value}`)
           .then((result)=>{
-            console.log(result);
             if((result.data.status == 'Ok') && (result.data.body.length > 0)){
               modalLoading.value = false
               totalPaginas.value = result.data.numberPages
@@ -144,13 +143,11 @@ export default {
             }
           })
         }else if((carril != '' || carril != undefined) && (tag == '' || tag == undefined || tag == null) && (fecha == '' || fecha == undefined || fecha == null)){
-          console.log('carril');
           listaNegra.value = []
           let tag = null
           //axios.get(`${API}/ListaNegra/Paginacion/${plaza}/${page.value}/${carril}/${fecha}/${tag}`)
           axios.get(`${API}/ListaNegra/PaginacionCompleta/${plaza}/${carril}/${fecha}/${tag}/${page.value}/${numberResponse.value}`)
           .then((result)=>{
-            console.log(result.data);
             if((result.data.status == 'Ok') && (result.data.body.length > 0)){
               modalLoading.value = false
               totalPaginas.value = result.data.numberPages
@@ -269,11 +266,10 @@ export default {
         })
       }
       else{
-        console.log('else');
         //axios.get(`${API}/ListaNegra/Paginacion/${plaza}/${page}/${this.carril}/${fecha}/${tag}`)
         axios.get(`${API}/ListaNegra/PaginacionCompleta/${plaza.value}/${carril.value}/${fecha.value}/${tag.value}/${page}/${numberResponse.value}`)
         .then((result)=>{
-          console.log(result.data);
+
           totalPaginas.value = result.data.numberPages
           currentPage.value = result.data.now
           result.data.body.forEach((e)=>{

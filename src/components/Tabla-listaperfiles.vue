@@ -74,7 +74,6 @@ export default {
     // !MODULOS
     showModulos: function (perfil) {
       this.isModulosActive = true; let modulos = [];
-      console.log(perfil)
       //Array auxiliar para modal de modulos
       const novalidProp = ['rolId', 'dateStamp', 'nombreRol', 'activo']    
       Object.entries(perfil).map(item => {                                
@@ -91,18 +90,15 @@ export default {
         this.perfilSelected[item.nombre] = item.seleccionado
       });
       delete this.perfilSelected.modulos
-      console.log(this.perfilSelected)
       axios.post(`${API}/CatalogoRoles/Editar`, this.perfilSelected)
         .then((response) => {
-          console.log(response)
           if(response.data.status == 'Ok'){
             notify({ type: 'success', title:'Rol actualizado', text: `Se actualizo correctamente el rol ${this.perfilSelected.nombreRol}`});
             this.perfilSelected = {}
             this.$emit('buscar-roles')
           }          
         })
-        .catch((error) => {
-          console.log(error)
+        .catch(() => {
           notify({ type: 'warning', title:'Rol no actualizado', text: `No se pudo actualizar el rol ${this.perfilSelected.nombreRol}`});
           this.perfilSelected = {}
         })
@@ -120,16 +116,14 @@ export default {
       this.perfilSelected = { ...perfil }
       this.perfilSelected.activo = !perfil.activo
       axios.post(`${API}/CatalogoRoles/Editar`, this.perfilSelected)
-        .then((response) =>{
-          console.log(response)                
+        .then((response) =>{            
           if(response.data.status == 'Ok'){
             notify({ type: 'success', title:'Rol actualizado', text: `Se actualizo correctamente el rol ${this.perfilSelected.nombreRol}`});
             this.perfilSelected = {}
             this.$emit('buscar-roles')
           }  
         })
-        .catch((error) => {
-          console.log(error)
+        .catch(() => {
           notify({ type: 'warning', title:'Rol no actualizado', text: `No se pudo actualizar el rol ${this.perfilSelected.nombreRol}`});
           this.perfilSelected = {}
         })

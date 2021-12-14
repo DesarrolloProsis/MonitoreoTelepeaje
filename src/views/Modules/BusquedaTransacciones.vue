@@ -82,7 +82,6 @@ export default {
     function serch(plaza,tag, fecha){
       modalLoading.value = true
       cruces.value = []
-      console.log([plaza,tag,fecha]);
       if(plaza == '' || plaza == undefined || plaza == null){
         modalLoading.value = false
         notify({
@@ -95,7 +94,6 @@ export default {
           //axios.get(`${API}/Transacciones/BusquedaTransacciones/${plaza}/${page.value}/null/null`)
           axios.get(`${API}/Transacciones/BusquedaTransacciones/PaginacionCompleta/${plaza}/null/null/${page.value}/${numRespuesta.value}`)
           .then((result)=>{
-            console.log(result);
             if(result.data.status == "Ok"){
               modalLoading.value = false
               totalPaginas.value = result.data.numberPages
@@ -109,7 +107,6 @@ export default {
                   tipo: e.tipoVehiculo,
                   tarifa: e.tarifa
                 }
-                console.log(obj);
                 cruces.value.push(obj)
               })
             }else{
@@ -122,11 +119,9 @@ export default {
             }
           })
         }else if ((tag != '' || tag != undefined || tag != null) && (fecha == '' || fecha == undefined || fecha == null)){
-          console.log(tag);
           //axios.get(`${API}/Transacciones/BusquedaTransacciones/${plaza}/${page.value}/null/${tag}`)
           axios.get(`${API}/Transacciones/BusquedaTransacciones/PaginacionCompleta/${plaza}/null/${tag}/${page.value}/${numRespuesta.value}`)
           .then((result)=>{
-            console.log(result);
             if((result.data.status == "Ok") && (result.data.body.length > 0)){
               modalLoading.value = false
               totalPaginas.value = result.data.numberPages
@@ -152,11 +147,9 @@ export default {
             }
           })
         }else if ((fecha != '' || fecha != undefined || fecha != null) && (tag == '' || tag == undefined || tag == null)){
-          console.log('fecha');
           //axios.get(`${API}/Transacciones/BusquedaTransacciones/${plaza}/${page.value}/${fecha}/null`)
           axios.get(`${API}/Transacciones/BusquedaTransacciones/PaginacionCompleta/${plaza}/${fecha}/null/${page.value}/${numRespuesta.value}`)
           .then((result)=>{
-            console.log(result);
             if((result.data.status == "Ok") && (result.data.body.length > 0)){
               modalLoading.value = false
               totalPaginas.value = result.data.numberPages
@@ -185,7 +178,6 @@ export default {
           //axios.get(`${API}/Transacciones/BusquedaTransacciones/${plaza}/${page.value}/${fecha}/${tag}`)
           axios.get(`${API}/Transacciones/BusquedaTransacciones/PaginacionCompleta/${plaza}/${fecha}/${tag}/${page.value}/${numRespuesta.value}`)
           .then((result)=>{
-            console.log(result);
             if((result.data.status == "Ok") && (result.data.body.length > 0)){
               modalLoading.value = false
               totalPaginas.value = result.data.numberPages
@@ -222,7 +214,6 @@ export default {
       //axios.get(`${API}/Transacciones/BusquedaTransacciones/${plaza}/${page.value}/null/null`)
       axios.get(`${API}/Transacciones/BusquedaTransacciones/PaginacionCompleta/${plaza}/null/null/${page.value}/${numRespuesta.value}`)
       .then((result)=>{
-        console.log(result);
         if(result.data.status == "Ok"){
           modalLoading.value = false
           totalPaginas.value = result.data.numberPages
@@ -255,7 +246,6 @@ export default {
         //axios.get(`${API}/Transacciones/BusquedaTransacciones/${plaza}/${page}/${fecha}/${tag}`)
         axios.get(`${API}/Transacciones/BusquedaTransacciones/PaginacionCompleta/${plaza.value}/null/null/${page}/${numRespuesta.value}`)
         .then((result)=>{
-          console.log(result);
           if(result.data.status == "Ok"){
             modalLoading.value = false
             totalPaginas.value = result.data.numberPages
@@ -278,7 +268,6 @@ export default {
         //axios.get(`${API}/Transacciones/BusquedaTransacciones/${plaza}/${page}/${fecha}/${tag}`)
         axios.get(`${API}/Transacciones/BusquedaTransacciones/PaginacionCompleta/${plaza.value}/${fecha.value}/${tag.value}/${page}/${numRespuesta.value}`)
         .then((result)=>{
-          console.log(result);
           if(result.data.status == "Ok"){
             modalLoading.value = false
             totalPaginas.value = result.data.numberPages

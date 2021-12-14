@@ -72,7 +72,6 @@ export default {
                 //axios.get(`${API}/Historico/${plaza}/${fecha}/${page.value}`)
                 axios.get(`${API}/Historico/ListaHistorico/PaginacionCompleta/${plaza}/${fecha}/${currentPage.value}/${numRespuesta.value}`)
                 .then((result)=>{
-                    console.log(result.data);
                     if(result.data.status == 'Ok'){
                         modalLoading.value = false
                         totalPaginas.value = result.data.numberPages
@@ -127,13 +126,11 @@ export default {
             })
         }//Función para cambiar de página
         function showMore(page){
-            console.log(page);
             listaHistorico.value = []
             //axios.get(`${API}/Historico/${plaza.value}/${fecha.value}/${page}`)
             if(fecha.value == '' || fecha.value == null || fecha.value == undefined){
                 axios.get(`${API}/Historico/ListaHistorico/PaginacionCompleta/${plaza.value}/null/${page}/${numRespuesta.value}`)
                 .then((result)=>{
-                    console.log(result);
                     if(result.data.status == 'Ok'){
                         totalPaginas.value = result.data.numberPages
                         currentPage.value = result.data.now
@@ -160,7 +157,6 @@ export default {
             }else{
                 axios.get(`${API}/Historico/ListaHistorico/PaginacionCompleta/${plaza.value}/${fecha.value}/${page}/${numRespuesta.value}`)
                 .then((result)=>{
-                    console.log(result);
                     if(result.data.status == 'Ok'){
                         modalLoading.value = false
                         totalPaginas.value = result.data.numberPages

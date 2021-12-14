@@ -42,8 +42,7 @@ export default{
         document.cookie = "Token=; expires=Thu, 01 Jan 1970 00:00:00 UTC;" + "SameSite=None; Secure;";
         this.$router.push('/')
         axios.patch(`${API}/Login?UsuarioId=${info.UsuarioId}`)
-        .then((response) => {
-            console.log(response)            
+        .then(() => {
             this.$router.push('/')
         })
         .catch((error) => console.log(error))

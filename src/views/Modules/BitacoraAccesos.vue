@@ -126,7 +126,6 @@ export default {
     }//Funcion para cambiar de página 
     function showMore(page){
       accesos.value = [];
-      console.log(fecha.value,nombre.value);
       axios.get(`${API}/HistoricoSesion/PaginacionCompleta/${plaza.value}/${page}/${NRowsPage.value}/${fecha.value}/${nombre.value}`)
       .then((result)=>{
         totalPaginas.value = result.data.numberPages
@@ -158,7 +157,6 @@ export default {
       }else{
         //Si seleccionas nombre
         if((nombre.value != '' || nombre.value != null || nombre.value != undefined) && (fecha.value == '' || fecha.value == null || fecha.value == undefined)){
-          console.log('nombre');
           if (formato == "csv") {
             ServiceFiles.xml_hhtp_request(`${API}/UsuarioMonitoreo/Download/Csv/${plaza.value}/null/${nombre.value}`, 'bitacoraAcceso.csv')
           } 
@@ -170,7 +168,6 @@ export default {
           }
         }//Si seleccionamos fecha
         else if((fecha.value != '' || fecha.value != null || fecha.value != undefined) && (nombre.value == '' || nombre.value == null || nombre.value == undefined)){
-          console.log('fecha');
           if (formato == "csv") {
             ServiceFiles.xml_hhtp_request(`${API}/UsuarioMonitoreo/Download/Csv/${plaza.value}/${fecha.value}/null`, 'bitacoraAcceso.csv')
           } 
@@ -182,7 +179,6 @@ export default {
           }
         }//Si seleccionamos todos los filtros
         else{
-          console.log('else');
           if (formato == "csv") {
             ServiceFiles.xml_hhtp_request(`${API}/UsuarioMonitoreo/Download/Csv/${plaza.value}/${fecha.value}/${nombre.value}`, 'bitacoraAcceso.csv')
           } 
