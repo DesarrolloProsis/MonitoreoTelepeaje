@@ -22,7 +22,7 @@ import Navbar from "../../components/Navbar";
 import Tabla from "../../components/Tabla-monitoreo";
 import Footer from "../../components/Footer-login";
 import Service from '../../Servicios/Token-Services'
-import jwt_decode from "jwt-decode";
+//import jwt_decode from "jwt-decode";
 import axios from "axios";
 import { onMounted, ref } from 'vue'
 export default {
@@ -86,7 +86,7 @@ export default {
     // }
     const buscar_status = async () => {
       modalLoading.value = true
-      var decoded = jwt_decode(Service.getCookie("Token"));      
+      var decoded = Service.obtenerInfoUser()//jwt_decode(Service.getCookie("Token"));      
       await axios.get(`${API}/PlazaAsignada/DelUsuario/${decoded.UsuarioId}`)
         .then((response) => {  
           console.log(response)                  

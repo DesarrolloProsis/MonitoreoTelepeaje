@@ -18,7 +18,7 @@
 </template>
 <script>
 import Servicio from '../../Servicios/Token-Services';
-import jwt_decode from "jwt-decode";
+//import jwt_decode from "jwt-decode";
 import { ref } from 'vue'
 import Navbar from "../../components/Navbar.vue";
 import Footer from "../../components/Footer-login";
@@ -34,8 +34,10 @@ export default {
         const modulos = ref([])
         const carriles = ref(true)
 
-        if(Servicio.getCookie("Token")){
-            let info = jwt_decode(Servicio.getCookie("Token"))
+        //if(Servicio.getCookie("Token")){
+        if(Servicio.obtenerToken()){
+            //let info = jwt_decode(Servicio.getCookie("Token"))
+            let info = Servicio.obtenerInfoUser()
             carriles.value = info['Monitoreo Carriles']
         }
         if(carriles.value == 'false'){

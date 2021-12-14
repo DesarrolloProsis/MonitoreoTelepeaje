@@ -15,8 +15,7 @@
             <input id="username" class="input-field" type="text" placeholder="Usuario" />
           </div>
           <div class="input-container">
-            <img class="w-10 h-10 mt-1 mr-2" src="~@/assets/Login/password.png" />
-            <!-- <i class="fa fa-key icon"></i>-->
+            <img class="w-10 h-10 mt-1 mr-2" src="~@/assets/Login/password.png" />            
             <input id="password" class="input-field" type="password" placeholder="Contraseña" />
           </div>
           <router-link to="/inicio">
@@ -38,7 +37,8 @@ const API = process.env.VUE_APP_URL_API_PRODUCCION
 import Footer from "../components/Footer-login.vue";
 import Header from "../components/Header-login.vue";
 import axios from "axios";
-import jwt_decode from "jwt-decode";
+import serviceToken from '../Servicios/Token-Services'
+//import jwt_decode from "jwt-decode";
 export default {
 
   components: {
@@ -57,8 +57,8 @@ export default {
   },
   methods: {
     login: function() {
-      document.cookie = "TipoUser=; expires=Thu, 01 Jan 1970 00:00:00 UTC;" + "SameSite=None; Secure;";
-      document.cookie = "Token=; expires=Thu, 01 Jan 1970 00:00:00 UTC;" + "SameSite=None; Secure;";
+      //document.cookie = "TipoUser=; expires=Thu, 01 Jan 1970 00:00:00 UTC;" + "SameSite=None; Secure;";
+      //document.cookie = "Token=; expires=Thu, 01 Jan 1970 00:00:00 UTC;" + "SameSite=None; Secure;";
       this.user = document.getElementById("username").value;
       this.pass = document.getElementById("password").value;
       this.mensaje = ""
@@ -71,16 +71,17 @@ export default {
         axios.post(`${API}/Login`, data)
         .then((result) => {
           console.log(result.data);
-          let userInfo = jwt_decode(result.data.bearer);
-          console.log(userInfo['Bitacora Accesos'])
-          // Set Cookie
-          let d = new Date();
-          let dias = 365;
-          d.setTime(d.getTime() + dias * 24 * 60 * 60 * 1000);
-          let expires = "expires=" + d.toUTCString();
-          document.cookie = "TipoUser=" + result.data['rol'] + ";" + expires + "SameSite=None; Secure;";
-          document.cookie = "Token=" + result.data['bearer'] + ";" + expires + "SameSite=None; Secure;";
+          // let userInfo = jwt_decode(result.data.bearer);
+          // console.log(userInfo['Bitacora Accesos'])
+          // // Set Cookie
+          // let d = new Date();
+          // let dias = 365;
+          // d.setTime(d.getTime() + dias * 24 * 60 * 60 * 1000);
+          // let expires = "expires=" + d.toUTCString();
+          // document.cookie = "TipoUser=" + result.data['rol'] + ";" + expires + "SameSite=None; Secure;";
+          // document.cookie = "Token=" + result.data['bearer'] + ";" + expires + "SameSite=None; Secure;";
           this.mensaje =""
+          serviceToken.guardarToken(result.data.bearer)
           this.$router.push('/inicio')
         })
         .catch(()=>{

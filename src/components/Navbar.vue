@@ -17,7 +17,7 @@
 <script>
 const API = process.env.VUE_APP_URL_API_PRODUCCION
 import Servicio from '../Servicios/Token-Services';
-import jwt_decode from "jwt-decode";
+//import jwt_decode from "jwt-decode";
 import axios from "axios";
 export default{
   data(){
@@ -26,15 +26,16 @@ export default{
     }
   },
   beforeMount() {
-    Servicio.getCookie("Token")
-    let info = jwt_decode(Servicio.getCookie("Token"))
+    //Servicio.getCookie("Token")
+    //let info = jwt_decode(Servicio.getCookie("Token"))
+    let info = Servicio.obtenerInfoUser()
     this.nombre = info.nameid
   },
   methods:{
-    logout: function(){
-      console.log(Servicio.getCookie("Token"))
-      if(Servicio.getCookie("Token")){
-        let info = jwt_decode(Servicio.getCookie("Token"))        
+    logout: function(){      
+      //if(Servicio.getCookie("Token")){
+      if(Servicio.obtenerToken()){
+        let info = Servicio.obtenerInfoUser() //jwt_decode(Servicio.getCookie("Token"))        
         try
         {
         document.cookie = "TipoUser=; expires=Thu, 01 Jan 1970 00:00:00 UTC;" + "SameSite=None; Secure;";

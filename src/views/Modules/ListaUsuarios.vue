@@ -288,10 +288,11 @@ export default {
       }
     }
     function guardar (){
-      if(Servicio.getCookie("Token")){
+      //if(Servicio.getCookie("Token")){
+      if(Servicio.obtenerToken()){
         let config = {
           headers: {
-            'Authorization': 'Bearer ' + Servicio.getCookie("Token")
+            'Authorization': 'Bearer ' + Servicio.obtenerToken()//Servicio.getCookie("Token")
           }
         }
         const data = {
