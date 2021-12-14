@@ -60,6 +60,7 @@ export default {
     const totalPaginas = ref(0)
     const currentPage = ref(1)
     const hasMorePages = ref(true)
+    const NRowsPage = ref(10);
     const tramo = ref('')
     const plaza = ref('')
     //Función que regresa la lista de accesos con filtro forzoso de plaza y con o sin nombre y/o fecha
@@ -71,113 +72,38 @@ export default {
           type: 'warn'
         });
       }else{
-        //Si solo seleccionamos plaza
-        if(nombre == null && fecha == null){
-          accesos.value = []
-          modalLoading.value = true
-          axios.get(`${API}/HistoricoSesion/${page.value}/null/null/${plaza}`)
-          .then((result)=>{
-            totalPaginas.value = result.data.numberPages
-            currentPage.value = result.data.now
-            modalLoading.value = false
-            result.data.body.forEach((e)=>{
-              let obj = {
-                usuarioId: e.usuarioId,
-                nombreUsuario: e.nombreUsuario,
-                nombre: e.nombre,
-                apellidoP: e.apellidoPaterno,
-                apellidoM: e.apellidoMaterno,
-                rolId: e.rolId,
-                fecha_inicio: e.horaLogIn,
-                fecha_fin: e.horaLogOut,
-                rol: e.nombreRol
-              }
-              accesos.value.push(obj)
-            })
+      //Si solo seleccionamos plaza
+        accesos.value = []
+        modalLoading.value = true
+        axios.get(`${API}/HistoricoSesion/PaginacionCompleta/${plaza}/${page.value}/${NRowsPage.value}/${fecha}/${nombre}`)
+        .then((result)=>{
+          totalPaginas.value = result.data.numberPages
+          currentPage.value = result.data.now
+          modalLoading.value = false
+          result.data.body.forEach((e)=>{
+            let obj = {
+              usuarioId: e.usuarioId,
+              nombreUsuario: e.nombreUsuario,
+              nombre: e.nombre,
+              apellidoP: e.apellidoPaterno,
+              apellidoM: e.apellidoMaterno,
+              rolId: e.rolId,
+              fecha_inicio: e.horaLogIn,
+              fecha_fin: e.horaLogOut,
+              rol: e.nombreRol
+            }
+            accesos.value.push(obj)
           })
-        }//Si solo seleccionamos el nombre
-        if(nombre != null && fecha == null){
-          accesos.value = []
-          modalLoading.value = true
-          axios.get(`${API}/HistoricoSesion/${page.value}/${nombre}/null/${plaza}`)
-          .then((result)=>{
-            modalLoading.value = false
-            totalPaginas.value = result.data.numberPages
-            currentPage.value = result.data.now
-            result.data.body.forEach((e)=>{
-              let obj = {
-                usuarioId: e.usuarioId,
-                nombreUsuario: e.nombreUsuario,
-                nombre: e.nombre,
-                apellidoP: e.apellidoPaterno,
-                apellidoM: e.apellidoMaterno,
-                rolId: e.rolId,
-                fecha_inicio: e.horaLogIn,
-                fecha_fin: e.horaLogOut,
-                rol: e.nombreRol
-              }
-              accesos.value.push(obj)
-            })
-          })
-        }//Si solo seleccionamos la fecha
-        if(fecha != null && nombre == null){
-          console.log('fecha');
-          accesos.value = []
-          modalLoading.value = true
-          axios.get(`${API}/HistoricoSesion/${page.value}/null/${fecha}/${plaza}`)
-          .then((result)=>{
-            console.log(result.data);
-            modalLoading.value = false
-            totalPaginas.value = result.data.numberPages
-            currentPage.value = result.data.now
-            result.data.body.forEach((e)=>{
-              let obj = {
-                usuarioId: e.usuarioId,
-                nombreUsuario: e.nombreUsuario,
-                nombre: e.nombre,
-                apellidoP: e.apellidoPaterno,
-                apellidoM: e.apellidoMaterno,
-                rolId: e.rolId,
-                fecha_inicio: e.horaLogIn,
-                fecha_fin: e.horaLogOut,
-                rol: e.nombreRol
-              }
-              accesos.value.push(obj)
-            })
-          })
-        }//Si seleccionamos fecha y nombre
-        if(fecha != null && nombre != null){
-          accesos.value = []
-          modalLoading.value = true
-          axios.get(`${API}/HistoricoSesion/${page.value}/${nombre}/${fecha}/${plaza}`)
-          .then((result)=>{
-            modalLoading.value = false
-            totalPaginas.value = result.data.numberPages
-            currentPage.value = result.data.now
-            result.data.body.forEach((e)=>{
-              let obj = {
-                usuarioId: e.usuarioId,
-                nombreUsuario: e.nombreUsuario,
-                nombre: e.nombre,
-                apellidoP: e.apellidoPaterno,
-                apellidoM: e.apellidoMaterno,
-                rolId: e.rolId,
-                fecha_inicio: e.horaLogIn,
-                fecha_fin: e.horaLogOut,
-                rol: e.nombreRol
-              }
-              accesos.value.push(obj)
-            })
-          })
-        }
+        })
       }
-    }//Funcion que regresa la lista de accesos de la plaza seleccionada y limpia los caomos de nombre y fecha
+    }
+    //Funcion que regresa la lista de accesos de la plaza seleccionada y limpia los caomos de nombre y fecha
     function todos(){
       modalLoading.value = true
       accesos.value = []
       nombre.value = null
       fecha.value = null
-      axios.get(`${API}/HistoricoSesion/1/null/null/${plaza.value}`)
+      axios.get(`${API}/HistoricoSesion/PaginacionCompleta/${plaza.value}/${page.value}/${NRowsPage.value}/${fecha.value}/${nombre.value}`)
       .then((result)=>{
         modalLoading.value = false
         totalPaginas.value = result.data.numberPages
@@ -199,10 +125,9 @@ export default {
       })
     }//Funcion para cambiar de página 
     function showMore(page){
-      let name = nombre.value
-      let date = fecha.value
-      let plaza = plaza.value
-      axios.get(`${API}/HistoricoSesion/${page}/${name}/${date}/${plaza}`)
+      accesos.value = [];
+      console.log(fecha.value,nombre.value);
+      axios.get(`${API}/HistoricoSesion/PaginacionCompleta/${plaza.value}/${page}/${NRowsPage.value}/${fecha.value}/${nombre.value}`)
       .then((result)=>{
         totalPaginas.value = result.data.numberPages
         currentPage.value = result.data.now
@@ -275,17 +200,9 @@ export default {
       plaza.value = value.plaza
     }
 
-    return { buscar, todos, showMore, downloadApi, recibir_tramo_plaza, accesos, nombre, formato, modalLoading, fecha, page, totalPaginas, currentPage, hasMorePages, tramo, plaza}
+    return { buscar, todos, showMore, downloadApi, recibir_tramo_plaza, accesos, nombre, formato, modalLoading, fecha, page, totalPaginas, currentPage, hasMorePages,NRowsPage, tramo, plaza}
   }
 }
-/*
-  methods: {
-    ,
-    ,
-    , 
-    
-  },
-}; */
 </script>
 <style scoped>
 .pb-100 {
