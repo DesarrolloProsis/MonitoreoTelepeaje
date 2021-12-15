@@ -3,6 +3,9 @@
   <div class="container mx-auto px-0 pb-100">
     <h1 class="title-center font-titulo font-bold pb-4">Bitácora de Accesos</h1>
     <div class="flex flex-wrap bg-blue rounded-lg">
+      <div class="flex-none filter-style mt-1">
+        <FormTramoPlaza @cambiar-tramo-plaza="recibir_tramo_plaza" :tipo="'Antifraude'"/>
+      </div>
       <div class="flex-none filter-style mt-2">
         Usuario:
         <input v-model="nombre" type="text" class="rounded"/>
@@ -10,9 +13,6 @@
       <div class="flex-none filter-style mt-2">
         Fecha:
         <input v-model="fecha" type="date" class="rounded"/>
-      </div>
-      <div class="flex-none filter-style mt-2">
-        <FormTramoPlaza @cambiar-tramo-plaza="recibir_tramo_plaza" :tipo="'Antifraude'"/>
       </div>
       <div class="flex-none filter-style">
         <button @click="buscar(nombre, fecha, plaza)" class="btn-buscar mr-2">Buscar</button>
@@ -77,10 +77,12 @@ export default {
         modalLoading.value = true
         axios.get(`${API}/HistoricoSesion/PaginacionCompleta/${plaza}/${page.value}/${NRowsPage.value}/${fecha}/${nombre}`)
         .then((result)=>{
-          totalPaginas.value = result.data.numberPages
-          currentPage.value = result.data.now
-          modalLoading.value = false
-          result.data.body.forEach((e)=>{
+          console.log(result.data);
+          if(result.data.status == 'Ok' && result.data.body.length > 0){
+            totalPaginas.value = result.data.numberPages
+            currentPage.value = result.data.now
+            modalLoading.value = false
+            result.data.body.forEach((e)=>{
             let obj = {
               usuarioId: e.usuarioId,
               nombreUsuario: e.nombreUsuario,
@@ -93,7 +95,15 @@ export default {
               rol: e.nombreRol
             }
             accesos.value.push(obj)
-          })
+            })
+          }else{
+            modalLoading.value = false
+            notify({
+              title:'No Hay Datos',
+              text:'No se encontraron accesos',
+              type: 'warn'
+            });
+          } 
         })
       }
     }
