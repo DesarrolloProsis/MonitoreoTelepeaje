@@ -40,8 +40,8 @@ export default {
   components: { TablaCruces, Navbar, Footer, FormTramoPlaza},
   setup() {
     const tramo = ref('')
-    const plaza = ref('')
-    const carril = ref('')
+    const plaza = ref(null)
+    const carril = ref(null)
     const cruces = ref([])
     const tiempo = ref('')
     const contador = ref(0)
@@ -99,7 +99,14 @@ export default {
     }
     function buscar(plaza,carril){
       cruces.value = []
-      if(carril == undefined){
+      if(plaza == '' || plaza == null || plaza == undefined){
+        notify({
+          title:'Sin Información',
+          text:'Se debe seleccionar la plaza para realizar la busqueda',
+          type: 'warn'
+        });
+      }else{
+        if(carril == undefined){
         let carril = null
         axios.get(`${API}/Transacciones/Last20Transaccions/${plaza}/${carril}`)
         .then((result)=>{
@@ -113,28 +120,29 @@ export default {
             cruces.value.push(obj)
           })
         })
-      }else{
-        cruces.value = []
-        axios.get(`${API}/Transacciones/Last20Transaccions/${plaza}/${carril}`)
-        .then((result)=>{
-          if((result.data.status == 'Ok') && (result.data.body.length > 0)){
-            result.data.body.forEach((e) =>{
-              let obj = {
-                carril: e.carril,
-                clase: e.claseCajero,
-                fecha: e.fechaDeCruce,
-                tag: e.idTag
-              }
-              cruces.value.push(obj)
-            })
-          }else{
-            notify({
-              title:'Sin Información',
-              text:'No se encontraron transacciones',
-              type: 'warn'
-            });
-          }
-        })
+        }else{
+          cruces.value = []
+          axios.get(`${API}/Transacciones/Last20Transaccions/${plaza}/${carril}`)
+          .then((result)=>{
+            if((result.data.status == 'Ok') && (result.data.body.length > 0)){
+              result.data.body.forEach((e) =>{
+                let obj = {
+                  carril: e.carril,
+                  clase: e.claseCajero,
+                  fecha: e.fechaDeCruce,
+                  tag: e.idTag
+                }
+                cruces.value.push(obj)
+              })
+            }else{
+              notify({
+                title:'Sin Información',
+                text:'No se encontraron transacciones',
+                type: 'warn'
+              });
+            }
+          })
+        }
       }
     }
     function recibir_tramo_plaza(value){
