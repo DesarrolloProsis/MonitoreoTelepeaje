@@ -90,7 +90,34 @@ export default {
           type: 'warn'
         });
       }else{
-        if((tag == '' || tag == undefined || tag == null) && (fecha == '' || fecha == undefined || fecha == null)){
+        axios.get(`${API}/Transacciones/BusquedaTransacciones/PaginacionCompleta/${plaza}/${fecha}/${tag}/${page.value}/${numRespuesta.value}`)
+          .then((result)=>{
+            console.log(result.data);
+            if(result.data.status == "Ok" && result.data.body.length > 0){
+              modalLoading.value = false
+              totalPaginas.value = result.data.numberPages
+              currentPage.value = result.data.now
+              result.data.body.forEach((e)=>{
+                let obj = {
+                  tag: e.noTag,
+                  carril: e.carril,
+                  fecha: e.fecha,
+                  medioPago: e.nombrePago,
+                  tipo: e.tipoVehiculo,
+                  tarifa: e.tarifa
+                }
+                cruces.value.push(obj)
+              })
+            }else{
+              modalLoading.value = false
+              notify({
+                title:'Sin Información',
+                text:'No se encontraron transacciones',
+                type: 'warn'
+              });
+            }
+          })
+        /*if((tag == '' || tag == undefined || tag == null) && (fecha == '' || fecha == undefined || fecha == null)){
           //axios.get(`${API}/Transacciones/BusquedaTransacciones/${plaza}/${page.value}/null/null`)
           axios.get(`${API}/Transacciones/BusquedaTransacciones/PaginacionCompleta/${plaza}/null/null/${page.value}/${numRespuesta.value}`)
           .then((result)=>{
@@ -202,7 +229,7 @@ export default {
               });
             }
           })
-        }
+        }*/
       }
     }
     //Función que limpia los input de busqueda y regresa las transacciones de la plaza sin filtros
