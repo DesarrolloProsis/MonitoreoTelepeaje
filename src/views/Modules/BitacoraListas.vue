@@ -72,8 +72,8 @@ export default {
                 //axios.get(`${API}/Historico/${plaza}/${fecha}/${page.value}`)
                 axios.get(`${API}/Historico/ListaHistorico/PaginacionCompleta/${plaza}/${fecha}/${currentPage.value}/${numRespuesta.value}`)
                 .then((result)=>{
-                    if(result.data.status == 'Ok'){
-                        modalLoading.value = false
+                    if(result.data.status == 'Ok' && result.data.body.length > 0){
+                        modalLoading.value = false 
                         totalPaginas.value = result.data.numberPages
                         currentPage.value = result.data.now
                         result.data.body.forEach((e)=>{
