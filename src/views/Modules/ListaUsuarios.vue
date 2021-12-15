@@ -29,7 +29,7 @@
     <div class="mb-6">
       <button @click="abrirModal" :class="{'hidden':!habilitar}" class="w-full botonIconBuscar justify-center mt-3 -mb-8">Agregar Usuario</button>
     </div>
-    <TablaListaUsuarios :dataUsuarios="perfiles"/>
+    <TablaListaUsuarios :dataUsuarios="perfiles" :plazaBusqueda="plaza" />
     <div class="mt-20 -mb-14">
       <Paginacion :total-pages="totalPaginas" :total="100" :current-page="currentPage" :has-more-pages="hasMorePages" @pagechanged="showMore"/>
     </div>
@@ -130,8 +130,8 @@ export default {
     const nombre = ref(null)
     const estatus = ref(null)
     const modalAgregar = ref(false)
-    //const listaPlazas = ref([])
-    //const plazas = ref([{ value: '', label: '' }])
+    const listaPlazas = ref([])
+    const plazas = ref([{ value: '', label: '' }])
     const verdad = ref (false)
     const tramoSeleccionado = ref('')
     const rol_Filtrado = ref([])
@@ -141,6 +141,7 @@ export default {
     const modalPlazas = ref (false)
     const seleccionado = ref({})
     const tramoSeleccionadoModal = ref('')
+    const plazasModal = ref([])
     const plazasAsignar = ref([])
     const validacion = ref(false)
     const plazasM = ref([{ value: '', label: '' }])
@@ -182,6 +183,7 @@ export default {
       usuario.apellidoP = '',
       usuario.apellidoM = '',
       tramoSeleccionado.value = ''
+      plazas.value = []
     }
     function todos (){
       nombre.value = null
@@ -295,11 +297,11 @@ export default {
           "nombre": usuario.nombre,
           "apellidoPaterno": usuario.apellidoP,
           "apellidoMaterno": usuario.apellidoM,
-          "idrol": usuario.rol,
+          "rolId": usuario.rol,
           "pass": usuario.pass
         }
         console.log(data);
-        if(data.nombre != undefined && data.apellidoPaterno != undefined && data.apellidoMaterno != undefined && data.pass != undefined && data.idrol != undefined){
+        if(data.nombre != undefined && data.apellidoPaterno != undefined && data.apellidoMaterno != undefined && data.pass != undefined && data.rolId != undefined){
           //let userName = usuario.nombre.slice(0,3)+usuario.apellidoP
           modalLoading.value = true
           modalAgregar.value = false
@@ -316,7 +318,7 @@ export default {
                   usuario.apellidoP = '',
                   usuario.apellidoM = '',
                   tramoSeleccionado.value = ''
-                  
+                  plazas.value = []
                   roles.value = []
                 }
                 modalLoading.value = false
@@ -393,7 +395,7 @@ export default {
       });
       if(tramoSeleccionadoModal.value == ''){
         for(let i= 0; i<proxy.length; i++){
-          plazasM.value.push({'value':proxy[i].plazaAsignadaId, 'label':proxy[i].nombre}) 
+          plazas.value.push({'value':proxy[i].plazaAsignadaId, 'label':proxy[i].nombre}) 
         }
       }else{
         plazasM.value = []
@@ -425,7 +427,7 @@ export default {
       }      
     }
   
-  return {recibir_tramo_plaza, abrirModal, cancelar, todos, buscar, showMore, guardar, agregarPlaza, plazasfil, downloadApi, usuario, perfiles, plazasM, token, paginaAct, maxPages, nombre, estatus, modalAgregar, verdad, tramoSeleccionado, rol_Filtrado, roles, modalLoading, formato, tramo, plaza, habilitar, currentPage, hasMorePages, numRespuesta, totalPaginas, modalPlazas, seleccionado, tramoSeleccionadoModal, plazasAsignar, validacion }
+  return {recibir_tramo_plaza, abrirModal, cancelar, todos, buscar, showMore, guardar, agregarPlaza, plazasfil, downloadApi, usuario, perfiles, plazasM, token, paginaAct, maxPages, nombre, estatus, modalAgregar, listaPlazas, plazas, verdad, tramoSeleccionado, rol_Filtrado, roles, modalLoading, formato, tramo, plaza, habilitar, currentPage, hasMorePages, numRespuesta, totalPaginas, modalPlazas, seleccionado, tramoSeleccionadoModal, plazasModal, plazasAsignar, validacion }
   },
 }
 </script>

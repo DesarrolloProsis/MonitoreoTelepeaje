@@ -177,10 +177,10 @@ name: "TablaListaUsuarios",
       type: Array,
       
     },
-    /* plazaS:{
+    plazaBusqueda:{
       type: Number,
       default: 0
-    } */
+    }
   },
   components:{
     Multiselect,Spinner
@@ -243,7 +243,7 @@ name: "TablaListaUsuarios",
           "UsuarioId": usuario.id,
           "Password": this.pass,
         } 
-        axios.patch(`${API}/Usuario`,data,config)
+        axios.patch(`${API}/UsuarioMonitoreo/${this.plazaBusqueda}`,data,config)
           .then((result)=>{
               if(result.statusText == 'OK'){
                 this.errorMessage = ""
