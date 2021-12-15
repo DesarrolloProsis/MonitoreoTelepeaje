@@ -10,7 +10,7 @@
       </tr>
       <tr v-for="(usuario, index) in dataUsuarios" :key="index">
         <td :class="{'text-gray-300': !usuario.estatus}">{{ usuario.usuario }}</td>
-        <td :class="{'text-gray-300': !usuario.estatus}">{{ usuario.nombre + ' ' + usuario.apellido }}</td>
+        <td :class="{'text-gray-300': !usuario.estatus}">{{ usuario.nombre + ' ' + usuario.apellidoP + ' ' + usuario.apellidoM}}</td>
         <td :class="{'text-gray-300': !usuario.estatus}">{{ usuario.rol }}</td>
         <td :class="{'text-gray-300': !usuario.estatus}">{{ usuario.plazas }}</td>
         <td>
@@ -139,7 +139,7 @@
   <!-- MODAL CAMBIAR ROL -->
   <div class="sticky inset-0 " :class="{'modal-container': modalRol}">
     <div v-if="modalRol" class="rounded-lg  justify-center border absolute inset-x-0 bg-white border-gray-400 w-69  mx-auto px-12 py-10 shadow-2xl mt-60">
-      <p class="text-gray-900 font-bold text-2xl -mt-8 mb-8 text-center -mx-6">Cambiar Rol a {{ usuario.nombre +' '+ usuario.apellidos }}</p>
+      <p class="text-gray-900 font-bold text-2xl -mt-8 mb-8 text-center -mx-6">Cambiar Rol a {{ usuario.nombre +' '+ usuario.apellidoP }}</p>
       <p class="text-gray-900 font-bold text-2xl -mt-8 mb-8 text-center">con Rol {{ usuario.rol }}</p>
       <div class="grid grid-cols-2 mt-2">      
         <p class="text-sm mb-1 font-semibold text-gray-700  text-center sm:-ml-6">Rol</p>
@@ -205,9 +205,11 @@ name: "TablaListaUsuarios",
       usuario:{
         idUsuario:'',
         nombre: '',
-        apellidos:'',
+        apellidoP:'',
+        apellidoM:'',
         rol:'',
         rolId: '',
+        estatus: '',
       },
       roles: [],
       pass:'',
@@ -240,24 +242,29 @@ name: "TablaListaUsuarios",
           }
         }
         const data = {
-          "UsuarioId": usuario.id,
-          "Password": this.pass,
+          "nombre": usuario.nombre,
+          "apellidoPaterno": usuario.apellidoP,
+          "apellidoMaterno": usuario.apellidoM,
+          "rolId": usuario.idrol,
+          "pass": this.pass,
+          "usuarioId": usuario.id,
+          "estatusUsuario": usuario.estatus
         } 
-        axios.patch(`${API}/UsuarioMonitoreo/${this.plazaBusqueda}`,data,config)
+        axios.post(`${API}/UsuarioMonitoreo/update/${this.plazaBusqueda}`,data,config)
           .then((result)=>{
               if(result.statusText == 'OK'){
                 this.errorMessage = ""
                 this.modalPass = false
                 this.$notify({
-                  title:'Plazas Asignadas',
-                  text:`Se Cambio la Contraseña al Usuario ${usuario.nombre + ' ' + usuario.apellido}`,
+                  title:'Cambio de Contraseña',
+                  text:`Se Cambio la Contraseña al Usuario ${usuario.nombre + ' ' + usuario.apellidoP}`,
                   type: 'success'
                 });
               }else{
                 this.$notify({
-                  title:'Plazas Asignadas',
-                  text:`No Se Pudo Cambio la Contraseña al Usuario ${usuario.nombre + ' ' + usuario.apellido}`,
-                  type: 'success'
+                  title:'Cambio de Contraseña',
+                  text:`No Se Pudo Cambio la Contraseña al Usuario ${usuario.nombre + ' ' + usuario.apellidoP}`,
+                  type: 'warn'
                 });
               }
           })
@@ -420,35 +427,60 @@ name: "TablaListaUsuarios",
           }
         }
         const data = {
-          "UsuarioId": this.seleccionado.id,
-          "Estatus": this.seleccionado.estatus = !this.seleccionado.estatus,
+          "nombre": usuario.nombre,
+          "apellidoPaterno": usuario.apellidoP,
+          "apellidoMaterno": usuario.apellidoM,
+          "rolId": usuario.idrol,
+          "pass": null,
+          "usuarioId": usuario.id,
+          "estatusUsuario": this.seleccionado.estatus = !this.seleccionado.estatus
         } 
-        axios.post(`${API}/Usuario`,data,config)
-          .then(()=>{
-              this.errorMessage = ""
-          })
-          .catch(() =>{
-            this.errorMessage = "Hubo un error al crear el usuario, intentalo nuevamente."
-          })
+        axios.post(`${API}/UsuarioMonitoreo/update/${this.plazaBusqueda}`,data,config)
+        .then(()=>{
+            this.errorMessage = ""
+            this.$notify({
+              title:'Cambio Exitoso',
+              text:`Se cambió el estatus al usuario ${usuario.nombre + ' ' + usuario.apellidoP}`,
+              type: 'success'
+            });
+        })
+        .catch(() =>{
+          this.errorMessage = "Hubo un error al crear el usuario, intentalo nuevamente."
+        })
       }
     },
     cambiarRol: function (usuario){
+      console.log(usuario);
       //if(Servicio.getCookie("Token")){
-      if(Servicio.obtenerToken()){
+      /*if(Servicio.obtenerToken()){
         let config = {
           headers: {
             'Authorization': 'Bearer ' + Servicio.obtenerToken()//Servicio.getCookie("Token")
           }
         }
         const data = {
-          "UsuarioId": usuario.idUsuario,
-          "idrol": this.seleccionado.rolId,
-          "Estatus": true,
+          "nombre": usuario.nombre,
+          "apellidoPaterno": usuario.apellidoP,
+          "apellidoMaterno": usuario.apellidoM,
+          "rolId": usuario.idrol,
+          "pass": null,
+          "usuarioId": usuario.id,
+          "estatusUsuario": this.seleccionado.estatus = !this.seleccionado.estatus
+        } 
+        axios.post(`${API}/UsuarioMonitoreo/update/${this.plazaBusqueda}`,data,config)
+        const data = {
+          "nombre": usuario.nombre,
+          "apellidoPaterno": usuario.apellidoP,
+          "apellidoMaterno": usuario.apellidoM,
+          "rolId": usuario.idrol,
+          "pass": null,
+          "usuarioId": usuario.id,
+          "estatusUsuario": usuario.estatus
         } 
         if(this.seleccionado.rol != ''){
-        this.modalRol = false
-        this.modalLoading = true
-        axios.patch(`${API}/Usuario`,data,config)
+          this.modalRol = false
+          this.modalLoading = true
+          axios.post(`${API}/UsuarioMonitoreo/update/${this.plazaBusqueda}`,data,config)
           .then(()=>{
             this.$notify({
                   title:'Nuevo Usuario',
@@ -457,7 +489,7 @@ name: "TablaListaUsuarios",
                   type: 'success'
                 });
               setTimeout(() => {
-                this.$router.push("/configuracion");
+                //this.$router.push("/configuracion");
                 this.modalLoading = false
               }, 1000);
               this.errorMessage = ""
@@ -466,12 +498,11 @@ name: "TablaListaUsuarios",
             this.errorMessage = "Hubo un error al crear el usuario, intentalo nuevamente."
           })
         }
-      }
+      }*/
     },
     modal_Rol: async function(){
-      let plaza = this.plazaS
       this.modalRol = true
-      let rol = await axios.get(`${API}/CatalogoRoles/null/null/${plaza}`)
+      let rol = await axios.get(`${API}/CatalogoRoles/null/null/${this.plazaBusqueda}`)
       let rol_Filtrado = rol.data.body
       let proxy = new Proxy(rol_Filtrado,{
           get : function(target, property){
@@ -490,6 +521,7 @@ name: "TablaListaUsuarios",
       }if(this.value == 'Deshabilitar'){
         this.changeStatus(usuario)
       }if(this.value == 'Cambiar Contraseña'){
+        console.log(usuario);
         this.seleccionado = usuario;
         this.modalPass = true;
       }if(this.value == 'Agregar Plazas'){
@@ -507,9 +539,11 @@ name: "TablaListaUsuarios",
         this.modal_Rol()
         this.usuario.idUsuario = usuario.id
         this.usuario.nombre = usuario.nombre
-        this.usuario.apellidos = usuario.apellido
+        this.usuario.apellidoP = usuario.apellidoP
+        this.usuario.apellidoM = usuario.apellidoM
         this.usuario.rol = usuario.rol
         this.usuario.rolId = usuario.rolId
+        this.usuario.estatus = usuario.estatus
       }
       this.value = ""
     },

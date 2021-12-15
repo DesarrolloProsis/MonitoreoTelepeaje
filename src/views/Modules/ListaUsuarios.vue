@@ -3,6 +3,9 @@
   <h1 class="title font-titulo font-bold">Lista de Usuarios Registrados</h1>
   <div class="container mx-auto px-0 pt-4">
     <div class="flex flex-wrap bg-blue rounded-lg">
+      <div class="flex-none filter-style mt-2">
+        <FormTramoPlaza @cambiar-tramo-plaza="recibir_tramo_plaza" :tipo="'Antifraude'"/>
+      </div>
       <div class="flex-none filter-style mt-3">
         Nombre:
         <input v-model="nombre" type="text" class="rounded" />
@@ -14,9 +17,6 @@
           <option value="true">Activo</option>
           <option value="false">Inactivo</option>
         </select>
-      </div>
-      <div class="flex-none filter-style mt-2">
-        <FormTramoPlaza @cambiar-tramo-plaza="recibir_tramo_plaza" :tipo="'Antifraude'"/>
       </div>
       <div class="flex-none filter-style">
         <button @click="buscar(nombre,estatus, plaza)" class="btn-buscar">Buscar</button>
@@ -222,6 +222,7 @@ export default {
       else{
         axios.get(`${API}/UsuarioMonitoreo/${plaza}/${currentPage.value}/${numRespuesta.value}/${nombre}/${estatus}`)
           .then((res) => {
+            console.log(res.data.body);
             modalLoading.value = false
             perfiles.value = []
             habilitar.value = true
@@ -232,8 +233,10 @@ export default {
                 id: e.usuarioId,
                 usuario: e.nombreUsuario,
                 nombre: e.nombre,
-                apellido: e.apellidoPaterno,
+                apellidoP: e.apellidoPaterno,
+                apellidoM: e.apellidoMaterno,
                 rol: e.rol,
+                idrol: e.idRol,
                 plazas: e.plazas,
                 estatus: e.estatus,
               };
@@ -300,7 +303,6 @@ export default {
           "rolId": usuario.rol,
           "pass": usuario.pass
         }
-        console.log(data);
         if(data.nombre != undefined && data.apellidoPaterno != undefined && data.apellidoMaterno != undefined && data.pass != undefined && data.rolId != undefined){
           //let userName = usuario.nombre.slice(0,3)+usuario.apellidoP
           modalLoading.value = true
