@@ -231,6 +231,8 @@ export default {
       }
     }//Función que regresa las transacciones de la plaza asignada, sin filtros
     function todos(plaza) {
+      tag.value = null
+      fecha.value = null
       axios.post(`${API}/Transacciones/TransactionsFiltrosR/${plaza}/null/null/null/${currentPage.value}/${numRespuesta.value}`)
       .then((result)=>{
         if(result.data.status == 'Ok'){

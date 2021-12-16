@@ -29,6 +29,9 @@
   <div class="container mx-auto px-0 pb-24 pt-4">    
     <div class="flex flex-wrap bg-blue rounded-lg">
       <div class="flex-none filter-style">
+        <FormTramoPlaza @cambiar-tramo-plaza="recibir_tramo_plaza" :tipo="'Antifraude'"/>
+      </div>
+      <div class="flex-none filter-style">
         Nombre:
         <input v-model="nombre" type="text" class="rounded "/>
       </div>
@@ -39,9 +42,6 @@
           <option value="true">Activo</option>
           <option value="false">Inactivo</option>
         </select>
-      </div>
-      <div class="flex-none filter-style">
-        <FormTramoPlaza @cambiar-tramo-plaza="recibir_tramo_plaza" :tipo="'Antifraude'"/>
       </div>
       <div class="flex-none filter-style">
         <button @click="buscar(nombre,estatus)"  class="btn-buscar">Buscar</button>

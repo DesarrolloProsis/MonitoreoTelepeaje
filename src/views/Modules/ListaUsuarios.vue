@@ -222,7 +222,6 @@ export default {
       else{
         axios.get(`${API}/UsuarioMonitoreo/${plaza}/${currentPage.value}/${numRespuesta.value}/${nombre}/${estatus}`)
           .then((res) => {
-            console.log(res.data.body);
             modalLoading.value = false
             perfiles.value = []
             habilitar.value = true
