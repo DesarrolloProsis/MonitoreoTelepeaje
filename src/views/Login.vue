@@ -1,34 +1,31 @@
 <template>
 <div class="login">
-  <Header></Header>
+  <Header/>
   <div class="flex h-screen  min-700">
     <div id="" class="flex absolute justify-center items-center mx-auto h-screen w-screen min-700-imp">
       <div class="absolute justify-end ">
         <p id="login-title" class="font-titulo font-bold">Monitoreo de Pagos Electrónicos</p>
         <img class="img-centered" src="~@/assets/Login/top-user-logo.png" />
-        <form class="bg-login-module" style="max-width: 500px; margin: auto">
+        <div class="bg-login-module" style="max-width: 500px; margin: auto">
           <div class="error" v-if="mensaje != ''">
               {{mensaje}}
           </div>
           <div class="input-container">
             <img class="w-10 h-10 mt-1 mr-2 transform -rotate-180" src="~@/assets/Login/iniciar-sesion.png" />
-            <input id="username" class="input-field" type="text" placeholder="Usuario" />
+            <input id="username" v-model="user" class="input-field" type="text" placeholder="Usuario" />
           </div>
           <div class="input-container">
             <img class="w-10 h-10 mt-1 mr-2" src="~@/assets/Login/password.png" />            
-            <input id="password" class="input-field" type="password" placeholder="Contraseña" />
+            <input id="password" v-model="pass" class="input-field" type="password" placeholder="Contraseña" />
           </div>
-          <router-link to="/inicio">
-            <button type="submit" class="btn" @click="login()">Iniciar Sesión</button>
-          </router-link>
-        </form>
+            <button class="btn" @click="login()">Iniciar Sesión</button>
+        </div>
       </div>
     </div>
     <div id="min-figura" class="ml-auto figura min-figura  "></div>
     <div id="login-bg" class=" hidden md:block"></div>
   </div>
-  
-  <Footer></Footer>
+  <Footer/>
 </div>
 </template>
 
@@ -59,18 +56,18 @@ export default {
     login: function() {
       //document.cookie = "TipoUser=; expires=Thu, 01 Jan 1970 00:00:00 UTC;" + "SameSite=None; Secure;";
       //document.cookie = "Token=; expires=Thu, 01 Jan 1970 00:00:00 UTC;" + "SameSite=None; Secure;";
-      this.user = document.getElementById("username").value;
-      this.pass = document.getElementById("password").value;
+      //this.user = document.getElementById("username").value;
+      //this.pass = document.getElementById("password").value;
       this.mensaje = ""
       const data = {
         "Usuario": this.user,
         "Password": this.pass
       }
-      if(data["Usuario"] != "" &&  data["Password"] != ""){
+      if(data.Usuario != "" &&  data.Password != ""){
         axios.post(`${API}/Login`, data)
         .then((result) => {
           this.mensaje =""
-          serviceToken.guardarToken(result.data.bearer)
+          serviceToken.guardarToken(result.data.body)
           this.$router.push('/inicio')
         })
         .catch(()=>{
