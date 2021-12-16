@@ -1,17 +1,17 @@
 <template>
-    <div class="inline-flex" :class="{'w-69 mt-3 border-none': tipo == 'Transacciones', 'border-none': tipo == 'Antifraude', 'border-none text-white':tipo == 'alarma'}">
-        <span class="mt-1" :class="{'mt-0 text-white': tipo == 'Antifraude'}">Tramo:</span>
-        <select :disabled="!habilitar" v-model="tramoSeleccionado" @change="obtner_plazas_por_tramo" class="p-1 px-2  outline-none w-full text-gray-800 mr-3 ml-3 rounded" name="select" id="selectorTramo">                                    
+    <div class="inline-flex text-white border-none">
+        <span class="mt-1" >Tramo:</span>
+        <select :disabled="!habilitar" v-model="tramoSeleccionado" @change="obtner_plazas_por_tramo" class="p-1 px-2  outline-none w-33 text-gray-800 mr-3 ml-3 rounded" name="select" id="selectorTramo">                                    
             <option v-for="(tramo, key) in tramos" :value="tramo" :key="key">
                 {{ tramo.text }}
             </option>
         </select>        
-        <span class="mt-1" :class="{'mt-0 text-white': tipo == 'Antifraude'}">Plaza:</span>
-        <select v-if="plazas.length == 0" :disabled="!habilitar" class="p-1 px-2  outline-none w-full text-gray-800 ml-3 rounded" name="select" id="selectorTramo" placeholder="Cargando...">
+        <span class="mt-1">Plaza:</span>
+        <select v-if="plazas.length == 0" :disabled="!habilitar" class="p-1 px-2  outline-none w-32 text-gray-800 ml-3 rounded" name="select" id="selectorTramo" placeholder="Cargando...">
             <option :class="{'hidden':plazas.length == 0}" value=""><span v-if="!habilitar">Cargando...</span><span v-else>Sin Conexiòn</span></option>
             <option value="">Sin Conexión</option>
         </select>
-        <select v-else v-model="plazaSeleccionado" :disabled="!habilitar" @change="obtener_carriles_por_plaza" class="p-1 px-2  outline-none w-full text-gray-800 ml-3 rounded" name="select" id="selectorTramo" placeholder="Cargando...">
+        <select v-else v-model="plazaSeleccionado" :disabled="!habilitar" @change="obtener_carriles_por_plaza" class="p-1 px-2  outline-none w-32 text-gray-800 ml-3 rounded" name="select" id="selectorTramo" placeholder="Cargando...">
             <option v-if="plazas.length == 0" value="">Sin Conexión</option>
             <option v-else value="">Selecione Plaza</option>            
             <option v-for="(plaza, key) in plazas" :value="plaza" :key="key" :disabled="!plaza.conexion" :class="{'text-gray-500':plaza.conexion == false}">{{ plaza.nombre }} <span v-if="!plaza.conexion">(Sin Conexión)</span> </option>

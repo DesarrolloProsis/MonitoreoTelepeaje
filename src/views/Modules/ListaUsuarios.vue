@@ -29,7 +29,7 @@
     <div class="mb-6">
       <button @click="abrirModal" :class="{'hidden':!habilitar}" class="w-full botonIconBuscar justify-center mt-3 -mb-8">Agregar Usuario</button>
     </div>
-    <TablaListaUsuarios :dataUsuarios="perfiles" :plazaBusqueda="plaza" />
+    <TablaListaUsuarios @refrescarTabla="refrescar_tabla" :dataUsuarios="perfiles" :plazaBusqueda="plaza" />
     <div class="mt-20 -mb-14">
       <Paginacion :total-pages="totalPaginas" :total="100" :current-page="currentPage" :has-more-pages="hasMorePages" @pagechanged="showMore"/>
     </div>
@@ -245,6 +245,9 @@ export default {
           });
       }
     }
+    function refrescar_tabla(plaza){
+      buscar(null, null, plaza)
+    }
     function showMore(page){
       //if((nombre.value == '' || nombre.value == undefined || nombre.value == null) && (nombre.value == '' || nombre.value == null || nombre.value == undefined)){
         axios.get(`${API}/UsuarioMonitoreo/${plaza.value}/${page}/${numRespuesta.value}/${nombre.value}/${estatus.value}`)
@@ -429,7 +432,7 @@ export default {
       }      
     }
   
-  return {recibir_tramo_plaza, abrirModal, cancelar, todos, buscar, showMore, guardar, agregarPlaza, plazasfil, downloadApi, usuario, perfiles, plazasM, token, paginaAct, maxPages, nombre, estatus, modalAgregar, listaPlazas, plazas, verdad, tramoSeleccionado, rol_Filtrado, roles, modalLoading, formato, tramo, plaza, habilitar, currentPage, hasMorePages, numRespuesta, totalPaginas, modalPlazas, seleccionado, tramoSeleccionadoModal, plazasModal, plazasAsignar, validacion }
+  return {recibir_tramo_plaza, abrirModal, cancelar, todos, buscar, showMore, guardar, agregarPlaza, plazasfil, downloadApi, usuario, perfiles, plazasM, token, paginaAct, maxPages, nombre, estatus, modalAgregar, listaPlazas, plazas, verdad, tramoSeleccionado, rol_Filtrado, roles, modalLoading, formato, tramo, plaza, habilitar, currentPage, hasMorePages, numRespuesta, totalPaginas, modalPlazas, seleccionado, tramoSeleccionadoModal, plazasModal, plazasAsignar, validacion, refrescar_tabla }
   },
 }
 </script>

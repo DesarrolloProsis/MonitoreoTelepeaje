@@ -105,7 +105,7 @@
         
       </div>
       <div class="mt-5 text-center ml-6">
-        <button @click="quitarPlazas(seleccionado)" class="botonIconBuscar">Agregar</button>
+        <button @click="quitarPlazas(seleccionado)" class="botonIconBuscar">Quitar</button>
         <button @click="modalQuitar = false, tramoSeleccionado = '', validacion = false" class="botonIconCancelar">Cancelar</button>
       </div>
     </div>
@@ -118,8 +118,10 @@
       <div class="grid grid-cols-2 mt-2">
         <p class="text-sm mb-1 font-semibold text-gray-700  sm:-ml-6">Nombre</p>
         <input v-model="usuario.nombre" class="border rounded-lg" type="text">
-        <p class="text-sm mb-1 font-semibold text-gray-700  sm:-ml-6">Apellidos</p>
-        <input v-model="usuario.apellidos" class="border rounded-lg" type="text">
+        <p class="text-sm mb-1 font-semibold text-gray-700  sm:-ml-6">Apellido Parterno</p>
+        <input v-model="usuario.apellidoP" class="border rounded-lg" type="text">
+        <p class="text-sm mb-1 font-semibold text-gray-700  sm:-ml-6">Apellido Materno</p>
+        <input v-model="usuario.apellidoM" class="border rounded-lg" type="text">
         <!--<p class="text-sm mb-1 font-semibold text-gray-700  sm:-ml-6">Rol</p>
         <Multiselect
           v-model="usuario.rol"
@@ -217,20 +219,6 @@ name: "TablaListaUsuarios",
       plazaSelect:0,
     };
   },
-/*   async beforeMount(){
-    let rol = await axios.get(`${API}/CatalogoRoles/null/null`)
-    let rol_Filtrado = rol.data.body
-    let proxy = new Proxy(rol_Filtrado,{
-        get : function(target, property){
-          return property === 'length' ?
-            target.length :
-            target[property];
-        }
-      });
-    for(let i= 0; i<proxy.length; i++){
-      this.roles.push({'value':proxy[i].rolId, 'label':proxy[i].nombreRol}) 
-    }
-  }, */
   methods: {
     cambiarPass: function (usuario) {
       if(this.pass != ''){
@@ -319,13 +307,15 @@ name: "TablaListaUsuarios",
             this.status = response.statusText
             if(response.statusText == 'Ok'){
               setTimeout(() => {
-                this.$router.push("/configuracion");
+                this.$emit('refrescarTabla', this.plazaBusqueda)
                 this.modalLoading = false
+                this.plazasAsignar = ''
               }, 1000);
             }else{
               setTimeout(() => {
-                this.$router.push("/configuracion");
+                this.$emit('refrescarTabla', this.plazaBusqueda)
                 this.modalLoading = false
+                this.plazasAsignar = ''
               }, 1000);
             }
           })
@@ -334,7 +324,7 @@ name: "TablaListaUsuarios",
           setTimeout(()=>{
             this.$notify({
               title:'Plazas Asignadas',
-              text:`Se Asignaron las plazas al Usuario ${usuario.nombre + ' ' + usuario.apellido}`,
+              text:`Se Asignaron las plazas al Usuario ${usuario.nombre + ' ' + usuario.apellidoP}`,
               type: 'success'
             });
           },1000)
@@ -342,7 +332,7 @@ name: "TablaListaUsuarios",
           setTimeout(()=>{
             this.$notify({
               title:'Plazas Asignadas',
-              text:`No Se Asignaron las Plazas al Usuario ${usuario.nombre + ' ' + usuario.apellido}`,
+              text:`No Se Asignaron las Plazas al Usuario ${usuario.nombre + ' ' + usuario.apellidoP}`,
               type: 'success'
             });
           },1000)
@@ -362,34 +352,42 @@ name: "TablaListaUsuarios",
           let usuarioId = usuario.id
           axios.post(`${API}/PlazaAsignada/QuitarDeUsuario/${usuarioId}/${quitar}`)
           .then((response)=>{
-            this.modalPlazas = false
+            this.modalQuitar = false
             this.modalLoading = true
             this.tramoSeleccionado = ''
+            this.status = response.data.estatus
             if(response.data.status == 'Error'){
-              /* Insertar notificacion */
-              this.modalPlazas = false
               this.modalLoading = false
-              this.$router.push("/configuracion");
+              this.plazasAsignar = []
+              this.$emit('refrescarTabla', this.plazaBusqueda)
             }else{
               setTimeout(() => {
-                this.modalPlazas = false
                 this.modalLoading = false
-                this.$router.push("/configuracion");
+                this.plazasAsignar = []
+                this.$emit('refrescarTabla', this.plazaBusqueda)
               }, 1000);
             }
           })
+      }
+      if(this.status == 'Ok'){
+          setTimeout(()=>{
+                    this.$notify({
+                title:'Plazas No Eliminadas',
+                text:`No Se Quitaron las Plazas al Usuario ${usuario.nombre + ' ' + usuario.apellidoP}`,
+                type: 'warn'
+                });
+          },1000)
+        }else{
+          setTimeout(()=>{
+                  this.$notify({
+                  title:'Plazaa Elminada',
+                  text:`Se Elimnó la Plaza Seleccionada del Usuario ${usuario.nombre + ' ' + usuario.apellidoP}`,
+                  type: 'success'
+                });
+          },1000)
         }
-      setTimeout(()=>{
-        this.$notify({
-        title:'Plazas Eliminadas',
-        text:`Se Quitaron las Plazas al Usuario ${usuario.nombre + ' ' + usuario.apellido}`,
-        type: 'success'
-        });
-      },1000)
     },
     editarUsuario: function (usuario){
-      this.seleccionado = usuario;
-      //if(Servicio.getCookie("Token")){
       if(Servicio.obtenerToken()){
       let config = {
           headers: {
@@ -397,17 +395,26 @@ name: "TablaListaUsuarios",
           }
         }
         const data = {
-          "UsuarioId": this.seleccionado.idUsuario,
-          "Nombre": this.seleccionado.nombre,
-          "ApellidoPaterno": this.seleccionado.apellidos,
-          "Estatus": true,
-        }
+          "nombre": usuario.nombre,
+          "apellidoPaterno": usuario.apellidoP,
+          "apellidoMaterno": usuario.apellidoM,
+          "rolId": usuario.rolId,
+          "pass": null,
+          "usuarioId": usuario.idUsuario,
+          "estatusUsuario": usuario.estatus
+        } 
         this.modalLoading = true
         this.modalEditar = true
-        axios.patch(`${API}/Usuario`,data,config)
+        axios.post(`${API}/UsuarioMonitoreo/update/${this.plazaBusqueda}`,data,config)
           .then(()=>{
+            this.modalEditar = false
                 setTimeout(() => {
-                this.$router.push("/configuracion");
+                this.$emit('refrescarTabla', this.plazaBusqueda)
+                this.$notify({
+                  title:'Cambio Exitoso',
+                  text:`Se editó al usuario ${usuario.nombre + ' ' + usuario.apellidoP}`,
+                  type: 'success'
+                });
                 this.modalLoading = false
               }, 1000);
               this.errorMessage = ""
@@ -451,46 +458,38 @@ name: "TablaListaUsuarios",
     },
     cambiarRol: function (usuario){
       console.log(usuario);
-      //if(Servicio.getCookie("Token")){
-      /*if(Servicio.obtenerToken()){
+      console.log(this.seleccionado.rolId);
+      if(Servicio.obtenerToken()){
         let config = {
           headers: {
-            'Authorization': 'Bearer ' + Servicio.obtenerToken()//Servicio.getCookie("Token")
+            'Authorization': 'Bearer ' + Servicio.obtenerToken()
           }
         }
         const data = {
           "nombre": usuario.nombre,
           "apellidoPaterno": usuario.apellidoP,
           "apellidoMaterno": usuario.apellidoM,
-          "rolId": usuario.idrol,
+          "rolId": this.seleccionado.rolId,
           "pass": null,
-          "usuarioId": usuario.id,
-          "estatusUsuario": this.seleccionado.estatus = !this.seleccionado.estatus
-        } 
-        axios.post(`${API}/UsuarioMonitoreo/update/${this.plazaBusqueda}`,data,config)
-        const data = {
-          "nombre": usuario.nombre,
-          "apellidoPaterno": usuario.apellidoP,
-          "apellidoMaterno": usuario.apellidoM,
-          "rolId": usuario.idrol,
-          "pass": null,
-          "usuarioId": usuario.id,
+          "usuarioId": usuario.idUsuario,
           "estatusUsuario": usuario.estatus
         } 
+        console.log(data);
         if(this.seleccionado.rol != ''){
           this.modalRol = false
           this.modalLoading = true
           axios.post(`${API}/UsuarioMonitoreo/update/${this.plazaBusqueda}`,data,config)
           .then(()=>{
-            this.$notify({
+              setTimeout(() => {
+                this.$notify({
                   title:'Nuevo Usuario',
                   text:`Se creo correctamente el Rol de ${usuario.nombre}`,
                   duration: 2000,
                   type: 'success'
                 });
-              setTimeout(() => {
-                //this.$router.push("/configuracion");
+                //this.$router.push("/configuracion/lista-usuarios");
                 this.modalLoading = false
+                this.$emit('refrescarTabla', this.plazaBusqueda)
               }, 1000);
               this.errorMessage = ""
           })
@@ -498,7 +497,7 @@ name: "TablaListaUsuarios",
             this.errorMessage = "Hubo un error al crear el usuario, intentalo nuevamente."
           })
         }
-      }*/
+      }
     },
     modal_Rol: async function(){
       this.modalRol = true
@@ -521,7 +520,6 @@ name: "TablaListaUsuarios",
       }if(this.value == 'Deshabilitar'){
         this.changeStatus(usuario)
       }if(this.value == 'Cambiar Contraseña'){
-        console.log(usuario);
         this.seleccionado = usuario;
         this.modalPass = true;
       }if(this.value == 'Agregar Plazas'){
@@ -531,9 +529,13 @@ name: "TablaListaUsuarios",
         this.seleccionado = usuario
         this.modalQuitar = true;
       }if(this.value == 'Editar Usuario'){
+        console.log(usuario);
         this.usuario.idUsuario = usuario.id
         this.usuario.nombre = usuario.nombre
-        this.usuario.apellidos = usuario.apellido
+        this.usuario.apellidoP = usuario.apellidoP
+        this.usuario.apellidoM = usuario.apellidoM
+        this.usuario.rolId = usuario.idrol
+        this.usuario.estatus = usuario.estatus
         this.modalEditar = true;
       }if(this.value == 'Cambiar Rol'){
         this.modal_Rol()
@@ -548,10 +550,7 @@ name: "TablaListaUsuarios",
       this.value = ""
     },
     opticones_select_acciones(usuario){
-      //Servicio.getCookie("Token")
-      //let info = jwt_decode(Servicio.getCookie("Token"))
       let info = Servicio.obtenerToken()
-
       let options = [
           {  value: 'Habilitar', name: 'Habilitar'},//0
           {  value: 'Deshabilitar', name: 'Deshabilitar'},//1
