@@ -199,8 +199,10 @@ export default {
             id: e.usuarioId,
             usuario: e.nombreUsuario,
             nombre: e.nombre,
-            apellido: e.apellidoPaterno,
+            apellidoP: e.apellidoPaterno,
+            apellidoM: e.apellidoMaterno,
             rol: e.rol,
+            idrol: e.idRol,
             plazas: e.plazas,
             estatus: e.estatus,
           };
@@ -257,13 +259,15 @@ export default {
           currentPage.value = res.data.now
           res.data.body.forEach((e) => {
             let obj = {
-              id: e.usuarioId,
-              usuario: e.nombreUsuario,
-              nombre: e.nombre,
-              apellido: e.apellidoPaterno,
-              rol: e.rol,
-              plazas: e.plazas,
-              estatus: e.estatus,
+                id: e.usuarioId,
+                usuario: e.nombreUsuario,
+                nombre: e.nombre,
+                apellidoP: e.apellidoPaterno,
+                apellidoM: e.apellidoMaterno,
+                rol: e.rol,
+                idrol: e.idRol,
+                plazas: e.plazas,
+                estatus: e.estatus,
             };
             perfiles.value.push(obj);
           });
