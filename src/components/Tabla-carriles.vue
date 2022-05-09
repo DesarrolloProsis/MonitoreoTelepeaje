@@ -65,17 +65,19 @@ export default {
     function buscar_carriles_plaza(){
       modalLoading.value = true
       carrilesTramos.value = []
-      axios.get(`${API}/CarrilesMonitoreo?PlazaId=${plaza.value}`)
+      //axios.get(`${API}/CarrilesMonitoreo/MultiPlaza/${plaza.value}`)
+      axios.get(`${API}/CarrilesMonitoreo/MultiPlaza/${6}`)
         .then((response) => {
           let tramos = []
-          response.data.forEach((item) => {
+          console.log(response)
+          response.data.body.forEach((item) => {
             if(!tramos.some(tr => tr.id_gare == item.id_gare)){
               tramos.push({id_gare: item.id_gare, nombre: item.gare})
             }
           });
           let tramosCarril = []
           tramos.forEach((item2) => {
-            let carriles = response.data.filter(itemfilter => itemfilter.id_gare == item2.id_gare)
+            let carriles = response.data.body.filter(itemfilter => itemfilter.id_gare == item2.id_gare)
             carriles.sort((a,b) => {          
                 return parseInt(a.carril.substring(1,3)) - parseInt(b.carril.substring(1,3))
             })
