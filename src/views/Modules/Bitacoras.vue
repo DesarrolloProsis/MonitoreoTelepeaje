@@ -1,7 +1,7 @@
 <template>
     <Navbar/>
     <h1 class="title font-bold font-titulo">Bitácoras</h1>
-    <div class="container mx-auto px-auto pb-20 pt-0 md:px-48 md:pt-10 my-3">
+    <div class="container mx-auto px-auto pb-20 pt-0 md:px-48 md:pt-10 my-32">
         <div class="flex flex-wrap">
             <ModuloBitacoras
                 v-for="(modulo, index) in modulos"
@@ -72,12 +72,6 @@ export default {
                 {
                     img_src: "Menu/bitacoras.png",
                     nombre: "Bitácora De Antifraude",
-                    ruta: "/inicio/bitacora-antifraude",
-                    color: "green"
-                },
-                {
-                    img_src: "Menu/bitacoras.png",
-                    nombre: "Tags En Antifraude",
                     ruta: "/inicio/bitacora-antifraude",
                     color: "red"
                 },
