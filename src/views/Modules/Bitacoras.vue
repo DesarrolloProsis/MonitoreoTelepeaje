@@ -33,7 +33,6 @@ export default {
     setup() {
         const modulos = ref([])
         const carriles = ref(true)
-
         //if(Servicio.getCookie("Token")){
         if(Servicio.obtenerToken()){
             //let info = jwt_decode(Servicio.getCookie("Token"))
