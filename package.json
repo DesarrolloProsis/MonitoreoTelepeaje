@@ -11,6 +11,8 @@
     "@headlessui/vue": "^1.4.1",
     "@heroicons/vue": "^1.0.4",
     "@kyvg/vue3-notification": "^2.3.4",
+    "@microsoft/signalr": "^6.0.5",
+    "@ssv/signalr-client": "^3.0.0-dev221",
     "@vueform/multiselect": "^2.2.0",
     "autoprefixer": "^9.8.8",
     "axios": "^0.21.4",

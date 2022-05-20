@@ -56,7 +56,7 @@ export default {
     FormTramoPlaza,
     Spinner
   },
-  setup() {
+  setup(_, { emit }) {
     const plaza = ref('')
     const tramo = ref('')
     const carrilesTramos = ref([])
@@ -65,6 +65,7 @@ export default {
     function buscar_carriles_plaza(){
       modalLoading.value = true
       carrilesTramos.value = []
+      //emit('conectar-socket-plaza', plaza.value)
       //axios.get(`${API}/CarrilesMonitoreo/MultiPlaza/${plaza.value}`)
       axios.get(`${API}/CarrilesMonitoreo/MultiPlaza/${6}`)
         .then((response) => {
@@ -88,7 +89,8 @@ export default {
             })
           })
           carrilesTramos.value = tramosCarril
-          modalLoading.value = false
+          modalLoading.value = false                 
+          emit('conectar-socket-plaza', plaza.value)
           
         })     
         .catch((error) => {
@@ -99,7 +101,7 @@ export default {
     //Función que recibe el id de la plaza y del tramo
     function recibir_tramo_plaza(value){
       tramo.value = value.tramo
-      plaza.value = value.plaza      
+      plaza.value = value.plaza
     }
     return { plaza, tramo, carrilesTramos, modalLoading, buscar_carriles_plaza, recibir_tramo_plaza}
   }
