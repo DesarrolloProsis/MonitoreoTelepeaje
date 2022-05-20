@@ -1,5 +1,5 @@
 <template>
-    <div class="w-full p-5 -mt-10 md:w-1/3" :class="{'ml-20': mostrar == 'false'}">
+    <div class="w-full p-7 -mt-12 md:w-1/3" :class="{'ml-20': mostrar == 'false'}">
         <router-link :to="ruta" tag="div">
             <div class="rounded-lg  animacion p-8 " :class="{'bg-blue-100': color == 'blue', 'bg-green-100': color == 'green','bg-red-100': color == 'red', 'bg-yellow-100': color == 'yellow'}">
                 <img class="img " :src="require('@/assets/' + img_src)" />
