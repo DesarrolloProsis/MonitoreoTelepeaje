@@ -102,10 +102,10 @@ import TablaListaUsuarios from "../../components/Tabla-listausuarios";
 import Navbar from "../../components/Navbar.vue";
 import Footer from "../../components/Footer-login";
 import Multiselect from '@vueform/multiselect';
-import Servicio from '../../Servicios/Token-Services';
+import Servicio from '../../servicios/Token-Services';
 import FilesDownload from '../../components/Files-descargar.vue'
 import { notify } from "@kyvg/vue3-notification";
-import ServiceFiles from '../../Servicios/Files-Service'
+import ServiceFiles from '../../servicios/Files-Service'
 import Spinner from '../../components/Spn.vue'
 import Paginacion from "../../components/Paginacion.vue"
 import axios from "axios";

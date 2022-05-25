@@ -34,7 +34,7 @@ const API = process.env.VUE_APP_URL_API_PRODUCCION
 import Footer from "../components/Footer-login.vue";
 import Header from "../components/Header-login.vue";
 import axios from "axios";
-import serviceToken from '../Servicios/Token-Services'
+import serviceToken from '../servicios/Token-Services'
 //import jwt_decode from "jwt-decode";
 export default {
 

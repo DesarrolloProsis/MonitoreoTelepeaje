@@ -170,7 +170,7 @@ import Spinner from '../components/Spn.vue'
 import Multiselect from '@vueform/multiselect'
 import { ref } from 'vue'
 import { notify } from "@kyvg/vue3-notification";
-import Servicio from '../Servicios/Token-Services';
+import Servicio from '../servicios/Token-Services';
 import axios from "axios";
 
 export default {

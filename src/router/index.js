@@ -16,7 +16,7 @@ import ListaUsuarios from "@/views/Modules/ListaUsuarios.vue";
 import Bitacoras from "@/views/Modules/Bitacoras.vue";
 import BitacoraAntifraude from "@/views/Modules/BitacoraAntifraude.vue";
 import BitacoraListas from "@/views/Modules/BitacoraListas.vue"
-import Servicio from '../Servicios/Token-Services'
+import Servicio from '../servicios/Token-Services'
 const routes = [{
     path: "/",
     name: "Login",

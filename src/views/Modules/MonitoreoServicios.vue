@@ -21,7 +21,7 @@ import Spinner from '../../components/Spn.vue'
 import Navbar from "../../components/Navbar";
 import Tabla from "../../components/Tabla-monitoreo";
 import Footer from "../../components/Footer-login";
-import Service from '../../Servicios/Token-Services'
+import Service from '../../servicios/Token-Services'
 //import jwt_decode from "jwt-decode";
 import axios from "axios";
 import { onMounted, ref } from 'vue'

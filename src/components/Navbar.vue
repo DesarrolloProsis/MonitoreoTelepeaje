@@ -16,7 +16,7 @@
 </template>
 <script>
 const API = process.env.VUE_APP_URL_API_PRODUCCION
-import Servicio from '../Servicios/Token-Services';
+import Servicio from '../servicios/Token-Services';
 //import jwt_decode from "jwt-decode";
 import axios from "axios";
 export default{

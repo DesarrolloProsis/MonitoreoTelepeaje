@@ -27,7 +27,7 @@
     </div>
 </template>
 <script>
-import Servicio from '../Servicios/Token-Services';
+import Servicio from '../servicios/Token-Services';
 import { ref, onMounted } from 'vue'
 import axios from "axios";
 import { notify } from "@kyvg/vue3-notification";

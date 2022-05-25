@@ -64,9 +64,7 @@ export default {
     //Finción que busca los carriles con la plaza seleccionada
     function buscar_carriles_plaza(){
       modalLoading.value = true
-      carrilesTramos.value = []
-      //emit('conectar-socket-plaza', plaza.value)
-      //axios.get(`${API}/CarrilesMonitoreo/MultiPlaza/${plaza.value}`)
+      carrilesTramos.value = []            
       axios.get(`${API}/CarrilesMonitoreo/MultiPlaza/${6}`)
         .then((response) => {
           let tramos = []
