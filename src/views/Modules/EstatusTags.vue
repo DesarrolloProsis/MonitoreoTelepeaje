@@ -12,7 +12,7 @@
 </div>
 
 <div class="container mx-auto px-0 md:px-60 pb-24 pt-4">
-  <TablaEstatusTag :datatag="tags"/>
+  <TablaEstatusTag :datatag="tags" :bandera="bandera"/>
 </div>
   <!-- MODAL CARGANDO -->
 <Spinner :modalLoading="modalLoading"/>
@@ -45,6 +45,7 @@ export default {
     const plaza = ref('')
     const tag = ref(null)
     const modalLoading = ref(false)
+    const bandera = ref('')
     
     function buscar(plaza,tag){
       modalLoading.value = true
@@ -52,6 +53,7 @@ export default {
         axios.get(`${API}/Tags/BusquedaTag/${plaza}/${tag}`)
         .then((result)=>{
           modalLoading.value = false
+          bandera.value = result.data.bandera
           if(result.statusText == 'OK'){
             tags.value = []
             let obj = {
@@ -60,6 +62,11 @@ export default {
               saldo: result.data.saldo,
               tipo_tag: result.data.tipoTag,
               ult_act: result.data.actualizacion,
+              bandera: result.data.bandera,
+              fechaEntrada: result.data.fechaEntrada,
+              fechaSalida: result.data.fechaSalida,
+              idCausa: result.data.idCausa,
+              descripcion: result.data.descripcion
             }
             tags.value.push(obj)
           }else{
@@ -92,7 +99,7 @@ export default {
       plaza.value = value.plaza
     }
 
-    return { buscar, recibir_tramo_plaza, plazas, token, tags, isLoading, tramo, plaza, tag, modalLoading }
+    return { buscar, recibir_tramo_plaza, plazas, token, tags, isLoading, tramo, plaza, tag, modalLoading, bandera }
   }
 }
 </script>

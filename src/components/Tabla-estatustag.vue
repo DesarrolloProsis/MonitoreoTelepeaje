@@ -7,7 +7,7 @@
         <th>Estatus</th>
         <th>Saldo</th>
         <th>Tipo Tag</th>
-        <th>Lista Negra</th>
+        <th v-if="bandera == 'En Lista Negra'">Lista Negra</th>
         <th>Última Actualización</th>
       </tr>
       <tr v-for="(tags, index) in datatag" :key="index">
@@ -15,7 +15,7 @@
         <td>{{ tags.estatus }}</td>
         <td>{{ tags.saldo }}</td>
         <td>{{ tags.tipo_tag }}</td>
-        <td>
+        <td v-if="tags.bandera != null">
             <img class="img-search" src="~@/assets/opcion.png" @click="abrirModal(tags)"/>
         </td>
         <td>{{ moment(tags.ult_act).format("YYYY-MM-DD  HH:mm:ss a") }}</td>
@@ -36,7 +36,7 @@
         <p class="text-sm mb-1 font-semibold text-gray-700 sm:-ml-6">Tipo de Causa</p>
         <span>{{ tipoCausa }}</span>
         <p class="text-sm mb-1 font-semibold text-gray-700 sm:-ml-6">Descripción de la Causa</p>
-        <span>{{ descripcionCausa }}</span>
+        <span style="text-align: justify;" class="text-aling">{{ descripcionCausa }}</span>
         <!-- <input v-model="newRol.nombre" type="text" class="border rounded-lg"> -->
       </div>
       <div class="mt-5 text-center ml-6">
@@ -50,21 +50,27 @@ import { ref } from 'vue' // se importa para poder generar una referencia reacti
 import moment from 'moment' //
 export default {
   name: "TablaEstatusTag",//Nombre del componente para mostrar en vuex
-  props: ["datatag"],//propiedad que trae toda la infromación sobre el tag
+  props: {
+    datatag: Array, //Propiedad que trea toda la información del tag, viene desde el componente padre
+    bandera: String //Propiedad para saber si está en la lista negra el tag, viene desde el componente padre
+  },
+    //["datatag"],//propiedad que trae toda la infromación sobre el tag
   created: function () {
     this.moment = moment; //moment funciona para dar un formato a la fecha
   },
   setup(){
+
     const modalListaNegra = ref(false) // variable que indica si se abre el modal de la información de la lista negra
     const fechaEntrada = ref('') //variable que indica la fecha de entrada a la lista negra
     const fechaSalida = ref('') //variable que indica la fecha de salida de la lista negra
     const tipoCausa = ref('') //variable que indica el tipo de causa de la entrada a lista negra
-    const descripcionCausa = ref('') //variable que indica la descripción de la causa
+    const descripcionCausa = ref('') //variable que indica la descripción de la causa 
     function abrirModal (tags) { //función para abrir el modal de la infromación de la lista negra
-      fechaEntrada.value = tags.ult_act //asignación de valor de la fecha de entrada
-      fechaSalida.value = tags.ult_act //asignación de valor de la fecha de salida
-      tipoCausa.value = tags.tipo_tag // asignación de valor del tipo de causa de entrada a la lista negra
-      descripcionCausa.value = tags.estatus // asignación de valor de la descripción de la causa
+    console.log('tabla');
+      fechaEntrada.value = tags.fechaEntrada //asignación de valor de la fecha de entrada
+      fechaSalida.value = tags.fechaSalida //asignación de valor de la fecha de salida
+      tipoCausa.value = tags.idCausa // asignación de valor del tipo de causa de entrada a la lista negra
+      descripcionCausa.value = tags.descripcion // asignación de valor de la descripción de la causa
       modalListaNegra.value = true //se abre el modal
     }
     return { modalListaNegra, fechaEntrada, fechaSalida, tipoCausa, descripcionCausa, abrirModal }
