@@ -1,5 +1,5 @@
 <template>
-  <div v-if="display == true">
+  <div v-if="modalShow">
     <div class="fixed z-10 inset-0 overflow-y-auto">
       <div
         class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0"
@@ -49,9 +49,9 @@
                   Carril: {{ carril }}
                 </h3>
                 <div class="mt-2">
-                  <!--<p class="text-lg text-gray-500">
+                  <p class="text-lg text-gray-500">
                     Tipo de alarma: {{ tipoalarma }}
-                  </p>-->
+                  </p>
                   <p class="text-lg text-gray-500">
                     Tipo de alarma: Corte de Energía
                   </p>
@@ -81,19 +81,20 @@
   </div>
 </template>
 <script>
+import { reactive} from 'vue';
+
 export default {
   name: "ModalCarriles",
-  props: ["carril", "tipoalarma"],
-  data() {
-    return {
-      display: true,
-    };
-  },
-  methods: {
-    hideModal: function () {
-      this.display = false;
-    },
-  },
+  props: ["carril", "tipoalarma", "modalOpen"],  
+  setup(props, { emit }){ 
+    
+    let modalShow = reactive(props.modalOpen)
+    const hideModal = function(){      
+      emit('cerrar-modal')            
+    }
+
+    return {  hideModal, modalShow }
+  }
 };
 </script>
 <style scoped>

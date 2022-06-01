@@ -1,7 +1,7 @@
 <template>
   <Navbar/>
   <div class="h-screen md:h-full md:mb-0 mb-9">
-    <h1 class="title-center font-titulo font-bold pb-1">Monitoreo de Carriles</h1>      
+    <h1 class="title-center font-titulo font-bold pb-1">Monitoreo de Carriles</h1>        
     <TablaCarriles></TablaCarriles>
   </div>
   <Footer/>
@@ -11,6 +11,7 @@ import Navbar from "../../components/Navbar.vue";
 import TablaCarriles from "../../components/Tabla-carriles.vue";
 import Footer from "../../components/Footer-login";
 import { HubConnectionBuilder, HttpTransportType } from "@microsoft/signalr"
+import { MonitoreoAntenasStore  } from '../../store/MonitoreoAntenas'
 import { reactive } from 'vue';
 
 export default {
@@ -21,6 +22,8 @@ export default {
   },
   setup(){  
     let connectionSocket = reactive ({})
+    const monitoreoAntenasStore = MonitoreoAntenasStore()
+
     async function conectar_socket(){
       try{         
         connectionSocket = await new HubConnectionBuilder()
@@ -31,14 +34,15 @@ export default {
 
         connectionSocket.start().then(() => {                         
           connectionSocket.on('backSend', (data) => {
-              console.log(data)
+              monitoreoAntenasStore.addEventAntenaConcurrent(data)
           })
         })    
       }
       catch(ex) { console.log(ex) }
     }
-    return { conectar_socket }
-    //conectar_socket()
+    conectar_socket()
+    return {  }
+    
   }
 };
 </script>

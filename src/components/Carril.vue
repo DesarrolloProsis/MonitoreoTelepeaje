@@ -1,14 +1,12 @@
 <template>
   <div v-for="(carril, index) in carriles" :key="index" class="flex flex-col flex-wrap flex-none mr-2">
-    <button @click="change_color(index)">Cambiar Color</button>
     <div class="flex-1 bg-carriles-cian mh-cuerpo">
       {{ carril.carril }}
       <div v-if="carril.estado == 'NA' || carril.estado == 'NB'">
         <span class="circulo-green"></span>
       </div>
       <div v-else>
-        <span class="circulo-red"></span>
-        <!-- <ModalCarriles :carril="carril.cuerpo" tipoalarma="ejemplotipoalarma"></ModalCarriles> -->
+        <span class="circulo-red"></span>        
       </div>
       <!-- <div v-else>
         <span class="circulo-none"></span>
@@ -27,7 +25,8 @@
   </div>  
 </template>
 <script>
-import { reactive } from '@vue/reactivity';
+import { reactive} from 'vue';
+
 //import ModalCarriles from "../components/Modal-carriles";
 export default {
   name: "Carril",
@@ -38,15 +37,14 @@ export default {
   setup(props){
 
     let carriles = reactive(props.carrilesdata)
-    
-    function change_color(index){     
-      if(carriles[index].estado != 'NA')
-        carriles[index].estado = 'NA'
-      else
-        carriles[index].estado = ''
-    }
-
-    return { carriles, change_color }
+    //let newEventAntena = reactive({})        
+    // function change_color(index){     
+    //   if(carriles[index].estado != 'NA')
+    //     carriles[index].estado = 'NA'
+    //   else
+    //     carriles[index].estado = ''
+    // }
+    return { carriles }
   }
   
   

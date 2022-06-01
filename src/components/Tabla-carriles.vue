@@ -12,6 +12,10 @@
               <button @click="buscar_carriles_plaza" class="p-1 px-2 appearance-none outline-none w-full text-white">
                 Buscar
               </button>
+
+                <button @click="agregar_item" class="p-1 px-2 appearance-none outline-none w-full text-white">
+                agregar event
+              </button>
             </div>
           </div>
           <div class="flex-2 hidden">
@@ -27,7 +31,9 @@
       </div>
       <hr />
     </div>
-    
+    <div v-if="modalShow">
+      <ModalCarriles @cerrar-modal="cerrar_modal"  :carril="'A01'" :modalOpen="modalShow" :tipoalarma="dataSocket"></ModalCarriles>
+    </div>
     <div v-for="(carrilTramo, key) in carrilesTramos" :key="key" class="flex ta-center overflow-x-auto pt-6 p-10 mr-10">
       <div class="flex justify-center items-center flex-none bg-carriles-gray p-5">
         <div>Plaza:<br /><br />{{carrilTramo.nombreGare}}</div>
@@ -46,21 +52,29 @@
 import Carril from "../components/Carril";
 import FormTramoPlaza from '../components/Form-tramoplaza.vue'
 import Spinner from '../components/Spn.vue'
-import { ref } from 'vue'
+import { ref, computed, watch } from 'vue'
 import axios from "axios";
+import { MonitoreoAntenasStore  } from '../store/MonitoreoAntenas'
+import ModalCarriles from "../components/Modal-carriles";
+
 const API = process.env.VUE_APP_URL_API_PRODUCCION
 export default {
   name: "TablaCarriles",
   components: {
     Carril,
     FormTramoPlaza,
-    Spinner
+    Spinner,
+    ModalCarriles
   },
   setup(_, { emit }) {
     const plaza = ref('')
     const tramo = ref('')
+    let dataSocket = ref({})
+    let modalShow = ref(false)
     const carrilesTramos = ref([])
-    const modalLoading = ref(false)
+    const modalLoading = ref(false)  
+    
+    const monitoreoAntenasStore = MonitoreoAntenasStore()
     //Finción que busca los carriles con la plaza seleccionada
     function buscar_carriles_plaza(){
       modalLoading.value = true
@@ -101,7 +115,30 @@ export default {
       tramo.value = value.tramo
       plaza.value = value.plaza
     }
-    return { plaza, tramo, carrilesTramos, modalLoading, buscar_carriles_plaza, recibir_tramo_plaza}
+
+    function cerrar_modal(){   
+      monitoreoAntenasStore.deleteEventAntenaConcurrent()  
+      dataSocket.value = {} 
+      modalShow.value = false
+    }
+    function agregar_item(){
+      monitoreoAntenasStore.addEventAntenaConcurrent(new Date())
+    }
+    //Computed para monitorear lo eventos de las antenas
+    const MonitorearConcurrentEventAntena = computed(() => {
+      return monitoreoAntenasStore.getEventAntenaConcurrent          
+    })
+
+    watch(MonitorearConcurrentEventAntena.value, async (newEventAntena) => {
+      
+      console.log(newEventAntena.length)      
+      if(newEventAntena.length > 0){
+        dataSocket.value = newEventAntena[0]
+        console.log(dataSocket)
+        modalShow.value = true
+      }
+    })        
+    return { plaza, tramo, MonitorearConcurrentEventAntena, modalShow, dataSocket, cerrar_modal, agregar_item, carrilesTramos, modalLoading, buscar_carriles_plaza, recibir_tramo_plaza}
   }
 }
 </script>
