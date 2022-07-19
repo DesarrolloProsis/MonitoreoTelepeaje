@@ -34,6 +34,7 @@ export default {
 
         connectionSocket.start().then(() => {                         
           connectionSocket.on('backSend', (data) => {
+              console.log('data whit socket')
               monitoreoAntenasStore.addEventAntenaConcurrent(data)
           })
         })    

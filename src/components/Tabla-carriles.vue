@@ -13,9 +13,9 @@
                 Buscar
               </button>
 
-                <button @click="agregar_item" class="p-1 px-2 appearance-none outline-none w-full text-white">
+                <!-- <button @click="agregar_item" class="p-1 px-2 appearance-none outline-none w-full text-white">
                 agregar event
-              </button>
+              </button> -->
             </div>
           </div>
           <div class="flex-2 hidden">
@@ -121,9 +121,9 @@ export default {
       dataSocket.value = {} 
       modalShow.value = false
     }
-    function agregar_item(){
-      monitoreoAntenasStore.addEventAntenaConcurrent(new Date())
-    }
+    // function agregar_item(){
+    //   monitoreoAntenasStore.addEventAntenaConcurrent(new Date())
+    // }
     //Computed para monitorear lo eventos de las antenas
     const MonitorearConcurrentEventAntena = computed(() => {
       return monitoreoAntenasStore.getEventAntenaConcurrent          
@@ -138,7 +138,7 @@ export default {
         modalShow.value = true
       }
     })        
-    return { plaza, tramo, MonitorearConcurrentEventAntena, modalShow, dataSocket, cerrar_modal, agregar_item, carrilesTramos, modalLoading, buscar_carriles_plaza, recibir_tramo_plaza}
+    return { plaza, tramo, MonitorearConcurrentEventAntena, modalShow, dataSocket, cerrar_modal, carrilesTramos, modalLoading, buscar_carriles_plaza, recibir_tramo_plaza}
   }
 }
 </script>
