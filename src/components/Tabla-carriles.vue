@@ -135,7 +135,10 @@ export default {
       if(newEventAntena.length > 0){
         dataSocket.value = newEventAntena[0]
         console.log(dataSocket)
-        modalShow.value = true
+        //codigo para pruebas integracion socket
+        monitoreoAntenasStore.deleteEventAntenaConcurrent()  
+        dataSocket.value = {}
+        //modalShow.value = true
       }
     })        
     return { plaza, tramo, MonitorearConcurrentEventAntena, modalShow, dataSocket, cerrar_modal, carrilesTramos, modalLoading, buscar_carriles_plaza, recibir_tramo_plaza}
