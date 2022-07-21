@@ -86,22 +86,24 @@ export default {
         //axios.post(`${API}/Transacciones/TransactionsFiltros`,data)
         axios.post(`${API}/Transacciones/TransactionsFiltrosR/${plaza}/null/null/null/${currentPage.value}/${numRespuesta.value}`)
         .then((result)=>{
+          console.log(result);
           modalLoading.value = false
           if((result.data.status == 'Ok') && (result.data.body.length > 0)){
             modalLoading.value = false
             totalPaginas.value = result.data.numberPages
             currentPage.value = result.data.now
-            result.data.body.forEach((e) => {
+  /*           result.data.body.forEach((e) => {
               let obj = {
                 tag: e.idTag,
                 fechaCruce: e.fechaDeCruce,
-                fechaEnvio: e.FechaEnvio,
+                fechaEnvio: e.fechaEnvio,
                 carril: e.carril,
                 claseCajero: e.claseCajero,
                 tarifa: e.tarifa
               };
               transacciones.value.push(obj);
-            });
+            }); */
+            transacciones.value =  result.data.body
           }else{
             modalLoading.value = false
             notify({
@@ -116,11 +118,12 @@ export default {
           transacciones.value = []
           axios.post(`${API}/Transacciones/TransactionsFiltrosR/${plaza}/null/null/${tag}/1/${numRespuesta.value}`)
           .then((result)=>{
+            console.log(result);
           if((result.data.status == 'Ok') && (result.data.body.length > 0)){
             modalLoading.value = false
             totalPaginas.value = result.data.numberPages
             currentPage.value = result.data.now
-            result.data.body.forEach((e) => {
+            /* result.data.body.forEach((e) => {
               let obj = {
                 tag: e.idTag,
                 fechaCruce: e.fechaDeCruce,
@@ -130,7 +133,8 @@ export default {
                 tarifa: e.tarifa
               };
               transacciones.value.push(obj);
-            });
+            }); */
+            transacciones.value =  result.data.body
           }else{
             modalLoading.value = false
             notify({
@@ -149,7 +153,7 @@ export default {
               modalLoading.value = false
               totalPaginas.value = result.data.numberPages
               currentPage.value = result.data.now
-              result.data.body.forEach((e) => {
+              /* result.data.body.forEach((e) => {
                 let obj = {
                   tag: e.idTag,
                   fechaCruce: e.fechaDeCruce,
@@ -159,7 +163,8 @@ export default {
                   tarifa: e.tarifa
                 };
                 this.transacciones.push(obj);
-              });
+              }); */
+              transacciones.value =  result.data.body
             }else{
               modalLoading.value = false
               notify({
@@ -178,7 +183,7 @@ export default {
               modalLoading.value = false
               totalPaginas.value = result.data.numberPages
               currentPage.value = result.data.now
-              result.data.body.forEach((e) => {
+             /*  result.data.body.forEach((e) => {
                 let obj = {
                   tag: e.idTag,
                   fechaCruce: e.fechaDeCruce,
@@ -188,7 +193,8 @@ export default {
                   tarifa: e.tarifa
                 };
                 transacciones.value.push(obj);
-              });
+              }); */
+              transacciones.value =  result.data.body
             }else{
               modalLoading.value = false
               notify({
@@ -207,7 +213,7 @@ export default {
               modalLoading.value = false
               totalPaginas.value = result.data.numberPages
               currentPage.value = result.data.now
-              result.data.body.forEach((e) => {
+              /* result.data.body.forEach((e) => {
                 let obj = {
                   tag: e.idTag,
                   fechaCruce: e.fechaDeCruce,
@@ -217,7 +223,8 @@ export default {
                   tarifa: e.tarifa
                 };
                 transacciones.value.push(obj);
-              });
+              }); */
+              transacciones.value =  result.data.body
             }else{
               modalLoading.value = false
               notify({
@@ -240,7 +247,7 @@ export default {
           modalLoading.value = false
           totalPaginas.value = result.data.numberPages
           currentPage.value = result.data.now
-          result.data.body.forEach((e) => {
+          /* result.data.body.forEach((e) => {
             let obj = {
               tag: e.idTag,
               fechaCruce: e.fechaDeCruce,
@@ -250,7 +257,8 @@ export default {
               tarifa: e.tarifa
             };
             transacciones.value.push(obj);
-          });
+          }); */
+          transacciones.value =  result.data.body
         }else{
           modalLoading.value = false
           notify({
@@ -268,7 +276,7 @@ export default {
         .then((result)=>{
           totalPaginas.value = result.data.numberPages
           currentPage.value = result.data.now
-          result.data.body.forEach((e) => {
+          /* result.data.body.forEach((e) => {
             let obj = {
               tag: e.idTag,
               fechaCruce: e.fechaDeCruce,
@@ -278,25 +286,39 @@ export default {
               tarifa: e.tarifa
             };
             transacciones.value.push(obj);
-          });
+          }); */
+          transacciones.value =  result.data.body
         })
       }else{
-        axios.post(`${API}/Transacciones/TransactionsFiltrosR/${plaza.value}/${carril.value}/${fecha.value}/${tag.value}/${page}/${numRespuesta.value}`)
+        if(carril.value == undefined){
+          carril.value = 'null'
+        }
+        // if(fecha.value == undefined){
+        //   fecha.value = 'null'
+        // }
+        if(tag.value == undefined){
+          tag.value = 'null'
+        }
+        let ruta = `${API}/Transacciones/TransactionsFiltrosR/${plaza.value}/${carril.value}/${fecha.value}/${tag.value}/${page}/${numRespuesta.value}`
+        console.log(ruta)
+        axios.post(ruta)
         .then((result)=>{
           totalPaginas.value = result.data.numberPages
           currentPage.value = result.data.now
-          result.data.body.forEach((e) => {
-            let obj = {
-              tag: e.idTag,
-              fechaCruce: e.fechaDeCruce,
-              fechaEnvio: e.FechaEnvio,
-              carril: e.carril,
-              claseCajero: e.claseCajero,
-              tarifa: e.tarifa
-            };
-            transacciones.value.push(obj);
-          });
+          // result.data.body.forEach((e) => {
+          //   let obj = {
+          //     tag: e.idTag,
+          //     fechaCruce: e.fechaDeCruce,
+          //     fechaEnvio: e.FechaEnvio,
+          //     carril: e.carril,
+          //     claseCajero: e.claseCajero,
+          //     tarifa: e.tarifa
+          //   };
+          //   transacciones.value.push(obj);
+         // });
+         transacciones.value =  result.data.body
         })
+        .catch((er)=>console.log(er))
       }
     }//Función que regresa el id de la plaza, el tramo y el carril
     function  recibir_tramo_plaza(value){

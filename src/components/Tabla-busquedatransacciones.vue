@@ -2,7 +2,7 @@
   <div class="responsive-table">
     <table class="tftable">
       <tr>
-        <th>Fehca</th>
+        <th>Fecha</th>
         <th>Carril</th>
         <th>Clase Cajero</th>
         <th>Medio Pago</th>

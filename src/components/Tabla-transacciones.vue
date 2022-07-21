@@ -10,9 +10,9 @@
         <th>Tarifa</th>
       </tr>
       <tr v-for="(transaccion, index) in dataTransacciones" :key="index">
-        <td>{{transaccion.tag}}</td>
-        <td>{{ moment(transaccion.fechaCruce).format("YYYY-MM-DD  HH:mm:ss a") }}</td>
-        <td>{{ moment(transaccion.fechaEnvio).format("YYYY-MM-DD HH:mm:ss a") }}</td>
+        <td>{{transaccion.idTag}}</td>
+        <td>{{ moment.utc(transaccion.fechaDeCruce).local().format('YYYY-MM-DD HH:mm:ss a') }}</td>
+        <td>{{ moment.utc(transaccion.fechaEnvio).local().format('YYYY-MM-DD HH:mm:ss a') }}</td>
         <td>{{transaccion.carril}}</td>
         <td>{{transaccion.claseCajero}} </td>
         <td>${{transaccion.tarifa}} </td>
