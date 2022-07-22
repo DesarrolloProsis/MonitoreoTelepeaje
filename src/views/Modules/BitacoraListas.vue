@@ -100,6 +100,7 @@ export default {
         function limpiar(plaza){
             listaHistorico.value = []
             fecha.value = null
+            currentPage.value = 1
             //axios.get(`${API}/Historico/${plaza}/${fecha.value}/${page.value}`)
             axios.get(`${API}/Historico/ListaHistorico/PaginacionCompleta/${plaza}/${fecha.value}/${currentPage.value}/${numRespuesta.value}`)
             .then((result)=>{

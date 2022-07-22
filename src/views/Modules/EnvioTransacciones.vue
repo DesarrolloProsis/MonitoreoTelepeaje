@@ -70,162 +70,26 @@ export default {
           type: 'warn'
         });
       }else{
-        if((tag == undefined || tag == null || tag == '') && (carril == undefined || carril == null || carril == '') && (fecha == undefined || fecha == null || fecha == '')){
-        /* let datoCarril = 'null'
-        let tag = 'null'
-        let fecha = 'null' */
         modalLoading.value = true
         transacciones.value = []
-        /* let data = {
-          "plazaId": plaza,
-          "carril": datoCarril,
-          "fecha": fecha,
-          "tag": tag,
-          "skip": 1
-        } */
-        //axios.post(`${API}/Transacciones/TransactionsFiltros`,data)
-        axios.post(`${API}/Transacciones/TransactionsFiltrosR/${plaza}/null/null/null/${currentPage.value}/${numRespuesta.value}`)
+        if(carril == undefined || carril == null || carril == ''){
+          carril = "null"
+        }
+        if(fecha == undefined || fecha == null || fecha == ''){
+          fecha = "null"
+        }
+        if(tag == undefined || tag == null || tag == ''){
+          tag = "null"
+        }
+        let ruta = `${API}/Transacciones/TransactionsFiltrosR/${plaza}/${carril}/${fecha}/${tag}/${currentPage.value}/${numRespuesta.value}`
+        axios.post(ruta)
         .then((result)=>{
-          console.log(result);
+          if((result.data.status == 'Ok') && (result.data.body.length > 0)){
           modalLoading.value = false
-          if((result.data.status == 'Ok') && (result.data.body.length > 0)){
-            modalLoading.value = false
-            totalPaginas.value = result.data.numberPages
-            currentPage.value = result.data.now
-  /*           result.data.body.forEach((e) => {
-              let obj = {
-                tag: e.idTag,
-                fechaCruce: e.fechaDeCruce,
-                fechaEnvio: e.fechaEnvio,
-                carril: e.carril,
-                claseCajero: e.claseCajero,
-                tarifa: e.tarifa
-              };
-              transacciones.value.push(obj);
-            }); */
-            transacciones.value =  result.data.body
+          totalPaginas.value = result.data.numberPages
+          currentPage.value = result.data.now
+          transacciones.value =  result.data.body
           }else{
-            modalLoading.value = false
-            notify({
-              title:'Sin Información',
-              text:'No se encontrtaron transacciones en esta plaza',
-              type: 'warn'
-            });
-          }
-        })
-        }else if((tag != undefined || tag != null || tag != '') && (carril == undefined || carril == null || carril == '') && (fecha == undefined || fecha == null || fecha == '')){
-          this.modalLoading = true
-          transacciones.value = []
-          axios.post(`${API}/Transacciones/TransactionsFiltrosR/${plaza}/null/null/${tag}/1/${numRespuesta.value}`)
-          .then((result)=>{
-            console.log(result);
-          if((result.data.status == 'Ok') && (result.data.body.length > 0)){
-            modalLoading.value = false
-            totalPaginas.value = result.data.numberPages
-            currentPage.value = result.data.now
-            /* result.data.body.forEach((e) => {
-              let obj = {
-                tag: e.idTag,
-                fechaCruce: e.fechaDeCruce,
-                fechaEnvio: e.FechaEnvio,
-                carril: e.carril,
-                claseCajero: e.claseCajero,
-                tarifa: e.tarifa
-              };
-              transacciones.value.push(obj);
-            }); */
-            transacciones.value =  result.data.body
-          }else{
-            modalLoading.value = false
-            notify({
-              title:'Sin Información',
-              text:'No se encontrtaron transacciones con el tag ingresado',
-              type: 'warn'
-            });
-          }
-        })
-        }else if((tag == undefined || tag == null || tag == '') && (carril != undefined || carril != null || carril != '') && (fecha == undefined || fecha == null || fecha == '')){
-          modalLoading.value = true
-          transacciones.value = []
-          axios.post(`${API}/Transacciones/TransactionsFiltrosR/${plaza}/${carril}/null/null/1/${numRespuesta.value}`)
-          .then((result)=>{
-            if((result.data.status == 'Ok') && (result.data.body.length > 0)){
-              modalLoading.value = false
-              totalPaginas.value = result.data.numberPages
-              currentPage.value = result.data.now
-              /* result.data.body.forEach((e) => {
-                let obj = {
-                  tag: e.idTag,
-                  fechaCruce: e.fechaDeCruce,
-                  fechaEnvio: e.FechaEnvio,
-                  carril: e.carril,
-                  claseCajero: e.claseCajero,
-                  tarifa: e.tarifa
-                };
-                this.transacciones.push(obj);
-              }); */
-              transacciones.value =  result.data.body
-            }else{
-              modalLoading.value = false
-              notify({
-                title:'Sin Información',
-                text:'No se encontrtaron transacciones en el carril seleccionado',
-                type: 'warn'
-              });
-            }
-          })
-        }else if ((fecha != undefined || fecha != null || fecha != '') && (tag == undefined || tag == null || tag == '') && (carril == undefined || carril == null || carril == '')){
-          modalLoading.value = true
-          transacciones.value = []
-          axios.post(`${API}/Transacciones/TransactionsFiltrosR/${plaza}/null/${fecha}/null/1/${numRespuesta.value}`)
-          .then((result)=>{
-            if((result.data.status == 'Ok') && (result.data.body.length > 0)){
-              modalLoading.value = false
-              totalPaginas.value = result.data.numberPages
-              currentPage.value = result.data.now
-             /*  result.data.body.forEach((e) => {
-                let obj = {
-                  tag: e.idTag,
-                  fechaCruce: e.fechaDeCruce,
-                  fechaEnvio: e.FechaEnvio,
-                  carril: e.carril,
-                  claseCajero: e.claseCajero,
-                  tarifa: e.tarifa
-                };
-                transacciones.value.push(obj);
-              }); */
-              transacciones.value =  result.data.body
-            }else{
-              modalLoading.value = false
-              notify({
-                title:'Sin Información',
-                text:'No se encontrtaron transacciones en el carril seleccionado',
-                type: 'warn'
-              });
-            }
-          })
-        }else{
-          modalLoading.value = true
-          transacciones.value = []
-          axios.post(`${API}/Transacciones/TransactionsFiltrosR/${plaza}/${carril}/${fecha}/${tag}/1/${numRespuesta.value}`)
-          .then((result)=>{
-            if((result.data.status == 'Ok') && (result.data.body.length > 0)){
-              modalLoading.value = false
-              totalPaginas.value = result.data.numberPages
-              currentPage.value = result.data.now
-              /* result.data.body.forEach((e) => {
-                let obj = {
-                  tag: e.idTag,
-                  fechaCruce: e.fechaDeCruce,
-                  fechaEnvio: e.FechaEnvio,
-                  carril: e.carril,
-                  claseCajero: e.claseCajero,
-                  tarifa: e.tarifa
-                };
-                transacciones.value.push(obj);
-              }); */
-              transacciones.value =  result.data.body
-            }else{
               modalLoading.value = false
               notify({
                 title:'Sin Información',
@@ -233,13 +97,16 @@ export default {
                 type: 'warn'
               });
             }
-          })
-        }
+        })
+        .catch((er)=>{
+          console.log(er)
+        })
       }
     }//Función que regresa las transacciones de la plaza asignada, sin filtros
     function todos(plaza) {
       tag.value = null
       fecha.value = null
+      currentPage.value = 1
       axios.post(`${API}/Transacciones/TransactionsFiltrosR/${plaza}/null/null/null/${currentPage.value}/${numRespuesta.value}`)
       .then((result)=>{
         if(result.data.status == 'Ok'){
@@ -247,17 +114,6 @@ export default {
           modalLoading.value = false
           totalPaginas.value = result.data.numberPages
           currentPage.value = result.data.now
-          /* result.data.body.forEach((e) => {
-            let obj = {
-              tag: e.idTag,
-              fechaCruce: e.fechaDeCruce,
-              fechaEnvio: e.FechaEnvio,
-              carril: e.carril,
-              claseCajero: e.claseCajero,
-              tarifa: e.tarifa
-            };
-            transacciones.value.push(obj);
-          }); */
           transacciones.value =  result.data.body
         }else{
           modalLoading.value = false
@@ -276,28 +132,17 @@ export default {
         .then((result)=>{
           totalPaginas.value = result.data.numberPages
           currentPage.value = result.data.now
-          /* result.data.body.forEach((e) => {
-            let obj = {
-              tag: e.idTag,
-              fechaCruce: e.fechaDeCruce,
-              fechaEnvio: e.FechaEnvio,
-              carril: e.carril,
-              claseCajero: e.claseCajero,
-              tarifa: e.tarifa
-            };
-            transacciones.value.push(obj);
-          }); */
           transacciones.value =  result.data.body
         })
       }else{
-        if(carril.value == undefined){
-          carril.value = 'null'
+        if(carril.value == undefined || carril.value == null || carril.value == ''){
+          carril.value = "null"
         }
-        // if(fecha.value == undefined){
-        //   fecha.value = 'null'
-        // }
-        if(tag.value == undefined){
-          tag.value = 'null'
+        if(fecha.value == undefined || fecha.value == null || fecha.value == ''){
+          fecha.value = "null"
+        }
+        if(tag.value == undefined || tag.value == null || tag.value == ''){
+          tag.value = "null"
         }
         let ruta = `${API}/Transacciones/TransactionsFiltrosR/${plaza.value}/${carril.value}/${fecha.value}/${tag.value}/${page}/${numRespuesta.value}`
         console.log(ruta)
@@ -305,17 +150,6 @@ export default {
         .then((result)=>{
           totalPaginas.value = result.data.numberPages
           currentPage.value = result.data.now
-          // result.data.body.forEach((e) => {
-          //   let obj = {
-          //     tag: e.idTag,
-          //     fechaCruce: e.fechaDeCruce,
-          //     fechaEnvio: e.FechaEnvio,
-          //     carril: e.carril,
-          //     claseCajero: e.claseCajero,
-          //     tarifa: e.tarifa
-          //   };
-          //   transacciones.value.push(obj);
-         // });
          transacciones.value =  result.data.body
         })
         .catch((er)=>console.log(er))
@@ -382,7 +216,25 @@ export default {
       }
     }
 
-    return { buscar, todos, showMore, recibir_tramo_plaza, downloadApi, transacciones, tramo, plaza, carril, fecha, tag, formato, page, totalPaginas, currentPage, hasMorePages, modalLoading}
+    return { 
+      buscar, 
+      todos, 
+      showMore, 
+      recibir_tramo_plaza, 
+      downloadApi, 
+      transacciones, 
+      tramo, 
+      plaza, 
+      carril, 
+      fecha, 
+      tag, 
+      formato, 
+      page, 
+      totalPaginas, 
+      currentPage, 
+      hasMorePages, 
+      modalLoading
+      }
   }
 }
 </script>
