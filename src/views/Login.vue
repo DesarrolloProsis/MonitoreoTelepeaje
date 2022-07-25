@@ -64,6 +64,7 @@ export default {
         "Password": this.pass
       }
       if(data.Usuario != "" &&  data.Password != ""){
+        console.log(API)
         axios.post(`${API}/Login`, data)
         .then((result) => {
           this.mensaje =""
