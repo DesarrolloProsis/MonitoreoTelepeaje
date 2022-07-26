@@ -69,7 +69,6 @@ export default {
 
     };
   },
-
   methods: {
     // !MODULOS
     showModulos: function (perfil) {
