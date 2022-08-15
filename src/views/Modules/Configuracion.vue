@@ -2,7 +2,7 @@
   <Navbar/>
   <h1 class="title font-bold font-titulo">Configuración</h1>
   <div class="container mx-auto px-auto pb-20 pt-0 md:px-48 md:pt-10 my-32">
-    <div class="flex flex-wrap">
+    <div class="flex">
       <ModuloConfiguracion
         v-for="(modulo, index) in modulos"
         :key="index"
@@ -36,6 +36,11 @@ export default {
           img_src: "Configuracion/lista-usuarios.png",
           nombre: "Lista de Usuarios",
           ruta: "/configuracion/lista-usuarios",
+        },
+         {
+          img_src: "Configuracion/lista-usuarios.png",
+          nombre: "Antenas",
+          ruta: "/configuracion/antenas",
         },
       ])
     

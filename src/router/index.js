@@ -13,10 +13,11 @@ import EstatusTags from "@/views/Modules/EstatusTags.vue";
 import Configuracion from "@/views/Modules/Configuracion.vue";
 import AdminPerfiles from "@/views/Modules/AdminPerfiles.vue";
 import ListaUsuarios from "@/views/Modules/ListaUsuarios.vue";
+import Antenas from "@/views/Modules/Antenas.vue";
 import Bitacoras from "@/views/Modules/Bitacoras.vue";
 import BitacoraAntifraude from "@/views/Modules/BitacoraAntifraude.vue";
-import BitacoraListas from "@/views/Modules/BitacoraListas.vue"
-import Servicio from '../servicios/Token-Services'
+import BitacoraListas from "@/views/Modules/BitacoraListas.vue";
+import Servicio from '../servicios/Token-Services';
 const routes = [{
     path: "/",
     name: "Login",
@@ -162,6 +163,14 @@ const routes = [{
     path: "/configuracion/lista-usuarios",
     name: "ListaUsuarios",
     component: ListaUsuarios,
+    meta: {
+      requiresCookie: true
+    }
+  },
+  {
+    path: "/configuracion/antenas",
+    name: "Antenas",
+    component: Antenas,
     meta: {
       requiresCookie: true
     }
