@@ -38,7 +38,7 @@ export default {
           ruta: "/configuracion/lista-usuarios",
         },
          {
-          img_src: "Configuracion/lista-usuarios.png",
+          img_src: "Configuracion/antena-parabolica.png",
           nombre: "Antenas",
           ruta: "/configuracion/antenas",
         },

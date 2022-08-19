@@ -5,7 +5,7 @@
       <div class="flex flex-col bg-blue md:flex-row pb-0 mb-4 rounded-lg">
         <div class="flex-1 flex flex-col  md:flex-row md:space-x-2">
           <div class="mx-auto ">
-            <FormTramoPlaza @cambiar-tramo-plaza="recibir_tramo_plaza" :tipo="'alarma'"></FormTramoPlaza>
+            <FormTramoPlaza @cambiar-tramo-plaza="recibir_tramo_plaza"></FormTramoPlaza>
           </div>
           <div class="flex-2 mx-20">
             <div class=" p-1 bg-white flex border border-gray-200 rounded btn-search">
@@ -30,19 +30,19 @@
     </div>
     <Accordion v-for="(ray, index) in rays" :key="index" :title="ray.ipRay" :showAcordion="abrirrail" @abriracordion="mostrarrail(ray.idRay)" @abriraccion="abrirmodalantenas(ray)">
         <div v-if="mostrar == ray.idRay" class="p-4">
-        <div class="w-full p-3 flex justify-between">
-          <div>Plaza:{{ray.idPlaza}}</div>
-          <div>Ip:{{ray.ipRay}}</div>
-          <div><button class="bg-yellow-500 text-white border-2 rounded-md p-2" @click="abrirmodaleditarray(ray)">Editar Ray</button></div>  
+        <div class="w-full p-3 flex justify-between content-center bg-gray-300 rounded-lg">
+          <div class="my-auto font-bold">Plaza:{{ray.idPlaza}}</div>
+          <div class="my-auto font-bold">Ip:{{ray.ipRay}}</div>
+          <div class="my-auto"><button class="bg-yellow-500 text-white border-2 border-yellow-500 rounded-lg p-2" @click="abrirmodaleditarray(ray)">Editar Ray</button></div>  
         </div>
         <div v-if="AntenasRail.length > 0">
           <Accordion v-for="(antena, key) in AntenasRail" :key="key" :showAcordion="abrirantena" :title="antena.lineaCarril + ' ' + antena.numeroCapufeCarril + ' ' + '(' + antena.idFisico +')'" @abriracordion="mostrarantena(antena.idAntena)">
             <div v-if="mostrarinfoantena == antena.idAntena">
-            <div class="w-full p-3 flex justify-between">
-              <div>Id Antena: {{antena.idAntena}}</div>
-              <div>Carril: {{antena.idGare}}</div>  
-              <div>Ray: {{antena.idRay}}</div>
-              <div><button class="bg-yellow-500 text-white border-2 rounded-md p-2" @click="abrirmodaleditarantenas(antena)">Editar Antena</button></div>
+            <div class="w-full p-3 flex justify-between content-center bg-gray-300 rounded-lg">
+              <div class="my-auto font-bold">Id Antena: {{antena.idAntena}}</div>
+              <div class="my-auto font-bold">Carril: {{antena.idGare}}</div>  
+              <div class="my-auto font-bold">Ray: {{antena.idRay}}</div>
+              <div class="my-auto"><button class="bg-yellow-500 text-white border-2 border-yellow-500 rounded-lg p-2" @click="abrirmodaleditarantenas(antena)">Editar Antena</button></div>
             </div>
             </div>
           </Accordion>
@@ -137,22 +137,22 @@
                 </div>
                 <div class="flex flex-col gap-10">
                     <div>
-                        <input class="border border-gray-800"  type="text" v-model="eidAntena"/>
+                        <input class="border border-gray-200" disabled type="text" v-model="eidAntena"/>
                     </div>
                     <div>
-                        <input class="border border-gray-800"  type="text" v-model="enumerocapufecarril"/>
+                        <input class="border border-gray-200"  type="text" v-model="enumerocapufecarril"/>
                     </div>
                     <div>
-                        <input class="border border-gray-800" type="text" v-model="eidgare"/>
+                        <input class="border border-gray-200" type="text" v-model="eidgare"/>
                     </div>
                     <div>
-                        <input class="border border-gray-800" type="text" v-model="elineacarril"/>
+                        <input class="border border-gray-200" type="text" v-model="elineacarril"/>
                     </div>
                     <div>
-                        <input class="border border-gray-800" type="text" v-model="eidFisico"/>
+                        <input class="border border-gray-200" type="text" v-model="eidFisico"/>
                     </div>
                     <div>
-                        <input class="border border-gray-800" type="text" v-model="eidRay"/>
+                        <input class="border border-gray-200" type="text" v-model="eidRay"/>
                     </div>
                 </div>
             </div>
@@ -175,10 +175,10 @@
                 </div>
                 <div class="flex flex-col gap-10">
                     <div>
-                        <input class="border border-gray-800" type="text" v-model="editaridray"/>
+                        <input class="border border-gray-200" disabled type="text" v-model="editaridray"/>
                     </div>
                     <div>
-                        <input class="border border-gray-800" type="text" v-model="editaripray"/>
+                        <input class="border border-gray-200" type="text" v-model="editaripray"/>
                     </div>
                 </div>
             </div>
@@ -258,7 +258,7 @@ export default {
         "idRay": editaridray.value,
         "ipRay": editaripray.value
       } 
-      axios.post(`${API}/CrudMonitoreoAntena/ActualizarRay/${6}`,ray)
+      axios.post(`${API}/CrudMonitoreoAntena/ActualizarRay/${plaza.value}`,ray)
         .then((response) => {
           console.log(response)
           cerramodalEditarRay(false)
@@ -315,7 +315,7 @@ export default {
       console.log(id);
       mostrar.value = id;
       abrirrail.value = !abrirrail.value
-      axios.get(`${API}/CrudMonitoreoAntena/AntenaPlaza/6/${id}`)
+      axios.get(`${API}/CrudMonitoreoAntena/AntenaPlaza/${plaza.value}/${id}`)
         .then((response) => {
           console.log(response.data.body)
           AntenasRail.value = response.data.body
@@ -333,7 +333,7 @@ export default {
     function buscar_carriles_plaza(){
       modalLoading.value = true
       rays.value = []            
-      axios.get(`${API}/CrudMonitoreoAntena/RayPlaza/${6}`)
+      axios.get(`${API}/CrudMonitoreoAntena/RayPlaza/${plaza.value}`)
         .then((response) => {
           console.log(response.data.body)
           rays.value = response.data.body
@@ -360,7 +360,7 @@ export default {
       let ray = {
         "ipRay": ipray.value
       } 
-      axios.post(`${API}/CrudMonitoreoAntena/InsertarRay/${6}`,ray)
+      axios.post(`${API}/CrudMonitoreoAntena/InsertarRay/${plaza.value}`,ray)
         .then((response) => {
           console.log(response)
           cerramodalantenas(false)
@@ -379,7 +379,7 @@ export default {
       "idFisico": idFisico.value,
       "idRay": idray.value,
     }
-    axios.post(`${API}/CrudMonitoreoAntena/InsertarAntena/${6}`,antena)
+    axios.post(`${API}/CrudMonitoreoAntena/InsertarAntena/${plaza.value}`,antena)
       .then((response) => {
         console.log(response)
         cerramodalantenas(false)
@@ -399,7 +399,7 @@ export default {
       "idFisico": eidFisico.value,
       "idRay": eidRay.value,
     }
-    axios.post(`${API}/CrudMonitoreoAntena/ActualizarAntena/${6}`,antena)
+    axios.post(`${API}/CrudMonitoreoAntena/ActualizarAntena/${plaza.value}`,antena)
       .then((response) => {
         console.log(response)
         cerramodaleditarantenas(false)

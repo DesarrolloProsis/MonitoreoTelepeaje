@@ -54,6 +54,7 @@ export default {
                 let info = Servicio.obtenerInfoUser()  
                 axios.get(`${API}/PlazaAsignada/DelUsuario/${info.UsuarioId}`)
                 .then((responsePlazaUsuario) => {
+                    console.log(responsePlazaUsuario);
                     plazas.value = []      
                     responseFullPlazas.data.body.forEach(plaza => {
                         let objPlazaValida = responsePlazaUsuario.data.body
