@@ -10,9 +10,7 @@
 import Navbar from "../../components/Navbar.vue";
 import MenuAntenas from "../../components/MenuDesplegable.vue";
 import Footer from "../../components/Footer-login";
-import { HubConnectionBuilder, HttpTransportType } from "@microsoft/signalr"
-import { MonitoreoAntenasStore  } from '../../store/MonitoreoAntenas'
-import { reactive } from 'vue';
+
 
 export default {
   components: {
@@ -21,29 +19,6 @@ export default {
     Footer,
   },
   setup(){  
-      let connectionSocket = reactive ({})
-      const monitoreoAntenasStore = MonitoreoAntenasStore()
-
-    async function conectar_socket(){
-      try{         
-        connectionSocket = await new HubConnectionBuilder()
-        .withUrl(`${'https://10.1.1.125:443'}/MonitoreoAntenas/BackStatusAntena`,{
-          //.withUrl("https://10.1.1.125:443/MonitoreoAntenas/BackStatusAntena",{
-          //.withUrl("https://localhost:44301/MonitoreoAntenas/BackStatusAntena",{
-            skipNegotiation: true,
-            transport: HttpTransportType.WebSockets
-        }).build()
-
-        connectionSocket.start().then(() => {                         
-          connectionSocket.on('backSend', (data) => {
-              console.log('data whit socket')
-              monitoreoAntenasStore.addEventAntenaConcurrent(data)
-          })
-        })    
-      }
-      catch(ex) { console.log("try code" + ex) }
-    }
-    conectar_socket()
     return {  }    
   }
 };
