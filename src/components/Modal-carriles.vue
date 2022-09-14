@@ -46,15 +46,14 @@
                   class="text-lg leading-6 font-medium text-gray-900"
                   id="modal-headline"
                 >
-                  Carril: {{ carril }}
+                  Alarma 
                 </h3>
                 <div class="mt-2">
                   <p class="text-lg text-gray-500">
-                    Tipo de alarma: {{ tipoalarma }}
+                    Existe un alarma de tipo <b> {{ tipoalarma }} </b> en el Reader con la siguiente direccion IP <b> {{ carril }} </b> con las siguientes antenas:
                   </p>
-                  <p class="text-lg text-gray-500">
-                    Tipo de alarma: Corte de Energía
-                  </p>
+                  <br/>
+                  <li v-for="(antena,index) in antenas" :key="index">Antena Id: <b>{{antena.idAntena}}</b> Carril: <b>{{antena.lineaCarril}}</b></li>
                 </div>
               </div>
             </div>
@@ -85,7 +84,7 @@ import { reactive} from 'vue';
 
 export default {
   name: "ModalCarriles",
-  props: ["carril", "tipoalarma", "modalOpen"],  
+  props: ["carril", "tipoalarma", "modalOpen","antenas"],  
   setup(props, { emit }){ 
     
     let modalShow = reactive(props.modalOpen)
