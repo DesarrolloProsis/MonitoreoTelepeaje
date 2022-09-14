@@ -69,6 +69,9 @@ export default {
     conectar_socket()
     function cerrar_modal(){   
       modalShow.value = false
+      tipoalarma.value = ''
+      carril.value = ''
+      antenas.value = []
     }
     return { modalShow,tipoalarma,carril,antenas,cerrar_modal }    
   }
