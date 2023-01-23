@@ -36,7 +36,7 @@ export default {
     async function conectar_socket(){
       try{         
         connectionSocket = await new HubConnectionBuilder()
-        .withUrl(`${'https://10.1.1.125:443'}/MonitoreoAntenas/BackStatusAntena`,{
+        .withUrl(`${'https://localhost:5001'}/MonitoreoAntenas/BackStatusAntena`,{
           //.withUrl("https://10.1.1.125:443/MonitoreoAntenas/BackStatusAntena",{
           //.withUrl("https://localhost:44301/MonitoreoAntenas/BackStatusAntena",{
             skipNegotiation: true,
