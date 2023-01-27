@@ -17,8 +17,7 @@
     <Footer/>
 </template>
 <script>
-import Servicio from '../../Servicios/Token-Services';
-//import jwt_decode from "jwt-decode";
+import Servicio from '@/servicios/Token-Services.js';
 import { ref } from 'vue'
 import Navbar from "../../components/Navbar.vue";
 import Footer from "../../components/Footer-login";

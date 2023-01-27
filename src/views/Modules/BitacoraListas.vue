@@ -31,7 +31,7 @@
 <script>
 const API = process.env.VUE_APP_URL_API_PRODUCCION
 import FormTramoPlaza from '../../components/Form-tramoplaza.vue';
-import ServiceFiles from '../../Servicios/Files-Service'
+import ServiceFiles from '@/servicios/Files-Service.js'
 import TablaListas from "../../components/Tabla-listas.vue";
 import Navbar from "@/components/Navbar.vue";
 import Footer from "@/components/Footer-login";

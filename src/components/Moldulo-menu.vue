@@ -13,7 +13,7 @@
 
 <script>
 //import jwt_decode from "jwt-decode";
-import Servicio from '../Servicios/Token-Services';
+import Servicio from '@/servicios/Token-Services.js';
 export default {
   name: "ModulosComp",
   props: ["titulo", "imagen", "ruta", "nombre", "isInactive"],

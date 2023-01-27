@@ -1,5 +1,5 @@
 import saveAs from "file-saver";
-import ServiceToken from '../Servicios/Token-Services'
+import ServiceToken from '@/servicios/Token-Services.js'
 
 function xml_hhtp_request(urlToFile,nameFile){        
     var oReq = new XMLHttpRequest();  

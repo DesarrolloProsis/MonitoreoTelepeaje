@@ -34,7 +34,7 @@ const API = process.env.VUE_APP_URL_API_PRODUCCION
 import TablaTransacciones from "../../components/Tabla-transacciones.vue";
 import FormTramoPlaza from '../../components/Form-tramoplaza.vue';
 import FilesDownload from '../../components/Files-descargar.vue'
-import ServiceFiles from '../../Servicios/Files-Service'
+import ServiceFiles from '@/servicios/Files-Service'
 import Navbar from "../../components/Navbar.vue";
 import Footer from "../../components/Footer-login";
 import Paginacion from "../../components/Paginacion.vue"

@@ -46,7 +46,7 @@
 </template>
 
 <script>
-import Servicio from '../Servicios/Token-Services';
+import Servicio from '@/servicios/Token-Services.js';
 import Multiselect from '@vueform/multiselect'
 //import jwt_decode from "jwt-decode";
 import axios from 'axios';
