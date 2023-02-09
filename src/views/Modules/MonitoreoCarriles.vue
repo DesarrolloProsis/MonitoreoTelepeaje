@@ -36,7 +36,7 @@ export default {
     async function conectar_socket(){
       try{         
         connectionSocket = await new HubConnectionBuilder()
-        .withUrl(`${'https://localhost:5001'}/MonitoreoAntenas/BackStatusAntena`,{
+        .withUrl(`${'https://localhost:44301'}/MonitoreoAntenas/BackStatusAntena`,{
           //.withUrl("https://10.1.1.125:443/MonitoreoAntenas/BackStatusAntena",{
           //.withUrl("https://localhost:44301/MonitoreoAntenas/BackStatusAntena",{
             skipNegotiation: true,
@@ -45,10 +45,32 @@ export default {
         connectionSocket.stop()
 
         connectionSocket.start().then(() => {                         
-          connectionSocket.on('backSend', (data) => {
-              console.log('data whit socket')
+          connectionSocket.on('backSend', (data) => {              
               console.log(data)
-              if(data.statusAntena == "ERROR_EN_ANTENA"){
+              MappeDataSocker(data)
+              monitoreoAntenasStore.addEventAntenaConcurrent(data)
+          })
+        })    
+      }
+      catch(ex) { console.log("try code" + ex) }
+    }
+    conectar_socket()
+    function cerrar_modal(){  
+      
+      monitoreoAntenasStore.deleteEventAntenaConcurrent()      
+      modalShow.value = false
+      tipoalarma.value = ''
+      carril.value = ''
+      antenas.value = []       
+      if(monitoreoAntenasStore.getEventAntenaConcurrent.length > 0)
+      {
+        console.log(monitoreoAntenasStore.getEventAntenaConcurrent[0])
+        MappeDataSocker(monitoreoAntenasStore.getEventAntenaConcurrent[0])
+      }     
+    }
+
+    function MappeDataSocker(data){
+      if(data.statusAntena == "ERROR_EN_ANTENA"){
                 modalShow.value = true
                 tipoalarma.value = 'ERROR'
                 carril.value = data.ip
@@ -59,19 +81,17 @@ export default {
                 carril.value = data.ip
                 antenas.value = data.antenas
               }
-
-              monitoreoAntenasStore.addEventAntenaConcurrent(data)
-          })
-        })    
-      }
-      catch(ex) { console.log("try code" + ex) }
-    }
-    conectar_socket()
-    function cerrar_modal(){   
-      modalShow.value = false
-      tipoalarma.value = ''
-      carril.value = ''
-      antenas.value = []
+              else if(data.statusAntena == "CHANGE_STATUS_EN_ANTENA"){                
+                modalShow.value = true
+                tipoalarma.value = 'CAMBIO DE ESTATUS'
+                carril.value = data.ip
+                antenas.value = data.antenas              
+              }else{
+                modalShow.value = true
+                tipoalarma.value = 'TEST' + data.plaza
+                carril.value = data.ip
+                antenas.value = data.antenas
+              }
     }
     return { modalShow,tipoalarma,carril,antenas,cerrar_modal }    
   }
