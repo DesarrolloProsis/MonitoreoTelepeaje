@@ -79,7 +79,7 @@ export default {
     function buscar_carriles_plaza(){
       modalLoading.value = true
       carrilesTramos.value = []            
-      axios.get(`${API}/CarrilesMonitoreo/MultiPlaza/${6}`)
+      axios.get(`${API}/CarrilesMonitoreo/MultiPlaza/${2}`)
         .then((response) => {
           let tramos = []
           console.log(response)
