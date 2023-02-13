@@ -53,8 +53,7 @@ export default {
             .then((responseFullPlazas) => {       
                 let info = Servicio.obtenerInfoUser()  
                 axios.get(`${API}/PlazaAsignada/DelUsuario/${info.UsuarioId}`)
-                .then((responsePlazaUsuario) => {
-                    console.log(responsePlazaUsuario);
+                .then((responsePlazaUsuario) => {                    
                     plazas.value = []      
                     responseFullPlazas.data.body.forEach(plaza => {
                         let objPlazaValida = responsePlazaUsuario.data.body
@@ -87,7 +86,7 @@ export default {
 
         const emit_tramo_plaza = () => {
             if(props.tipo == 'alarma')
-                emit('cambiar-tramo-plaza', { 'tramo': tramoSeleccionado.value.id, plaza:plazaSeleccionado.value.numeroPlazaCapufe, carril: carrilSeleccionado.value.lineaCarril })
+                emit('cambiar-tramo-plaza', { 'tramo': tramoSeleccionado.value.id, plaza:plazaSeleccionado.value.plazaAsignadaId, carril: carrilSeleccionado.value.lineaCarril })
             else
                 emit('cambiar-tramo-plaza', { 'tramo': tramoSeleccionado.value.id, plaza:plazaSeleccionado.value.plazaAsignadaId, carril: carrilSeleccionado.value.lineaCarril })
         }

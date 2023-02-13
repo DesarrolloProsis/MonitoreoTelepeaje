@@ -42,13 +42,14 @@
                 </svg>
               </div>
               <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
-                <h3
-                  class="text-lg leading-6 font-medium text-gray-900"
-                  id="modal-headline"
-                >
-                  Alarma 
-                </h3>
-                <div class="mt-2">
+                <h3 class="text-lg leading-6 font-medium text-gray-900" id="modal-headline">Alarma </h3>
+                <div v-if="tipoalarma == 'CAMBIO_DE_ESTATUS'" class="mt-2">
+                  <p v-if="antenaStateChange.newState == 'normal'"  class="text-lg text-gray-500">Se conectaron las antena en los carriles</p>
+                  <p v-else class="text-lg text-gray-500">Se desconectaron las antena en los carriles</p>
+                  <br/>
+                  <li v-for="(antena,index) in antenas" :key="index">Antena Id: <b>{{antena.idAntena}}</b> Carril: <b>{{antena.lineaCarril}}</b></li>
+                </div>
+                <div v-else class="mt-2">
                   <p class="text-lg text-gray-500">
                     Existe un alarma de tipo <b> {{ tipoalarma }} </b> en el Reader con la siguiente direccion IP <b> {{ carril }} </b> con las siguientes antenas:
                   </p>
@@ -84,7 +85,7 @@ import { reactive} from 'vue';
 
 export default {
   name: "ModalCarriles",
-  props: ["carril", "tipoalarma", "modalOpen","antenas"],  
+  props: ["carril", "tipoalarma", "modalOpen","antenas", "antenaStateChange"],  
   setup(props, { emit }){ 
     
     let modalShow = reactive(props.modalOpen)

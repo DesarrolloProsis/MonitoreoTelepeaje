@@ -501,7 +501,8 @@ export default {
     function buscar_carriles_plaza(){
       abrirrail.value = false
       modalLoading.value = true
-      rays.value = []            
+      rays.value = []         
+      console.log(`${API}/CrudMonitoreoAntena/RayPlaza/${plaza.value}`)   
       axios.get(`${API}/CrudMonitoreoAntena/RayPlaza/${plaza.value}`)
         .then((response) => {
           console.log(response.data.body)
