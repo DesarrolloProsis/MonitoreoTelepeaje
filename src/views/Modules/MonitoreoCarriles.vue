@@ -34,14 +34,14 @@ export default {
       const carril = ref('')
       const plaza = ref('')
       const idPlazaCurrent = ref('')
-      let antenaStateChange = reactive({})
+      const antenaStateChange = ref('')
       const antenas = ref([])
       const monitoreoAntenasStore = MonitoreoAntenasStore()
 
     async function conectar_socket(){
       try{         
         connectionSocket = await new HubConnectionBuilder()
-        .withUrl('https://10.1.1.168:85/MonitoreoAntenas/BackStatusAntena',{       
+        .withUrl('https://10.1.1.125:82/MonitoreoAntenas/BackStatusAntena',{       
             skipNegotiation: true,
             transport: HttpTransportType.WebSockets
         }).build()
@@ -93,14 +93,14 @@ export default {
                 tipoalarma.value = 'ERROR'
                 carril.value = data.ip
                 plaza.value = data.plaza
-                antenaStateChange = data.antenaStateChange
+                antenaStateChange.value = data.antenaStateChange.newState
                 antenas.value = data.antenas
               }else if(data.statusAntena == "WARNING_EN_ANTENA"){
                 modalShow.value = true
                 tipoalarma.value = 'ALERTA'
                 carril.value = data.ip
                 plaza.value = data.plaza
-                antenaStateChange = data.antenaStateChange
+                antenaStateChange.value = data.antenaStateChange.newState
                 antenas.value = data.antenas
               }
               else if(data.statusAntena == "CHANGE_STATUS_EN_ANTENA"){                
@@ -108,14 +108,14 @@ export default {
                 tipoalarma.value = 'CAMBIO_DE_ESTATUS'
                 carril.value = data.ip
                 plaza.value = data.plaza
-                antenaStateChange = data.antenaStateChange
+                antenaStateChange.value = data.antenaStateChange.newState
                 antenas.value = data.antenas              
               }else{
                 modalShow.value = true
                 tipoalarma.value = 'TEST'
                 carril.value = data.ip
                 plaza.value = data.plaza
-                antenaStateChange = data.antenaStateChange
+                antenaStateChange.value = data.antenaStateChange.newState
                 antenas.value = data.antenas
               }
     }
