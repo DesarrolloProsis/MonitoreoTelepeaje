@@ -2,9 +2,9 @@
   <Navbar/>
   <div class="h-screen md:h-full md:mb-0 mb-9">
     <h1 class="title-center font-titulo font-bold pb-1">Monitoreo de Carriles</h1>        
-    <TablaCarriles @conectar-socket-plaza="conecta_socket_plaza"></TablaCarriles>
+    <TablaCarriles @conectar-socket-plaza="conecta_o_desconecta_socket_plaza" @change-plaza-select="change_plaza_select"></TablaCarriles>
     <div v-if="modalShow">
-      <ModalCarriles @cerrar-modal="cerrar_modal" :carril="carril" :antenaStateChange="antenaStateChange" :modalOpen="modalShow" :antenas="antenas" :tipoalarma="tipoalarma"></ModalCarriles>
+      <ModalCarriles @cerrar-modal="cerrar_modal" :carril="carril" :antenaStateChange="antenaStateChange" :plaza="plaza" :modalOpen="modalShow" :antenas="antenas" :tipoalarma="tipoalarma"></ModalCarriles>
     </div>
   </div>
   <Footer/>
@@ -16,7 +16,7 @@ import Footer from "../../components/Footer-login";
 import ModalCarriles from "../../components/Modal-carriles";
 import { HubConnectionBuilder, HttpTransportType } from "@microsoft/signalr"
 import { MonitoreoAntenasStore  } from '../../store/MonitoreoAntenas'
-import { reactive, ref } from 'vue';
+import { reactive, ref, onBeforeUnmount } from 'vue';
 import axios from "axios";
 const API = process.env.VUE_APP_URL_API_PRODUCCION
 
@@ -32,6 +32,8 @@ export default {
       const modalShow = ref(false)
       const tipoalarma = ref('')
       const carril = ref('')
+      const plaza = ref('')
+      const idPlazaCurrent = ref('')
       let antenaStateChange = reactive({})
       const antenas = ref([])
       const monitoreoAntenasStore = MonitoreoAntenasStore()
@@ -39,17 +41,19 @@ export default {
     async function conectar_socket(){
       try{         
         connectionSocket = await new HubConnectionBuilder()
-        .withUrl('https://localhost:85/MonitoreoAntenas/BackStatusAntena',{       
+        .withUrl('https://10.1.1.168:85/MonitoreoAntenas/BackStatusAntena',{       
             skipNegotiation: true,
             transport: HttpTransportType.WebSockets
         }).build()
-        connectionSocket.stop()
+        //connectionSocket.stop()
 
         connectionSocket.start().then(() => {                         
           connectionSocket.on('backSend', (data) => {    
-              console.log(data)                        
-              MappeDataSocker(data)      
-              monitoreoAntenasStore.addEventAntenaConcurrent(data)
+              console.log(data)   
+              if(idPlazaCurrent.value == data.idPlaza){                     
+                MappeDataSocker(data)      
+                monitoreoAntenasStore.addEventAntenaConcurrent(data)
+              }
           })
         })    
       }
@@ -57,7 +61,7 @@ export default {
     }
     conectar_socket()
 
-    function conecta_socket_plaza(idPlaza){
+    function conecta_o_desconecta_socket_plaza(idPlaza){
       console.log(idPlaza )
       idPlaza = idPlaza == undefined ? 0 : idPlaza
       idPlaza = idPlaza == '' ? 0 : idPlaza
@@ -78,6 +82,9 @@ export default {
       {        
         MappeDataSocker(monitoreoAntenasStore.getEventAntenaConcurrent[0])
       }     
+    }    	
+    function change_plaza_select(idPlaza){
+      idPlazaCurrent.value = idPlaza
     }
 
     function MappeDataSocker(data){
@@ -85,12 +92,14 @@ export default {
                 modalShow.value = true
                 tipoalarma.value = 'ERROR'
                 carril.value = data.ip
+                plaza.value = data.plaza
                 antenaStateChange = data.antenaStateChange
                 antenas.value = data.antenas
               }else if(data.statusAntena == "WARNING_EN_ANTENA"){
                 modalShow.value = true
                 tipoalarma.value = 'ALERTA'
                 carril.value = data.ip
+                plaza.value = data.plaza
                 antenaStateChange = data.antenaStateChange
                 antenas.value = data.antenas
               }
@@ -98,17 +107,25 @@ export default {
                 modalShow.value = true
                 tipoalarma.value = 'CAMBIO_DE_ESTATUS'
                 carril.value = data.ip
+                plaza.value = data.plaza
                 antenaStateChange = data.antenaStateChange
                 antenas.value = data.antenas              
               }else{
                 modalShow.value = true
-                tipoalarma.value = 'TEST' + data.plaza
+                tipoalarma.value = 'TEST'
                 carril.value = data.ip
+                plaza.value = data.plaza
                 antenaStateChange = data.antenaStateChange
                 antenas.value = data.antenas
               }
     }
-    return { modalShow,tipoalarma,carril,antenas,antenaStateChange, cerrar_modal, conecta_socket_plaza }    
+
+    onBeforeUnmount(() => {
+      console.log('destruyendo socket connect onBeforeUnmount') 
+      conecta_o_desconecta_socket_plaza(0)      
+    })
+
+    return { modalShow,tipoalarma,carril,antenas,plaza, idPlazaCurrent, antenaStateChange, cerrar_modal, conecta_o_desconecta_socket_plaza, change_plaza_select }    
   }
 };
 </script>

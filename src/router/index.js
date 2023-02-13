@@ -26,7 +26,7 @@ const routes = [{
       requiresCookie: false
     },
     beforeEnter: (to, from, next) => {
-      if (Servicio.obtenerToken()) {
+      if (Servicio.obtenerToken()) {        
         next()
       } else {        
         document.cookie = "TipoUser=; expires=Thu, 01 Jan 1970 00:00:00 UTC;" + "SameSite=None; Secure;";
@@ -184,8 +184,11 @@ const router = createRouter({
 
 router.beforeEach((to, _from, next) => {
   if (to.matched.some(record => record.meta.requiresCookie)) {    
-    //if (getCookie("TipoUser") != "" && getCookie("Token") != "") {
+    //if (getCookie("TipoUser") != "" && getCookie("Token") != "") {          
     if (Servicio.obtenerToken()) {
+        // if(_from.name == 'MonitoreoCarriles' && to.name == 'Menu'){
+        //   router.
+        // }
         next()
     } else {        
       //document.cookie = "TipoUser=; expires=Thu, 01 Jan 1970 00:00:00 UTC;" + "SameSite=None; Secure;";
@@ -193,6 +196,7 @@ router.beforeEach((to, _from, next) => {
       next('/')      
     }
   } else {    
+    console.log(_from.name)
     next();
   }
 })

@@ -62,13 +62,6 @@ export default {
           nombre:"Busqueda Cruces",
           isInactive:false
         },
-        /* {
-          titulo: "Bitácora de Accesos",
-          imagen: "Menu/bitacora-accesos.png",
-          ruta: "/inicio/bitacora-accesos",
-          nombre:"Bitacora Accesos",
-          isInactive:false
-        }, */
         {
           titulo: "Bitácoras",
           imagen: "Menu/bitacoras.png",
@@ -92,7 +85,7 @@ export default {
         },
       ],
     };
-  },
+  }
 };
 </script>
 <style scoped>

@@ -1,10 +1,12 @@
 <template>
   <div class="flex justify-between bg-nav">
     <div class="flex-none">
-      <router-link to="/inicio" class="inline-block pl-5 pt-1 text-white text-xl" tag="div">
-      <img class="logo inline" src="~@/assets/logoProsis.png" >
-      Inicio 
-      </router-link>
+      <!-- <router-link to="/inicio" class="inline-block pl-5 pt-1 text-white text-xl" tag="div"> -->
+      <a href="/inicio" class="inline-block pl-5 pt-1 text-white text-xl">
+        <img class="logo inline" src="~@/assets/logoProsis.png" >
+        Inicio 
+      </a>
+      <!-- </router-link> -->
     </div>
     <span class="text-white mt-2">Bienvenido {{ nombre }}</span>
     <div class="flex-none border border-red-600 rounded-lg bg-red-500 animacion -mt-1">

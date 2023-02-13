@@ -108,6 +108,8 @@ export default {
     function recibir_tramo_plaza(value){
       tramo.value = value.tramo
       plaza.value = value.plaza
+      console.log('cambio de isCurrent')
+      emit('change-plaza-select', value.plaza)
     }      
     return { plaza, tramo, modalShow, dataSocket, carrilesTramos, modalLoading, buscar_carriles_plaza, recibir_tramo_plaza}
   }

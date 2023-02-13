@@ -47,14 +47,14 @@
                   <p v-if="antenaStateChange.newState == 'normal'"  class="text-lg text-gray-500">Se conectaron las antena en los carriles</p>
                   <p v-else class="text-lg text-gray-500">Se desconectaron las antena en los carriles</p>
                   <br/>
-                  <li v-for="(antena,index) in antenas" :key="index">Antena Id: <b>{{antena.idAntena}}</b> Carril: <b>{{antena.lineaCarril}}</b></li>
+                  <li v-for="(antena,index) in antenas" :key="index">Antena con Id Fisico: <b>{{antena.idFisico}}</b> Carril: <b>{{antena.lineaCarril}}</b></li>
                 </div>
                 <div v-else class="mt-2">
                   <p class="text-lg text-gray-500">
-                    Existe un alarma de tipo <b> {{ tipoalarma }} </b> en el Reader con la siguiente direccion IP <b> {{ carril }} </b> con las siguientes antenas:
+                    Existe un alarma de tipo <b> {{ tipoalarma }} </b> en el Reader con la siguiente direccion IP <b> {{ carril }} </b> en la plaza <b> {{ plaza }} </b> con las siguientes antenas:
                   </p>
                   <br/>
-                  <li v-for="(antena,index) in antenas" :key="index">Antena Id: <b>{{antena.idAntena}}</b> Carril: <b>{{antena.lineaCarril}}</b></li>
+                  <li v-for="(antena,index) in antenas" :key="index">Antena con Id Fisico: <b>{{antena.idFisico}}</b> Carril: <b>{{antena.lineaCarril}}</b></li>
                 </div>
               </div>
             </div>
@@ -85,7 +85,7 @@ import { reactive} from 'vue';
 
 export default {
   name: "ModalCarriles",
-  props: ["carril", "tipoalarma", "modalOpen","antenas", "antenaStateChange"],  
+  props: ["carril", "tipoalarma", "modalOpen","antenas", "antenaStateChange", "plaza"],  
   setup(props, { emit }){ 
     
     let modalShow = reactive(props.modalOpen)
